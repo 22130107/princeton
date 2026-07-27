@@ -77,7 +77,7 @@ export default function MobileWhySection() {
         <div className="relative px-4 pb-12 pt-14">
           {/* Heading */}
           <h2 className="font-bold text-[#620000] text-[24px] uppercase leading-snug text-center mb-3">
-            TẠI SAO CHỌN TRƯỜNG MẦM NON TÂY ÚC?
+            TẠI SAO CHỌN TRƯỜNG MẦM NON Princeton?
           </h2>
           <p className="font-medium text-[#333333] text-[14px] leading-relaxed text-center mb-6">
             Trở thành học sinh của Trường Mầm non Princeton, các em sẽ được sinh hoạt và học tập trong môi trường tràn đầy tình yêu thương và sự thấu hiểu. Đó là nền tảng để mỗi bạn nhỏ phát triển{" "}

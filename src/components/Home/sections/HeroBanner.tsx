@@ -261,6 +261,14 @@ function Container21() {
   const [activeSlide, setActiveSlide] = useState(0);
   const totalSlides = 3;
 
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveSlide((prev) => (prev < totalSlides - 1 ? prev + 1 : 0));
+    }, 3000);
+
+    return () => window.clearInterval(timer);
+  }, [totalSlides]);
+
   return (
     <div className="h-[626px] overflow-clip relative shrink-0 w-full" data-name="Container">
       <Container22 activeSlide={activeSlide} />
@@ -281,12 +289,18 @@ function MobileContainer() {
   const prev = () => setActiveSlide(prev => (prev > 0 ? prev - 1 : totalSlides - 1));
   const next = () => setActiveSlide(prev => (prev < totalSlides - 1 ? prev + 1 : 0));
 
+  useEffect(() => {
+    const timer = window.setInterval(next, 3000);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
   const rawImgs = [imgBannerUuDaiViPng1, imgBanner1Vi2Png1, imgBanner2Vi1Png];
 
   return (
     <div>
       <div
-        className="relative w-full overflow-hidden rounded-3xl"
+        className="relative w-full overflow-hidden rounded-[24px]"
         onTouchStart={e => { touchX.current = e.touches[0].clientX; }}
         onTouchEnd={e => {
           const diff = touchX.current - e.changedTouches[0].clientX;
@@ -300,7 +314,19 @@ function MobileContainer() {
             </div>
           ))}
         </div>
-    </div>
+      </div>
+      <div className="mt-3 flex justify-center gap-2">
+        {rawImgs.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setActiveSlide(i)}
+            aria-label={`Chuyển đến banner ${i + 1}`}
+            className={`size-[12px] rounded-full border border-[#b80000] transition-colors duration-200 ${
+              i === activeSlide ? "bg-[#b80000]" : "bg-white"
+            }`}
+          />
+        ))}
+      </div>
     </div>
   );
 }

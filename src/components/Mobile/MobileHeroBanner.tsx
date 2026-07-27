@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import imgBanner1 from "../../assets/1cb1c415ea9c6af5c91a9167c054aa84c4507ec4.png";
 import imgBanner2 from "../../assets/eb701c1db54fe5a3e821c062e1706ea59a24b8ab.png";
 import imgBanner3 from "../../assets/f096407c0e14b5d7b3aa8cdb6a104a2e3385c103.png";
@@ -13,6 +13,12 @@ export default function MobileHeroBanner() {
 
   const prev = () => setActive((a) => (a > 0 ? a - 1 : banners.length - 1));
   const next = () => setActive((a) => (a < banners.length - 1 ? a + 1 : 0));
+
+  useEffect(() => {
+    const timer = window.setInterval(next, 3000);
+
+    return () => window.clearInterval(timer);
+  }, []);
 
   return (
     <section className="w-full bg-[#fffefa] relative overflow-hidden">
