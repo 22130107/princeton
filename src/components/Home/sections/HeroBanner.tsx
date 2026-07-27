@@ -1,4 +1,6 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import svgPaths from "../svg-g45k1n1pz5";
 import imgBanner1Vi2Png1 from "../../../assets/1cb1c415ea9c6af5c91a9167c054aa84c4507ec4.png";
 import imgBannerUuDaiViPng from "../../../assets/d082e0a60a126345af429a7e01c4ba8161c21e0e.png";
@@ -271,9 +273,58 @@ function Container21() {
   );
 }
 
-export default function HeroBanner() {
+function MobileContainer() {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const totalSlides = 3;
+  const touchX = useRef(0);
+
+  const prev = () => setActiveSlide(prev => (prev > 0 ? prev - 1 : totalSlides - 1));
+  const next = () => setActiveSlide(prev => (prev < totalSlides - 1 ? prev + 1 : 0));
+
+  const rawImgs = [imgBanner1Vi2Png1, imgBannerUuDaiViPng1, imgBanner2Vi1Png];
+
   return (
-    <div className="absolute bg-[#fffefa] content-stretch flex flex-col items-start left-0 overflow-clip pb-[40px] pt-[20px] right-0 top-0" data-name="Section">
+    <div>
+      <div
+        className="relative w-full overflow-hidden rounded-3xl"
+        onTouchStart={e => { touchX.current = e.touches[0].clientX; }}
+        onTouchEnd={e => {
+          const diff = touchX.current - e.changedTouches[0].clientX;
+          if (Math.abs(diff) > 40) diff > 0 ? next() : prev();
+        }}
+      >
+        <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${activeSlide * 100}%)` }}>
+          {rawImgs.map((img, i) => (
+            <div key={i} className="shrink-0 w-full flex items-center justify-center">
+              <img src={img.src} alt="" className="w-full h-auto" />
+            </div>
+          ))}
+        </div>
+    </div>
+    </div>
+  );
+}
+
+export default function HeroBanner() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div className="bg-[#fffefa] px-1 py-3" data-name="Section-HeroBanner">
+        <MobileContainer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="absolute bg-[#fffefa] content-stretch flex flex-col items-start left-0 overflow-clip pb-[40px] pt-[20px] right-0 top-0" data-name="Section-HeroBanner">
       <Container21 />
     </div>
   );
