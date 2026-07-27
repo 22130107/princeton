@@ -63,7 +63,7 @@ export default async function TeachingMethodDetailPage({
         <HeaderSection />
       </div>
 
-      <article className="relative mt-6 overflow-hidden bg-[#ffc107] px-4 pb-12 pt-24 md:mt-10 md:px-10 md:pb-16 md:pt-36">
+      <article className="relative mt-6 overflow-hidden bg-[#bfefff] px-4 pb-12 pt-24 md:mt-10 md:px-10 md:pb-16 md:pt-36">
         <div
           aria-hidden
           className="absolute inset-x-0 top-0 h-[25px] bg-repeat-x"
