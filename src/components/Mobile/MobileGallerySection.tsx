@@ -1,31 +1,47 @@
 import imgGallery from "../../assets/150512c407c3bbd680797b719959c58b6e71354f.png";
+import imgSection from "../../assets/43192633e64afca0e6ae2cc7ffd3e7a96f2cd1c7.png";
 
 export default function MobileGallerySection() {
-  const TILE_W = 3631;
-  const TILE_H = 646;
-
   return (
-    <section className="py-8 overflow-hidden bg-[#fffefa]">
-      <h2 className="text-[#620000] font-bold text-[22px] uppercase text-center px-4 mb-5">
-        KHOẢNH KHẮC TRẺ TRẢI NGHIỆM
+    <section className="relative overflow-hidden bg-[#fff1f1] py-12">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <img
+          src={imgSection.src}
+          alt=""
+          className="absolute left-0 top-0 h-full w-full object-cover"
+        />
+      </div>
+
+      <h2 className="relative z-[1] mx-auto mb-8 max-w-[360px] px-4 text-center text-[28px] font-extrabold uppercase leading-tight text-[#620000]">
+        Khoảnh khắc trẻ trải nghiệm
       </h2>
+
       <style>{`
-        @keyframes gallery-marquee {
+        @keyframes mobile-gallery-marquee {
           from { transform: translateX(0); }
-          to { transform: translateX(-${TILE_W}px); }
+          to { transform: translateX(calc(var(--gallery-tile-w) * -1)); }
         }
       `}</style>
-      <div className="overflow-hidden w-full">
+
+      <div
+        className="relative z-[1] w-full overflow-hidden"
+        style={
+          {
+            "--gallery-h": "clamp(228px, 56vw, 300px)",
+            "--gallery-tile-w": "calc(var(--gallery-h) * 5.62)",
+          } as React.CSSProperties
+        }
+      >
         <div
+          className="relative shrink-0"
           style={{
+            width: "calc(var(--gallery-tile-w) * 4)",
+            height: "var(--gallery-h)",
             backgroundImage: `url("${imgGallery.src}")`,
-            backgroundSize: `${TILE_W}px ${TILE_H}px`,
+            backgroundSize: "var(--gallery-tile-w) var(--gallery-h)",
             backgroundRepeat: "repeat-x",
-            width: `${TILE_W * 3}px`,
-            height: "180px",
-            animation: "gallery-marquee 30s linear infinite",
+            animation: "mobile-gallery-marquee 34s linear infinite",
             willChange: "transform",
-            backgroundPositionY: "center",
           }}
         />
       </div>

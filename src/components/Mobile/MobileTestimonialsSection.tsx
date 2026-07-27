@@ -56,26 +56,37 @@ export default function MobileTestimonialsSection() {
           if (Math.abs(diff) > 40) diff > 0 ? next() : prev();
         }}
       >
-        {/* Card */}
-        <div className="relative bg-[#fffefa] rounded-2xl border border-black shadow-[4px_4px_0px_black] overflow-hidden">
-          {/* Header */}
-          <div className="bg-[#b80000] px-5 py-3 flex items-center gap-3 border-b border-black">
-            <div className="size-12 rounded-full overflow-hidden border-2 border-white shrink-0">
-              <img
-                src={testimonials[active].avatar.src}
-                alt={testimonials[active].name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <span className="text-white font-bold text-[15px]">{testimonials[active].name}</span>
-          </div>
+        <div className="overflow-hidden pb-1 pr-1">
+          <div
+            className="flex gap-4 transition-transform duration-500 ease-in-out will-change-transform"
+            style={{ transform: `translateX(calc(-${active * 100}% - ${active}rem))` }}
+          >
+            {testimonials.map((item) => (
+              <article
+                key={item.name}
+                className="relative h-[338px] w-full shrink-0 overflow-hidden rounded-2xl border border-black bg-[#fffefa] shadow-[4px_4px_0px_black]"
+              >
+                <div className="flex h-[76px] items-center gap-3 border-b border-black bg-[#b80000] px-5 py-3">
+                  <div className="size-12 shrink-0 overflow-hidden rounded-full border-2 border-white">
+                    <img
+                      src={item.avatar.src}
+                      alt={item.name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <span className="min-w-0 text-[15px] font-bold leading-snug text-white">
+                    {item.name}
+                  </span>
+                </div>
 
-          {/* Body */}
-          <div className="p-5 relative">
-            <img src={imgQuote.src} alt="quote" className="w-6 h-5 mb-2 opacity-60" />
-            <p className="text-[#620000] font-medium text-[14px] leading-relaxed">
-              {testimonials[active].text}
-            </p>
+                <div className="relative flex h-[262px] flex-col p-5">
+                  <img src={imgQuote.src} alt="quote" className="mb-3 h-5 w-6 opacity-60" />
+                  <p className="overflow-hidden text-[14px] font-medium leading-relaxed text-[#620000]">
+                    {item.text}
+                  </p>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
 

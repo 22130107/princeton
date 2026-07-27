@@ -46,75 +46,26 @@ const CARDS = [
   },
 ];
 
-/** SVG scallop đều — mỗi hình bán nguyệt r=14, 20px wide */
-function ScallopTop({ fill = "#fffefa" }: { fill?: string }) {
-  const r = 14;
-  const w = 28;
-  const count = 14; // số răng cưa
-  const totalW = count * w;
-  const h = r + 1;
-
-  // Mỗi scallop: nửa tròn nhô xuống
-  let d = `M0,0 `;
-  for (let i = 0; i < count; i++) {
-    const cx = i * w + r;
-    d += `A ${r} ${r} 0 0 0 ${cx - r},${r} `;
-    d += `A ${r} ${r} 0 0 0 ${cx + r},${r} `;
-  }
-  d += `L${totalW},0 Z`;
-
-  return (
-    <svg
-      viewBox={`0 0 ${totalW} ${h}`}
-      width="100%"
-      height={h}
-      preserveAspectRatio="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="block"
-    >
-      <path d={d} fill={fill} />
-    </svg>
-  );
-}
-
-function ScallopBottom({ fill = "#fffefa" }: { fill?: string }) {
-  const r = 14;
-  const w = 28;
-  const count = 14;
-  const totalW = count * w;
-  const h = r + 1;
-
-  // Scallop nhô lên (lật ngược)
-  let d = `M0,${h} `;
-  for (let i = 0; i < count; i++) {
-    const cx = i * w + r;
-    d += `A ${r} ${r} 0 0 1 ${cx - r},0 `;
-    d += `A ${r} ${r} 0 0 1 ${cx + r},0 `;
-  }
-  d += `L${totalW},${h} Z`;
-
-  return (
-    <svg
-      viewBox={`0 0 ${totalW} ${h}`}
-      width="100%"
-      height={h}
-      preserveAspectRatio="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="block"
-    >
-      <path d={d} fill={fill} />
-    </svg>
-  );
-}
-
 export default function MobileWhySection() {
   return (
-    <section className="relative">
-      {/* Scallop top — màu trắng/nền trước che lên section */}
-      <ScallopTop fill="#fffefa" />
-
-      {/* Body với ảnh nền */}
+    <section className="relative bg-[#fffefa] py-4">
       <div className="relative overflow-hidden bg-[#f5ede8]">
+        <div
+          aria-hidden
+          className="absolute left-0 right-0 top-0 z-[1] h-9"
+          style={{
+            background:
+              "radial-gradient(circle at 50% 100%, transparent 0 24px, #fffefa 25px) left top / 48px 36px repeat-x",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute bottom-0 left-0 right-0 z-[1] h-9"
+          style={{
+            background:
+              "radial-gradient(circle at 50% 0, transparent 0 24px, #fffefa 25px) left bottom / 48px 36px repeat-x",
+          }}
+        />
         {/* Ảnh phòng học nền */}
         <img
           alt=""
@@ -123,13 +74,13 @@ export default function MobileWhySection() {
         />
 
         {/* Content */}
-        <div className="relative px-4 pt-6 pb-8">
+        <div className="relative px-4 pb-12 pt-14">
           {/* Heading */}
           <h2 className="font-bold text-[#620000] text-[24px] uppercase leading-snug text-center mb-3">
             TẠI SAO CHỌN TRƯỜNG MẦM NON TÂY ÚC?
           </h2>
           <p className="font-medium text-[#333333] text-[14px] leading-relaxed text-center mb-6">
-            Trở thành học sinh của Trường Mầm non Tây Úc, các em sẽ được sinh hoạt và học tập trong môi trường tràn đầy tình yêu thương và sự thấu hiểu. Đó là nền tảng để mỗi bạn nhỏ phát triển{" "}
+            Trở thành học sinh của Trường Mầm non Princeton, các em sẽ được sinh hoạt và học tập trong môi trường tràn đầy tình yêu thương và sự thấu hiểu. Đó là nền tảng để mỗi bạn nhỏ phát triển{" "}
             <strong className="text-[#620000]">mạnh mẽ</strong> trong suốt hành trình học tập.
           </p>
 
@@ -164,8 +115,6 @@ export default function MobileWhySection() {
         </div>
       </div>
 
-      {/* Scallop bottom */}
-      <ScallopBottom fill="#fffefa" />
     </section>
   );
 }

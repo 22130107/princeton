@@ -17,7 +17,7 @@ export default function MobileHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="bg-[#e8f3e6] sticky top-0 z-50 w-full shadow-sm">
+    <header className="fixed inset-x-0 top-0 z-50 w-full bg-[#e8f3e6] shadow-sm">
       <div className="flex items-center justify-between px-4 py-2">
         {/* Logo */}
         <Link href="/" className="shrink-0">

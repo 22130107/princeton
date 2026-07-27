@@ -9,23 +9,25 @@ import MobileCurriculumSection from "./MobileCurriculumSection";
 import MobileGallerySection from "./MobileGallerySection";
 import MobileTestimonialsSection from "./MobileTestimonialsSection";
 import MobileCampusSection from "./MobileCampusSection";
+import MobileStatsSection from "./MobileStatsSection";
 import MobileInfoSection from "./MobileInfoSection";
 import MobileRegistrationSection from "./MobileRegistrationSection";
 import MobileFooter from "./MobileFooter";
 
 export default function MobileHomePage() {
   return (
-    <div className="flex flex-col w-full bg-[#fffefa] overflow-x-hidden">
+    <div className="flex flex-col w-full bg-[#fffefa] overflow-x-hidden pt-[64px]">
       <MobileHeader />
       <HeroBanner />
       <MobileAboutSection />
       <MobileWhySection />
       <MobileTeachingProgram />
       <MobileCurriculumSection />
+      <MobileInfoSection />
       <MobileGallerySection />
       <MobileTestimonialsSection />
       <MobileCampusSection />
-      <MobileInfoSection />
+      <MobileStatsSection />
       <MobileRegistrationSection />
       <MobileFooter />
     </div>
