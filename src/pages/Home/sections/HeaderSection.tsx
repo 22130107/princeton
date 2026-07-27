@@ -196,8 +196,8 @@ function Container227() {
 function Strong() {
   return (
     <div className="content-stretch flex flex-col items-center pb-[6px] pt-[10px] px-[20px] relative shrink-0" data-name="Strong">
-      <div className="absolute bg-[#6b0000] inset-[2px_0.01px_-2px_0] rounded-[64px]" data-name="Background" />
-      <div className="absolute bg-[#b80000] inset-[0_0.01px_0_0] rounded-[64px]" data-name="Background" />
+      <div className="absolute bg-[#E65100] inset-[2px_0.01px_-2px_0] rounded-[64px]" data-name="Background" />
+      <div className="absolute bg-[#FFC107] inset-[0_0.01px_0_0] rounded-[64px]" data-name="Background" />
       <Container227 />
       <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[18px] text-center text-white uppercase whitespace-nowrap">
         <p className="leading-[27px]">Đăng ký ngay</p>
@@ -262,7 +262,7 @@ function Nav() {
 export default function HeaderSection() {
   return (
     <div className="absolute h-[9937.0400390625px] inset-0 pointer-events-none">
-      <div className="bg-[#fff2f2] content-stretch flex flex-col items-start pointer-events-auto px-[116px] py-[12px] sticky top-0" data-name="Header - HEADER">
+      <div className="bg-[#e8f3e6] content-stretch flex flex-col items-start pointer-events-auto px-[116px] py-[12px] sticky top-0 z-50" data-name="Header - HEADER">
         <Nav />
       </div>
     </div>

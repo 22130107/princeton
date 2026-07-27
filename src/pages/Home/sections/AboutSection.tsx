@@ -519,7 +519,7 @@ function Container29() {
 
 function Background7() {
   return (
-    <div className="bg-[#fff2f2] relative shrink-0 w-full" data-name="Background">
+    <div className="bg-[#e8f3e6] relative shrink-0 w-full" data-name="Background">
       <div className="content-stretch flex flex-col items-start px-[116px] relative size-full">
         <Container29 />
       </div>

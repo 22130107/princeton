@@ -3,13 +3,19 @@ import HomePage from "@/pages/Home/index";
 import bannerMask from "@/assets/d082e0a60a126345af429a7e01c4ba8161c21e0e.png";
 
 const DESIGN_WIDTH = 1536;
+const PAGE_HEIGHT = 9938;
 
 export default function App() {
   const [scale, setScale] = useState(1);
+  const [containerHeight, setContainerHeight] = useState(PAGE_HEIGHT);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const update = () => setScale(window.innerWidth / DESIGN_WIDTH);
+    const update = () => {
+      const s = window.innerWidth / DESIGN_WIDTH;
+      setScale(s);
+      setContainerHeight(Math.ceil(PAGE_HEIGHT * s));
+    };
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
@@ -31,7 +37,7 @@ export default function App() {
         [data-name="Group - 2 / 3"] { left: 4077.5px !important; right: auto !important; }
         [data-name="Group - 2 / 3"] > [data-name="Container"] { left: -54.5px !important; right: -33.11px !important; }
       `}</style>
-      <div ref={containerRef} style={{ overflow: "hidden" }}>
+      <div ref={containerRef} style={{ overflow: "hidden", height: containerHeight, width: "100%" }}>
         <div style={{ width: DESIGN_WIDTH, transformOrigin: "top left", transform: `scale(${scale})` }}>
           <HomePage />
         </div>

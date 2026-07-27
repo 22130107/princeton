@@ -10,7 +10,7 @@ import imgTeachingMethodItem3Png from "../../../assets/6fcde84113072aa66cc43c4fc
 function Container64() {
   return (
     <div className="content-stretch flex items-start justify-center relative shrink-0" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[60px] text-center text-white whitespace-nowrap">
+      <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[60px] text-center text-[#620000] whitespace-nowrap">
         <p className="leading-[60px]">PHƯƠNG PHÁP GIÁO DỤC</p>
       </div>
     </div>
@@ -20,7 +20,7 @@ function Container64() {
 function Container65() {
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[24px] text-center text-white">
+      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[24px] text-center text-[#620000]">
         <p className="leading-[32px]">Trường Mầm non Princeton áp dụng những phương pháp giáo dục tiên tiến, mang đến cho trẻ các trải nghiệm học tập trọn vẹn và đầy hứng khởi.</p>
       </div>
     </div>
@@ -57,7 +57,7 @@ function Container68() {
 function Container70() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-shadow-[2px_2px_0px_rgba(0,0,0,0.4)] text-white w-full">
+      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#620000] w-full">
         <p className="leading-[28px]">Kết hợp nhiều phương pháp</p>
       </div>
     </div>
@@ -67,7 +67,7 @@ function Container70() {
 function Container71() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[18px] text-white w-full">
+      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[18px] text-[#620000] w-full">
         <p className="leading-[26px]">Trẻ được tiếp cận các phương pháp giáo dục hiện đại, nổi bật là Play-based Learning, giúp trẻ học tập thông qua các hoạt động vui chơi và tiếp thu kiến thức một cách tự nhiên.</p>
       </div>
     </div>
@@ -126,7 +126,7 @@ function Container73() {
 function Container75() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-shadow-[2px_2px_0px_rgba(0,0,0,0.4)] text-white w-full">
+      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#620000] w-full">
         <p className="leading-[28px]">Lấy trẻ làm trung tâm</p>
       </div>
     </div>
@@ -136,7 +136,7 @@ function Container75() {
 function Container76() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[18px] text-white w-full">
+      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[18px] text-[#620000] w-full">
         <p className="leading-[26px]">Trẻ được tôn trọng sở thích, bản sắc cá nhân và nhịp độ phát triển. Thầy cô tạo cơ hội để trẻ chủ động khám phá, đặt câu hỏi và học hỏi theo cách riêng của mình.</p>
       </div>
     </div>
@@ -195,7 +195,7 @@ function Container78() {
 function Container80() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-shadow-[2px_2px_0px_rgba(0,0,0,0.4)] text-white w-full">
+      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#620000] w-full">
         <p className="leading-[28px]">Khai phóng tư duy</p>
       </div>
     </div>
@@ -205,7 +205,7 @@ function Container80() {
 function Container81() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[18px] text-white w-full">
+      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[18px] text-[#620000] w-full">
         <p className="leading-[26px]">Trẻ được tham gia các hoạt động đa dạng trong lớp và sau giờ học như Câu lạc bộ, Học tập thực tế, sự kiện, từ đó phát triển tư duy độc lập và tự do thể hiện bản thân.</p>
       </div>
     </div>
@@ -264,7 +264,7 @@ function Container83() {
 function Container85() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-shadow-[2px_2px_0px_rgba(0,0,0,0.4)] text-white w-full">
+      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#620000] w-full">
         <p className="leading-[28px]">{`Học qua tương tác & hợp tác`}</p>
       </div>
     </div>
@@ -274,7 +274,7 @@ function Container85() {
 function Container86() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[18px] text-white w-full">
+      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[18px] text-[#620000] w-full">
         <p className="leading-[26px]">Trẻ phát triển kỹ năng xã hội, khả năng lắng nghe thông qua các hoạt động giao tiếp, chia sẻ và hợp tác với bạn bè, thầy cô và môi trường xung quanh.</p>
       </div>
     </div>
@@ -349,7 +349,7 @@ function Container62() {
 
 export default function TeachingProgram() {
   return (
-    <div className="absolute bg-[#b80000] content-stretch flex flex-col items-start left-0 pb-[132px] pt-[100px] px-[104px] right-0 top-[2776px]" data-name="Section">
+    <div className="absolute bg-[#FFC107] content-stretch flex flex-col items-start left-0 pb-[132px] pt-[100px] px-[104px] right-0 top-[2776px]" data-name="Section">
       <div className="absolute bg-size-[176px_25px] bg-top-left h-[25px] left-0 right-0 top-0" style={{ backgroundImage: `url("${imgImage}")` }} data-name="Image" />
       <Container62 />
       <div className="absolute bottom-0 flex h-[25px] items-center justify-center left-0 right-0" style={{ containerType: "size" }}>
