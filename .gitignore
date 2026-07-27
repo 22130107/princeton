@@ -17,6 +17,20 @@ build/
 .idea/
 .vscode/
 *.swp
+
+# opencode
+.opencode/
+.opencode/config.json
+
+# agents
+.agents/
+
+# Design
+Design/
+guidelines/
+
+# skills
+skills-lock.json
 *.swo
 *~
 
