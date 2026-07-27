@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import DangKyContent from "./DangKyContent";
 
 export const metadata: Metadata = {
   title: "Đăng Ký | Trường Mầm non Princeton",
@@ -12,10 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function DangKyPage() {
-  return (
-    <main>
-      <h1>Đăng Ký</h1>
-      <p>Nội dung đang cập nhật...</p>
-    </main>
-  );
+  return <DangKyContent />;
 }

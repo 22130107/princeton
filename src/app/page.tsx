@@ -3,11 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import HomePage from "@/components/Home/index";
 import FloatingActions from "@/components/Home/sections/FloatingActions";
+import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHomePage from "@/components/Mobile/MobileHomePage";
+import SiteFooter from "@/components/Shared/SiteFooter";
 import bannerMask from "@/assets/d082e0a60a126345af429a7e01c4ba8161c21e0e.png";
 
 const DESIGN_WIDTH = 1536;
-const PAGE_HEIGHT = 9938;
+const PAGE_HEIGHT = 9470.04;
 const MOBILE_BREAKPOINT = 768;
 
 export default function Home() {
@@ -44,7 +46,7 @@ export default function Home() {
 
   // Desktop layout (pixel-perfect scale)
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden bg-[#fffefa] pt-[99px]">
       <style>{`
         [data-name="banner1-vi-2.png"],
         [data-name="banner2-vi-1.png"] {
@@ -59,11 +61,15 @@ export default function Home() {
         [data-name="Group - 2 / 3"] { left: 4077.5px !important; right: auto !important; }
         [data-name="Group - 2 / 3"] > [data-name="Container"] { left: -54.5px !important; right: -33.11px !important; }
       `}</style>
+      <div className="fixed inset-x-0 top-0 z-50 h-[99px]">
+        <HeaderSection />
+      </div>
       <div ref={containerRef} style={{ overflow: "hidden", height: containerHeight, width: "100%" }}>
         <div style={{ width: DESIGN_WIDTH, transformOrigin: "top left", transform: `scale(${scale})` }}>
           <HomePage />
         </div>
       </div>
+      <SiteFooter />
       <FloatingActions />
     </div>
   );

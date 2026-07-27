@@ -15,8 +15,8 @@ const navItems = [
 function Logo() {
   return (
     <Link href="/" className="shrink-0 no-underline" data-name="Link">
-      <div className="aspect-[100/75] w-[100px] relative">
-        <img alt="" className="absolute inset-0 size-full" src={imgLogo.src} />
+      <div className="relative aspect-[100/75] w-[100px]">
+        <img alt="Princeton Kindergarten" className="absolute inset-0 size-full object-contain" src={imgLogo.src} />
       </div>
     </Link>
   );
@@ -24,19 +24,29 @@ function Logo() {
 
 function RegisterButton() {
   return (
-    <Link href="/dang-ky" className="bg-white flex items-center justify-center relative rounded-[64px] shrink-0 no-underline px-[20px] py-[10px]" data-name="Link">
-      <div className="absolute bg-[#620000] inset-[2px_0.01px_-2px_0] rounded-[64px]" />
-      <div className="absolute bg-[#b80000] inset-[0_0.01px_0_0] rounded-[64px]" />
-      <span className="relative text-white text-[18px] font-bold uppercase whitespace-nowrap z-10">Đăng Ký Ngay</span>
+    <Link
+      href="/dang-ky"
+      className="relative flex shrink-0 items-center justify-center rounded-[64px] bg-white px-[20px] py-[10px] no-underline"
+      data-name="Link"
+    >
+      <div className="absolute inset-[2px_0.01px_-2px_0] rounded-[64px] bg-[#620000]" />
+      <div className="absolute inset-[0_0.01px_0_0] rounded-[64px] bg-[#b80000]" />
+      <span className="relative z-10 whitespace-nowrap text-[18px] font-bold uppercase text-white">
+        Đăng Ký Ngay
+      </span>
     </Link>
   );
 }
 
 function DesktopNav() {
   return (
-    <div className="hidden md:flex items-center gap-4" data-name="List">
+    <div className="hidden items-center gap-4 md:flex" data-name="List">
       {navItems.map((item) => (
-        <Link key={item.href} href={item.href} className="text-[#620000] text-[18px] font-semibold whitespace-nowrap no-underline px-[18px] py-[6px]">
+        <Link
+          key={item.href}
+          href={item.href}
+          className="whitespace-nowrap px-[18px] py-[6px] text-[18px] font-semibold text-[#620000] no-underline"
+        >
           {item.label}
         </Link>
       ))}
@@ -46,10 +56,14 @@ function DesktopNav() {
 
 function MobileMenu({ open }: { open: boolean }) {
   return (
-    <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
-      <nav className="border-t border-[#620000]/10 px-4 pb-4 pt-3 flex flex-col gap-1">
+    <div className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+      <nav className="flex flex-col gap-1 border-t border-[#620000]/10 px-4 pb-4 pt-3">
         {[...navItems, { href: "/dang-ky", label: "Đăng Ký Ngay" }].map((item) => (
-          <Link key={item.href} href={item.href} className="text-[#620000] text-[16px] font-semibold no-underline py-2.5 px-4 rounded-xl hover:bg-[#d4e6d1] transition-colors">
+          <Link
+            key={item.href}
+            href={item.href}
+            className="rounded-xl px-4 py-2.5 text-[16px] font-semibold text-[#620000] no-underline transition-colors hover:bg-[#d4e6d1]"
+          >
             {item.label}
           </Link>
         ))}
@@ -63,12 +77,16 @@ export default function HeaderSection() {
 
   return (
     <div className="h-full pointer-events-none" data-name="HeaderSection">
-      <div className="bg-[#e8f3e6] flex items-center justify-between pointer-events-auto px-[116px] max-md:px-4 py-[12px] sticky top-0 z-50">
+      <div className="sticky top-0 z-50 flex items-center justify-between bg-[#e8f3e6] px-[116px] py-[12px] pointer-events-auto max-md:px-4">
         <Logo />
         <DesktopNav />
         <div className="flex items-center gap-3">
           <RegisterButton />
-          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden size-10 flex items-center justify-center bg-[#b80000] rounded-full text-white shrink-0" aria-label="Menu">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#b80000] text-white md:hidden"
+            aria-label="Menu"
+          >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               {menuOpen ? (
                 <>
