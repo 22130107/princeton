@@ -5,7 +5,7 @@ import imgBanner1 from "../../assets/1cb1c415ea9c6af5c91a9167c054aa84c4507ec4.pn
 import imgBanner2 from "../../assets/eb701c1db54fe5a3e821c062e1706ea59a24b8ab.png";
 import imgBanner3 from "../../assets/f096407c0e14b5d7b3aa8cdb6a104a2e3385c103.png";
 
-const banners = [imgBanner1, imgBanner2, imgBanner3];
+const banners = [imgBanner2, imgBanner1, imgBanner3];
 
 export default function MobileHeroBanner() {
   const [active, setActive] = useState(0);

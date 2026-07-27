@@ -126,21 +126,21 @@ export default function TinTucSuKienPage() {
             {newsPosts.map((post) => (
               <article
                 key={post.slug}
-                className="flex min-h-[560px] flex-col overflow-hidden rounded-[42px] border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.28)]"
+                className="flex min-h-[520px] flex-col overflow-hidden rounded-[42px] border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.28)]"
               >
                 <img
                   src={post.image.src}
                   alt={post.title}
-                  className="h-[255px] w-full rounded-b-[0] rounded-t-[40px] object-cover"
+                  className="h-[225px] w-full rounded-b-[0] rounded-t-[40px] object-cover"
                 />
-                <div className="flex flex-1 flex-col p-6">
+                <div className="flex flex-1 flex-col p-5">
                   <p className="text-[13px] font-extrabold uppercase text-[#b80000]">
                     {post.category}
                   </p>
-                  <h2 className="mt-4 text-[24px] font-extrabold leading-tight md:text-[26px]">
+                  <h2 className="mt-3 text-[23px] font-extrabold leading-tight md:text-[25px]">
                     {post.title}
                   </h2>
-                  <p className="mt-4 text-[16px] font-medium leading-7">
+                  <p className="mt-3 text-[16px] font-medium leading-7">
                     {post.excerpt}
                   </p>
                   <Link

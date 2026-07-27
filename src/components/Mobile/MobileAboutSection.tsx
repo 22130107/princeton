@@ -1,4 +1,5 @@
 import svgPaths from "../Home/svg-g45k1n1pz5";
+import Link from "next/link";
 import imgWebKindergarten2Jpg1 from "../../assets/7152d23b5ad0228ac40827979cdce9d4dfc3a8fb.png";
 
 // ─── SVG decorations — tái sử dụng nguyên từ PC ───────────────────────────
@@ -129,7 +130,7 @@ export default function MobileAboutSection() {
       <p className="text-[#620000] font-medium text-[14px] leading-relaxed mb-3">
         Trường Mầm non Princeton là nơi mang đến môi trường giáo dục hiện đại, năng động, hướng đến mục tiêu đào tạo nên những thế hệ học sinh phát triển toàn diện, có nhân cách tốt, giàu bản lĩnh và có khả năng tạo nên những giá trị tích cực cho xã hội khi trưởng thành.
       </p>
-      <p className="text-[#620000] font-medium text-[14px] leading-relaxed mb-8">
+      <p className="text-[#620000] font-medium text-[14px] leading-relaxed mb-5">
         Chương trình học tại Trường Mầm non Princeton được xây dựng dựa trên sự kết hợp giữa chương trình của Bộ Giáo dục & Đào tạo Việt Nam và Chương trình Mầm non Bang Tây Úc, khuyến khích các em học sinh tự do khám phá, chủ động tư duy, nuôi dưỡng sự tò mò và hứng thú học tập.
       </p>
 
@@ -161,6 +162,14 @@ export default function MobileAboutSection() {
           numbers={["30", "+"]}
           label="Sự kiện"
         />
+      </div>
+      <div className="flex justify-center">
+        <Link
+          href="/gioi-thieu"
+          className="mt-8 inline-flex rounded-full bg-[#b80000] px-6 py-3 text-[14px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000]"
+        >
+          Xem thêm
+        </Link>
       </div>
     </section>
   );

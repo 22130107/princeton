@@ -120,7 +120,7 @@ function Group8() {
 
 function Container22({ activeSlide }: { activeSlide: number }) {
   const len = 3;
-  const imgs = [<Banner1Vi2Png />, <BannerUuDaiViPng />, <Banner2Vi1Png />];
+  const imgs = [<BannerUuDaiViPng />, <Banner1Vi2Png />, <Banner2Vi1Png />];
   return (
     <div className="absolute inset-[0_2785px_0_-2785px]" data-name="Container">
       <div className="absolute inset-[0_-1514px_80px_2028px]" data-name="Group - 3 / 3">
@@ -128,7 +128,7 @@ function Container22({ activeSlide }: { activeSlide: number }) {
           <div className="flex h-[804.345px] items-center justify-center max-w-[1014px] relative shrink-0 w-[1125.217px]">
             <div className="-rotate-16 flex-none">
               <div className="h-[546px] relative w-[1014px]" data-name="Img:mask-group">
-                {imgs[(0 + activeSlide) % len]}
+                {imgs[(activeSlide + len - 1) % len]}
               </div>
             </div>
           </div>
@@ -137,7 +137,7 @@ function Container22({ activeSlide }: { activeSlide: number }) {
       <div className="absolute content-stretch flex flex-col inset-[0_-2528px_0_3042px] items-start max-w-[1014px] pb-[80px]" data-name="Group - 1 / 3">
         <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
           <div className="h-[546px] max-w-[1014px] relative shrink-0 w-[1014px]" data-name="Img:mask-group">
-            {imgs[(1 + activeSlide) % len]}
+            {imgs[activeSlide]}
           </div>
         </div>
       </div>
@@ -146,7 +146,7 @@ function Container22({ activeSlide }: { activeSlide: number }) {
           <div className="flex h-[804.345px] items-center justify-center max-w-[1014px] relative shrink-0 w-[1125.217px]">
             <div className="flex-none rotate-16">
               <div className="h-[546px] relative w-[1014px]" data-name="Img:mask-group">
-                {imgs[(2 + activeSlide) % len]}
+                {imgs[(activeSlide + 1) % len]}
               </div>
             </div>
           </div>
@@ -281,7 +281,7 @@ function MobileContainer() {
   const prev = () => setActiveSlide(prev => (prev > 0 ? prev - 1 : totalSlides - 1));
   const next = () => setActiveSlide(prev => (prev < totalSlides - 1 ? prev + 1 : 0));
 
-  const rawImgs = [imgBanner1Vi2Png1, imgBannerUuDaiViPng1, imgBanner2Vi1Png];
+  const rawImgs = [imgBannerUuDaiViPng1, imgBanner1Vi2Png1, imgBanner2Vi1Png];
 
   return (
     <div>

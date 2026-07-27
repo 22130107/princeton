@@ -1,49 +1,9 @@
-import type { StaticImageData } from "next/image";
-import imgItem1 from "@/assets/4067071ed218b109a3b3d760ab5b856a1c4d1556.png";
-import imgItem2 from "@/assets/ba09fe820d0f9cb663b24826afea30ad6fc2c8a2.png";
-import imgItem3 from "@/assets/6fcde84113072aa66cc43c4fc5efa3b2d4e6feb8.png";
-import imgItem4 from "@/assets/aa47a37d3cb1c1b806218e09ba36b08f5e7c4d55.png";
+import Link from "next/link";
+import type { TeachingMethod } from "@/data/teachingMethods";
+import { teachingMethods } from "@/data/teachingMethods";
 import imgPlane from "@/assets/87b0baec94bf2f1f980990704ca31b5f776eae03.png";
 import imgZigzagTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgZigzagBottom from "@/assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
-
-type TeachingMethod = {
-  image: StaticImageData;
-  title: string;
-  description: string;
-  background: string;
-};
-
-const methods: TeachingMethod[] = [
-  {
-    image: imgItem1,
-    title: "Kết hợp nhiều phương pháp",
-    background: "#fffefa",
-    description:
-      "Trẻ được tiếp cận các phương pháp giáo dục hiện đại, nổi bật là Play-based Learning, giúp trẻ học tập thông qua các hoạt động vui chơi và tiếp thu kiến thức một cách tự nhiên.",
-  },
-  {
-    image: imgItem3,
-    title: "Lấy trẻ làm trung tâm",
-    background: "#fff1f1",
-    description:
-      "Trẻ được tôn trọng sở thích, bản sắc cá nhân và nhịp độ phát triển. Thầy cô tạo cơ hội để trẻ chủ động khám phá, đặt câu hỏi và học hỏi theo cách riêng của mình.",
-  },
-  {
-    image: imgItem2,
-    title: "Khai phóng tư duy",
-    background: "#e8f3e6",
-    description:
-      "Trẻ được tham gia các hoạt động đa dạng trong lớp và sau giờ học như Câu lạc bộ, Học tập thực tế, sự kiện, từ đó phát triển tư duy độc lập và tự do thể hiện bản thân.",
-  },
-  {
-    image: imgItem4,
-    title: "Học qua tương tác & hợp tác",
-    background: "#e1f7fb",
-    description:
-      "Trẻ phát triển kỹ năng xã hội, khả năng lắng nghe thông qua các hoạt động giao tiếp, chia sẻ và hợp tác với bạn bè, thầy cô và môi trường xung quanh.",
-  },
-];
 
 function TeachingMethodCard({
   method,
@@ -53,9 +13,10 @@ function TeachingMethodCard({
   filled: boolean;
 }) {
   return (
-    <article
+    <Link
+      href={`/phuong-phap-giang-day/${method.slug}`}
       className={[
-        "relative rounded-[20px]",
+        "group relative block rounded-[20px] text-[#620000] no-underline transition-transform duration-200 hover:-translate-y-1",
         filled ? "shadow-[6px_6px_0_rgba(98,0,0,0.16)]" : "bg-[#ffc107]",
       ].join(" ")}
       style={filled ? { backgroundColor: method.background } : undefined}
@@ -82,9 +43,12 @@ function TeachingMethodCard({
           <p className="mt-2 text-[16px] font-medium leading-[1.45] text-[#620000] md:text-[18px] md:leading-[26px]">
             {method.description}
           </p>
+          <span className="mt-4 inline-flex rounded-full bg-[#b80000] px-4 py-2 text-[13px] font-extrabold uppercase text-white shadow-[0_3px_0_#800000] transition-transform duration-200 group-hover:translate-x-1">
+            Xem chi tiết
+          </span>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 
@@ -142,7 +106,7 @@ export default function TeachingMethodsSection({
       };
 
   return (
-    <section className={`relative overflow-hidden bg-[#ffc107] ${className}`}>
+    <section className={`relative overflow-hidden bg-[#bfefff] ${className}`}>
       {showZigzags ? (
         <div
           className="h-[25px] bg-repeat-x"
@@ -163,7 +127,7 @@ export default function TeachingMethodsSection({
         ) : null}
 
         <div className="grid gap-6 md:grid-cols-2 lg:gap-12">
-          {methods.map((method) => (
+          {teachingMethods.map((method) => (
             <TeachingMethodCard
               key={method.title}
               method={method}

@@ -1,4 +1,5 @@
 import svgPaths from "../svg-g45k1n1pz5";
+import Link from "next/link";
 import imgWebKindergartenJpg from "../../../assets/a32b9595cff2ce9d1e97a98665d30a5e87620c30.png";
 import imgWebKindergarten2Jpg from "../../../assets/becea57d21b16e69d315acb7b34ce055c670107e.png";
 import imgBackground2 from "../../../assets/c335b55122c9354d6a38878d564d64507ec073d9.png";
@@ -382,6 +383,14 @@ function Container30() {
         <Heading />
         <Container32 />
         <Container35 />
+        <div className="flex w-full justify-center">
+          <Link
+            href="/gioi-thieu"
+            className="inline-flex rounded-full bg-[#b80000] px-7 py-3 text-[16px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000] transition-transform duration-200 hover:-translate-y-0.5"
+          >
+            Xem thêm
+          </Link>
+        </div>
       </div>
     </div>
   );

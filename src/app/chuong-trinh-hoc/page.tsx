@@ -90,25 +90,25 @@ export default function ChuongTrinhHocPage() {
             {classPrograms.map((program) => (
               <article
                 key={program.slug}
-                className="flex min-h-[560px] flex-col overflow-hidden rounded-[42px] border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.28)]"
+                className="flex min-h-[520px] flex-col overflow-hidden rounded-[42px] border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.28)]"
               >
                 <div
-                  className="flex h-[255px] items-center justify-center rounded-t-[40px]"
+                  className="flex h-[225px] items-center justify-center rounded-t-[40px]"
                   style={{ backgroundColor: program.color }}
                 >
-                  <img src={program.image.src} alt={program.name} className="h-[150px] w-[150px] object-contain" />
+                  <img src={program.image.src} alt={program.name} className="h-[135px] w-[135px] object-contain" />
                 </div>
-                <div className="flex flex-1 flex-col p-6">
+                <div className="flex flex-1 flex-col p-5">
                   <p className="text-[13px] font-extrabold uppercase text-[#b80000]">
                     {program.category}
                   </p>
-                  <h2 className="mt-4 text-[30px] font-extrabold leading-tight">
+                  <h2 className="mt-3 text-[28px] font-extrabold leading-tight">
                     {program.name}
                   </h2>
-                  <p className="mt-3 inline-flex w-fit rounded-full border border-[#b80000] bg-white px-4 py-2 text-[17px] font-bold text-[#620000]">
+                  <p className="mt-2 inline-flex w-fit rounded-full border border-[#b80000] bg-white px-4 py-2 text-[16px] font-bold text-[#620000]">
                     {program.age}
                   </p>
-                  <p className="mt-4 text-[16px] font-medium leading-7">
+                  <p className="mt-3 text-[16px] font-medium leading-7">
                     {program.excerpt}
                   </p>
                   <Link
