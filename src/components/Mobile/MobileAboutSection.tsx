@@ -5,15 +5,15 @@ import imgLogo from "../../assets/logo1.png";
 
 function CornerBrandLogo() {
   return (
-    <div className="absolute right-[-4px] top-3 z-[2] flex w-[76px] flex-col items-center">
-      <div className="relative h-[42px] w-[36px] overflow-hidden">
+    <div className="mb-7 flex w-full flex-col items-center">
+      <div className="relative h-[58px] w-[50px] overflow-hidden">
         <img
           src={imgLogo.src}
           alt=""
-          className="absolute left-0 top-0 h-[42px] w-[102px] max-w-none object-contain object-left"
+          className="absolute left-0 top-0 h-[58px] w-[140px] max-w-none object-contain object-left"
         />
       </div>
-      <div className="mt-0.5 text-center text-[11px] font-extrabold uppercase leading-[10px] text-[#ed1c24]">
+      <div className="mt-1 text-center text-[15px] font-extrabold uppercase leading-[13px] text-[#ed1c24]">
         <p>Princeton</p>
         <p>Academy</p>
       </div>
@@ -130,66 +130,31 @@ function StatItem({ decoration, numbers, label }: StatProps) {
 
 export default function MobileAboutSection() {
   return (
-    <section className="bg-[#e8f3e6] px-4 py-8">
+    <section className="bg-[#e8f3e6] px-[14px] pb-8 pt-10">
+      <CornerBrandLogo />
+
       {/* Heading */}
-      <h2 className="text-[#620000] font-bold text-[28px] uppercase leading-tight mb-4">
+      <h2 className="mb-5 text-center text-[#b80000] font-extrabold text-[28px] uppercase leading-none">
         Về Chúng Tôi
       </h2>
 
       {/* Image */}
-      <div className="relative rounded-2xl overflow-hidden mb-5 shadow-md">
+      <div className="relative mb-5 overflow-hidden rounded-[13px] shadow-[0_5px_12px_rgba(98,0,0,0.12)]">
         <img
           src={imgWebKindergarten2Jpg1.src}
           alt="Trường Mầm non Princeton"
-          className="w-full h-48 object-cover"
+          className="h-[190px] w-full object-cover object-[48%_center]"
         />
-        <CornerBrandLogo />
       </div>
 
       {/* Description */}
-      <p className="text-[#620000] font-medium text-[14px] leading-relaxed mb-3">
-        Trường Mầm non Princeton là nơi mang đến môi trường giáo dục hiện đại, năng động, hướng đến mục tiêu đào tạo nên những thế hệ học sinh phát triển toàn diện, có nhân cách tốt, giàu bản lĩnh và có khả năng tạo nên những giá trị tích cực cho xã hội khi trưởng thành.
-      </p>
-      <p className="text-[#620000] font-medium text-[14px] leading-relaxed mb-5">
-        Chương trình học tại Trường Mầm non Princeton được xây dựng dựa trên sự kết hợp giữa chương trình của Bộ Giáo dục & Đào tạo Việt Nam và Chương trình Mầm non Pricenton, khuyến khích các em học sinh tự do khám phá, chủ động tư duy, nuôi dưỡng sự tò mò và hứng thú học tập.
-      </p>
-
-      {/* Stats — grid 2 cột, item cuối căn trái */}
-      <div className="grid grid-cols-2 gap-y-8 pt-[20px]">
-        <StatItem
-          decoration={<AboutCounter1Svg />}
-          numbers={["02"]}
-          label="Cơ Sở"
-        />
-        <StatItem
-          decoration={<AboutCounter2Svg />}
-          numbers={["02"]}
-          label="Ngôn ngữ"
-        />
-        <StatItem
-          decoration={<AboutCounter3Svg />}
-          numbers={["02"]}
-          label="Chương trình học"
-        />
-        <StatItem
-          decoration={<AboutCounter4Svg />}
-          numbers={["10", "+"]}
-          label="Câu lạc bộ"
-        />
-        {/* Item cuối: căn trái theo cột 1 */}
-        <StatItem
-          decoration={<AboutCounter4Svg />}
-          numbers={["30", "+"]}
-          label="Sự kiện"
-        />
-      </div>
-      <div className="flex justify-center">
-        <Link
-          href="/gioi-thieu"
-          className="mt-8 inline-flex rounded-full bg-[#b80000] px-6 py-3 text-[14px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000]"
-        >
-          Xem thêm
-        </Link>
+      <div className="mx-auto max-w-[390px] text-center">
+        <p className="mb-5 text-[#d40000] font-medium text-[14px] leading-[1.75]">
+          Trường Mầm non Princeton là nơi mang đến môi trường giáo dục hiện đại, năng động, hướng đến mục tiêu đào tạo nên những thế hệ học sinh phát triển toàn diện, có nhân cách tốt, giàu bản lĩnh và có khả năng tạo nên những giá trị tích cực cho xã hội khi trưởng thành.
+        </p>
+        <p className="text-[#d40000] font-medium text-[14px] leading-[1.75]">
+          Chương trình học tại Trường Mầm non Princeton được xây dựng dựa trên sự kết hợp giữa chương trình của Bộ Giáo dục & Đào tạo Việt Nam và Chương trình Mầm non Princeton, khuyến khích các em học sinh tự do khám phá, chủ động tư duy, nuôi dưỡng sự tò mò và hứng thú học tập.
+        </p>
       </div>
     </section>
   );

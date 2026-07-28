@@ -29,7 +29,7 @@ function CornerBrandLogo() {
 function Container31() {
   return (
     <div className="content-stretch flex flex-col items-start relative self-stretch shrink-0" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#620000] text-[60px] uppercase whitespace-nowrap">
+      <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#b80000] text-[60px] uppercase whitespace-nowrap">
         <p className="leading-[60px]">Về Chúng Tôi</p>
       </div>
     </div>
