@@ -6,6 +6,7 @@ import img1 from "../../assets/af1810e30a67ddab6abf8f10c81c4f0e08f00fa9.png";
 import img2 from "../../assets/adf14e0ddf4967e0839219ef15e17e003edcbf6a.png";
 import img3 from "../../assets/c2bb022ab8d9e25ab685c563473297cc72c94650.png";
 import img4 from "../../assets/7e1eee8e4dbdb6a1d39740a5062614540f69469e.png";
+import imgLogo from "../../assets/logo.png";
 
 const testimonials = [
   {
@@ -64,7 +65,7 @@ export default function MobileTestimonialsSection() {
             {testimonials.map((item) => (
               <article
                 key={item.name}
-                className="relative h-[338px] w-full shrink-0 overflow-hidden rounded-2xl border border-black bg-[#fffefa] shadow-[4px_4px_0px_black]"
+                className="relative h-[390px] w-full shrink-0 overflow-hidden rounded-2xl border border-black bg-[#fffefa] shadow-[4px_4px_0px_black]"
               >
                 <div className="flex h-[76px] items-center gap-3 border-b border-black bg-[#b80000] px-5 py-3">
                   <div className="size-12 shrink-0 overflow-hidden rounded-full border-2 border-white">
@@ -79,8 +80,9 @@ export default function MobileTestimonialsSection() {
                   </span>
                 </div>
 
-                <div className="relative flex h-[262px] flex-col p-5">
+                <div className="relative flex h-[314px] flex-col p-5">
                   <img src={imgQuote.src} alt="quote" className="mb-3 h-5 w-6 opacity-60" />
+                  <img src={imgLogo.src} alt="" className="mx-auto mb-4 h-[70px] w-[70px] object-contain" />
                   <p className="overflow-hidden text-[14px] font-medium leading-relaxed text-[#620000]">
                     {item.text}
                   </p>

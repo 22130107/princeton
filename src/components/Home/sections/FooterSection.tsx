@@ -8,7 +8,7 @@ import { imgGroup } from "../svg-ddib6";
 
 function LinkKindergartenTheWesternAustralianSchoolSystem() {
   return (
-    <div className="h-[75px] relative shrink-0 w-[100px]" data-name="Link → kindergarten-the-western-australian-school-system">
+    <div className="h-[150px] relative shrink-0 w-[200px]" data-name="Link → kindergarten-the-western-australian-school-system">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <img alt="" className="absolute left-[-350%] max-w-none size-[800%] top-[-350%]" src={imgLinkKindergartenTheWesternAustralianSchoolSystem.src} />
       </div>
@@ -18,7 +18,7 @@ function LinkKindergartenTheWesternAustralianSchoolSystem() {
 
 function Container215() {
   return (
-    <div className="content-stretch flex flex-col items-start max-w-[100px] relative shrink-0" data-name="Container">
+    <div className="content-stretch flex flex-col items-start max-w-[200px] relative shrink-0" data-name="Container">
       <LinkKindergartenTheWesternAustralianSchoolSystem />
     </div>
   );
@@ -490,3 +490,4 @@ export default function FooterSection() {
     </div>
   );
 }
+

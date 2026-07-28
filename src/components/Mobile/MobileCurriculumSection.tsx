@@ -2,8 +2,17 @@
 
 import { useState } from "react";
 import imgChuongTrinh from "../../assets/b6916482933e67cc337ea1071a428e34d7abe5f3.png";
+import imgLogo from "../../assets/logo.png";
 
 const tabs = ["Chương trình Tiêu chuẩn", "Chương trình Nâng cao"];
+
+function CurriculumLogo() {
+  return (
+    <div className="flex w-full justify-center">
+      <img src={imgLogo.src} alt="" className="h-[104px] w-[104px] object-contain" />
+    </div>
+  );
+}
 
 export default function MobileCurriculumSection() {
   const [active, setActive] = useState(0);
@@ -51,6 +60,7 @@ export default function MobileCurriculumSection() {
             className="absolute inset-0 border border-[#b80000] pointer-events-none rounded-bl-[28px] rounded-br-[28px]"
           />
           <div className="relative p-5 flex flex-col gap-4">
+            <CurriculumLogo />
             {/* Text — giống PC: font-medium text-[#620000] */}
             <p className="text-[#620000] font-medium text-[14px] leading-relaxed">
               Được xây dựng trên nền tảng Chương trình Giáo dục Mầm non của Bộ GD&amp;ĐT Việt Nam cùng Khung Giáo dục Mầm non Quốc gia Úc (EYLF), chương trình khuyến khích học sinh tự do khám phá và chủ động học hỏi. Qua mỗi hoạt động, trẻ từng bước hình thành phản xạ giao tiếp tự nhiên, kỹ năng xã hội - cảm xúc, từ đó xây dựng nền tảng vững chắc cho các giai đoạn học tập tiếp theo.

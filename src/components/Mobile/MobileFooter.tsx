@@ -1,4 +1,4 @@
-import imgLogo from "../../assets/logo1.png";
+import imgLogo from "../../assets/logo.png";
 
 export default function MobileFooter() {
   return (
@@ -7,7 +7,7 @@ export default function MobileFooter() {
 
       <div className="px-5 py-8 text-[#620000]">
         <div className="flex items-center gap-4">
-          <img src={imgLogo.src} alt="Princeton Academy" className="h-24 w-24 object-contain" />
+          <img src={imgLogo.src} alt="Princeton Academy" className="h-48 w-48 object-contain" />
           <div>
             <h2 className="text-[22px] font-extrabold uppercase leading-tight">
               Princeton Academy

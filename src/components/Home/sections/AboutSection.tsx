@@ -5,22 +5,12 @@ import imgWebKindergarten2Jpg from "../../../assets/becea57d21b16e69d315acb7b34c
 import imgBackground2 from "../../../assets/c335b55122c9354d6a38878d564d64507ec073d9.png";
 import imgWebKindergartenJpg1 from "../../../assets/eca0f00994a6add059898b0052a18055c5e2de11.png";
 import imgWebKindergarten2Jpg1 from "../../../assets/7152d23b5ad0228ac40827979cdce9d4dfc3a8fb.png";
-import imgLogo from "../../../assets/logo1.png";
+import imgLogo from "../../../assets/logo.png";
 
 function CornerBrandLogo() {
   return (
-    <div className="absolute right-[-82px] top-[50px] z-[3] flex w-[104px] flex-col items-center">
-      <div className="relative h-[58px] w-[50px] overflow-hidden">
-        <img
-          alt=""
-          className="absolute left-0 top-0 h-[58px] w-[140px] max-w-none object-contain object-left"
-          src={imgLogo.src}
-        />
-      </div>
-      <div className="mt-1 text-center text-[15px] font-extrabold uppercase leading-[13px] text-[#ed1c24]">
-        <p>Princeton</p>
-        <p>Academy</p>
-      </div>
+    <div className="absolute right-[-82px] top-[50px] z-[3] h-[104px] w-[104px]">
+      <img alt="" className="h-full w-full object-contain" src={imgLogo.src} />
     </div>
   );
 }

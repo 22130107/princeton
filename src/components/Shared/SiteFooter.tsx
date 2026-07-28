@@ -1,15 +1,15 @@
-import imgLogo from "@/assets/logo1.png";
+import imgLogo from "@/assets/logo.png";
 
 export default function SiteFooter() {
   return (
     <footer className="bg-[#e8f3e6] text-[#620000]">
-      <div className="mx-auto max-w-[1320px] px-5 pb-8 pt-7 md:px-10 md:pb-10 md:pt-8">
-        <div className="border-t border-dashed border-[#620000]/25 pt-7">
-          <div className="flex flex-col gap-6 pb-7 md:flex-row md:items-start md:justify-between">
+      <div className="mx-auto max-w-[1240px] px-5 pb-6 pt-4 md:px-8 md:pb-6 md:pt-5">
+        <div className="border-t border-dashed border-[#620000]/25 pt-3">
+          <div className="flex flex-col gap-4 pb-4 md:flex-row md:items-center md:justify-between">
             <img
               src={imgLogo.src}
               alt="Princeton Academy"
-              className="h-[120px] w-[120px] object-contain"
+              className="h-[180px] w-[180px] object-contain"
             />
             <div className="md:text-right">
               <h2 className="text-[28px] font-extrabold uppercase leading-none md:text-[38px]">

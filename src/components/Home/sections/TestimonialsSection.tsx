@@ -10,6 +10,15 @@ import imgImage3 from "../../../assets/ca5376ce92d1f2dc22b4ce037286566eecbabbfd.
 import img2Png from "../../../assets/adf14e0ddf4967e0839219ef15e17e003edcbf6a.png";
 import img3Png from "../../../assets/c2bb022ab8d9e25ab685c563473297cc72c94650.png";
 import img1Png from "../../../assets/af1810e30a67ddab6abf8f10c81c4f0e08f00fa9.png";
+import imgLogo from "../../../assets/logo.png";
+
+function TestimonialContentLogo() {
+  return (
+    <div className="absolute left-[8px] top-[30px] size-[112px]" data-name="testimonial-logo.png">
+      <img alt="" className="size-full object-contain" src={imgLogo.src} />
+    </div>
+  );
+}
 
 function Heading2() {
   return (
@@ -149,9 +158,9 @@ function TestimonialQuotePng() {
 
 function Container104() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-[16px] right-[16.01px] top-[44px]" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[18px]">
-        <p className="leading-[26px]">Mẹ thấy con dạn dĩ hơn rất nhiều, tiếp xúc với các bạn chủ động hơn và có sự tiến bộ. Mỗi lần được trải nghiệm trực tiếp tiết học của con thì mẹ thấy con tiến bộ hơn, mỗi khía cạnh phát triển một chút, nhưng cũng khiến mẹ yên tâm và tin tưởng Nhà trường hơn.</p>
+    <div className="absolute content-stretch flex flex-col items-start left-[116px] right-[16.01px] top-[38px]" data-name="Container">
+      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[16px]">
+        <p className="leading-[24px]">Mẹ thấy con dạn dĩ hơn rất nhiều, tiếp xúc với các bạn chủ động hơn và có sự tiến bộ. Mỗi lần được trải nghiệm trực tiếp tiết học của con thì mẹ thấy con tiến bộ hơn, mỗi khía cạnh phát triển một chút, nhưng cũng khiến mẹ yên tâm và tin tưởng Nhà trường hơn.</p>
       </div>
     </div>
   );
@@ -162,6 +171,7 @@ function Container103() {
     <div className="h-[200px] relative shrink-0 w-full" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
         <TestimonialQuotePng />
+        <TestimonialContentLogo />
         <Container104 />
       </div>
     </div>
@@ -301,9 +311,9 @@ function TestimonialQuotePng1() {
 
 function Container110() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-[16px] right-[16.01px] top-[44px]" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[18px]">
-        <p className="leading-[26px]">Mẹ thấy con dạn dĩ hơn rất nhiều, tiếp xúc với các bạn chủ động hơn và có sự tiến bộ. Mỗi lần được trải nghiệm trực tiếp tiết học của con thì mẹ thấy con tiến bộ hơn, mỗi khía cạnh phát triển một chút, nhưng cũng khiến mẹ yên tâm và tin tưởng Nhà trường hơn.</p>
+    <div className="absolute content-stretch flex flex-col items-start left-[116px] right-[16.01px] top-[38px]" data-name="Container">
+      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[16px]">
+        <p className="leading-[24px]">Mẹ thấy con dạn dĩ hơn rất nhiều, tiếp xúc với các bạn chủ động hơn và có sự tiến bộ. Mỗi lần được trải nghiệm trực tiếp tiết học của con thì mẹ thấy con tiến bộ hơn, mỗi khía cạnh phát triển một chút, nhưng cũng khiến mẹ yên tâm và tin tưởng Nhà trường hơn.</p>
       </div>
     </div>
   );
@@ -314,6 +324,7 @@ function Container109() {
     <div className="h-[200px] relative shrink-0 w-full" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
         <TestimonialQuotePng1 />
+        <TestimonialContentLogo />
         <Container110 />
       </div>
     </div>
@@ -453,9 +464,9 @@ function TestimonialQuotePng2() {
 
 function Container116() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-[16px] right-[16.01px] top-[44px]" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[18px]">
-        <p className="leading-[26px]">Bé đã học 5 năm tại Trường Mầm non Princeton. Trong quá trình con học tại trường, mình thấy con phát triển rất tốt. Con tự tin hơn, mạnh dạn hơn và mình cảm thấy rất vui khi con được phát triển trong môi trường tốt. Mình đánh giá Trường Mầm non Princeton rất cao.</p>
+    <div className="absolute content-stretch flex flex-col items-start left-[116px] right-[16.01px] top-[38px]" data-name="Container">
+      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[16px]">
+        <p className="leading-[24px]">Bé đã học 5 năm tại Trường Mầm non Princeton. Trong quá trình con học tại trường, mình thấy con phát triển rất tốt. Con tự tin hơn, mạnh dạn hơn và mình cảm thấy rất vui khi con được phát triển trong môi trường tốt. Mình đánh giá Trường Mầm non Princeton rất cao.</p>
       </div>
     </div>
   );
@@ -466,6 +477,7 @@ function Container115() {
     <div className="h-[200px] relative shrink-0 w-full" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
         <TestimonialQuotePng2 />
+        <TestimonialContentLogo />
         <Container116 />
       </div>
     </div>
@@ -593,9 +605,9 @@ function TestimonialQuotePng3() {
 
 function Container121() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-[16px] right-[16.01px] top-[44px]" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[18px]">
-        <p className="leading-[26px]">Điều làm mẹ xúc động nhất đó là con cảm thấy hạnh phúc khi trải qua từng hoạt động với trường. Con lớn lên trong vòng tay yêu thương của các thầy cô và đặc biệt là sự giao tiếp tiếng Anh của con tiến bộ hơn rất nhiều.</p>
+    <div className="absolute content-stretch flex flex-col items-start left-[116px] right-[16.01px] top-[38px]" data-name="Container">
+      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[16px]">
+        <p className="leading-[24px]">Điều làm mẹ xúc động nhất đó là con cảm thấy hạnh phúc khi trải qua từng hoạt động với trường. Con lớn lên trong vòng tay yêu thương của các thầy cô và đặc biệt là sự giao tiếp tiếng Anh của con tiến bộ hơn rất nhiều.</p>
       </div>
     </div>
   );
@@ -606,6 +618,7 @@ function Container120() {
     <div className="h-[200px] relative shrink-0 w-full" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
         <TestimonialQuotePng3 />
+        <TestimonialContentLogo />
         <Container121 />
       </div>
     </div>

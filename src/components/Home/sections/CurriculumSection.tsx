@@ -1,5 +1,14 @@
 import svgPaths from "../svg-g45k1n1pz5";
 import imgChuongTrinhTieuChuanPng from "../../../assets/b6916482933e67cc337ea1071a428e34d7abe5f3.png";
+import imgLogo from "../../../assets/logo.png";
+
+function CurriculumLogo() {
+  return (
+    <div className="flex items-start">
+      <img src={imgLogo.src} alt="" className="h-[112px] w-[112px] object-contain" />
+    </div>
+  );
+}
 
 function Heading1() {
   return (
@@ -89,7 +98,10 @@ function Container92() {
 function Container89() {
   return (
     <div className="relative shrink-0 w-full" data-name="Container">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[80px] items-center justify-center relative size-full">
+      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[24px] items-start justify-center relative size-full">
+        <div className="shrink-0 pt-[4px] w-[112px]">
+          <CurriculumLogo />
+        </div>
         <Container90 />
         <Container92 />
       </div>
