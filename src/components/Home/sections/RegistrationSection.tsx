@@ -1,5 +1,6 @@
 import svgPaths from "../svg-g45k1n1pz5";
 import imgTask73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg from "../../../assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aac.png";
+import imgLogo from "../../../assets/logo1.png";
 
 function Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg() {
   return (
@@ -7,6 +8,11 @@ function Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg() {
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <img alt="" className="absolute left-0 max-w-none size-full top-0" src={imgTask73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg.src} />
       </div>
+      <img
+        alt="Princeton Academy"
+        className="absolute left-[34px] top-[34px] h-[192px] w-[192px] object-contain"
+        src={imgLogo.src}
+      />
     </div>
   );
 }

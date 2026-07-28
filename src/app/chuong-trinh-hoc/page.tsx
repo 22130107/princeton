@@ -4,6 +4,7 @@ import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { classPrograms } from "@/data/classPrograms";
+import imgCardLogo from "@/assets/logo1.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import stickerA from "@/assets/sticker/58895c008a094b06474cacb153601040cef3cf48.png";
 import stickerB from "@/assets/sticker/6344cf27-7411-4173-b9fd-570675106a47.png";
@@ -90,12 +91,17 @@ export default function ChuongTrinhHocPage() {
             {classPrograms.map((program) => (
               <article
                 key={program.slug}
-                className="flex min-h-[520px] flex-col overflow-hidden rounded-[42px] border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.28)]"
+                className="flex min-h-[520px] flex-col overflow-hidden border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.16)]"
               >
                 <div
-                  className="flex h-[225px] items-center justify-center rounded-t-[40px]"
+                  className="relative flex h-[225px] items-center justify-center"
                   style={{ backgroundColor: program.color }}
                 >
+                  <img
+                    src={imgCardLogo.src}
+                    alt="Princeton Academy"
+                    className="absolute left-4 top-4 h-[78px] w-[78px] object-contain"
+                  />
                   <img src={program.image.src} alt={program.name} className="h-[135px] w-[135px] object-contain" />
                 </div>
                 <div className="flex flex-1 flex-col p-5">

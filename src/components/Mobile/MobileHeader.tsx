@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import imgLogo from "../../assets/logo.png";
+import imgLogo from "../../assets/logo1.png";
 
 const navItems = [
   { href: "/", label: "Trang Chủ" },
@@ -21,7 +21,7 @@ export default function MobileHeader() {
       <div className="flex items-center justify-between px-4 py-2">
         {/* Logo */}
         <Link href="/" className="shrink-0">
-          <img src={imgLogo.src} alt="Princeton Logo" className="h-12 w-auto" />
+          <img src={imgLogo.src} alt="Princeton Logo" className="h-16 w-auto" />
         </Link>
 
         {/* Đăng ký + Hamburger */}

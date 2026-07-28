@@ -5,7 +5,8 @@ import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { getNewsPost, newsPosts } from "@/data/newsPosts";
-import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
+import imgLogo from "@/assets/logo.png";
+import imgCardLogo from "@/assets/logo1.png";
 
 type NewsDetailPageProps = {
   params: Promise<{
@@ -48,7 +49,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
   const relatedPosts = newsPosts.filter((item) => item.slug !== post.slug).slice(0, 3);
 
   return (
-    <main className="min-h-screen bg-[#fffefa] pt-[64px] text-[#620000] md:pt-[99px]">
+    <main className="min-h-screen bg-[#fffefa] pt-[80px] text-[#620000] md:pt-[99px]">
       <div className="md:hidden">
         <MobileHeader />
       </div>
@@ -56,39 +57,41 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
         <HeaderSection />
       </div>
 
-      <article className="relative mt-6 overflow-hidden bg-[#ffc107] px-4 pb-12 pt-24 md:mt-10 md:px-10 md:pb-16 md:pt-36">
-        <div
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-[25px] bg-repeat-x"
-          style={{
-            backgroundImage: `url("${imgWaveTop.src}")`,
-            backgroundSize: "176px 25px",
-            backgroundPosition: "top left",
-          }}
-        />
-
-        <div className="relative mx-auto max-w-[1040px]">
+      <article className="bg-[#fffefa] px-3 py-6 md:px-8 md:py-10">
+        <div className="mx-auto max-w-[1180px]">
           <Link
             href="/tin-tuc-su-kien"
-            className="inline-flex rounded-full border border-[#b80000] bg-white px-5 py-3 text-[14px] font-extrabold uppercase text-[#b80000] no-underline shadow-[0_3px_0_rgba(98,0,0,0.18)]"
+            className="mb-6 inline-flex rounded-full border border-[#ff1f1f] bg-white px-5 py-3 text-[14px] font-extrabold uppercase text-[#b80000] no-underline shadow-[0_3px_0_rgba(255,31,31,0.18)]"
           >
             Quay lại tin tức
           </Link>
+        </div>
 
-          <div className="mt-7 overflow-hidden rounded-[42px] border border-[#b80000] bg-[#fffefa] shadow-[6px_6px_0_rgba(184,0,0,0.25)]">
+        <div className="mx-auto max-w-[1180px] border-2 border-[#ff1f1f] bg-white px-4 pb-10 pt-7 md:px-12 md:pb-14 md:pt-10">
+          <div className="mx-auto flex max-w-[760px] flex-col items-center text-center">
+            <img
+              src={imgLogo.src}
+              alt="Princeton Academy"
+              className="h-[92px] w-auto object-contain md:h-[118px]"
+            />
+            <div className="mt-6 w-full px-5 py-3 md:px-9 md:py-5">
+              <p className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[#b80000] md:text-[15px]">
+                {post.category}
+              </p>
+              <h1 className="mt-3 text-[30px] font-extrabold leading-tight text-[#b80000] md:text-[52px]">
+                {post.title}
+              </h1>
+            </div>
+          </div>
+
+          <div className="mx-auto mt-8 max-w-[1040px] md:mt-10">
             <img
               src={post.image.src}
               alt={post.title}
-              className="h-[280px] w-full object-cover md:h-[500px]"
+              className="h-[260px] w-full rounded-[18px] object-cover md:h-[460px]"
             />
-            <div className="p-6 md:p-10">
-              <p className="text-[14px] font-extrabold uppercase text-[#b80000]">
-                {post.category}
-              </p>
-              <h1 className="mt-4 text-[34px] font-extrabold leading-tight md:text-[56px]">
-                {post.title}
-              </h1>
-              <p className="mt-5 text-[18px] font-bold leading-8 md:text-[22px] md:leading-9">
+            <div className="px-2 py-7 md:px-6 md:py-9">
+              <p className="text-[18px] font-bold leading-8 text-[#620000] md:text-[22px] md:leading-9">
                 {post.excerpt}
               </p>
 
@@ -99,32 +102,39 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
               </div>
             </div>
           </div>
-
-          <section className="mt-10">
-            <h2 className="text-[28px] font-extrabold uppercase md:text-[42px]">
-              Tin liên quan
-            </h2>
-            <div className="mt-5 grid gap-5 md:grid-cols-3">
-              {relatedPosts.map((item) => (
-                <Link
-                  key={item.slug}
-                  href={`/tin-tuc-su-kien/${item.slug}`}
-                  className="overflow-hidden rounded-[30px] border border-[#b80000] bg-[#fffefa] text-[#620000] no-underline shadow-[4px_4px_0_rgba(184,0,0,0.22)]"
-                >
-                  <img src={item.image.src} alt={item.title} className="h-[160px] w-full object-cover" />
-                  <div className="p-5">
-                    <p className="text-[12px] font-extrabold uppercase text-[#b80000]">
-                      {item.category}
-                    </p>
-                    <h3 className="mt-3 text-[20px] font-extrabold leading-tight">
-                      {item.title}
-                    </h3>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
         </div>
+
+        <section className="mx-auto mt-10 max-w-[1180px]">
+          <h2 className="text-[28px] font-extrabold uppercase text-[#b80000] md:text-[42px]">
+            Tin liên quan
+          </h2>
+          <div className="mt-5 grid gap-5 md:grid-cols-3">
+            {relatedPosts.map((item) => (
+              <Link
+                key={item.slug}
+                href={`/tin-tuc-su-kien/${item.slug}`}
+                className="overflow-hidden border border-[#ff1f1f] bg-white text-[#620000] no-underline shadow-[4px_4px_0_rgba(255,31,31,0.12)]"
+              >
+                <div className="relative">
+                  <img src={item.image.src} alt={item.title} className="h-[160px] w-full object-cover" />
+                  <img
+                    src={imgCardLogo.src}
+                    alt="Princeton Academy"
+                    className="absolute left-3 top-3 h-[62px] w-[62px] object-contain"
+                  />
+                </div>
+                <div className="p-5">
+                  <p className="text-[12px] font-extrabold uppercase text-[#b80000]">
+                    {item.category}
+                  </p>
+                  <h3 className="mt-3 text-[20px] font-extrabold leading-tight">
+                    {item.title}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
       </article>
       <SiteFooter />
     </main>

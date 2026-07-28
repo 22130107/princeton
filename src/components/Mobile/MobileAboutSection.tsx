@@ -1,6 +1,25 @@
 import svgPaths from "../Home/svg-g45k1n1pz5";
 import Link from "next/link";
 import imgWebKindergarten2Jpg1 from "../../assets/7152d23b5ad0228ac40827979cdce9d4dfc3a8fb.png";
+import imgLogo from "../../assets/logo1.png";
+
+function CornerBrandLogo() {
+  return (
+    <div className="absolute right-[-4px] top-3 z-[2] flex w-[76px] flex-col items-center">
+      <div className="relative h-[42px] w-[36px] overflow-hidden">
+        <img
+          src={imgLogo.src}
+          alt=""
+          className="absolute left-0 top-0 h-[42px] w-[102px] max-w-none object-contain object-left"
+        />
+      </div>
+      <div className="mt-0.5 text-center text-[11px] font-extrabold uppercase leading-[10px] text-[#ed1c24]">
+        <p>Princeton</p>
+        <p>Academy</p>
+      </div>
+    </div>
+  );
+}
 
 // ─── SVG decorations — tái sử dụng nguyên từ PC ───────────────────────────
 
@@ -118,12 +137,13 @@ export default function MobileAboutSection() {
       </h2>
 
       {/* Image */}
-      <div className="rounded-2xl overflow-hidden mb-5 shadow-md">
+      <div className="relative rounded-2xl overflow-hidden mb-5 shadow-md">
         <img
           src={imgWebKindergarten2Jpg1.src}
           alt="Trường Mầm non Princeton"
           className="w-full h-48 object-cover"
         />
+        <CornerBrandLogo />
       </div>
 
       {/* Description */}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { TeachingMethod } from "@/data/teachingMethods";
 import { teachingMethods } from "@/data/teachingMethods";
+import imgLogo from "@/assets/logo1.png";
 import imgPlane from "@/assets/87b0baec94bf2f1f980990704ca31b5f776eae03.png";
 import imgZigzagTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgZigzagBottom from "@/assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
@@ -27,6 +28,11 @@ function TeachingMethodCard({
           "pointer-events-none absolute inset-0 rounded-[20px] border-2 border-dashed",
           filled ? "border-[#b80000]/45" : "border-[#fffefa]",
         ].join(" ")}
+      />
+      <img
+        src={imgLogo.src}
+        alt="Princeton Academy"
+        className="absolute left-4 top-4 h-[58px] w-[58px] object-contain md:h-[72px] md:w-[72px]"
       />
       <div className="relative flex flex-col gap-4 p-[18px] sm:flex-row sm:items-center md:p-[18.4px]">
         <div className="mx-auto h-[118px] w-[118px] shrink-0 sm:mx-0 md:h-[154px] md:w-[154px]">

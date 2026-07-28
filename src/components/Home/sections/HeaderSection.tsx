@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import imgLogo from "../../../assets/logo.png";
+import imgLogo from "../../../assets/logo1.png";
 
 const navItems = [
   { href: "/", label: "TRANG CHỦ" },
@@ -15,7 +15,7 @@ const navItems = [
 function Logo() {
   return (
     <Link href="/" className="shrink-0 no-underline" data-name="Link">
-      <div className="relative aspect-[100/75] w-[100px]">
+      <div className="relative aspect-[100/75] w-[120px]">
         <img alt="Princeton Kindergarten" className="absolute inset-0 size-full object-contain" src={imgLogo.src} />
       </div>
     </Link>
@@ -77,7 +77,7 @@ export default function HeaderSection() {
 
   return (
     <div className="h-full pointer-events-none" data-name="HeaderSection">
-      <div className="sticky top-0 z-50 flex items-center justify-between bg-[#e8f3e6] px-[116px] py-[12px] pointer-events-auto max-md:px-4">
+      <div className="sticky top-0 z-50 flex items-center justify-between bg-[#e8f3e6] px-[116px] py-[4px] pointer-events-auto max-md:px-4">
         <Logo />
         <DesktopNav />
         <div className="flex items-center gap-3">

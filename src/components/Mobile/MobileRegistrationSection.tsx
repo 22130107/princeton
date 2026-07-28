@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import imgPromo from "../../assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aac.png";
+import imgLogo from "../../assets/logo1.png";
 
 const grades = [
   "Penguin (2-3 tuổi)",
@@ -24,8 +25,13 @@ export default function MobileRegistrationSection() {
   return (
     <section className="bg-[#fffefa] px-3 py-8">
       <div className="mx-auto max-w-[480px] rounded-[30px] bg-[#b80000] p-3">
-        <div className="mb-4 overflow-hidden rounded-[24px]">
+        <div className="relative mb-4 overflow-hidden rounded-[24px]">
           <img src={imgPromo.src} alt="Ưu đãi đăng ký" className="block w-full h-auto" />
+          <img
+            src={imgLogo.src}
+            alt="Princeton Academy"
+            className="absolute left-4 top-4 h-[136px] w-[136px] object-contain"
+          />
         </div>
 
         <div className="relative overflow-hidden rounded-[28px] bg-[#fffefa] px-4 pb-5 pt-4 shadow-[4px_4px_0_rgba(128,0,0,0.35)]">

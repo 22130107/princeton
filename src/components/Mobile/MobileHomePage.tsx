@@ -16,7 +16,7 @@ import MobileFooter from "./MobileFooter";
 
 export default function MobileHomePage() {
   return (
-    <div className="flex flex-col w-full bg-[#fffefa] overflow-x-hidden pt-[64px]">
+    <div className="flex flex-col w-full bg-[#fffefa] overflow-x-hidden pt-[80px]">
       <MobileHeader />
       <HeroBanner />
       <MobileAboutSection />
