@@ -1,55 +1,33 @@
 import Link from "next/link";
-import type { TeachingMethod } from "@/data/teachingMethods";
-import { teachingMethods } from "@/data/teachingMethods";
-import imgLogo from "@/assets/logo1.png";
+import type { DbTeachingMethod } from "@/lib/content";
 import imgPlane from "@/assets/87b0baec94bf2f1f980990704ca31b5f776eae03.png";
 import imgZigzagTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgZigzagBottom from "@/assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
 
-function TeachingMethodCard({
-  method,
-  filled,
-}: {
-  method: TeachingMethod;
-  filled: boolean;
-}) {
+function TeachingMethodCard({ method }: { method: DbTeachingMethod }) {
   return (
     <Link
       href={`/phuong-phap-giang-day/${method.slug}`}
-      className={[
-        "group relative block rounded-[20px] text-[#620000] no-underline transition-transform duration-200 hover:-translate-y-1",
-        filled ? "shadow-[6px_6px_0_rgba(98,0,0,0.16)]" : "bg-[#ffc107]",
-      ].join(" ")}
-      style={filled ? { backgroundColor: method.background } : undefined}
+      className="group block rounded-[20px] border-2 border-dashed border-[#ff7777] bg-[#fffefa] text-[#620000] no-underline transition-transform duration-200 hover:-translate-y-1"
     >
-      <div
-        aria-hidden
-        className={[
-          "pointer-events-none absolute inset-0 rounded-[20px] border-2 border-dashed",
-          filled ? "border-[#b80000]/45" : "border-[#fffefa]",
-        ].join(" ")}
-      />
-      <img
-        src={imgLogo.src}
-        alt="Princeton Academy"
-        className="absolute left-4 top-4 h-[58px] w-[58px] object-contain md:h-[72px] md:w-[72px]"
-      />
-      <div className="relative flex flex-col gap-4 p-[18px] sm:flex-row sm:items-center md:p-[18.4px]">
-        <div className="mx-auto h-[118px] w-[118px] shrink-0 sm:mx-0 md:h-[154px] md:w-[154px]">
-          <img
-            src={method.image.src}
-            alt=""
-            className="h-full w-full object-contain"
-          />
+      <div className="flex min-h-[210px] flex-col gap-6 p-6 sm:flex-row sm:items-center md:min-h-[238px] md:p-8">
+        <div className="mx-auto flex h-[140px] w-[140px] shrink-0 items-center justify-center sm:mx-0 md:h-[166px] md:w-[166px]">
+          {method.imageUrl ? (
+            <img
+              src={method.imageUrl}
+              alt={method.imageAlt}
+              className="h-full w-full object-contain"
+            />
+          ) : null}
         </div>
         <div className="min-w-0 flex-1 text-center sm:text-left">
-          <h3 className="text-[22px] font-extrabold leading-[1.12] text-[#620000] md:text-[28px]">
+          <h3 className="text-[24px] font-extrabold leading-[1.14] text-[#620000] md:text-[30px]">
             {method.title}
           </h3>
-          <p className="mt-2 text-[16px] font-medium leading-[1.45] text-[#620000] md:text-[18px] md:leading-[26px]">
+          <p className="mt-4 text-[17px] font-medium leading-[1.48] text-[#620000] md:text-[21px] md:leading-[32px]">
             {method.description}
           </p>
-          <span className="mt-4 inline-flex rounded-full bg-[#b80000] px-4 py-2 text-[13px] font-extrabold uppercase text-white shadow-[0_3px_0_#800000] transition-transform duration-200 group-hover:translate-x-1">
+          <span className="mt-5 inline-flex rounded-full bg-[#b80000] px-5 py-3 text-[13px] font-extrabold uppercase text-white shadow-[0_4px_0_#800000] transition-transform duration-200 group-hover:translate-x-1">
             Xem chi tiết
           </span>
         </div>
@@ -59,18 +37,18 @@ function TeachingMethodCard({
 }
 
 type TeachingMethodsSectionProps = {
+  methods: DbTeachingMethod[];
   showHeading?: boolean;
   showZigzags?: boolean;
-  filledCards?: boolean;
   topZigzagColor?: string;
   bottomZigzagColor?: string;
   className?: string;
 };
 
 export default function TeachingMethodsSection({
+  methods,
   showHeading = true,
   showZigzags = true,
-  filledCards = false,
   topZigzagColor,
   bottomZigzagColor,
   className = "",
@@ -82,19 +60,19 @@ export default function TeachingMethodsSection({
         backgroundSize: "176px 25px",
       }
     : topZigzagColor
-    ? {
-        backgroundColor: topZigzagColor,
-        WebkitMaskImage: `url("${imgZigzagTop.src}")`,
-        maskImage: `url("${imgZigzagTop.src}")`,
-        WebkitMaskRepeat: "repeat-x",
-        maskRepeat: "repeat-x",
-        WebkitMaskSize: "176px 25px",
-        maskSize: "176px 25px",
-      }
-    : {
-        backgroundImage: `url("${imgZigzagTop.src}")`,
-        backgroundSize: "176px 25px",
-      };
+      ? {
+          backgroundColor: topZigzagColor,
+          WebkitMaskImage: `url("${imgZigzagTop.src}")`,
+          maskImage: `url("${imgZigzagTop.src}")`,
+          WebkitMaskRepeat: "repeat-x",
+          maskRepeat: "repeat-x",
+          WebkitMaskSize: "176px 25px",
+          maskSize: "176px 25px",
+        }
+      : {
+          backgroundImage: `url("${imgZigzagTop.src}")`,
+          backgroundSize: "176px 25px",
+        };
 
   const bottomZigzagStyle = bottomZigzagColor
     ? {
@@ -120,7 +98,7 @@ export default function TeachingMethodsSection({
         />
       ) : null}
 
-      <div className="relative mx-auto max-w-[1320px] px-4 py-12 md:px-10 md:py-[100px] lg:px-[104px]">
+      <div className="relative mx-auto max-w-[1620px] px-4 py-12 md:px-10 md:py-[100px] lg:px-[42px]">
         {showHeading ? (
           <div className="mx-auto mb-10 max-w-[976px] text-center md:mb-12">
             <h2 className="text-[34px] font-bold uppercase leading-none text-[#620000] md:text-[60px] md:leading-[60px]">
@@ -132,12 +110,11 @@ export default function TeachingMethodsSection({
           </div>
         ) : null}
 
-        <div className="grid gap-6 md:grid-cols-2 lg:gap-12">
-          {teachingMethods.map((method) => (
+        <div className="grid gap-8 md:grid-cols-2 lg:gap-x-16 lg:gap-y-16">
+          {methods.map((method) => (
             <TeachingMethodCard
               key={method.title}
               method={method}
-              filled={filledCards}
             />
           ))}
         </div>

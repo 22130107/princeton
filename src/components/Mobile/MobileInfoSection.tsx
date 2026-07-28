@@ -1,8 +1,7 @@
-import imgPenguin from "../../assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
-import imgWombat from "../../assets/3dc1ce007304dd7c637e9e4c763ad7fda6021a35.png";
-import imgKoala from "../../assets/d088645c54f44b84375f6cb56aeabe8e06bc006b.png";
-import imgKangaroo from "../../assets/d0268a1bfec279b63f5d3717d847ff89893ec9a7.png";
-import imgPreschool from "../../assets/58895c008a094b06474cacb153601040cef3cf48.png";
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import imgPaper from "../../assets/b8936ceb2afcdcf3ec9bf2508692d1c0866ccf6e.png";
 import imgSpiral from "../../assets/19f3ec75d04d4778613b623fd67426de89defdb9.png";
 import imgPenguinCard from "../../assets/451163d5761eb2fd4f4fc21e0662c4d50571045a.png";
@@ -11,50 +10,54 @@ import imgKoalaCard from "../../assets/76ae85eb95c1037d24fc4b213196313a7543a830.
 import imgKangarooCard from "../../assets/15745d29eddade36047a580e4620dc891bb7902d.png";
 import imgPreschoolCard from "../../assets/2733e2352734e4c64d23bbca5e0cf9b52124bf84.png";
 
-const classes = [
-  {
-    img: imgPenguin,
-    card: imgPenguinCard,
-    name: "Penguin",
-    age: "2 - 3 tuổi",
-    color: "#92d0db",
-    rotate: "-rotate-[2deg]",
-  },
-  {
-    img: imgWombat,
-    card: imgWombatCard,
-    name: "Wombat",
-    age: "3 - 4 tuổi",
-    color: "#ffcf82",
-    rotate: "rotate-[2deg]",
-  },
-  {
-    img: imgKoala,
-    card: imgKoalaCard,
-    name: "Koala",
-    age: "4 - 5 tuổi",
-    color: "#abe099",
-    rotate: "rotate-[1deg]",
-  },
-  {
-    img: imgKangaroo,
-    card: imgKangarooCard,
-    name: "Kangaroo",
-    age: "5 - 6 tuổi",
-    color: "#f9ba93",
-    rotate: "-rotate-[1deg]",
-  },
-  {
-    img: imgPreschool,
-    card: imgPreschoolCard,
-    name: "Preschool",
-    age: "5 - 6 tuổi",
-    color: "#ffacb9",
-    rotate: "-rotate-[3deg]",
-  },
+type MobileClassProgram = {
+  id: number;
+  slug: string;
+  name: string;
+  age: string;
+  imageUrl: string;
+  imageAlt: string;
+};
+
+const cardStyles = [
+  { card: imgPenguinCard, color: "#92d0db", rotate: "-rotate-[2deg]" },
+  { card: imgWombatCard, color: "#ffcf82", rotate: "rotate-[2deg]" },
+  { card: imgKoalaCard, color: "#abe099", rotate: "rotate-[1deg]" },
+  { card: imgKangarooCard, color: "#f9ba93", rotate: "-rotate-[1deg]" },
+  { card: imgPreschoolCard, color: "#ffacb9", rotate: "-rotate-[3deg]" },
 ];
 
 export default function MobileInfoSection() {
+  const [classes, setClasses] = useState<MobileClassProgram[]>([]);
+
+  useEffect(() => {
+    let alive = true;
+
+    fetch("/api/class-programs")
+      .then((response) => response.json())
+      .then((data) => {
+        if (!alive || !Array.isArray(data.programs)) return;
+
+        setClasses(
+          data.programs.map((item: any) => ({
+            id: item.id,
+            slug: item.slug,
+            name: item.name || "Khối lớp",
+            age: item.age || "",
+            imageUrl: item.imageUrl || "",
+            imageAlt: item.imageAlt || item.name || "Khối lớp Princeton",
+          })),
+        );
+      })
+      .catch(() => {
+        if (alive) setClasses([]);
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   return (
     <section className="bg-[#fffefa] px-2 py-8">
       <div className="relative mx-auto max-w-[480px]">
@@ -83,34 +86,46 @@ export default function MobileInfoSection() {
             </h2>
 
             <div className="relative z-[1] grid grid-cols-2 gap-x-3 gap-y-7">
-              {classes.map((c, index) => (
-                <article
-                  key={c.name}
-                  className={[
-                    "relative min-h-[178px] px-3 pb-5 pt-6 text-center",
-                    c.rotate,
-                    index === 4 ? "col-span-2 mx-auto w-[52%] min-w-[150px]" : "",
-                  ].join(" ")}
-                  style={{
-                    backgroundImage: `url("${c.card.src}")`,
-                    backgroundSize: "100% 100%",
-                    backgroundRepeat: "no-repeat",
-                  }}
-                >
-                  <div className="mx-auto mb-2 flex h-[68px] items-center justify-center">
-                    <img src={c.img.src} alt={c.name} className="max-h-full max-w-[86px] object-contain" />
-                  </div>
-                  <h3 className="mb-2 text-[20px] font-extrabold leading-none text-[#620000]">
-                    {c.name}
-                  </h3>
-                  <span
-                    className="inline-flex min-h-9 items-center justify-center rounded-full border bg-white px-3 text-[16px] font-semibold leading-none text-[#620000]"
-                    style={{ borderColor: c.color }}
+              {classes.map((classItem, index) => {
+                const style = cardStyles[index % cardStyles.length];
+                const isLastOdd = classes.length % 2 === 1 && index === classes.length - 1;
+
+                return (
+                  <Link
+                    key={classItem.id}
+                    href={`/khoi-lop/${classItem.slug}`}
+                    className={[
+                      "relative min-h-[178px] px-3 pb-5 pt-6 text-center text-[#620000] no-underline transition-transform duration-200 active:scale-[0.98]",
+                      style.rotate,
+                      isLastOdd ? "col-span-2 mx-auto w-[52%] min-w-[150px]" : "",
+                    ].join(" ")}
+                    style={{
+                      backgroundImage: `url("${style.card.src}")`,
+                      backgroundSize: "100% 100%",
+                      backgroundRepeat: "no-repeat",
+                    }}
                   >
-                    {c.age}
-                  </span>
-                </article>
-              ))}
+                    <div className="mx-auto mb-2 flex h-[68px] items-center justify-center">
+                      {classItem.imageUrl ? (
+                        <img
+                          src={classItem.imageUrl}
+                          alt={classItem.imageAlt}
+                          className="max-h-full max-w-[86px] object-contain"
+                        />
+                      ) : null}
+                    </div>
+                    <h3 className="mb-2 text-[20px] font-extrabold leading-none text-[#620000]">
+                      {classItem.name}
+                    </h3>
+                    <span
+                      className="inline-flex min-h-9 items-center justify-center rounded-full border bg-white px-3 text-[16px] font-semibold leading-none text-[#620000]"
+                      style={{ borderColor: style.color }}
+                    >
+                      {classItem.age}
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>

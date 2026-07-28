@@ -1,3 +1,7 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import svgPaths from "../svg-g45k1n1pz5";
 import imgImage from "../../../assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgTeachingMethodPlanePng from "../../../assets/87b0baec94bf2f1f980990704ca31b5f776eae03.png";
@@ -6,6 +10,56 @@ import imgImage1 from "../../../assets/d698542361c4bd444dda74cab23735d3d9459bf4.
 import imgTeachingMethodItem4Png from "../../../assets/aa47a37d3cb1c1b806218e09ba36b08f5e7c4d55.png";
 import imgTeachingMethodItem1Png from "../../../assets/4067071ed218b109a3b3d760ab5b856a1c4d1556.png";
 import imgTeachingMethodItem3Png from "../../../assets/6fcde84113072aa66cc43c4fc5efa3b2d4e6feb8.png";
+
+type HomeTeachingMethod = {
+  id: number;
+  title: string;
+  description: string;
+  imageUrl: string;
+  imageAlt: string;
+};
+
+const fallbackTeachingMethods: HomeTeachingMethod[] = [
+  {
+    id: 1,
+    title: "Kết hợp nhiều phương pháp",
+    description:
+      "Trẻ được tiếp cận các phương pháp giáo dục hiện đại, nổi bật là Play-based Learning, giúp trẻ học tập thông qua các hoạt động vui chơi và tiếp thu kiến thức một cách tự nhiên.",
+    imageUrl: imgTeachingMethodItem1Png.src,
+    imageAlt: "Kết hợp nhiều phương pháp",
+  },
+  {
+    id: 2,
+    title: "Lấy trẻ làm trung tâm",
+    description:
+      "Trẻ được tôn trọng sở thích, bản sắc cá nhân và nhịp độ phát triển. Thầy cô tạo cơ hội để trẻ chủ động khám phá, đặt câu hỏi và học hỏi theo cách riêng của mình.",
+    imageUrl: imgTeachingMethodItem3Png.src,
+    imageAlt: "Lấy trẻ làm trung tâm",
+  },
+  {
+    id: 3,
+    title: "Khai phóng tư duy",
+    description:
+      "Trẻ được tham gia các hoạt động đa dạng trong lớp và sau giờ học như Câu lạc bộ, Học tập thực tế, sự kiện, từ đó phát triển tư duy độc lập và tự do thể hiện bản thân.",
+    imageUrl: imgTeachingMethodItem2Png.src,
+    imageAlt: "Khai phóng tư duy",
+  },
+  {
+    id: 4,
+    title: "Học qua tương tác & hợp tác",
+    description:
+      "Trẻ phát triển kỹ năng xã hội, khả năng lắng nghe thông qua các hoạt động giao tiếp, chia sẻ và hợp tác với bạn bè, thầy cô và môi trường xung quanh.",
+    imageUrl: imgTeachingMethodItem4Png.src,
+    imageAlt: "Học qua tương tác và hợp tác",
+  },
+];
+
+const cardGridClasses = [
+  "col-1 row-1",
+  "col-2 row-1",
+  "col-1 row-2",
+  "col-2 row-2",
+];
 
 function Container64() {
   return (
@@ -312,13 +366,47 @@ function Border5() {
   );
 }
 
-function Container66() {
+function TeachingMethodCard({ method, index }: { method: HomeTeachingMethod; index: number }) {
+  const gridClass = cardGridClasses[index] ?? "";
+
+  return (
+    <div className={`${gridClass} justify-self-stretch relative rounded-[20px] self-start shrink-0`} data-name="Border">
+      <div aria-hidden className="absolute border-2 border-[#fffefa] border-dashed inset-0 pointer-events-none rounded-[20px]" />
+      <div className={`content-stretch flex flex-col items-start ${index === 3 ? "pb-[26.84px] pt-[18.4px] px-[18.4px]" : "p-[18.4px]"} relative size-full`}>
+        <div className="relative shrink-0 w-full" data-name="Container">
+          <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[16px] items-center relative size-full">
+            <div className="content-stretch flex flex-col items-start relative shrink-0 w-[154px]" data-name="Container">
+              <div className="aspect-[154/154] max-w-[154px] relative shrink-0 w-full" data-name="teaching-method-db-item.png">
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <img alt={method.imageAlt} className="absolute left-0 max-w-none size-full top-0 object-contain" src={method.imageUrl} />
+                </div>
+              </div>
+            </div>
+            <div className="content-stretch flex flex-[1_0_0] flex-col gap-[8px] items-start min-w-px relative" data-name="Container">
+              <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
+                <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#620000] w-full">
+                  <p className="leading-[28px]">{method.title}</p>
+                </div>
+              </div>
+              <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
+                <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[18px] text-[#620000] w-full">
+                  <p className="leading-[26px]">{method.description}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Container66({ methods }: { methods: HomeTeachingMethod[] }) {
   return (
     <div className="gap-x-[48px] gap-y-[48px] grid grid-cols-[repeat(2,minmax(0,1fr))] grid-rows-[__190.80px_199.24px] h-[438.04px] relative shrink-0 w-full" data-name="Container">
-      <Border2 />
-      <Border3 />
-      <Border4 />
-      <Border5 />
+      {methods.slice(0, 4).map((method, index) => (
+        <TeachingMethodCard key={`${method.id}-${index}`} method={method} index={index} />
+      ))}
     </div>
   );
 }
@@ -333,13 +421,13 @@ function TeachingMethodPlanePng() {
   );
 }
 
-function Container62() {
+function Container62({ methods }: { methods: HomeTeachingMethod[] }) {
   return (
     <div className="max-w-[1320px] relative shrink-0 w-full" data-name="Container">
       <div className="flex flex-col items-center max-w-[inherit] size-full">
         <div className="content-stretch flex flex-col gap-[48px] items-center max-w-[inherit] px-[12px] relative size-full">
           <Container63 />
-          <Container66 />
+          <Container66 methods={methods} />
           <TeachingMethodPlanePng />
         </div>
       </div>
@@ -348,10 +436,51 @@ function Container62() {
 }
 
 export default function TeachingProgram() {
+  const [methods, setMethods] = useState<HomeTeachingMethod[]>(fallbackTeachingMethods);
+
+  useEffect(() => {
+    let alive = true;
+
+    fetch("/api/teaching-methods")
+      .then((response) => response.json())
+      .then((data) => {
+        if (!alive || !Array.isArray(data.methods)) return;
+
+        const nextMethods = data.methods.slice(0, 4).map((item: any, index: number) => {
+          const fallback = fallbackTeachingMethods[index] ?? fallbackTeachingMethods[0];
+
+          return {
+            id: item.id ?? fallback.id,
+            title: item.title || fallback.title,
+            description: item.description || item.excerpt || fallback.description,
+            imageUrl: item.imageUrl || fallback.imageUrl,
+            imageAlt: item.imageAlt || item.title || fallback.imageAlt,
+          };
+        });
+
+        if (nextMethods.length) {
+          setMethods(nextMethods);
+        }
+      })
+      .catch(() => {
+        if (alive) setMethods(fallbackTeachingMethods);
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   return (
     <div className="absolute bg-[#FFC107] content-stretch flex flex-col items-start left-0 pb-[132px] pt-[100px] px-[104px] right-0 top-[2776px]" data-name="Section">
       <div className="absolute bg-size-[176px_25px] bg-top-left h-[25px] left-0 right-0 top-0" style={{ backgroundImage: `url("${imgImage.src}")` }} data-name="Image" />
-      <Container62 />
+      <Container62 methods={methods} />
+      <Link
+        href="/phuong-phap-giang-day"
+        className="absolute bottom-[54px] left-1/2 z-[3] -translate-x-1/2 rounded-full bg-[#b80000] px-7 py-3 text-[16px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000] transition-transform duration-200 hover:-translate-y-0.5"
+      >
+        Xem thêm
+      </Link>
       <div className="absolute bottom-0 flex h-[25px] items-center justify-center left-0 right-0" style={{ containerType: "size" }}>
         <div className="flex-none h-[100cqh] rotate-180 w-[100cqw]">
           <div className="bg-size-[176px_25px] bg-top-left relative size-full" style={{ backgroundImage: `url("${imgImage1.src}")` }} data-name="Image" />

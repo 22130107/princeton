@@ -3,13 +3,9 @@ import Link from "next/link";
 import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
-import { newsPosts } from "@/data/newsPosts";
+import { getNewsPosts } from "@/lib/content";
 import imgCardLogo from "@/assets/logo1.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
-import stickerA from "@/assets/sticker/58895c008a094b06474cacb153601040cef3cf48.png";
-import stickerB from "@/assets/sticker/6344cf27-7411-4173-b9fd-570675106a47.png";
-import stickerC from "@/assets/sticker/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
-import stickerD from "@/assets/sticker/c0575f19-d630-4b56-b954-383cd28b2ce9.png";
 
 export const metadata: Metadata = {
   title: "Tin Tức & Sự Kiện | Trường Mầm non Princeton",
@@ -22,81 +18,13 @@ export const metadata: Metadata = {
   },
 };
 
-const floatingStickers = [
-  {
-    image: stickerA,
-    className: "left-[4%] top-[18%] h-16 w-16 md:h-24 md:w-24",
-    duration: "6.4s",
-    delay: "-1.2s",
-    rotate: "-10deg",
-  },
-  {
-    image: stickerB,
-    className: "right-[6%] top-[12%] h-20 w-20 md:h-28 md:w-28",
-    duration: "7.1s",
-    delay: "-3.1s",
-    rotate: "12deg",
-  },
-  {
-    image: stickerC,
-    className: "left-[8%] bottom-[12%] h-16 w-16 md:h-24 md:w-24",
-    duration: "5.8s",
-    delay: "-2.4s",
-    rotate: "8deg",
-  },
-  {
-    image: stickerD,
-    className: "right-[9%] bottom-[18%] h-20 w-20 md:h-32 md:w-32",
-    duration: "7.8s",
-    delay: "-4.2s",
-    rotate: "-14deg",
-  },
-  {
-    image: stickerB,
-    className: "left-[39%] top-[24%] hidden h-16 w-16 md:block md:h-24 md:w-24",
-    duration: "6.8s",
-    delay: "-5.2s",
-    rotate: "-6deg",
-  },
-  {
-    image: stickerA,
-    className: "right-[30%] bottom-[7%] hidden h-14 w-14 md:block md:h-20 md:w-20",
-    duration: "5.6s",
-    delay: "-0.8s",
-    rotate: "16deg",
-  },
-];
+export const dynamic = "force-dynamic";
 
-function FloatingStickers() {
-  return (
-    <div className="pointer-events-none absolute inset-0 z-[4] overflow-hidden">
-      {floatingStickers.map((sticker, index) => (
-        <img
-          key={index}
-          src={sticker.image.src}
-          alt=""
-          className={`absolute object-contain opacity-95 drop-shadow-[0_12px_14px_rgba(98,0,0,0.22)] ${sticker.className}`}
-          style={{
-            animation: `news-sticker-sway ${sticker.duration} ease-in-out infinite`,
-            animationDelay: sticker.delay,
-            transform: `rotate(${sticker.rotate})`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
+export default async function TinTucSuKienPage() {
+  const newsPosts = await getNewsPosts();
 
-export default function TinTucSuKienPage() {
   return (
     <main className="min-h-screen bg-[#fffefa] pt-[64px] text-[#620000] md:pt-[99px]">
-      <style>{`
-        @keyframes news-sticker-sway {
-          0%, 100% { translate: 0 0; scale: 1; }
-          35% { translate: 8px -14px; scale: 1.04; }
-          70% { translate: -6px 10px; scale: 0.98; }
-        }
-      `}</style>
       <div className="md:hidden">
         <MobileHeader />
       </div>
@@ -104,7 +32,7 @@ export default function TinTucSuKienPage() {
         <HeaderSection />
       </div>
 
-      <section className="relative mt-6 overflow-hidden bg-[#ffc107] px-4 pb-10 pt-28 md:mt-10 md:px-10 md:pb-16 md:pt-40">
+      <section className="relative mt-6 overflow-hidden bg-[#ffe27a] px-4 pb-10 pt-28 md:mt-10 md:px-10 md:pb-16 md:pt-40">
         <div
           aria-hidden
           className="absolute inset-x-0 top-0 z-[2] h-[25px] bg-repeat-x"
@@ -114,7 +42,6 @@ export default function TinTucSuKienPage() {
             backgroundPosition: "top left",
           }}
         />
-        <FloatingStickers />
         <div className="relative z-[3] mx-auto max-w-[1180px]">
           <h1 className="text-center text-[34px] font-extrabold uppercase leading-tight md:text-[58px]">
             Tin tức & sự kiện
@@ -130,11 +57,15 @@ export default function TinTucSuKienPage() {
                 className="flex min-h-[520px] flex-col overflow-hidden border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.16)]"
               >
                 <div className="relative">
-                  <img
-                    src={post.image.src}
-                    alt={post.title}
-                    className="h-[225px] w-full object-cover"
-                  />
+                  {post.imageUrl ? (
+                    <img
+                      src={post.imageUrl}
+                      alt={post.imageAlt}
+                      className="h-[225px] w-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-[225px] w-full bg-[#fff1f1]" />
+                  )}
                   <img
                     src={imgCardLogo.src}
                     alt="Princeton Academy"

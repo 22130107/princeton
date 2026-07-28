@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import imgItem1 from "../../assets/4067071ed218b109a3b3d760ab5b856a1c4d1556.png";
 import imgItem2 from "../../assets/ba09fe820d0f9cb663b24826afea30ad6fc2c8a2.png";
 import imgItem3 from "../../assets/6fcde84113072aa66cc43c4fc5efa3b2d4e6feb8.png";
@@ -5,35 +9,89 @@ import imgItem4 from "../../assets/aa47a37d3cb1c1b806218e09ba36b08f5e7c4d55.png"
 import imgZigzagTop from "../../assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgZigzagBottom from "../../assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
 
-const methods = [
+type MobileTeachingMethod = {
+  id: number;
+  title: string;
+  description: string;
+  imageUrl: string;
+  imageAlt: string;
+};
+
+const fallbackMethods: MobileTeachingMethod[] = [
   {
-    img: imgItem1,
+    id: 1,
+    imageUrl: imgItem1.src,
+    imageAlt: "Kết hợp nhiều phương pháp",
     title: "Kết hợp nhiều phương pháp",
-    desc: "Trẻ được tiếp cận các phương pháp giáo dục hiện đại, nổi bật là Play-based Learning, giúp trẻ học tập thông qua các hoạt động vui chơi và tiếp thu kiến thức một cách tự nhiên.",
+    description:
+      "Trẻ được tiếp cận các phương pháp giáo dục hiện đại, nổi bật là Play-based Learning, giúp trẻ học tập thông qua các hoạt động vui chơi và tiếp thu kiến thức một cách tự nhiên.",
   },
   {
-    img: imgItem3,
+    id: 2,
+    imageUrl: imgItem3.src,
+    imageAlt: "Lấy trẻ làm trung tâm",
     title: "Lấy trẻ làm trung tâm",
-    desc: "Trẻ được tôn trọng sở thích, bản sắc cá nhân và nhịp độ phát triển. Thầy cô tạo cơ hội để trẻ chủ động khám phá, đặt câu hỏi và học hỏi theo cách riêng của mình.",
+    description:
+      "Trẻ được tôn trọng sở thích, bản sắc cá nhân và nhịp độ phát triển. Thầy cô tạo cơ hội để trẻ chủ động khám phá, đặt câu hỏi và học hỏi theo cách riêng của mình.",
   },
   {
-    img: imgItem2,
+    id: 3,
+    imageUrl: imgItem2.src,
+    imageAlt: "Khai phóng tư duy",
     title: "Khai phóng tư duy",
-    desc: "Trẻ được tham gia các hoạt động đa dạng trong lớp và sau giờ học như Câu lạc bộ, Học tập thực tế, sự kiện, từ đó phát triển tư duy độc lập và tự do thể hiện bản thân.",
+    description:
+      "Trẻ được tham gia các hoạt động đa dạng trong lớp và sau giờ học như Câu lạc bộ, học tập thực tế, sự kiện, từ đó phát triển tư duy độc lập và tự do thể hiện bản thân.",
   },
   {
-    img: imgItem4,
+    id: 4,
+    imageUrl: imgItem4.src,
+    imageAlt: "Học qua tương tác và hợp tác",
     title: "Học qua tương tác & hợp tác",
-    desc: "Trẻ phát triển kỹ năng xã hội, khả năng lắng nghe thông qua các hoạt động giao tiếp, chia sẻ và hợp tác với bạn bè, thầy cô và môi trường xung quanh.",
+    description:
+      "Trẻ phát triển kỹ năng xã hội, khả năng lắng nghe thông qua các hoạt động giao tiếp, chia sẻ và hợp tác với bạn bè, thầy cô và môi trường xung quanh.",
   },
 ];
 
 export default function MobileTeachingProgram() {
+  const [methods, setMethods] = useState<MobileTeachingMethod[]>(fallbackMethods);
+
+  useEffect(() => {
+    let alive = true;
+
+    fetch("/api/teaching-methods")
+      .then((response) => response.json())
+      .then((data) => {
+        if (!alive || !Array.isArray(data.methods)) return;
+
+        const nextMethods = data.methods.slice(0, 4).map((item: any, index: number) => {
+          const fallback = fallbackMethods[index] ?? fallbackMethods[0];
+
+          return {
+            id: item.id ?? fallback.id,
+            title: item.title || fallback.title,
+            description: item.description || item.excerpt || fallback.description,
+            imageUrl: item.imageUrl || fallback.imageUrl,
+            imageAlt: item.imageAlt || item.title || fallback.imageAlt,
+          };
+        });
+
+        if (nextMethods.length) {
+          setMethods(nextMethods);
+        }
+      })
+      .catch(() => {
+        if (alive) setMethods(fallbackMethods);
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   return (
-    <section className="bg-[#FFC107] relative">
-      {/* Zigzag top — giống PC */}
+    <section className="relative bg-[#FFC107]">
       <div
-        className="w-full h-[25px] bg-repeat-x"
+        className="h-[25px] w-full bg-repeat-x"
         style={{
           backgroundImage: `url("${imgZigzagTop.src}")`,
           backgroundSize: "176px 25px",
@@ -41,55 +99,52 @@ export default function MobileTeachingProgram() {
         }}
       />
 
-      <div className="px-4 pt-8 pb-10">
-        {/* Heading */}
-        <h2 className="text-[#620000] font-bold text-[22px] uppercase text-center mb-2">
-          PHƯƠNG PHÁP GIÁO DỤC
+      <div className="px-4 pb-10 pt-8">
+        <h2 className="mb-2 text-center text-[22px] font-bold uppercase text-[#620000]">
+          Phương pháp giáo dục
         </h2>
-        <p className="text-[#620000] font-medium text-[14px] text-center leading-relaxed mb-7">
+        <p className="mb-7 text-center text-[14px] font-medium leading-relaxed text-[#620000]">
           Trường Mầm non Princeton áp dụng những phương pháp giáo dục tiên tiến, mang đến cho trẻ các trải nghiệm học tập trọn vẹn và đầy hứng khởi.
         </p>
 
-        {/* Cards — bg vàng #FFC107, border dashed trắng, text đỏ — giống PC */}
         <div className="flex flex-col gap-4">
-          {methods.map((m) => (
-            <div
-              key={m.title}
-              className="relative rounded-[20px] bg-[#FFC107]"
-            >
-              {/* Border dashed trắng giống PC */}
+          {methods.map((method) => (
+            <div key={method.id} className="relative rounded-[20px] bg-[#FFC107]">
               <div
                 aria-hidden
-                className="absolute inset-0 rounded-[20px] border-2 border-dashed border-white pointer-events-none"
+                className="pointer-events-none absolute inset-0 rounded-[20px] border-2 border-dashed border-white"
               />
-              {/* Content */}
-              <div className="relative flex gap-4 items-center p-[18px]">
-                {/* Icon */}
-                <div className="shrink-0 w-[88px] h-[88px]">
+              <div className="relative flex items-center gap-4 p-[18px]">
+                <div className="h-[88px] w-[88px] shrink-0">
                   <img
-                    src={m.img.src}
-                    alt={m.title}
-                    className="w-full h-full object-contain"
+                    src={method.imageUrl}
+                    alt={method.imageAlt}
+                    className="h-full w-full object-contain"
                   />
                 </div>
-                {/* Text — màu đỏ giống PC */}
-                <div className="flex flex-col gap-2 flex-1 min-w-0">
-                  <p className="text-[#620000] font-extrabold text-[16px] leading-snug">
-                    {m.title}
+                <div className="flex min-w-0 flex-1 flex-col gap-2">
+                  <p className="text-[16px] font-extrabold leading-snug text-[#620000]">
+                    {method.title}
                   </p>
-                  <p className="text-[#620000] font-medium text-[13px] leading-relaxed">
-                    {m.desc}
+                  <p className="text-[13px] font-medium leading-relaxed text-[#620000]">
+                    {method.description}
                   </p>
                 </div>
               </div>
             </div>
           ))}
         </div>
+
+        <Link
+          href="/phuong-phap-giang-day"
+          className="mx-auto mt-7 flex w-fit rounded-full bg-[#b80000] px-6 py-3 text-[14px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000]"
+        >
+          Xem thêm
+        </Link>
       </div>
 
-      {/* Zigzag bottom — rotate 180 giống PC */}
       <div
-        className="w-full h-[25px] bg-repeat-x rotate-180"
+        className="h-[25px] w-full rotate-180 bg-repeat-x"
         style={{
           backgroundImage: `url("${imgZigzagBottom.src}")`,
           backgroundSize: "176px 25px",

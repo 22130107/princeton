@@ -7,6 +7,7 @@ import imgLogo from "../../assets/logo1.png";
 const navItems = [
   { href: "/", label: "Trang Chủ" },
   { href: "/phuong-phap-giang-day", label: "Phương Pháp Giảng Dạy" },
+  { href: "/khoi-lop", label: "Khối Lớp" },
   { href: "/chuong-trinh-hoc", label: "Chương Trình Học" },
   { href: "/gioi-thieu", label: "Giới Thiệu" },
   { href: "/tin-tuc-su-kien", label: "Tin Tức & Sự Kiện" },
@@ -28,9 +29,10 @@ export default function MobileHeader() {
         <div className="flex items-center gap-2">
           <Link
             href="/dang-ky"
-            className="bg-[#b80000] text-white text-[13px] font-bold uppercase rounded-full px-4 py-2 whitespace-nowrap no-underline"
+            className="relative rounded-full border-2 border-[#8d0000] bg-[#b80000] px-4 py-2 text-[13px] font-extrabold uppercase text-white no-underline shadow-[0_2px_0_#700000] whitespace-nowrap"
           >
-            Đăng Ký
+            <span className="pointer-events-none absolute inset-[4px] rounded-full border border-dashed border-white/95" />
+            <span className="relative z-10">Đăng Ký</span>
           </Link>
           <button
             onClick={() => setOpen(!open)}

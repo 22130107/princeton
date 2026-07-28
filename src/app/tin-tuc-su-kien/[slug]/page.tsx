@@ -3,8 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
+import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
-import { getNewsPost, newsPosts } from "@/data/newsPosts";
+import { getNewsPost, getNewsPosts } from "@/lib/content";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
@@ -14,15 +15,13 @@ type NewsDetailPageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return newsPosts.map((post) => ({ slug: post.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
 }: NewsDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getNewsPost(slug);
+  const post = await getNewsPost(slug);
 
   if (!post) {
     return {
@@ -42,10 +41,11 @@ export async function generateMetadata({
 
 export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
   const { slug } = await params;
-  const post = getNewsPost(slug);
+  const post = await getNewsPost(slug);
 
   if (!post) notFound();
 
+  const newsPosts = await getNewsPosts();
   const relatedPosts = newsPosts.filter((item) => item.slug !== post.slug).slice(0, 3);
 
   return (
@@ -85,20 +85,20 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
           </div>
 
           <div className="mx-auto mt-8 max-w-[1040px] md:mt-10">
-            <img
-              src={post.image.src}
-              alt={post.title}
-              className="h-[260px] w-full rounded-[18px] object-cover md:h-[460px]"
-            />
+            {post.imageUrl ? (
+              <img
+                src={post.imageUrl}
+                alt={post.imageAlt}
+                className="h-[260px] w-full rounded-[18px] object-cover md:h-[460px]"
+              />
+            ) : null}
             <div className="px-2 py-7 md:px-6 md:py-9">
               <p className="text-[18px] font-bold leading-8 text-[#620000] md:text-[22px] md:leading-9">
                 {post.excerpt}
               </p>
 
-              <div className="mt-8 space-y-5 text-[17px] font-medium leading-8 md:text-[19px] md:leading-9">
-                {post.content.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
+              <div className="mt-8 text-[17px] font-medium leading-8 md:text-[19px] md:leading-9">
+                <RichContent blocks={post.content} />
               </div>
             </div>
           </div>
@@ -116,7 +116,11 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                 className="overflow-hidden border border-[#ff1f1f] bg-white text-[#620000] no-underline shadow-[4px_4px_0_rgba(255,31,31,0.12)]"
               >
                 <div className="relative">
-                  <img src={item.image.src} alt={item.title} className="h-[160px] w-full object-cover" />
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.imageAlt} className="h-[160px] w-full object-cover" />
+                  ) : (
+                    <div className="h-[160px] w-full bg-[#fff1f1]" />
+                  )}
                   <img
                     src={imgCardLogo.src}
                     alt="Princeton Academy"

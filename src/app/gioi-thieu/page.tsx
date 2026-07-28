@@ -4,12 +4,8 @@ import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import FacilityCarousel from "@/components/Shared/FacilityCarousel";
 import SiteFooter from "@/components/Shared/SiteFooter";
+import { getAboutContent } from "@/lib/content";
 import imgHero from "@/assets/7152d23b5ad0228ac40827979cdce9d4dfc3a8fb.png";
-import imgFacilityActivity from "@/assets/d7d7345887319e335a13681880e24de534f764ac.png";
-import imgFacilityClassroom from "@/assets/2f18e7a31d31b9b85df3a6588823571bdaf40d53.png";
-import imgFacilityWashroom from "@/assets/d39c1aff5a677c90942c7d65b7625cfdffcc35a1.png";
-import imgFacilityGallery from "@/assets/d442605c9e1be0223245da5e9e29abf7ea1bef64.png";
-import imgFacilityPlayground from "@/assets/7efd1e9d3acc8ad92010b05849be05d4e2943353.png";
 import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
 import imgMascotKoala from "@/assets/d088645c54f44b84375f6cb56aeabe8e06bc006b.png";
 import imgMascotWombat from "@/assets/3dc1ce007304dd7c637e9e4c763ad7fda6021a35.png";
@@ -32,70 +28,13 @@ export const metadata: Metadata = {
   },
 };
 
+export const dynamic = "force-dynamic";
+
 const stats = [
   { number: "02", label: "Cơ sở", icon: imgMascotPenguin, shape: "circle", color: "#fff2f2" },
   { number: "02", label: "Ngôn ngữ", icon: imgMascotWombat, shape: "sun", color: "#fff4c4" },
   { number: "10+", label: "Câu lạc bộ", icon: imgMascotKoala, shape: "square", color: "#dcf6d6" },
   { number: "30+", label: "Sự kiện", icon: imgMascotKangaroo, shape: "triangle", color: "#d8f7ff" },
-];
-
-const teachers = [
-  {
-    icon: imgMascotKoala,
-    title: "Giáo viên chủ nhiệm",
-    text: "Theo sát nhịp sinh hoạt, cảm xúc và tiến bộ hằng ngày của từng bạn nhỏ.",
-    shape: "rounded-[32px_72px_32px_72px]",
-    color: "#fffefa",
-    rotate: "-rotate-[1deg]",
-  },
-  {
-    icon: imgMascotPenguin,
-    title: "Giáo viên tiếng Anh",
-    text: "Tạo môi trường giao tiếp gần gũi, giúp trẻ làm quen ngôn ngữ tự nhiên.",
-    shape: "rounded-[72px_32px_72px_32px]",
-    color: "#e1f7fb",
-    rotate: "rotate-[1deg]",
-  },
-  {
-    icon: imgMascotWombat,
-    title: "Giáo viên vận động",
-    text: "Thiết kế hoạt động thể chất phù hợp để trẻ khỏe mạnh, linh hoạt và tự tin.",
-    shape: "rounded-[42px]",
-    color: "#fff1cf",
-    rotate: "-rotate-[0.5deg]",
-  },
-  {
-    icon: imgMascotKangaroo,
-    title: "Giáo viên nghệ thuật",
-    text: "Khuyến khích trẻ thể hiện cảm xúc qua màu sắc, âm nhạc và hoạt động sáng tạo.",
-    shape: "rounded-[64px_28px_64px_28px]",
-    color: "#ffe0cf",
-    rotate: "rotate-[0.8deg]",
-  },
-  {
-    icon: imgMascotPenguin,
-    title: "Cố vấn chương trình",
-    text: "Đồng hành cùng giáo viên để xây dựng lộ trình học tập cân bằng và hiệu quả.",
-    shape: "rounded-[28px_64px_28px_64px]",
-    color: "#dcf6d6",
-    rotate: "-rotate-[0.8deg]",
-  },
-  {
-    icon: imgMascotKoala,
-    title: "Đội ngũ chăm sóc",
-    text: "Giữ nề nếp sinh hoạt an toàn, ấm áp và chu đáo trong từng khoảnh khắc ở trường.",
-    shape: "rounded-[46px]",
-    color: "#fff2f2",
-    rotate: "rotate-[1.2deg]",
-  },
-];
-
-const facilitySlides = [
-  { image: imgFacilityClassroom, title: "Phòng học sáng tạo" },
-  { image: imgFacilityActivity, title: "Phòng vận động" },
-  { image: imgFacilityWashroom, title: "Khu vệ sinh thân thiện" },
-  { image: imgFacilityGallery, title: "Góc trưng bày" },
-  { image: imgFacilityPlayground, title: "Khu vui chơi trong nhà" },
 ];
 
 const shapeClass: Record<string, string> = {
@@ -171,7 +110,26 @@ function FloatingDecorations() {
   );
 }
 
-export default function GioiThieuPage() {
+function assetSrc(image: { src: string } | string) {
+  return typeof image === "string" ? image : image.src;
+}
+
+export default async function GioiThieuPage() {
+  const aboutContent = await getAboutContent();
+  const facilitySlides = aboutContent.facilityImages.map((item) => ({
+    image: item.imageUrl,
+    title: item.title,
+  }));
+  const teachers = aboutContent.teacherTeamItems.map((item) => ({
+    id: item.id,
+    icon: item.imageUrl,
+    title: item.title,
+    text: item.description,
+    shape: item.shape,
+    color: item.color,
+    rotate: item.rotate,
+  }));
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#fffefa] pt-[64px] text-[#620000] md:pt-[99px]">
       <style>{`
@@ -269,59 +227,65 @@ export default function GioiThieuPage() {
         </div>
       </section>
 
-      <section className="relative bg-[#ffc107]">
-        <div
-          className="h-[25px] bg-repeat-x"
-          style={{ backgroundImage: `url("${imgZigzagTop.src}")`, backgroundSize: "176px 25px" }}
-        />
-        <div className="mx-auto grid max-w-[1240px] gap-8 px-4 py-12 md:grid-cols-2 md:px-10 md:py-20">
-          <FacilityCarousel slides={facilitySlides} />
-          <div className="flex flex-col justify-center">
-            <img
-              src={imgMascotKangaroo.src}
-              alt=""
-              className="mb-4 h-20 w-20 object-contain"
-            />
-            <h2 className="text-[30px] font-extrabold uppercase leading-tight md:text-[48px]">
-              Cơ sở vật chất an toàn và giàu trải nghiệm
-            </h2>
-            <p className="mt-5 text-[16px] font-medium leading-7 md:text-[20px] md:leading-8">
-              Không gian học tập, vận động và vui chơi được thiết kế sáng sủa, gần gũi và phù hợp với lứa tuổi mầm non, giúp trẻ thoải mái khám phá mỗi ngày.
-            </p>
+      {facilitySlides.length ? (
+        <section className="relative bg-[#ffc107]">
+          <div
+            className="h-[25px] bg-repeat-x"
+            style={{ backgroundImage: `url("${imgZigzagTop.src}")`, backgroundSize: "176px 25px" }}
+          />
+          <div className="mx-auto grid max-w-[1240px] gap-8 px-4 py-12 md:grid-cols-2 md:px-10 md:py-20">
+            <FacilityCarousel slides={facilitySlides} />
+            <div className="flex flex-col justify-center">
+              <img
+                src={imgMascotKangaroo.src}
+                alt=""
+                className="mb-4 h-20 w-20 object-contain"
+              />
+              <h2 className="text-[30px] font-extrabold uppercase leading-tight md:text-[48px]">
+                Cơ sở vật chất an toàn và giàu trải nghiệm
+              </h2>
+              <p className="mt-5 text-[16px] font-medium leading-7 md:text-[20px] md:leading-8">
+                Không gian học tập, vận động và vui chơi được thiết kế sáng sủa, gần gũi và phù hợp với lứa tuổi mầm non, giúp trẻ thoải mái khám phá mỗi ngày.
+              </p>
+            </div>
           </div>
-        </div>
-        <div
-          className="h-[25px] rotate-180 bg-repeat-x"
-          style={{ backgroundImage: `url("${imgZigzagBottom.src}")`, backgroundSize: "176px 25px" }}
-        />
-      </section>
+          <div
+            className="h-[25px] rotate-180 bg-repeat-x"
+            style={{ backgroundImage: `url("${imgZigzagBottom.src}")`, backgroundSize: "176px 25px" }}
+          />
+        </section>
+      ) : null}
 
-      <section className="bg-[#fff1f1] px-4 py-12 md:px-10 md:py-20">
-        <div className="mx-auto max-w-[1180px]">
-          <h2 className="max-w-[760px] text-[30px] font-extrabold uppercase leading-tight md:text-[52px]">
-            Đội ngũ giảng viên tận tâm
-          </h2>
-          <p className="mt-4 max-w-[760px] text-[16px] font-medium leading-7 md:text-[19px] md:leading-8">
-            Mỗi thầy cô tại Princeton cùng phối hợp để trẻ được chăm sóc, học tập và phát triển trong môi trường yêu thương, an toàn và giàu trải nghiệm.
-          </p>
-          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {teachers.map((value) => (
-              <article
-                key={value.title}
-                className={`relative min-h-[280px] border border-[#b80000] p-6 shadow-[4px_4px_0_rgba(184,0,0,0.18)] ${value.shape} ${value.rotate}`}
-                style={{ backgroundColor: value.color }}
-              >
-                <div className="pointer-events-none absolute inset-2 rounded-[inherit] border border-dashed border-[#b80000]/30" />
-                <div className="relative z-[1]">
-                  <img src={value.icon.src} alt="" className="mb-4 h-16 w-16 object-contain" />
-                  <h3 className="text-[22px] font-extrabold leading-tight">{value.title}</h3>
-                  <p className="mt-4 text-[16px] font-medium leading-7 text-[#620000]">{value.text}</p>
-                </div>
-              </article>
-            ))}
+      {teachers.length ? (
+        <section className="bg-[#fff1f1] px-4 py-12 md:px-10 md:py-20">
+          <div className="mx-auto max-w-[1180px]">
+            <h2 className="max-w-[760px] text-[30px] font-extrabold uppercase leading-tight md:text-[52px]">
+              Đội ngũ giảng viên tận tâm
+            </h2>
+            <p className="mt-4 max-w-[760px] text-[16px] font-medium leading-7 md:text-[19px] md:leading-8">
+              Mỗi thầy cô tại Princeton cùng phối hợp để trẻ được chăm sóc, học tập và phát triển trong môi trường yêu thương, an toàn và giàu trải nghiệm.
+            </p>
+            <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {teachers.map((value, index) => (
+                <article
+                  key={`teacher-${value.id}-${index}`}
+                  className={`relative min-h-[280px] border border-[#b80000] p-6 shadow-[4px_4px_0_rgba(184,0,0,0.18)] ${value.shape} ${value.rotate}`}
+                  style={{ backgroundColor: value.color }}
+                >
+                  <div className="pointer-events-none absolute inset-2 rounded-[inherit] border border-dashed border-[#b80000]/30" />
+                  <div className="relative z-[1] flex h-full flex-col text-left">
+                    {value.icon ? (
+                      <img src={assetSrc(value.icon)} alt="" className="mx-auto mb-6 h-28 w-28 object-contain md:h-32 md:w-32" />
+                    ) : null}
+                    <h3 className="text-[22px] font-extrabold leading-tight">{value.title}</h3>
+                    <p className="mt-4 text-[16px] font-medium leading-7 text-[#620000]">{value.text}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       <section className="bg-[#fffefa] px-4 py-12 md:px-10 md:py-20">
         <div className="mx-auto grid max-w-[1240px] gap-6 md:grid-cols-[1fr_0.85fr]">

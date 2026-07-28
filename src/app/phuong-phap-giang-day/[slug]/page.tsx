@@ -3,11 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
+import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
-import {
-  getTeachingMethod,
-  teachingMethods,
-} from "@/data/teachingMethods";
+import { getTeachingMethod, getTeachingMethods } from "@/lib/content";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 
 type TeachingMethodDetailPageProps = {
@@ -16,15 +14,13 @@ type TeachingMethodDetailPageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return teachingMethods.map((method) => ({ slug: method.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
 }: TeachingMethodDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const method = getTeachingMethod(slug);
+  const method = await getTeachingMethod(slug);
 
   if (!method) {
     return {
@@ -46,10 +42,11 @@ export default async function TeachingMethodDetailPage({
   params,
 }: TeachingMethodDetailPageProps) {
   const { slug } = await params;
-  const method = getTeachingMethod(slug);
+  const method = await getTeachingMethod(slug);
 
   if (!method) notFound();
 
+  const teachingMethods = await getTeachingMethods();
   const relatedMethods = teachingMethods
     .filter((item) => item.slug !== method.slug)
     .slice(0, 3);
@@ -82,33 +79,19 @@ export default async function TeachingMethodDetailPage({
             Quay lại phương pháp
           </Link>
 
-          <div className="mt-7 overflow-hidden rounded-[42px] border border-[#b80000] bg-[#fffefa] shadow-[6px_6px_0_rgba(184,0,0,0.25)]">
-            <div
-              className="flex h-[280px] items-center justify-center md:h-[500px]"
-              style={{ backgroundColor: method.background }}
-            >
-              <img
-                src={method.image.src}
-                alt={method.title}
-                className="h-[220px] w-[220px] object-contain md:h-[360px] md:w-[360px]"
-              />
-            </div>
-            <div className="p-6 md:p-10">
-              <p className="text-[14px] font-extrabold uppercase text-[#b80000]">
-                {method.category}
-              </p>
-              <h1 className="mt-4 text-[34px] font-extrabold leading-tight md:text-[56px]">
-                {method.title}
-              </h1>
-              <p className="mt-5 text-[18px] font-bold leading-8 md:text-[22px] md:leading-9">
-                {method.excerpt}
-              </p>
+          <div className="mt-7 rounded-[32px] border border-[#b80000] bg-[#fffefa] p-6 shadow-[6px_6px_0_rgba(184,0,0,0.25)] md:p-10">
+            <p className="text-[14px] font-extrabold uppercase text-[#b80000]">
+              {method.category}
+            </p>
+            <h1 className="mt-4 text-[34px] font-extrabold leading-tight md:text-[56px]">
+              {method.title}
+            </h1>
+            <p className="mt-5 text-[18px] font-bold leading-8 md:text-[22px] md:leading-9">
+              {method.excerpt || method.description}
+            </p>
 
-              <div className="mt-8 space-y-5 text-[17px] font-medium leading-8 md:text-[19px] md:leading-9">
-                {method.content.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-              </div>
+            <div className="mt-8 text-[17px] font-medium leading-8 md:text-[19px] md:leading-9">
+              <RichContent blocks={(method.content.length ? method.content : [method.description]).filter(Boolean)} />
             </div>
           </div>
 
@@ -121,18 +104,20 @@ export default async function TeachingMethodDetailPage({
                 <Link
                   key={item.slug}
                   href={`/phuong-phap-giang-day/${item.slug}`}
-                  className="overflow-hidden rounded-[30px] border border-[#b80000] bg-[#fffefa] text-[#620000] no-underline shadow-[4px_4px_0_rgba(184,0,0,0.22)] transition-transform duration-200 hover:-translate-y-1"
+                  className="overflow-hidden rounded-[24px] border border-[#b80000] bg-[#fffefa] text-[#620000] no-underline shadow-[4px_4px_0_rgba(184,0,0,0.22)] transition-transform duration-200 hover:-translate-y-1"
                 >
-                  <div
-                    className="flex h-[160px] items-center justify-center"
-                    style={{ backgroundColor: item.background }}
-                  >
-                    <img
-                      src={item.image.src}
-                      alt=""
-                      className="h-[120px] w-[120px] object-contain"
-                    />
-                  </div>
+                  {item.imageUrl ? (
+                    <div
+                      className="flex h-[140px] items-center justify-center"
+                      style={{ backgroundColor: item.background || "#fffefa" }}
+                    >
+                      <img
+                        src={item.imageUrl}
+                        alt={item.imageAlt}
+                        className="h-[104px] w-[104px] object-contain"
+                      />
+                    </div>
+                  ) : null}
                   <div className="p-5">
                     <p className="text-[12px] font-extrabold uppercase text-[#b80000]">
                       {item.category}

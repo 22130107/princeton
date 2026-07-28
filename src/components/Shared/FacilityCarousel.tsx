@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type FacilitySlide = {
-  image: StaticImageData;
+  image: StaticImageData | string;
   title: string;
 };
 
@@ -15,26 +15,32 @@ type FacilityCarouselProps = {
 
 export default function FacilityCarousel({ slides }: FacilityCarouselProps) {
   const [active, setActive] = useState(0);
+  const safeSlides = slides.length ? slides : [];
 
   const goTo = (index: number) => {
-    setActive((index + slides.length) % slides.length);
+    if (!safeSlides.length) return;
+    setActive((index + safeSlides.length) % safeSlides.length);
   };
 
   useEffect(() => {
+    if (!safeSlides.length) return;
+
     const timer = window.setInterval(() => {
-      setActive((current) => (current + 1) % slides.length);
+      setActive((current) => (current + 1) % safeSlides.length);
     }, 5200);
 
     return () => window.clearInterval(timer);
-  }, [slides.length]);
+  }, [safeSlides.length]);
+
+  if (!safeSlides.length) return null;
 
   return (
     <div className="relative overflow-hidden rounded-[28px] border-2 border-dashed border-white bg-[#fffefa] shadow-[6px_6px_0_rgba(98,0,0,0.12)]">
       <div className="relative h-[300px] md:h-[460px]">
-        {slides.map((slide, index) => (
+        {safeSlides.map((slide, index) => (
           <img
-            key={slide.title}
-            src={slide.image.src}
+            key={`${slide.title}-${index}`}
+            src={typeof slide.image === "string" ? slide.image : slide.image.src}
             alt={slide.title}
             className={`absolute inset-0 size-full object-cover transition-all duration-500 ease-out ${
               index === active ? "scale-100 opacity-100" : "scale-[1.03] opacity-0"
@@ -54,9 +60,9 @@ export default function FacilityCarousel({ slides }: FacilityCarouselProps) {
         </button>
 
         <div className="flex items-center gap-2 rounded-full bg-white/92 px-3 py-2 shadow-[0_3px_0_rgba(98,0,0,0.12)]">
-          {slides.map((slide, index) => (
+          {safeSlides.map((slide, index) => (
             <button
-              key={slide.title}
+              key={`${slide.title}-${index}`}
               type="button"
               aria-label={`Xem ${slide.title}`}
               onClick={() => goTo(index)}
@@ -78,7 +84,7 @@ export default function FacilityCarousel({ slides }: FacilityCarouselProps) {
       </div>
 
       <div className="absolute left-4 top-4 rounded-full bg-white/92 px-4 py-2 text-[14px] font-extrabold uppercase text-[#b80000] shadow-[0_3px_0_rgba(98,0,0,0.12)]">
-        {slides[active]?.title}
+        {safeSlides[active]?.title}
       </div>
     </div>
   );

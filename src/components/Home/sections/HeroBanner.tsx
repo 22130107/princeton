@@ -8,6 +8,17 @@ import imgBanner2Vi1Png from "../../../assets/f096407c0e14b5d7b3aa8cdb6a104a2e33
 import imgBannerUuDaiViPng1 from "../../../assets/eb701c1db54fe5a3e821c062e1706ea59a24b8ab.png";
 import imgBanner1Vi2Png from "../../../assets/1cf6be04c36a268cff08562f0a3e6d0e3c0c5e8c.png";
 
+type HeroSlide = {
+  id: number;
+  title: string;
+  subtitle: string;
+  desktopImageUrl: string;
+  desktopImageAlt: string;
+  mobileImageUrl: string;
+  mobileImageAlt: string;
+  ctaHref: string;
+};
+
 function Banner1Vi2Png() {
   return (
     <div className="absolute h-[546.002px] left-0 mask-alpha mask-intersect mask-no-clip mask-no-repeat mask-size-[1125.217px_804.346px] top-0 w-[1013.999px]" style={{ maskImage: `url("${imgBanner1Vi2Png.src}")` }} data-name="banner1-vi-2.png">
@@ -331,8 +342,218 @@ function MobileContainer() {
   );
 }
 
+function getDesktopSlideSrc(slide: HeroSlide) {
+  return slide.desktopImageUrl || slide.mobileImageUrl;
+}
+
+function getMobileSlideSrc(slide: HeroSlide) {
+  return slide.mobileImageUrl || slide.desktopImageUrl;
+}
+
+function DynamicSlideImage({
+  slide,
+  mask = "center",
+  dataName = "banner_uu_dai_vi.png",
+}: {
+  slide: HeroSlide;
+  mask?: "center" | "angled";
+  dataName?: string;
+}) {
+  const src = getDesktopSlideSrc(slide);
+  const image = (
+    <span className="absolute inset-0 block overflow-hidden">
+      <img
+        alt={slide.desktopImageAlt || slide.title}
+        className="absolute h-[123.81%] left-0 max-w-none top-[-11.9%] w-full"
+        src={src}
+      />
+    </span>
+  );
+
+  return (
+    <div
+      className="absolute h-[546px] left-0 top-0 w-[1014px] overflow-hidden mask-alpha mask-intersect mask-no-clip mask-no-repeat mask-size-[1014px_546px]"
+      style={{
+        maskImage: `url("${mask === "angled" ? imgBanner1Vi2Png.src : imgBannerUuDaiViPng.src}")`,
+        WebkitMaskImage: `url("${mask === "angled" ? imgBanner1Vi2Png.src : imgBannerUuDaiViPng.src}")`,
+        maskSize: "1014px 546px",
+        WebkitMaskSize: "1014px 546px",
+        maskPosition: "0 0",
+        WebkitMaskPosition: "0 0",
+      }}
+      data-name={dataName}
+    >
+      {slide.ctaHref ? (
+        <a className="relative block h-full w-full" href={slide.ctaHref} aria-label={slide.title || "Banner Princeton Academy"}>
+          {image}
+        </a>
+      ) : (
+        image
+      )}
+    </div>
+  );
+}
+
+function DynamicDots({
+  activeSlide,
+  totalSlides,
+  onDotClick,
+}: {
+  activeSlide: number;
+  totalSlides: number;
+  onDotClick: (index: number) => void;
+}) {
+  return (
+    <div className="absolute bottom-[72px] left-0 right-0 flex justify-center gap-2 pb-2 pt-1">
+      {Array.from({ length: totalSlides }).map((_, i) => (
+        <button
+          key={i}
+          onClick={() => onDotClick(i)}
+          className={`relative size-[12px] shrink-0 cursor-pointer rounded-[6px] transition-colors duration-200 ${
+            i === activeSlide ? "bg-[#b80000]" : "bg-white"
+          }`}
+          aria-label={`Chuyển đến banner ${i + 1}`}
+        >
+          <span aria-hidden className="absolute inset-0 rounded-[6px] border border-[rgba(183,0,0,0.6)]" />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function DynamicDesktopContainer({ slides }: { slides: HeroSlide[] }) {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const totalSlides = slides.length;
+
+  useEffect(() => {
+    if (totalSlides <= 1) return;
+    const timer = window.setInterval(() => {
+      setActiveSlide((prev) => (prev < totalSlides - 1 ? prev + 1 : 0));
+    }, 3000);
+
+    return () => window.clearInterval(timer);
+  }, [totalSlides]);
+
+  const previous = slides[(activeSlide + totalSlides - 1) % totalSlides] ?? slides[0];
+  const active = slides[activeSlide] ?? slides[0];
+  const next = slides[(activeSlide + 1) % totalSlides] ?? slides[0];
+
+  return (
+    <div className="h-[626px] overflow-clip relative shrink-0 w-full" data-name="Container">
+      <div className="absolute inset-[0_2785px_0_-2785px]" data-name="Container">
+        <div className="absolute inset-[0_-1514px_80px_2028px]" data-name="Group - 3 / 3">
+          <div className="absolute content-stretch flex flex-col items-start left-[-23.61px] pt-[7.324px] right-0 top-0" data-name="Container">
+            <div className="flex h-[804.345px] items-center justify-center max-w-[1014px] relative shrink-0 w-[1125.217px]">
+              <div className="-rotate-16 flex-none">
+                <div className="h-[546px] relative w-[1014px]" data-name="Img:mask-group">
+                  <DynamicSlideImage slide={previous} mask="angled" dataName="banner1-vi-2.png" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="absolute content-stretch flex flex-col inset-[0_-2528px_0_3042px] items-start max-w-[1014px] pb-[80px]" data-name="Group - 1 / 3">
+          <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
+            <div className="h-[546px] max-w-[1014px] relative shrink-0 w-[1014px]" data-name="Img:mask-group">
+              <DynamicSlideImage slide={active} />
+            </div>
+          </div>
+        </div>
+        <div className="absolute inset-[0_-3542px_80px_4056px]" data-name="Group - 2 / 3">
+          <div className="absolute content-stretch flex flex-col items-start left-[-87.61px] pt-[7.33px] right-0 top-0" data-name="Container">
+            <div className="flex h-[804.345px] items-center justify-center max-w-[1014px] relative shrink-0 w-[1125.217px]">
+              <div className="flex-none rotate-16">
+                <div className="h-[546px] relative w-[1014px]" data-name="Img:mask-group">
+                  <DynamicSlideImage slide={next} mask="angled" dataName="banner2-vi-1.png" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {totalSlides > 1 ? (
+        <>
+          <Container26
+            onPrev={() => setActiveSlide((prev) => (prev > 0 ? prev - 1 : totalSlides - 1))}
+            onNext={() => setActiveSlide((prev) => (prev < totalSlides - 1 ? prev + 1 : 0))}
+          />
+          <DynamicDots activeSlide={activeSlide} totalSlides={totalSlides} onDotClick={setActiveSlide} />
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+function DynamicMobileContainer({ slides }: { slides: HeroSlide[] }) {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const totalSlides = slides.length;
+  const touchX = useRef(0);
+
+  const prev = () => setActiveSlide((prev) => (prev > 0 ? prev - 1 : totalSlides - 1));
+  const next = () => setActiveSlide((prev) => (prev < totalSlides - 1 ? prev + 1 : 0));
+
+  useEffect(() => {
+    if (totalSlides <= 1) return;
+    const timer = window.setInterval(next, 3000);
+
+    return () => window.clearInterval(timer);
+  }, [totalSlides]);
+
+  return (
+    <div>
+      <div
+        className="relative w-full overflow-hidden rounded-[24px]"
+        onTouchStart={(e) => {
+          touchX.current = e.touches[0].clientX;
+        }}
+        onTouchEnd={(e) => {
+          const diff = touchX.current - e.changedTouches[0].clientX;
+          if (Math.abs(diff) > 40) diff > 0 ? next() : prev();
+        }}
+      >
+        <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${activeSlide * 100}%)` }}>
+          {slides.map((slide) => {
+            const src = getMobileSlideSrc(slide);
+            const image = (
+              <img src={src} alt={slide.mobileImageAlt || slide.title} className="h-auto w-full" />
+            );
+
+            return (
+              <div key={slide.id} className="flex w-full shrink-0 items-center justify-center">
+                {slide.ctaHref ? (
+                  <a href={slide.ctaHref} aria-label={slide.title || "Banner Princeton Academy"}>
+                    {image}
+                  </a>
+                ) : (
+                  image
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      {totalSlides > 1 ? (
+        <div className="mt-3 flex justify-center gap-2">
+          {slides.map((slide, i) => (
+            <button
+              key={slide.id}
+              onClick={() => setActiveSlide(i)}
+              aria-label={`Chuyển đến banner ${i + 1}`}
+              className={`size-[12px] rounded-full border border-[#b80000] transition-colors duration-200 ${
+                i === activeSlide ? "bg-[#b80000]" : "bg-white"
+              }`}
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export default function HeroBanner() {
   const [isMobile, setIsMobile] = useState(false);
+  const [dbSlides, setDbSlides] = useState<HeroSlide[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -341,17 +562,47 @@ export default function HeroBanner() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  useEffect(() => {
+    let alive = true;
+
+    fetch("/api/hero-slides")
+      .then((response) => response.json())
+      .then((data) => {
+        if (!alive) return;
+        if (!Array.isArray(data.slides)) {
+          setDbSlides([]);
+          setLoaded(true);
+          return;
+        }
+        const slides = data.slides.filter((slide: HeroSlide) => getDesktopSlideSrc(slide));
+        setDbSlides(slides);
+        setLoaded(true);
+      })
+      .catch(() => {
+        if (alive) setDbSlides([]);
+        if (alive) setLoaded(true);
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  if (!loaded || !dbSlides.length) {
+    return null;
+  }
+
   if (isMobile) {
     return (
       <div className="bg-[#fffefa] px-1 py-3" data-name="Section-HeroBanner">
-        <MobileContainer />
+        <DynamicMobileContainer slides={dbSlides} />
       </div>
     );
   }
 
   return (
     <div className="absolute bg-[#fffefa] content-stretch flex flex-col items-start left-0 overflow-clip pb-[40px] pt-[20px] right-0 top-0" data-name="Section-HeroBanner">
-      <Container21 />
+      <DynamicDesktopContainer slides={dbSlides} />
     </div>
   );
 }

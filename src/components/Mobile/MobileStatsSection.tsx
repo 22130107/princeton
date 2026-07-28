@@ -1,18 +1,15 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import svgPaths from "../Home/svg-g45k1n1pz5";
-import imgFacility1 from "../../assets/d39c1aff5a677c90942c7d65b7625cfdffcc35a1.png";
-import imgFacility2 from "../../assets/d7d7345887319e335a13681880e24de534f764ac.png";
-import imgFacility3 from "../../assets/2f18e7a31d31b9b85df3a6588823571bdaf40d53.png";
-import imgFacility4 from "../../assets/d442605c9e1be0223245da5e9e29abf7ea1bef64.png";
-import imgFacility5 from "../../assets/7efd1e9d3acc8ad92010b05849be05d4e2943353.png";
 import imgFlowerMask from "../../assets/92e5ee994003ec00eae4b6020ca15de704cd6220.png";
 
-const facilities = [
-  { img: imgFacility1, alt: "Khu vệ sinh trẻ em" },
-  { img: imgFacility2, alt: "Phòng vận động" },
-  { img: imgFacility3, alt: "Phòng học sáng tạo" },
-  { img: imgFacility4, alt: "Không gian sinh hoạt" },
-  { img: imgFacility5, alt: "Không gian học tập" },
-];
+type FacilityImage = {
+  id: number;
+  title: string;
+  imageUrl: string;
+  imageAlt: string;
+};
 
 function FlowerStroke() {
   return (
@@ -34,7 +31,7 @@ function FlowerStroke() {
   );
 }
 
-function FacilityFlower({ item }: { item: (typeof facilities)[number] }) {
+function FacilityFlower({ image }: { image: FacilityImage }) {
   return (
     <div className="relative h-[236px] w-[236px] shrink-0">
       <FlowerStroke />
@@ -50,8 +47,8 @@ function FacilityFlower({ item }: { item: (typeof facilities)[number] }) {
         }}
       >
         <img
-          src={item.img.src}
-          alt={item.alt}
+          src={image.imageUrl}
+          alt={image.imageAlt || image.title}
           className="h-full w-full scale-[1.35] object-cover"
         />
       </div>
@@ -60,7 +57,32 @@ function FacilityFlower({ item }: { item: (typeof facilities)[number] }) {
 }
 
 export default function MobileStatsSection() {
-  const repeated = [...facilities, ...facilities, ...facilities];
+  const [images, setImages] = useState<FacilityImage[]>([]);
+
+  useEffect(() => {
+    let alive = true;
+
+    fetch("/api/facility-images")
+      .then((response) => response.json())
+      .then((data) => {
+        if (!alive || !Array.isArray(data.images)) return;
+        setImages(data.images.filter((image: FacilityImage) => image.imageUrl));
+      })
+      .catch(() => {
+        if (alive) setImages([]);
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const baseImages = images.length
+    ? Array.from({ length: Math.ceil(Math.max(5, images.length) / images.length) }, () => images)
+        .flat()
+        .slice(0, Math.max(5, images.length))
+    : [];
+  const repeated = [...baseImages, ...baseImages, ...baseImages];
 
   return (
     <section className="relative overflow-hidden bg-[#fffefa] py-10">
@@ -112,17 +134,19 @@ export default function MobileStatsSection() {
       </div>
 
       <div className="relative h-[256px] overflow-hidden">
-        <div
-          className="absolute left-[-118px] top-2 flex gap-10"
-          style={{
-            animation: "mobile-facility-slide 30s linear infinite",
-            willChange: "transform",
-          }}
-        >
-          {repeated.map((item, index) => (
-            <FacilityFlower key={`${item.alt}-${index}`} item={item} />
-          ))}
-        </div>
+        {repeated.length ? (
+          <div
+            className="absolute left-[-118px] top-2 flex gap-10"
+            style={{
+              animation: "mobile-facility-slide 30s linear infinite",
+              willChange: "transform",
+            }}
+          >
+            {repeated.map((image, index) => (
+              <FacilityFlower key={`${image.id}-${index}`} image={image} />
+            ))}
+          </div>
+        ) : null}
       </div>
     </section>
   );

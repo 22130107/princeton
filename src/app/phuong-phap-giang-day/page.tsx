@@ -3,6 +3,7 @@ import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import TeachingMethodsSection from "@/components/Shared/TeachingMethodsSection";
+import { getTeachingMethods } from "@/lib/content";
 import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
 import imgMascotKoala from "@/assets/d088645c54f44b84375f6cb56aeabe8e06bc006b.png";
 
@@ -17,7 +18,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PhuongPhapGiangDayPage() {
+export const dynamic = "force-dynamic";
+
+export default async function PhuongPhapGiangDayPage() {
+  const methods = await getTeachingMethods();
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#fffefa] pt-[64px] text-[#620000] md:pt-[99px]">
       <div className="md:hidden">
@@ -52,7 +57,7 @@ export default function PhuongPhapGiangDayPage() {
       </section>
 
       <TeachingMethodsSection
-        filledCards
+        methods={methods}
         topZigzagColor="#fff1f1"
         bottomZigzagColor="#e8f3e6"
       />
