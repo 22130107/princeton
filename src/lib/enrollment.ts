@@ -36,7 +36,7 @@ const gradeSlugMap: Record<string, string> = {
 };
 
 const consentText =
-  "Toi xac nhan rang cac thong tin ca nhan duoc cung cap la chinh xac va dong y de Nha truong thu thap, luu tru, xu ly va su dung theo quy dinh cua phap luat ve bao ve du lieu ca nhan.";
+  "Tôi xác nhận rằng các thông tin cá nhân được cung cấp là chính xác và đồng ý để Nhà trường thu thập, lưu trữ, xử lý và sử dụng theo quy định của pháp luật về bảo vệ dữ liệu cá nhân.";
 
 function normalizePhone(phone: string) {
   return phone.replace(/[^\d+]/g, "");
@@ -65,7 +65,7 @@ function getRequestedAppointmentAt(date?: string | null, time?: string | null) {
 }
 
 function formatAppointmentLabel(value: Date | null) {
-  if (!value) return "Cho nha truong xep lich";
+  if (!value) return "Chờ nhà trường xếp lịch";
 
   return new Intl.DateTimeFormat("vi-VN", {
     dateStyle: "medium",
@@ -82,23 +82,23 @@ export function validateEnrollmentLead(input: Partial<EnrollmentLeadInput>) {
   const grade = input.grade?.trim() ?? "";
 
   if (parentName.length < 2) {
-    errors.parentName = "Vui long nhap ho va ten.";
+    errors.parentName = "Vui lòng nhập họ và tên.";
   }
 
   if (!/^\+?\d{9,15}$/.test(phone)) {
-    errors.phone = "So dien thoai khong hop le.";
+    errors.phone = "Số điện thoại không hợp lệ.";
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errors.email = "Email khong hop le.";
+    errors.email = "Email không hợp lệ.";
   }
 
   if (!normalizeGradeToSlug(grade)) {
-    errors.grade = "Khoi lop khong hop le.";
+    errors.grade = "Khối lớp không hợp lệ.";
   }
 
   if (!input.agreed) {
-    errors.agreed = "Can dong y xu ly du lieu ca nhan.";
+    errors.agreed = "Cần đồng ý xử lý dữ liệu cá nhân.";
   }
 
   return {

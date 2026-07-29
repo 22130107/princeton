@@ -61,7 +61,7 @@ export default function EnrollmentLeadForm({
         if (!mounted) return;
         setSubmitState({
           status: "error",
-          message: "Khong the tai danh sach khoi lop.",
+          message: "Không thể tải danh sách khối lớp.",
         });
       });
 
@@ -171,13 +171,13 @@ export default function EnrollmentLeadForm({
 
       <div>
         <label className={labelClass}>
-          Ho va ten <span className="text-red-500">*</span>
+          Họ và tên <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
           value={parentName}
           onChange={(event) => setParentName(event.target.value)}
-          placeholder="Nguyen Van A"
+          placeholder="Nguyễn Văn A"
           className={fieldClass}
         />
         {fieldErrors.parentName ? (
@@ -187,7 +187,7 @@ export default function EnrollmentLeadForm({
 
       <div>
         <label className={labelClass}>
-          So dien thoai <span className="text-red-500">*</span>
+          Số điện thoại <span className="text-red-500">*</span>
         </label>
         <input
           type="tel"
@@ -218,7 +218,7 @@ export default function EnrollmentLeadForm({
       </div>
 
       <div>
-        <label className={labelClass}>Khoi lop</label>
+        <label className={labelClass}>Khối lớp</label>
         <div className="relative">
           <select
             value={grade}
@@ -247,7 +247,7 @@ export default function EnrollmentLeadForm({
 
       <div className={variant === "desktop" ? "grid gap-3 md:grid-cols-2" : "grid gap-3"}>
         <div>
-          <label className={labelClass}>Ngay tu van mong muon</label>
+          <label className={labelClass}>Ngày tư vấn mong muốn</label>
           <input
             type="date"
             value={appointmentDate}
@@ -258,14 +258,14 @@ export default function EnrollmentLeadForm({
         </div>
 
         <div>
-          <label className={labelClass}>Khung gio</label>
+          <label className={labelClass}>Khung giờ</label>
           <div className="relative">
             <select
               value={appointmentTime}
               onChange={(event) => setAppointmentTime(event.target.value)}
               className={`${fieldClass} appearance-none pr-9`}
             >
-              <option value="">Nha truong xep lich</option>
+              <option value="">Nhà trường xếp lịch</option>
               <option value="08:30">08:30</option>
               <option value="09:30">09:30</option>
               <option value="10:30">10:30</option>
