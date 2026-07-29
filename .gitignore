@@ -45,6 +45,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Runtime uploads
+public/uploads/*
+!public/uploads/.gitkeep
+
 # Test coverage
 coverage/
 
