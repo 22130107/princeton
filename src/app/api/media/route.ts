@@ -3,6 +3,7 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
+import sharp from "sharp";
 import { getMysqlPool } from "@/lib/mysql";
 
 export const runtime = "nodejs";
@@ -16,6 +17,7 @@ const allowedTypes = new Map([
 ]);
 
 const maxFileSize = 8 * 1024 * 1024;
+const webpRasterTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 function cleanAlt(value: FormDataEntryValue | null, fallback: string) {
   return typeof value === "string" && value.trim() ? value.trim() : fallback;
@@ -35,6 +37,29 @@ type MediaAssetRow = RowDataPacket & {
 
 function isSafeUploadedUrl(value: unknown) {
   return typeof value === "string" && /^\/uploads\/[a-zA-Z0-9._-]+$/.test(value);
+}
+
+async function prepareUploadImage(file: File) {
+  const inputBuffer = Buffer.from(await file.arrayBuffer());
+
+  if (!webpRasterTypes.has(file.type)) {
+    const extension = allowedTypes.get(file.type) ?? "png";
+    return {
+      buffer: inputBuffer,
+      extension,
+      mimeType: file.type,
+    };
+  }
+
+  const buffer = await sharp(inputBuffer, { animated: false })
+    .webp({ quality: 90, effort: 4 })
+    .toBuffer();
+
+  return {
+    buffer,
+    extension: "webp",
+    mimeType: "image/webp",
+  };
 }
 
 export async function GET() {
@@ -90,14 +115,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const extension = allowedTypes.get(file.type) ?? "png";
+    const uploadImage = await prepareUploadImage(file);
+    const extension = uploadImage.extension;
     const fileName = `${randomUUID()}.${extension}`;
     const uploadDir = path.join(process.cwd(), "public", "uploads");
     const filePath = path.join(uploadDir, fileName);
     const url = `/uploads/${fileName}`;
 
     await mkdir(uploadDir, { recursive: true });
-    await writeFile(filePath, Buffer.from(await file.arrayBuffer()));
+    await writeFile(filePath, uploadImage.buffer);
 
     const pool = getMysqlPool();
     const [result] = await pool.execute<ResultSetHeader>(
@@ -106,10 +132,10 @@ export async function POST(request: Request) {
       {
         fileName,
         originalName: file.name,
-        mimeType: file.type,
+        mimeType: uploadImage.mimeType,
         url,
         altText: cleanAlt(formData.get("alt"), file.name),
-        sizeBytes: file.size,
+        sizeBytes: uploadImage.buffer.length,
       },
     );
 
