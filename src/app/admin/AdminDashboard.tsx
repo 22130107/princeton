@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, type MouseEvent, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { Edit3, Eye, FileText, ImagePlus, List, ListOrdered, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
+import { FormEvent, type ClipboardEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { Edit3, FileText, ImagePlus, List, ListOrdered, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
 
 type TabKey = "banners" | "teaching" | "programs" | "posts" | "about";
 type ProgramMode = "classes" | "curriculum";
@@ -531,6 +531,72 @@ function plainTextToHtml(value: string) {
     .join("") || "<p><br></p>";
 }
 
+function pastedTextToHtml(value: string) {
+  const normalized = value.replace(/\r\n?/g, "\n").trim();
+  if (!normalized) return "";
+
+  return normalized
+    .split(/\n{2,}/)
+    .map((block) =>
+      block
+        .split("\n")
+        .map((line) => htmlEscape(line.trimEnd()))
+        .join("<br>"),
+    )
+    .filter((block) => block.replace(/<br>/g, "").trim())
+    .map((block) => `<p>${block}</p>`)
+    .join("");
+}
+
+const MIN_RICH_LINE_HEIGHT = 1.1;
+const MAX_RICH_LINE_HEIGHT = 2.4;
+const DEFAULT_RICH_LINE_HEIGHT = 1.6;
+const MIN_RICH_FONT_SIZE = 12;
+const MAX_RICH_FONT_SIZE = 32;
+const DEFAULT_RICH_FONT_SIZE = 16;
+const DEFAULT_RICH_FONT_FAMILY = "system";
+const RICH_FONT_OPTIONS = [
+  { label: "Mặc định", value: "system", css: "" },
+  { label: "Arial", value: "arial", css: "Arial, Helvetica, sans-serif" },
+  { label: "Times", value: "times", css: "\"Times New Roman\", Times, serif" },
+  { label: "Georgia", value: "georgia", css: "Georgia, serif" },
+  { label: "Tahoma", value: "tahoma", css: "Tahoma, Geneva, sans-serif" },
+  { label: "Verdana", value: "verdana", css: "Verdana, Geneva, sans-serif" },
+];
+
+function clampRichLineHeight(value: number) {
+  if (!Number.isFinite(value)) return DEFAULT_RICH_LINE_HEIGHT;
+  return Math.round(Math.max(MIN_RICH_LINE_HEIGHT, Math.min(MAX_RICH_LINE_HEIGHT, value)) * 10) / 10;
+}
+
+function getRichLineHeight(value: string) {
+  const fromData = value.match(/data-rich-line-height=["']([\d.]+)["']/i)?.[1];
+  const fromStyle = value.match(/line-height\s*:\s*([\d.]+)/i)?.[1];
+  const parsed = Number.parseFloat(fromData || fromStyle || "");
+  return Number.isFinite(parsed) ? clampRichLineHeight(parsed) : DEFAULT_RICH_LINE_HEIGHT;
+}
+
+function clampRichFontSize(value: number) {
+  if (!Number.isFinite(value)) return DEFAULT_RICH_FONT_SIZE;
+  return Math.round(Math.max(MIN_RICH_FONT_SIZE, Math.min(MAX_RICH_FONT_SIZE, value)));
+}
+
+function getRichFontSize(value: string) {
+  const fromData = value.match(/data-rich-font-size=["']([\d.]+)["']/i)?.[1];
+  const fromStyle = value.match(/font-size\s*:\s*([\d.]+)px/i)?.[1];
+  const parsed = Number.parseFloat(fromData || fromStyle || "");
+  return Number.isFinite(parsed) ? clampRichFontSize(parsed) : DEFAULT_RICH_FONT_SIZE;
+}
+
+function getRichFontFamily(value: string) {
+  const fromData = value.match(/data-rich-font-family=["']([^"']+)["']/i)?.[1];
+  return RICH_FONT_OPTIONS.some((option) => option.value === fromData) ? fromData : DEFAULT_RICH_FONT_FAMILY;
+}
+
+function getRichFontCss(value: string) {
+  return RICH_FONT_OPTIONS.find((option) => option.value === value)?.css ?? "";
+}
+
 function normalizeVideoUrl(value: string) {
   const iframeSrc = value.match(/src=["']([^"']+)["']/i)?.[1];
   const raw = (iframeSrc || value).trim();
@@ -599,10 +665,12 @@ function RichTextEditor({
   const selectedMediaRef = useRef<RichMediaElement | null>(null);
   const dragSessionRef = useRef<MediaDragSession | null>(null);
   const [expanded, setExpanded] = useState(false);
-  const [preview, setPreview] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<RichMediaElement | null>(null);
   const [mediaOverlay, setMediaOverlay] = useState<MediaOverlayRect | null>(null);
+  const [lineHeight, setLineHeight] = useState(() => getRichLineHeight(value));
+  const [fontSize, setFontSize] = useState(() => getRichFontSize(value));
+  const [fontFamily, setFontFamily] = useState(() => getRichFontFamily(value));
   const textValue = value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
   const wordsCount = textValue ? textValue.split(" ").length : 0;
 
@@ -613,6 +681,9 @@ function RichTextEditor({
     if (editor.innerHTML !== next) {
       editor.innerHTML = next;
     }
+    setLineHeight(getRichLineHeight(next));
+    setFontSize(getRichFontSize(next));
+    setFontFamily(getRichFontFamily(next));
   }, [value]);
 
   useEffect(() => {
@@ -627,7 +698,7 @@ function RichTextEditor({
   }, []);
 
   function emit() {
-    const html = editorRef.current?.innerHTML ?? "";
+    const html = (editorRef.current?.innerHTML ?? "").replace(/\u200b/g, "");
     onChange(html.trim());
   }
 
@@ -677,6 +748,213 @@ function RichTextEditor({
     focusEditor();
     document.execCommand("insertHTML", false, html);
     emit();
+  }
+
+  function selectionInside(selector: string) {
+    const selection = window.getSelection();
+    const node = selection?.anchorNode;
+    const element = node instanceof HTMLElement ? node : node?.parentElement;
+    return Boolean(element?.closest(selector));
+  }
+
+  function selectionBlock() {
+    const editor = editorRef.current;
+    const selection = window.getSelection();
+    const node = selection?.anchorNode;
+    if (!editor || !node) return null;
+
+    const element = node instanceof HTMLElement ? node : node.parentElement;
+    if (!element || !editor.contains(element)) return null;
+    return element.closest("li, h2, h3, p, div") as HTMLElement | null;
+  }
+
+  function replaceCurrentTextLine(replacer: (line: string) => string) {
+    const selection = window.getSelection();
+    const range = selection?.rangeCount ? selection.getRangeAt(0) : null;
+    const node = selection?.anchorNode;
+
+    if (!selection || !range || node?.nodeType !== Node.TEXT_NODE) return false;
+
+    const textNode = node as Text;
+    const text = textNode.data.replace(/\u200b/g, "");
+    const offset = Math.min(range.startOffset, text.length);
+    const lineStart = text.lastIndexOf("\n", Math.max(0, offset - 1)) + 1;
+    const nextBreak = text.indexOf("\n", offset);
+    const lineEnd = nextBreak === -1 ? text.length : nextBreak;
+    const line = text.slice(lineStart, lineEnd).trim();
+
+    if (!line) return false;
+
+    const parent = textNode.parentNode;
+    if (!parent) return false;
+
+    const before = text.slice(0, lineStart).trimEnd();
+    const after = text.slice(lineEnd).trimStart();
+    const fragment = document.createDocumentFragment();
+
+    if (before) {
+      fragment.append(document.createTextNode(before), document.createElement("br"));
+    }
+
+    const template = document.createElement("template");
+    template.innerHTML = replacer(line);
+    fragment.append(template.content);
+
+    if (after) {
+      fragment.append(document.createElement("br"), document.createTextNode(after));
+    }
+
+    parent.replaceChild(fragment, textNode);
+    emit();
+    return true;
+  }
+
+  function listSelection(type: "ul" | "ol") {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    focusEditor();
+    selectMedia(null);
+
+    const existingList = selectionInside("ul, ol");
+    if (existingList) {
+      document.execCommand(type === "ul" ? "insertUnorderedList" : "insertOrderedList");
+      emit();
+      return;
+    }
+
+    const block = selectionBlock();
+    const selection = window.getSelection();
+    const selectedText = selection?.toString().trim();
+    const rawText = (selectedText || block?.innerText || editor.innerText || "").replace(/\u200b/g, "");
+    const items = rawText
+      .split(/\n+/)
+      .map((item) => item.replace(/^[\s•*-]+/, "").replace(/^\d+[.)]\s*/, "").trim())
+      .filter(Boolean);
+
+    const html = `<${type}>${(items.length ? items : ["Nội dung"]).map((item) => `<li>${htmlEscape(item)}</li>`).join("")}</${type}>`;
+
+    if (block?.dataset.richLineHeight !== undefined) {
+      block.innerHTML = html;
+    } else if (block && block !== editor && editor.contains(block)) {
+      block.outerHTML = html;
+    } else if (editor.innerText.trim()) {
+      editor.innerHTML = html;
+    } else {
+      document.execCommand("insertHTML", false, html);
+    }
+
+    emit();
+  }
+
+  function headingSelection() {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    focusEditor();
+    selectMedia(null);
+
+    const block = selectionBlock();
+    const selection = window.getSelection();
+    const selectedText = selection?.toString().trim();
+
+    if (!selectedText && replaceCurrentTextLine((line) => `<h2>${htmlEscape(line)}</h2>`)) {
+      return;
+    }
+
+    const rawText = (selectedText || block?.innerText || "Tiêu đề").replace(/\u200b/g, "").trim() || "Tiêu đề";
+    const html = `<h2>${htmlEscape(rawText)}</h2>`;
+
+    if (block?.tagName === "H2") {
+      block.outerHTML = `<p>${htmlEscape(rawText)}</p>`;
+    } else if (block?.dataset.richLineHeight !== undefined) {
+      block.innerHTML = html;
+    } else if (block && block !== editor && editor.contains(block)) {
+      block.outerHTML = html;
+    } else {
+      document.execCommand("insertHTML", false, html);
+    }
+
+    emit();
+  }
+
+  function handleEditorPaste(event: ClipboardEvent<HTMLDivElement>) {
+    const text = event.clipboardData.getData("text/plain");
+    if (!text.trim()) return;
+
+    event.preventDefault();
+    selectMedia(null);
+    insertHtml(pastedTextToHtml(text));
+    onStatus("Đã dán nội dung và chuẩn hóa khoảng cách dòng.");
+  }
+
+  function ensureRichStyleWrapper() {
+    const editor = editorRef.current;
+    if (!editor) return null;
+
+    let wrapper =
+      editor.childElementCount === 1
+        ? (editor.firstElementChild as HTMLElement | null)
+        : null;
+
+    if (
+      !wrapper ||
+      (wrapper.dataset.richLineHeight === undefined &&
+        wrapper.dataset.richFontSize === undefined &&
+        wrapper.dataset.richFontFamily === undefined)
+    ) {
+      const currentHtml = editor.innerHTML.trim() || "<p><br></p>";
+      editor.innerHTML = `<div data-rich-style="true">${currentHtml}</div>`;
+      wrapper = editor.firstElementChild as HTMLElement | null;
+    }
+
+    return wrapper;
+  }
+
+  function applyRichTextStyles(nextStyles: Partial<{ lineHeight: number; fontSize: number; fontFamily: string }>) {
+    const wrapper = ensureRichStyleWrapper();
+    if (!wrapper) return;
+
+    const nextLineHeight = clampRichLineHeight(nextStyles.lineHeight ?? lineHeight);
+    const nextFontSize = clampRichFontSize(nextStyles.fontSize ?? fontSize);
+    const currentFontFamily = fontFamily || DEFAULT_RICH_FONT_FAMILY;
+    const nextFontFamily = RICH_FONT_OPTIONS.some((option) => option.value === nextStyles.fontFamily)
+      ? (nextStyles.fontFamily as string)
+      : currentFontFamily;
+    const fontCss = getRichFontCss(nextFontFamily);
+
+    wrapper.dataset.richStyle = "true";
+    wrapper.dataset.richLineHeight = `${nextLineHeight}`;
+    wrapper.dataset.richFontSize = `${nextFontSize}`;
+    wrapper.dataset.richFontFamily = nextFontFamily;
+    wrapper.style.lineHeight = `${nextLineHeight}`;
+    wrapper.style.fontSize = `${nextFontSize}px`;
+    wrapper.style.fontFamily = fontCss;
+
+    setLineHeight(nextLineHeight);
+    setFontSize(nextFontSize);
+    setFontFamily(nextFontFamily);
+    selectMedia(null);
+    focusEditor();
+    emit();
+  }
+
+  function applyLineHeight(nextValue: number) {
+    const next = clampRichLineHeight(nextValue);
+    applyRichTextStyles({ lineHeight: next });
+    onStatus(`Đã đặt khoảng cách dòng ${next.toFixed(1)}x.`);
+  }
+
+  function applyFontSize(nextValue: number) {
+    const next = clampRichFontSize(nextValue);
+    applyRichTextStyles({ fontSize: next });
+    onStatus(`Đã đặt cỡ chữ ${next}px.`);
+  }
+
+  function applyFontFamily(nextValue: string) {
+    const next = RICH_FONT_OPTIONS.some((option) => option.value === nextValue) ? nextValue : DEFAULT_RICH_FONT_FAMILY;
+    applyRichTextStyles({ fontFamily: next });
+    onStatus(`Đã đổi font chữ sang ${RICH_FONT_OPTIONS.find((option) => option.value === next)?.label ?? "Mặc định"}.`);
   }
 
   async function uploadEditorImage(file: File | undefined) {
@@ -743,6 +1021,79 @@ function RichTextEditor({
     selectedMedia.style.marginRight = position === "right" ? "0" : position === "center" ? "auto" : "auto";
     syncSelectedMediaOverlay();
     emit();
+  }
+
+  function isEmptyRichBlock(node: ChildNode | null): node is HTMLElement {
+    if (!(node instanceof HTMLElement) || (node.tagName !== "P" && node.tagName !== "DIV")) return false;
+    const text = (node.textContent ?? "").replace(/\u00a0/g, "").trim();
+    return !text && !node.querySelector("img, iframe, video, table, ul, ol");
+  }
+
+  function removeSelectedMedia() {
+    const media = selectedMediaRef.current;
+    const editor = editorRef.current;
+    if (!media || !editor?.contains(media)) return;
+
+    const parent = media.parentElement;
+    const nextSibling = media.nextSibling;
+    const previousSibling = media.previousSibling;
+
+    media.remove();
+
+    if (isEmptyRichBlock(nextSibling)) {
+      nextSibling.remove();
+    } else if (isEmptyRichBlock(previousSibling)) {
+      previousSibling.remove();
+    }
+
+    if (parent && parent !== editor && editor.contains(parent) && isEmptyRichBlock(parent)) {
+      parent.remove();
+    }
+
+    selectMedia(null);
+    focusEditor();
+    emit();
+    onStatus("Đã xóa ảnh/video khỏi nội dung.");
+  }
+
+  function insertSoftLineBreak() {
+    const editor = editorRef.current;
+    const selection = window.getSelection();
+    const range = selection?.rangeCount ? selection.getRangeAt(0) : null;
+
+    if (!editor || !selection || !range || !editor.contains(range.commonAncestorContainer)) {
+      insertHtml("<br>");
+      return;
+    }
+
+    range.deleteContents();
+
+    const fragment = document.createDocumentFragment();
+    const br = document.createElement("br");
+    const marker = document.createTextNode("\u200b");
+    fragment.append(br, marker);
+    range.insertNode(fragment);
+
+    const nextRange = document.createRange();
+    nextRange.setStartAfter(marker);
+    nextRange.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(nextRange);
+    emit();
+  }
+
+  function handleEditorKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if ((event.key === "Delete" || event.key === "Backspace") && selectedMediaRef.current) {
+      event.preventDefault();
+      removeSelectedMedia();
+      return;
+    }
+
+    if (event.key === "Enter" && !event.altKey && !event.ctrlKey && !event.metaKey && !selectionInside("li")) {
+      event.preventDefault();
+      selectMedia(null);
+      insertSoftLineBreak();
+    }
   }
 
   function findMediaAtPoint(clientX: number, clientY: number, target?: EventTarget | null) {
@@ -882,7 +1233,7 @@ function RichTextEditor({
 
   const toolbar = (
     <div className="flex flex-wrap items-center gap-2 rounded-t-md border border-[#e1b0b0] border-b-0 bg-[#fff8f8] p-2">
-      <EditorButton icon={<FileText size={16} />} onClick={() => runCommand("formatBlock", "h2")}>
+      <EditorButton icon={<FileText size={16} />} onClick={headingSelection}>
         Tiêu đề
       </EditorButton>
       <EditorButton icon={<span className="text-[15px]">B</span>} onClick={() => runCommand("bold")}>
@@ -894,12 +1245,68 @@ function RichTextEditor({
       <EditorButton icon={<span className="text-[15px] underline">U</span>} onClick={() => runCommand("underline")}>
         Gạch chân
       </EditorButton>
-      <EditorButton icon={<List size={16} />} onClick={() => runCommand("insertUnorderedList")}>
+      <EditorButton icon={<List size={16} />} onClick={() => listSelection("ul")}>
         Bullet
       </EditorButton>
-      <EditorButton icon={<ListOrdered size={16} />} onClick={() => runCommand("insertOrderedList")}>
+      <EditorButton icon={<ListOrdered size={16} />} onClick={() => listSelection("ol")}>
         Số thứ tự
       </EditorButton>
+      <select
+        value={fontFamily}
+        onChange={(event) => applyFontFamily(event.target.value)}
+        className="h-9 rounded-md border border-[#e7b8b8] bg-white px-3 text-[13px] font-extrabold text-[#620000] outline-none transition-colors hover:bg-[#fff1f1] focus:border-[#b80000]"
+        title="Font chữ"
+      >
+        {RICH_FONT_OPTIONS.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <div className="inline-flex h-9 items-center overflow-hidden rounded-md border border-[#e7b8b8] bg-white text-[13px] font-extrabold text-[#620000]">
+        <button
+          type="button"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => applyFontSize(fontSize - 1)}
+          className="flex h-full items-center gap-1 px-3 transition-colors hover:bg-[#fff1f1]"
+        >
+          A-
+        </button>
+        <span className="flex h-full min-w-14 items-center justify-center border-x border-[#e7b8b8] bg-[#fff8f8] px-2 text-[#b80000]">
+          {fontSize}px
+        </span>
+        <button
+          type="button"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => applyFontSize(fontSize + 1)}
+          className="flex h-full items-center gap-1 px-3 transition-colors hover:bg-[#fff1f1]"
+        >
+          A+
+        </button>
+      </div>
+      <div className="inline-flex h-9 items-center overflow-hidden rounded-md border border-[#e7b8b8] bg-white text-[13px] font-extrabold text-[#620000]">
+        <button
+          type="button"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => applyLineHeight(lineHeight - 0.1)}
+          className="flex h-full items-center gap-1 px-3 transition-colors hover:bg-[#fff1f1]"
+        >
+          <span>LH-</span>
+          Giãn -
+        </button>
+        <span className="flex h-full min-w-14 items-center justify-center border-x border-[#e7b8b8] bg-[#fff8f8] px-2 text-[#b80000]">
+          {lineHeight.toFixed(1)}x
+        </span>
+        <button
+          type="button"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => applyLineHeight(lineHeight + 0.1)}
+          className="flex h-full items-center gap-1 px-3 transition-colors hover:bg-[#fff1f1]"
+        >
+          <span>LH+</span>
+          Giãn +
+        </button>
+      </div>
       <EditorButton icon={<ImagePlus size={16} />} onClick={() => fileRef.current?.click()}>
         {uploading ? "Đang tải" : "Chèn ảnh"}
       </EditorButton>
@@ -907,9 +1314,6 @@ function RichTextEditor({
         Nhúng video
       </EditorButton>
       <span className="ml-auto flex items-center gap-2">
-        <EditorButton icon={<Eye size={16} />} active={preview} onClick={() => setPreview((current) => !current)}>
-          Preview
-        </EditorButton>
         <EditorButton icon={expanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />} onClick={() => setExpanded((current) => !current)}>
           {expanded ? "Thu nhỏ" : "Phóng to"}
         </EditorButton>
@@ -932,6 +1336,9 @@ function RichTextEditor({
           <EditorButton icon={<span>R</span>} onClick={() => alignSelectedMedia("right")}>
             Phải
           </EditorButton>
+          <EditorButton icon={<Trash2 size={16} />} onClick={removeSelectedMedia}>
+            Xóa
+          </EditorButton>
         </div>
       ) : null}
       <input
@@ -947,55 +1354,63 @@ function RichTextEditor({
   const editor = (
     <div className={expanded ? "flex min-h-0 flex-1 flex-col" : "grid gap-0"}>
       {toolbar}
-      {preview ? (
+      <div
+        ref={editorFrameRef}
+        className={expanded ? "relative min-h-0 flex-1" : "relative"}
+      >
         <div
-          className={`${expanded ? "min-h-0 flex-1 overflow-auto" : "min-h-[320px]"} rich-admin-content rounded-b-md border border-[#e1b0b0] bg-white px-5 py-4 text-[16px] leading-8 text-[#620000]`}
-          dangerouslySetInnerHTML={{ __html: value || `<p class="text-[#b36b6b]">${placeholder || "Chưa có nội dung."}</p>` }}
+          ref={editorRef}
+          role="textbox"
+          aria-label={label}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={emit}
+          onKeyDown={handleEditorKeyDown}
+          onPaste={handleEditorPaste}
+          onClick={pickMedia}
+          onPointerDown={startMediaDrag}
+          onScroll={syncSelectedMediaOverlay}
+          className={`${expanded ? "h-full min-h-0 overflow-auto" : "min-h-[560px]"} rich-admin-content rounded-b-md border border-[#e1b0b0] bg-white px-5 py-4 text-[16px] leading-8 text-[#620000] outline-none focus:border-[#b80000]`}
         />
-      ) : (
-        <div
-          ref={editorFrameRef}
-          className={expanded ? "relative min-h-0 flex-1" : "relative"}
-        >
+        {selectedMedia && mediaOverlay ? (
           <div
-            ref={editorRef}
-            role="textbox"
-            aria-label={label}
-            contentEditable
-            suppressContentEditableWarning
-            onInput={emit}
-            onClick={pickMedia}
-            onPointerDown={startMediaDrag}
-            onScroll={syncSelectedMediaOverlay}
-            className={`${expanded ? "h-full min-h-0 overflow-auto" : "min-h-[320px]"} rich-admin-content rounded-b-md border border-[#e1b0b0] bg-white px-5 py-4 text-[16px] leading-8 text-[#620000] outline-none focus:border-[#b80000]`}
-          />
-          {selectedMedia && mediaOverlay ? (
-            <div
-              className="pointer-events-none absolute z-10 rounded-[16px] border-2 border-dashed border-[#b80000]"
-              style={{
-                left: `${mediaOverlay.left}px`,
-                top: `${mediaOverlay.top}px`,
-                width: `${mediaOverlay.width}px`,
-                height: `${mediaOverlay.height}px`,
+            className="pointer-events-none absolute z-10 rounded-[16px] border-2 border-dashed border-[#b80000]"
+            style={{
+              left: `${mediaOverlay.left}px`,
+              top: `${mediaOverlay.top}px`,
+              width: `${mediaOverlay.width}px`,
+              height: `${mediaOverlay.height}px`,
+            }}
+          >
+            <button
+              type="button"
+              aria-label="Xóa ảnh/video"
+              title="Xóa ảnh/video"
+              onClick={removeSelectedMedia}
+              onPointerDown={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
               }}
+              className="pointer-events-auto absolute right-[-12px] top-[-12px] flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-[#620000] text-white shadow-[0_3px_10px_rgba(98,0,0,0.28)]"
             >
-              <button
-                type="button"
-                aria-label="Kéo để đổi kích thước ảnh/video"
-                title="Kéo để đổi kích thước"
-                onPointerDown={startSelectedMediaResize}
-                className="pointer-events-auto absolute bottom-[-12px] right-[-12px] flex h-6 w-6 cursor-nwse-resize items-center justify-center rounded-full border-2 border-white bg-[#b80000] shadow-[0_3px_10px_rgba(98,0,0,0.28)]"
-              >
-                <span className="block h-2.5 w-2.5 rounded-full bg-white" />
-              </button>
-            </div>
-          ) : null}
-        </div>
-      )}
+              <X size={14} strokeWidth={3} />
+            </button>
+            <button
+              type="button"
+              aria-label="Kéo để đổi kích thước ảnh/video"
+              title="Kéo để đổi kích thước"
+              onPointerDown={startSelectedMediaResize}
+              className="pointer-events-auto absolute bottom-[-12px] right-[-12px] flex h-6 w-6 cursor-nwse-resize items-center justify-center rounded-full border-2 border-white bg-[#b80000] shadow-[0_3px_10px_rgba(98,0,0,0.28)]"
+            >
+              <span className="block h-2.5 w-2.5 rounded-full bg-white" />
+            </button>
+          </div>
+        ) : null}
+      </div>
       <div className="flex flex-wrap justify-between gap-2 rounded-b-md border-x border-b border-[#f0d0d0] bg-[#fffefa] px-3 py-2 text-[12px] font-semibold text-[#9a4a4a]">
         <span>{wordsCount} từ</span>
         <span>{value.length} ký tự HTML</span>
-        <span>Bấm ảnh/video, kéo ảnh để đổi vị trí, kéo chấm đỏ để đổi kích thước</span>
+        <span>Bấm ảnh/video, kéo để đổi vị trí, kéo chấm đỏ để đổi kích thước, bấm X để xóa</span>
       </div>
       <style jsx global>{`
         .rich-admin-content h2 {
@@ -1022,10 +1437,22 @@ function RichTextEditor({
           min-height: 0.75rem;
           margin-bottom: 0.5rem;
         }
+        .rich-admin-content [data-rich-line-height] {
+          margin: 0;
+        }
         .rich-admin-content ul,
         .rich-admin-content ol {
           margin: 0 0 1rem 1.4rem;
           padding-left: 1rem;
+        }
+        .rich-admin-content ul {
+          list-style: disc;
+        }
+        .rich-admin-content ol {
+          list-style: decimal;
+        }
+        .rich-admin-content li {
+          display: list-item;
         }
         .rich-admin-content img,
         .rich-admin-content iframe {
@@ -1085,6 +1512,7 @@ function EditorButton({
   return (
     <button
       type="button"
+      onMouseDown={(event) => event.preventDefault()}
       onClick={onClick}
       className={`inline-flex h-9 items-center gap-2 rounded-md border px-3 text-[13px] font-extrabold transition-colors ${
         active

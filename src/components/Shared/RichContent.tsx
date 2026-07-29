@@ -60,12 +60,22 @@ export default function RichContent({ blocks }: { blocks: string[] }) {
           min-height: 0.8rem;
           margin-bottom: 0.6rem;
         }
+        .rich-content [data-rich-line-height] {
+          margin: 0;
+        }
         .rich-content ul,
         .rich-content ol {
           margin: 0 0 1.35rem 1.5rem;
           padding-left: 1rem;
         }
+        .rich-content ul {
+          list-style: disc;
+        }
+        .rich-content ol {
+          list-style: decimal;
+        }
         .rich-content li {
+          display: list-item;
           margin-bottom: 0.55rem;
         }
         .rich-content img {
