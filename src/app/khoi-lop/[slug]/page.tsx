@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
+import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { getClassProgram, getClassPrograms } from "@/lib/content";
 import imgLogo from "@/assets/logo.png";
@@ -46,6 +47,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
 
   const classPrograms = await getClassPrograms();
   const relatedPrograms = classPrograms.filter((item) => item.slug !== program.slug);
+  const scheduleItems = program.schedule.map((item) => item.trim()).filter(Boolean);
 
   return (
     <main className="min-h-screen bg-[#fffefa] pt-[80px] text-[#620000] md:pt-[99px]">
@@ -102,23 +104,28 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
                 {program.excerpt}
               </p>
 
-              <section className="mt-10">
+              {program.description ? (
+                <div className="mt-8 text-[17px] font-medium leading-8 text-[#620000] md:text-[19px] md:leading-9">
+                  <RichContent blocks={[program.description]} />
+                </div>
+              ) : null}
+
+              {scheduleItems.length ? (
+                <section className="mt-10">
                 <h2 className="text-[28px] font-extrabold uppercase text-[#b80000] md:text-[42px]">
                   Lịch học
                 </h2>
                 <div className="mt-5 grid gap-4 md:grid-cols-2">
-                  {program.schedule.map((item, index) => (
+                  {scheduleItems.map((item) => (
                     <article key={item} className="border border-[#ff1f1f] bg-white px-5 py-4">
-                      <p className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[#b80000]">
-                        Hoạt động {index + 1}
-                      </p>
-                      <p className="mt-3 text-[17px] font-medium leading-8 md:text-[18px]">
-                        {item}
-                      </p>
+                      <div className="text-[17px] font-medium leading-8 md:text-[18px]">
+                        <RichContent blocks={[item]} />
+                      </div>
                     </article>
                   ))}
                 </div>
-              </section>
+                </section>
+              ) : null}
             </div>
           </div>
         </article>

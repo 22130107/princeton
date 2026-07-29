@@ -6,6 +6,7 @@ import MobileHeader from "@/components/Mobile/MobileHeader";
 import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { getTeachingMethod, getTeachingMethods } from "@/lib/content";
+import imgLogo from "@/assets/logo.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 
 type TeachingMethodDetailPageProps = {
@@ -80,15 +81,24 @@ export default async function TeachingMethodDetailPage({
           </Link>
 
           <div className="mt-7 rounded-[32px] border border-[#b80000] bg-[#fffefa] p-6 shadow-[6px_6px_0_rgba(184,0,0,0.25)] md:p-10">
-            <p className="text-[14px] font-extrabold uppercase text-[#b80000]">
-              {method.category}
-            </p>
-            <h1 className="mt-4 text-[34px] font-extrabold leading-tight md:text-[56px]">
-              {method.title}
-            </h1>
-            <p className="mt-5 text-[18px] font-bold leading-8 md:text-[22px] md:leading-9">
-              {method.excerpt || method.description}
-            </p>
+            <div className="mb-6 flex justify-center md:mb-8">
+              <img
+                src={imgLogo.src}
+                alt="Princeton Academy"
+                className="h-[92px] w-auto object-contain md:h-[118px]"
+              />
+            </div>
+            <div className="mx-auto max-w-[880px] text-center">
+              <p className="text-[14px] font-extrabold uppercase text-[#b80000]">
+                {method.category}
+              </p>
+              <h1 className="mt-4 text-[34px] font-extrabold leading-tight md:text-[56px]">
+                {method.title}
+              </h1>
+              <p className="mt-5 text-[18px] font-bold leading-8 md:text-[22px] md:leading-9">
+                {method.excerpt || method.description}
+              </p>
+            </div>
 
             <div className="mt-8 text-[17px] font-medium leading-8 md:text-[19px] md:leading-9">
               <RichContent blocks={(method.content.length ? method.content : [method.description]).filter(Boolean)} />

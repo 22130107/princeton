@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { FormEvent, type ClipboardEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { CalendarClock, CheckCircle2, Edit3, Eye, EyeOff, FileText, ImagePlus, List, ListOrdered, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
+import { CalendarClock, CheckCircle2, Edit3, Eye, EyeOff, ImagePlus, List, ListOrdered, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
 import {
   defaultRegistrationSectionSettings,
   type RegistrationSectionSettings,
@@ -179,8 +179,6 @@ type ClassForm = {
   slug: string;
   name: string;
   ageLabel: string;
-  ageMin: string;
-  ageMax: string;
   category: string;
   excerpt: string;
   description: string;
@@ -278,8 +276,6 @@ const emptyClass: ClassForm = {
   slug: "",
   name: "",
   ageLabel: "",
-  ageMin: "",
-  ageMax: "",
   category: "",
   excerpt: "",
   description: "",
@@ -400,6 +396,23 @@ function richBlocks(value: string) {
     .trim();
 
   return text || hasMedia ? [next] : [];
+}
+
+const scheduleActivitySeparator = "\n<!-- schedule-activity -->\n";
+
+function scheduleItemsToText(items: string[]) {
+  return items.map((item) => item.trim()).filter(Boolean).join(scheduleActivitySeparator);
+}
+
+function scheduleTextToItems(value: string) {
+  if (value.includes(scheduleActivitySeparator.trim())) {
+    return value
+      .split(scheduleActivitySeparator)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return lines(value);
 }
 
 function slugify(value: string) {
@@ -648,6 +661,143 @@ function TextArea({
   );
 }
 
+function ScheduleActivitiesEditor({
+  label,
+  value,
+  onChange,
+  onStatus,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  onStatus: (message: string) => void;
+}) {
+  const activities = useMemo(() => scheduleTextToItems(value), [value]);
+  const [draft, setDraft] = useState("");
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editorResetKey, setEditorResetKey] = useState(0);
+  const getDraftHtmlRef = useRef<(() => string) | null>(null);
+
+  const isEditing = editingIndex !== null;
+
+  function syncActivities(nextActivities: string[]) {
+    onChange(scheduleItemsToText(nextActivities));
+  }
+
+  function resetEditor() {
+    setDraft("");
+    setEditingIndex(null);
+    setEditorResetKey((key) => key + 1);
+  }
+
+  function addOrUpdateActivity() {
+    const currentDraft = getDraftHtmlRef.current?.() ?? draft;
+    const blocks = richBlocks(currentDraft);
+    const nextBlock = blocks[0];
+    if (!nextBlock) {
+      onStatus("Vui lòng nhập nội dung hoạt động.");
+      return;
+    }
+
+    if (isEditing && activities[editingIndex] !== undefined) {
+      const nextActivities = [...activities];
+      nextActivities[editingIndex] = nextBlock;
+      syncActivities(nextActivities);
+      resetEditor();
+      return;
+    }
+
+    syncActivities([...activities, ...blocks]);
+    resetEditor();
+  }
+
+  function editActivity(index: number) {
+    setDraft(activities[index] ?? "");
+    setEditingIndex(index);
+    setEditorResetKey((key) => key + 1);
+  }
+
+  function deleteActivity(index: number) {
+    syncActivities(activities.filter((_, itemIndex) => itemIndex !== index));
+    if (editingIndex === index) resetEditor();
+  }
+
+  return (
+    <div className="grid gap-2">
+      <span className="text-[13px] font-bold uppercase text-[#620000]">{label}</span>
+      <div className="grid gap-3 rounded-md border border-[#e1b0b0] bg-[#fffafa] p-3">
+        <RichTextEditor
+          key={editorResetKey}
+          label={isEditing ? "Editor sửa hoạt động" : "Editor thêm hoạt động"}
+          value={draft}
+          onChange={setDraft}
+          placeholder="Nhập nội dung hoạt động"
+          onStatus={onStatus}
+          getHtmlRef={getDraftHtmlRef}
+        />
+        <div className="flex flex-wrap gap-2">
+          <ActionButton
+            icon={isEditing ? <Save size={17} /> : <Plus size={17} />}
+            tone="quiet"
+            onClick={addOrUpdateActivity}
+          >
+            {isEditing ? "Cập nhật hoạt động" : "Thêm hoạt động"}
+          </ActionButton>
+          {isEditing ? (
+            <ActionButton icon={<X size={17} />} tone="quiet" onClick={resetEditor}>
+              Huỷ sửa
+            </ActionButton>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="grid gap-2">
+        {activities.map((activity, index) => (
+          <div
+            key={`${activity}-${index}`}
+            className="grid gap-2 rounded-md border border-[#f0d0d0] bg-white p-3 sm:grid-cols-[auto_1fr_auto]"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#fff1f1] text-[13px] font-extrabold text-[#b80000]">
+              {index + 1}
+            </span>
+            {looksLikeHtml(activity) ? (
+              <div
+                className="rich-admin-content min-w-0 text-[15px] font-semibold leading-7 text-[#620000]"
+                dangerouslySetInnerHTML={{ __html: activity }}
+              />
+            ) : (
+              <p className="min-w-0 text-[15px] font-semibold leading-7 text-[#620000]">{activity}</p>
+            )}
+            <span className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => editActivity(index)}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[#d9baba] bg-white text-[#620000] hover:bg-[#fff1f1]"
+                aria-label="Sửa hoạt động"
+              >
+                <Edit3 size={15} />
+              </button>
+              <button
+                type="button"
+                onClick={() => deleteActivity(index)}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[#b80000] bg-white text-[#b80000] hover:bg-[#fff1f1]"
+                aria-label="Xoá hoạt động"
+              >
+                <Trash2 size={15} />
+              </button>
+            </span>
+          </div>
+        ))}
+        {!activities.length ? (
+          <p className="rounded-md border border-dashed border-[#e1b0b0] bg-white px-4 py-5 text-center text-[14px] font-semibold text-[#9a4a4a]">
+            Chưa có hoạt động nào.
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 function htmlEscape(value: string) {
   return value
     .replace(/&/g, "&amp;")
@@ -689,10 +839,11 @@ function pastedTextToHtml(value: string) {
 const MIN_RICH_LINE_HEIGHT = 1.1;
 const MAX_RICH_LINE_HEIGHT = 2.4;
 const DEFAULT_RICH_LINE_HEIGHT = 1.6;
-const MIN_RICH_FONT_SIZE = 12;
-const MAX_RICH_FONT_SIZE = 32;
+const MIN_RICH_FONT_SIZE = 8;
+const MAX_RICH_FONT_SIZE = 96;
 const DEFAULT_RICH_FONT_SIZE = 16;
 const DEFAULT_RICH_FONT_FAMILY = "system";
+const DEFAULT_RICH_TEXT_COLOR = "#620000";
 const RICH_FONT_OPTIONS = [
   { label: "Mặc định", value: "system", css: "" },
   { label: "Arial", value: "arial", css: "Arial, Helvetica, sans-serif" },
@@ -733,6 +884,50 @@ function getRichFontFamily(value: string) {
 
 function getRichFontCss(value: string) {
   return RICH_FONT_OPTIONS.find((option) => option.value === value)?.css ?? "";
+}
+
+function normalizeRichColor(value: string) {
+  const hex = value.trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i)?.[0];
+  if (hex) {
+    if (hex.length === 4) {
+      return `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`.toLowerCase();
+    }
+
+    return hex.toLowerCase();
+  }
+
+  const rgb = value.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+  if (!rgb) return DEFAULT_RICH_TEXT_COLOR;
+
+  return `#${[rgb[1], rgb[2], rgb[3]]
+    .map((channel) => Math.max(0, Math.min(255, Number(channel))).toString(16).padStart(2, "0"))
+    .join("")}`;
+}
+
+function getRichTextColor(value: string) {
+  const fromData = value.match(/data-rich-text-color=["']([^"']+)["']/i)?.[1];
+  const fromStyle = value.match(/(?:^|;)\s*color\s*:\s*([^;"]+)/i)?.[1];
+  return normalizeRichColor(fromData || fromStyle || DEFAULT_RICH_TEXT_COLOR);
+}
+
+const RICH_SELECTION_HIGHLIGHT = "rich-admin-saved-selection";
+
+function getRichSelectionHighlightSupport() {
+  if (typeof window === "undefined" || typeof CSS === "undefined") return null;
+
+  const css = CSS as unknown as {
+    highlights?: {
+      set: (name: string, highlight: unknown) => void;
+      delete: (name: string) => void;
+    };
+  };
+  const HighlightConstructor = (window as unknown as {
+    Highlight?: new (...ranges: Range[]) => unknown;
+  }).Highlight;
+
+  return css.highlights && HighlightConstructor
+    ? { highlights: css.highlights, HighlightConstructor }
+    : null;
 }
 
 function normalizeVideoUrl(value: string) {
@@ -802,18 +997,22 @@ function RichTextEditor({
   onChange,
   placeholder,
   onStatus,
+  getHtmlRef,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   onStatus: (message: string) => void;
+  getHtmlRef?: { current: (() => string) | null };
 }) {
   const editorRef = useRef<HTMLDivElement>(null);
   const editorFrameRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const selectedMediaRef = useRef<RichMediaElement | null>(null);
   const dragSessionRef = useRef<MediaDragSession | null>(null);
+  const savedSelectionRef = useRef<Range | null>(null);
+  const preservingSelectionRef = useRef(false);
   const [expanded, setExpanded] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -821,7 +1020,9 @@ function RichTextEditor({
   const [mediaOverlay, setMediaOverlay] = useState<MediaOverlayRect | null>(null);
   const [lineHeight, setLineHeight] = useState(() => getRichLineHeight(value));
   const [fontSize, setFontSize] = useState(() => getRichFontSize(value));
+  const [fontSizeInput, setFontSizeInput] = useState(() => `${getRichFontSize(value)}`);
   const [fontFamily, setFontFamily] = useState(() => getRichFontFamily(value));
+  const [textColor, setTextColor] = useState(() => getRichTextColor(value));
   const textValue = value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
   const wordsCount = textValue ? textValue.split(" ").length : 0;
 
@@ -833,15 +1034,28 @@ function RichTextEditor({
       editor.innerHTML = next;
     }
     setLineHeight(getRichLineHeight(next));
-    setFontSize(getRichFontSize(next));
+    const nextFontSize = getRichFontSize(next);
+    setFontSize(nextFontSize);
+    setFontSizeInput(`${nextFontSize}`);
     setFontFamily(getRichFontFamily(next));
+    setTextColor(getRichTextColor(next));
   }, [value]);
+
+  useEffect(() => {
+    if (!getHtmlRef) return;
+    getHtmlRef.current = () => (editorRef.current?.innerHTML ?? "").replace(/\u200b/g, "").trim();
+
+    return () => {
+      getHtmlRef.current = null;
+    };
+  }, [getHtmlRef]);
 
   useEffect(() => {
     window.addEventListener("resize", syncSelectedMediaOverlay);
 
     return () => {
       window.removeEventListener("resize", syncSelectedMediaOverlay);
+      clearSavedSelectionHighlight();
       document.removeEventListener("pointermove", handleDocumentPointerMove);
       document.removeEventListener("pointerup", handleDocumentPointerUp);
       document.removeEventListener("pointercancel", handleDocumentPointerUp);
@@ -851,6 +1065,112 @@ function RichTextEditor({
   function emit() {
     const html = (editorRef.current?.innerHTML ?? "").replace(/\u200b/g, "");
     onChange(html.trim());
+  }
+
+  function isEditorRange(range: Range | null) {
+    const editor = editorRef.current;
+    return Boolean(editor && range && editor.contains(range.commonAncestorContainer));
+  }
+
+  function rememberEditorSelection(options: { keepExistingSelection?: boolean } = {}) {
+    const selection = window.getSelection();
+    const range = selection?.rangeCount ? selection.getRangeAt(0) : null;
+
+    if (isEditorRange(range)) {
+      if (options.keepExistingSelection && range?.collapsed && savedSelectionRef.current && !savedSelectionRef.current.collapsed) {
+        showSavedSelectionHighlight(savedSelectionRef.current);
+        return;
+      }
+
+      savedSelectionRef.current = range?.cloneRange() ?? null;
+      showSavedSelectionHighlight(range);
+      syncToolbarWithSelection(range);
+    }
+  }
+
+  function preserveSelectionForToolbar() {
+    preservingSelectionRef.current = true;
+    rememberEditorSelection({ keepExistingSelection: true });
+  }
+
+  function handleEditorBlur() {
+    rememberEditorSelection({ keepExistingSelection: preservingSelectionRef.current });
+  }
+
+  function showSavedSelectionHighlight(range: Range | null) {
+    const support = getRichSelectionHighlightSupport();
+    if (!support) return;
+
+    if (!range || range.collapsed || !range.toString().replace(/\u200b/g, "").trim()) {
+      support.highlights.delete(RICH_SELECTION_HIGHLIGHT);
+      return;
+    }
+
+    support.highlights.set(RICH_SELECTION_HIGHLIGHT, new support.HighlightConstructor(range.cloneRange()));
+  }
+
+  function clearSavedSelectionHighlight() {
+    getRichSelectionHighlightSupport()?.highlights.delete(RICH_SELECTION_HIGHLIGHT);
+  }
+
+  function restoreEditorSelection() {
+    const selection = window.getSelection();
+    const activeRange = selection?.rangeCount ? selection.getRangeAt(0) : null;
+    const savedRange = savedSelectionRef.current;
+
+    if (savedRange && !savedRange.collapsed && isEditorRange(savedRange)) {
+      selection?.removeAllRanges();
+      selection?.addRange(savedRange);
+      showSavedSelectionHighlight(savedRange);
+      return savedRange;
+    }
+
+    if (isEditorRange(activeRange)) {
+      savedSelectionRef.current = activeRange?.cloneRange() ?? null;
+      return activeRange;
+    }
+
+    if (!selection || !savedRange || !isEditorRange(savedRange)) return null;
+
+    selection.removeAllRanges();
+    selection.addRange(savedRange);
+    showSavedSelectionHighlight(savedRange);
+    return savedRange;
+  }
+
+  function handleEditorInput() {
+    emit();
+    rememberEditorSelection();
+  }
+
+  function getSelectionElement(range: Range | null) {
+    if (!range) return null;
+    const node = range.startContainer;
+    const element = isHtmlElement(node) ? node : node.parentElement;
+    return element && editorRef.current?.contains(element) ? element : null;
+  }
+
+  function syncToolbarWithSelection(range: Range | null) {
+    const element = getSelectionElement(range);
+    if (!element) return;
+
+    const inline = element.closest("[data-rich-font-size], [style*='font-size']");
+    const source = isHtmlElement(inline) ? inline : element;
+    const computedSize = Number.parseFloat(window.getComputedStyle(source).fontSize);
+    const nextFontSize = clampRichFontSize(computedSize);
+    setFontSize(nextFontSize);
+    setFontSizeInput(`${nextFontSize}`);
+
+    const fontSource = element.closest("[data-rich-font-family]");
+    if (isHtmlElement(fontSource)) {
+      const nextFontFamily = fontSource.dataset.richFontFamily;
+      if (nextFontFamily && RICH_FONT_OPTIONS.some((option) => option.value === nextFontFamily)) {
+        setFontFamily(nextFontFamily);
+      }
+    }
+
+    const colorSource = element.closest("[data-rich-text-color], [style*='color']");
+    setTextColor(normalizeRichColor(window.getComputedStyle(isHtmlElement(colorSource) ? colorSource : element).color));
   }
 
   function selectMedia(media: RichMediaElement | null) {
@@ -891,13 +1211,17 @@ function RichTextEditor({
 
   function runCommand(command: string, commandValue?: string) {
     focusEditor();
+    restoreEditorSelection();
     document.execCommand(command, false, commandValue);
+    rememberEditorSelection();
     emit();
   }
 
   function insertHtml(html: string) {
     focusEditor();
+    restoreEditorSelection();
     document.execCommand("insertHTML", false, html);
+    rememberEditorSelection();
     emit();
   }
 
@@ -906,6 +1230,14 @@ function RichTextEditor({
     const node = selection?.anchorNode;
     const element = isHtmlElement(node) ? node : node?.parentElement;
     return Boolean(element?.closest(selector));
+  }
+
+  function selectionClosest(selector: string) {
+    const selection = window.getSelection();
+    const node = selection?.anchorNode;
+    const element = isHtmlElement(node) ? node : node?.parentElement;
+    const closest = element?.closest(selector);
+    return isHtmlElement(closest) ? closest : null;
   }
 
   function selectionBlock() {
@@ -919,53 +1251,15 @@ function RichTextEditor({
     return element.closest("li, h2, h3, p, div") as HTMLElement | null;
   }
 
-  function replaceCurrentTextLine(replacer: (line: string) => string) {
-    const selection = window.getSelection();
-    const range = selection?.rangeCount ? selection.getRangeAt(0) : null;
-    const node = selection?.anchorNode;
-
-    if (!selection || !range || node?.nodeType !== Node.TEXT_NODE) return false;
-
-    const textNode = node as Text;
-    const text = textNode.data.replace(/\u200b/g, "");
-    const offset = Math.min(range.startOffset, text.length);
-    const lineStart = text.lastIndexOf("\n", Math.max(0, offset - 1)) + 1;
-    const nextBreak = text.indexOf("\n", offset);
-    const lineEnd = nextBreak === -1 ? text.length : nextBreak;
-    const line = text.slice(lineStart, lineEnd).trim();
-
-    if (!line) return false;
-
-    const parent = textNode.parentNode;
-    if (!parent) return false;
-
-    const before = text.slice(0, lineStart).trimEnd();
-    const after = text.slice(lineEnd).trimStart();
-    const fragment = document.createDocumentFragment();
-
-    if (before) {
-      fragment.append(document.createTextNode(before), document.createElement("br"));
-    }
-
-    const template = document.createElement("template");
-    template.innerHTML = replacer(line);
-    fragment.append(template.content);
-
-    if (after) {
-      fragment.append(document.createElement("br"), document.createTextNode(after));
-    }
-
-    parent.replaceChild(fragment, textNode);
-    emit();
-    return true;
-  }
-
   function listSelection(type: "ul" | "ol") {
     const editor = editorRef.current;
     if (!editor) return;
 
     focusEditor();
+    restoreEditorSelection();
     selectMedia(null);
+
+    const selection = window.getSelection();
 
     const existingList = selectionInside("ul, ol");
     if (existingList) {
@@ -974,9 +1268,27 @@ function RichTextEditor({
       return;
     }
 
+    const selectedText = selection?.toString().replace(/\u200b/g, "").trim();
+    if (selection?.rangeCount && selectedText) {
+      const items = selectedText
+        .split(/\n+/)
+        .map((item) => item.replace(/^[\s•*-]+/, "").replace(/^\d+[.)]\s*/, "").trim())
+        .filter(Boolean);
+
+      if (items.length) {
+        const template = document.createElement("template");
+        template.innerHTML = `<${type}>${items.map((item) => `<li>${htmlEscape(item)}</li>`).join("")}</${type}>`;
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(template.content);
+        selection.removeAllRanges();
+        savedSelectionRef.current = null;
+        emit();
+        return;
+      }
+    }
+
     const block = selectionBlock();
-    const selection = window.getSelection();
-    const selectedText = selection?.toString().trim();
     const rawText = (selectedText || block?.innerText || editor.innerText || "").replace(/\u200b/g, "");
     const items = rawText
       .split(/\n+/)
@@ -991,37 +1303,6 @@ function RichTextEditor({
       block.outerHTML = html;
     } else if (editor.innerText.trim()) {
       editor.innerHTML = html;
-    } else {
-      document.execCommand("insertHTML", false, html);
-    }
-
-    emit();
-  }
-
-  function headingSelection() {
-    const editor = editorRef.current;
-    if (!editor) return;
-
-    focusEditor();
-    selectMedia(null);
-
-    const block = selectionBlock();
-    const selection = window.getSelection();
-    const selectedText = selection?.toString().trim();
-
-    if (!selectedText && replaceCurrentTextLine((line) => `<h2>${htmlEscape(line)}</h2>`)) {
-      return;
-    }
-
-    const rawText = (selectedText || block?.innerText || "Tiêu đề").replace(/\u200b/g, "").trim() || "Tiêu đề";
-    const html = `<h2>${htmlEscape(rawText)}</h2>`;
-
-    if (block?.tagName === "H2") {
-      block.outerHTML = `<p>${htmlEscape(rawText)}</p>`;
-    } else if (block?.dataset.richLineHeight !== undefined) {
-      block.innerHTML = html;
-    } else if (block && block !== editor && editor.contains(block)) {
-      block.outerHTML = html;
     } else {
       document.execCommand("insertHTML", false, html);
     }
@@ -1052,7 +1333,8 @@ function RichTextEditor({
       !wrapper ||
       (wrapper.dataset.richLineHeight === undefined &&
         wrapper.dataset.richFontSize === undefined &&
-        wrapper.dataset.richFontFamily === undefined)
+        wrapper.dataset.richFontFamily === undefined &&
+        wrapper.dataset.richTextColor === undefined)
     ) {
       const currentHtml = editor.innerHTML.trim() || "<p><br></p>";
       editor.innerHTML = `<div data-rich-style="true">${currentHtml}</div>`;
@@ -1062,32 +1344,134 @@ function RichTextEditor({
     return wrapper;
   }
 
-  function applyRichTextStyles(nextStyles: Partial<{ lineHeight: number; fontSize: number; fontFamily: string }>) {
+  function applyRichTextStyles(nextStyles: Partial<{ lineHeight: number; fontSize: number; fontFamily: string; color: string }>) {
+    const expectsSavedSelection =
+      preservingSelectionRef.current && savedSelectionRef.current && !savedSelectionRef.current.collapsed;
+
+    if (applySelectionRichTextStyles(nextStyles)) return;
+
+    if (expectsSavedSelection) {
+      preservingSelectionRef.current = false;
+      clearSavedSelectionHighlight();
+      onStatus("Không tìm thấy vùng bôi đen, vui lòng chọn lại đoạn cần sửa.");
+      return;
+    }
+
     const wrapper = ensureRichStyleWrapper();
     if (!wrapper) return;
 
-    const nextLineHeight = clampRichLineHeight(nextStyles.lineHeight ?? lineHeight);
-    const nextFontSize = clampRichFontSize(nextStyles.fontSize ?? fontSize);
-    const currentFontFamily = fontFamily || DEFAULT_RICH_FONT_FAMILY;
-    const nextFontFamily = RICH_FONT_OPTIONS.some((option) => option.value === nextStyles.fontFamily)
-      ? (nextStyles.fontFamily as string)
-      : currentFontFamily;
-    const fontCss = getRichFontCss(nextFontFamily);
-
     wrapper.dataset.richStyle = "true";
-    wrapper.dataset.richLineHeight = `${nextLineHeight}`;
-    wrapper.dataset.richFontSize = `${nextFontSize}`;
-    wrapper.dataset.richFontFamily = nextFontFamily;
-    wrapper.style.lineHeight = `${nextLineHeight}`;
-    wrapper.style.fontSize = `${nextFontSize}px`;
-    wrapper.style.fontFamily = fontCss;
 
-    setLineHeight(nextLineHeight);
-    setFontSize(nextFontSize);
-    setFontFamily(nextFontFamily);
+    if (nextStyles.lineHeight !== undefined) {
+      const nextLineHeight = clampRichLineHeight(nextStyles.lineHeight);
+      wrapper.dataset.richLineHeight = `${nextLineHeight}`;
+      wrapper.style.lineHeight = `${nextLineHeight}`;
+      setLineHeight(nextLineHeight);
+    }
+
+    if (nextStyles.fontSize !== undefined) {
+      const nextFontSize = clampRichFontSize(nextStyles.fontSize);
+      wrapper.dataset.richFontSize = `${nextFontSize}`;
+      wrapper.style.fontSize = `${nextFontSize}px`;
+      setFontSize(nextFontSize);
+      setFontSizeInput(`${nextFontSize}`);
+    }
+
+    if (nextStyles.fontFamily !== undefined) {
+      const currentFontFamily = fontFamily || DEFAULT_RICH_FONT_FAMILY;
+      const nextFontFamily = RICH_FONT_OPTIONS.some((option) => option.value === nextStyles.fontFamily)
+        ? (nextStyles.fontFamily as string)
+        : currentFontFamily;
+      wrapper.dataset.richFontFamily = nextFontFamily;
+      wrapper.style.fontFamily = getRichFontCss(nextFontFamily);
+      setFontFamily(nextFontFamily);
+    }
+
+    if (nextStyles.color !== undefined) {
+      const nextTextColor = normalizeRichColor(nextStyles.color);
+      wrapper.dataset.richTextColor = nextTextColor;
+      wrapper.style.color = nextTextColor;
+      setTextColor(nextTextColor);
+    }
     selectMedia(null);
     focusEditor();
+    preservingSelectionRef.current = false;
+    clearSavedSelectionHighlight();
     emit();
+  }
+
+  function applySelectionRichTextStyles(nextStyles: Partial<{ lineHeight: number; fontSize: number; fontFamily: string; color: string }>) {
+    const editor = editorRef.current;
+    if (!editor) return false;
+
+    focusEditor();
+    const range = restoreEditorSelection();
+    const selectedText = range?.toString().replace(/\u200b/g, "").trim();
+    if (!range || range.collapsed || !selectedText || !editor.contains(range.commonAncestorContainer)) return false;
+
+    const selectionRoot = isHtmlElement(range.commonAncestorContainer)
+      ? range.commonAncestorContainer
+      : range.commonAncestorContainer.parentElement;
+    const existingInline = selectionRoot?.closest("span[data-rich-inline-style='true']");
+    const existingText = existingInline?.textContent?.replace(/\u200b/g, "").trim();
+    const inline =
+      isHtmlElement(existingInline) && editor.contains(existingInline) && existingText === selectedText
+        ? existingInline
+        : document.createElement("span");
+    inline.dataset.richInlineStyle = "true";
+
+    if (nextStyles.lineHeight !== undefined) {
+      const nextLineHeight = clampRichLineHeight(nextStyles.lineHeight);
+      inline.dataset.richLineHeight = `${nextLineHeight}`;
+      inline.style.lineHeight = `${nextLineHeight}`;
+      setLineHeight(nextLineHeight);
+    }
+
+    if (nextStyles.fontSize !== undefined) {
+      const nextFontSize = clampRichFontSize(nextStyles.fontSize);
+      inline.dataset.richFontSize = `${nextFontSize}`;
+      inline.style.fontSize = `${nextFontSize}px`;
+      setFontSize(nextFontSize);
+      setFontSizeInput(`${nextFontSize}`);
+    }
+
+    if (nextStyles.fontFamily !== undefined) {
+      const nextFontFamily = RICH_FONT_OPTIONS.some((option) => option.value === nextStyles.fontFamily)
+        ? (nextStyles.fontFamily as string)
+        : DEFAULT_RICH_FONT_FAMILY;
+      inline.dataset.richFontFamily = nextFontFamily;
+      inline.style.fontFamily =
+        nextFontFamily === DEFAULT_RICH_FONT_FAMILY
+          ? "\"Baloo Paaji 2\", Arial, Helvetica, sans-serif"
+          : getRichFontCss(nextFontFamily);
+      setFontFamily(nextFontFamily);
+    }
+
+    if (nextStyles.color !== undefined) {
+      const nextTextColor = normalizeRichColor(nextStyles.color);
+      inline.dataset.richTextColor = nextTextColor;
+      inline.style.color = nextTextColor;
+      setTextColor(nextTextColor);
+    }
+
+    if (!existingInline || inline !== existingInline) {
+      const fragment = range.extractContents();
+      inline.appendChild(fragment);
+      range.insertNode(inline);
+    }
+
+    const nextRange = document.createRange();
+    nextRange.selectNodeContents(inline);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(nextRange);
+    savedSelectionRef.current = nextRange.cloneRange();
+
+    selectMedia(null);
+    preservingSelectionRef.current = false;
+    clearSavedSelectionHighlight();
+    emit();
+    return true;
   }
 
   function applyLineHeight(nextValue: number) {
@@ -1098,14 +1482,32 @@ function RichTextEditor({
 
   function applyFontSize(nextValue: number) {
     const next = clampRichFontSize(nextValue);
+    setFontSizeInput(`${next}`);
     applyRichTextStyles({ fontSize: next });
     onStatus(`Đã đặt cỡ chữ ${next}px.`);
+  }
+
+  function commitFontSizeInput() {
+    const parsed = Number.parseFloat(fontSizeInput);
+    if (!Number.isFinite(parsed)) {
+      setFontSizeInput(`${fontSize}`);
+      return;
+    }
+
+    applyFontSize(parsed);
   }
 
   function applyFontFamily(nextValue: string) {
     const next = RICH_FONT_OPTIONS.some((option) => option.value === nextValue) ? nextValue : DEFAULT_RICH_FONT_FAMILY;
     applyRichTextStyles({ fontFamily: next });
     onStatus(`Đã đổi font chữ sang ${RICH_FONT_OPTIONS.find((option) => option.value === next)?.label ?? "Mặc định"}.`);
+  }
+
+  function applyTextColor(nextValue: string) {
+    const next = normalizeRichColor(nextValue);
+    setTextColor(next);
+    applyRichTextStyles({ color: next });
+    onStatus("Đã đổi màu chữ.");
   }
 
   async function uploadEditorImage(file: File | undefined) {
@@ -1259,6 +1661,27 @@ function RichTextEditor({
       return;
     }
 
+    if (event.key === "Enter" && !event.altKey && !event.ctrlKey && !event.metaKey) {
+      const heading = selectionClosest("h2");
+      if (heading && editorRef.current?.contains(heading)) {
+        event.preventDefault();
+        selectMedia(null);
+
+        const paragraph = document.createElement("p");
+        paragraph.innerHTML = "<br>";
+        heading.insertAdjacentElement("afterend", paragraph);
+
+        const range = document.createRange();
+        range.setStart(paragraph, 0);
+        range.collapse(true);
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        emit();
+        return;
+      }
+    }
+
     if (event.key === "Enter" && !event.altKey && !event.ctrlKey && !event.metaKey && !selectionInside("li")) {
       event.preventDefault();
       selectMedia(null);
@@ -1406,9 +1829,6 @@ function RichTextEditor({
 
   const toolbar = (
     <div className="flex flex-wrap items-center gap-2 rounded-t-md border border-[#e1b0b0] border-b-0 bg-[#fff8f8] p-2">
-      <EditorButton icon={<FileText size={16} />} onClick={headingSelection}>
-        Tiêu đề
-      </EditorButton>
       <EditorButton icon={<span className="text-[15px]">B</span>} onClick={() => runCommand("bold")}>
         Đậm
       </EditorButton>
@@ -1426,6 +1846,8 @@ function RichTextEditor({
       </EditorButton>
       <select
         value={fontFamily}
+        onMouseDown={preserveSelectionForToolbar}
+        onFocus={preserveSelectionForToolbar}
         onChange={(event) => applyFontFamily(event.target.value)}
         className="h-9 rounded-md border border-[#e7b8b8] bg-white px-3 text-[13px] font-extrabold text-[#620000] outline-none transition-colors hover:bg-[#fff1f1] focus:border-[#b80000]"
         title="Font chữ"
@@ -1436,6 +1858,21 @@ function RichTextEditor({
           </option>
         ))}
       </select>
+      <label
+        className="inline-flex h-9 items-center gap-2 rounded-md border border-[#e7b8b8] bg-white px-3 text-[13px] font-extrabold text-[#620000] transition-colors hover:bg-[#fff1f1]"
+        title="Màu chữ"
+      >
+        <span>Màu</span>
+        <input
+          type="color"
+          value={textColor}
+          onMouseDown={preserveSelectionForToolbar}
+          onFocus={preserveSelectionForToolbar}
+          onChange={(event) => applyTextColor(event.target.value)}
+          className="h-5 w-7 cursor-pointer rounded border border-[#e7b8b8] bg-transparent p-0"
+          aria-label="Màu chữ"
+        />
+      </label>
       <div className="inline-flex h-9 items-center overflow-hidden rounded-md border border-[#e7b8b8] bg-white text-[13px] font-extrabold text-[#620000]">
         <button
           type="button"
@@ -1445,9 +1882,32 @@ function RichTextEditor({
         >
           A-
         </button>
-        <span className="flex h-full min-w-14 items-center justify-center border-x border-[#e7b8b8] bg-[#fff8f8] px-2 text-[#b80000]">
-          {fontSize}px
-        </span>
+        <label className="flex h-full min-w-16 items-center justify-center border-x border-[#e7b8b8] bg-[#fff8f8] px-1 text-[#b80000]">
+          <span className="sr-only">Cỡ chữ</span>
+          <input
+            type="number"
+            min={MIN_RICH_FONT_SIZE}
+            max={MAX_RICH_FONT_SIZE}
+            value={fontSizeInput}
+            onMouseDown={preserveSelectionForToolbar}
+            onFocus={(event) => {
+              preserveSelectionForToolbar();
+              event.currentTarget.select();
+            }}
+            onChange={(event) => setFontSizeInput(event.target.value)}
+            onBlur={commitFontSizeInput}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                commitFontSizeInput();
+                event.currentTarget.blur();
+              }
+            }}
+            className="h-full w-10 bg-transparent text-center text-[13px] font-extrabold text-[#b80000] outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            title="Nhập cỡ chữ"
+          />
+          <span className="pr-1">px</span>
+        </label>
         <button
           type="button"
           onMouseDown={(event) => event.preventDefault()}
@@ -1542,10 +2002,13 @@ function RichTextEditor({
           aria-label={label}
           contentEditable
           suppressContentEditableWarning
-          onInput={emit}
+          onInput={handleEditorInput}
           onKeyDown={handleEditorKeyDown}
+          onKeyUp={() => rememberEditorSelection()}
           onPaste={handleEditorPaste}
           onClick={pickMedia}
+          onMouseUp={() => rememberEditorSelection()}
+          onBlur={handleEditorBlur}
           onPointerDown={startMediaDrag}
           onScroll={syncSelectedMediaOverlay}
           className={`${expanded ? "h-full min-h-0 overflow-auto" : "min-h-[560px]"} rich-admin-content rounded-b-md border border-[#e1b0b0] bg-white px-5 py-4 text-[16px] leading-8 text-[#620000] outline-none focus:border-[#b80000]`}
@@ -1591,6 +2054,10 @@ function RichTextEditor({
         <span>Bấm ảnh/video, kéo để đổi vị trí, kéo chấm đỏ để đổi kích thước, bấm X để xóa</span>
       </div>
       <style jsx global>{`
+        ::highlight(rich-admin-saved-selection) {
+          background: rgba(184, 0, 0, 0.2);
+          color: inherit;
+        }
         .rich-admin-content h2 {
           margin: 1.2rem 0 0.65rem;
           color: #b80000;
@@ -2431,15 +2898,13 @@ export default function AdminDashboard() {
         slug: item.slug ?? "",
         name: item.name ?? "",
         ageLabel: item.age ?? "",
-        ageMin: "",
-        ageMax: "",
         category: item.category ?? "",
         excerpt: item.excerpt ?? "",
         description: item.description ?? "",
         imageId: item.imageId ?? null,
         imageUrl: item.imageUrl ?? "",
         colorHex: item.color ?? "#fffefa",
-        scheduleText: (item.schedule ?? []).join("\n"),
+        scheduleText: scheduleItemsToText(item.schedule ?? []),
       });
       return;
     }
@@ -2519,14 +2984,12 @@ export default function AdminDashboard() {
         slug: classForm.slug,
         name: classForm.name,
         ageLabel: classForm.ageLabel,
-        ageMin: classForm.ageMin ? Number(classForm.ageMin) : null,
-        ageMax: classForm.ageMax ? Number(classForm.ageMax) : null,
         category: classForm.category,
         excerpt: classForm.excerpt,
         description: classForm.description,
         colorHex: classForm.colorHex,
         imageId: classForm.imageId,
-        schedule: lines(classForm.scheduleText),
+        schedule: scheduleTextToItems(classForm.scheduleText),
       };
       await requestJson(selected ? `/api/class-programs/${selected}` : "/api/class-programs", {
         method: selected ? "PUT" : "POST",
@@ -3476,8 +3939,6 @@ export default function AdminDashboard() {
                   <Field label="Tên lớp" value={classForm.name} onChange={(value) => setClassForm((f) => ({ ...f, name: value, slug: f.slug || slugify(value) }))} />
                   <Field label="Slug" value={classForm.slug} onChange={(value) => setClassForm((f) => ({ ...f, slug: value }))} />
                   <Field label="Độ tuổi hiển thị" value={classForm.ageLabel} placeholder="2 - 3 tuổi" onChange={(value) => setClassForm((f) => ({ ...f, ageLabel: value }))} />
-                  <Field label="Từ tuổi" type="number" value={classForm.ageMin} onChange={(value) => setClassForm((f) => ({ ...f, ageMin: value }))} />
-                  <Field label="Đến tuổi" type="number" value={classForm.ageMax} onChange={(value) => setClassForm((f) => ({ ...f, ageMax: value }))} />
                   <Field label="Màu card" type="color" value={classForm.colorHex} onChange={(value) => setClassForm((f) => ({ ...f, colorHex: value }))} />
                 </div>
                 <CategoryPicker
@@ -3504,8 +3965,18 @@ export default function AdminDashboard() {
                   onDeleted={() => setClassForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
                 />
                 <TextArea label="Mô tả ngắn" value={classForm.excerpt} onChange={(value) => setClassForm((f) => ({ ...f, excerpt: value }))} />
-                <TextArea label="Mô tả chi tiết" value={classForm.description} onChange={(value) => setClassForm((f) => ({ ...f, description: value }))} />
-                <TextArea label="Lịch học, mỗi dòng là một hoạt động" rows={6} value={classForm.scheduleText} onChange={(value) => setClassForm((f) => ({ ...f, scheduleText: value }))} />
+                <RichTextEditor
+                  label="Mô tả chi tiết"
+                  value={classForm.description}
+                  onChange={(value) => setClassForm((f) => ({ ...f, description: value }))}
+                  onStatus={setStatus}
+                />
+                <ScheduleActivitiesEditor
+                  label="Lịch học"
+                  value={classForm.scheduleText}
+                  onChange={(value) => setClassForm((f) => ({ ...f, scheduleText: value }))}
+                  onStatus={setStatus}
+                />
                 <ActionButton type="submit" icon={selected ? <Edit3 size={17} /> : <Save size={17} />} disabled={saving}>
                   Lưu
                 </ActionButton>
