@@ -2908,7 +2908,7 @@ export default function AdminDashboard() {
               <div className="flex gap-2">
                 {selected ? (
                   <ActionButton icon={<Trash2 size={17} />} tone="danger" onClick={archiveCurrent} disabled={saving}>
-                    Ẩn
+                    Xóa
                   </ActionButton>
                 ) : null}
                 <ActionButton icon={<X size={17} />} tone="quiet" onClick={resetSelection}>
