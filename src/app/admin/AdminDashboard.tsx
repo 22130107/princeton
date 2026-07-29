@@ -15,6 +15,19 @@ type CategoryOption = {
   scope: CategoryScope;
 };
 
+type MediaAsset = {
+  id: number;
+  fileName: string;
+  originalName: string;
+  mimeType: string;
+  url: string;
+  alt: string;
+  sizeBytes: number | null;
+  folder: string;
+  isUploaded: boolean;
+  createdAt: string;
+};
+
 type HeroSlide = {
   id: number;
   title: string;
@@ -375,6 +388,29 @@ async function uploadMedia(file: File, alt: string) {
   });
 }
 
+async function fetchMediaLibrary() {
+  return requestJson<{ assets: MediaAsset[] }>("/api/media");
+}
+
+async function deleteUploadedMedia(target: { id?: number | null; url?: string }) {
+  return requestJson<{ ok: true }>("/api/media", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(target),
+  });
+}
+
+function getUploadedMediaUrl(value: string | null | undefined) {
+  if (!value) return "";
+
+  try {
+    const pathname = value.startsWith("http://") || value.startsWith("https://") ? new URL(value).pathname : value;
+    return /^\/uploads\/[a-zA-Z0-9._-]+$/.test(pathname) ? pathname : "";
+  } catch {
+    return "";
+  }
+}
+
 function Field({
   label,
   value,
@@ -624,6 +660,18 @@ function normalizeVideoUrl(value: string) {
 type RichMediaElement = HTMLImageElement | HTMLIFrameElement;
 type MediaDragMode = "move" | "resize";
 
+function isHtmlElement(value: unknown): value is HTMLElement {
+  return typeof HTMLElement !== "undefined" && value instanceof HTMLElement;
+}
+
+function isImageElement(value: unknown): value is HTMLImageElement {
+  return typeof HTMLImageElement !== "undefined" && value instanceof HTMLImageElement;
+}
+
+function isIframeElement(value: unknown): value is HTMLIFrameElement {
+  return typeof HTMLIFrameElement !== "undefined" && value instanceof HTMLIFrameElement;
+}
+
 type MediaDragSession = {
   mode: MediaDragMode;
   media: RichMediaElement;
@@ -665,6 +713,7 @@ function RichTextEditor({
   const selectedMediaRef = useRef<RichMediaElement | null>(null);
   const dragSessionRef = useRef<MediaDragSession | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<RichMediaElement | null>(null);
   const [mediaOverlay, setMediaOverlay] = useState<MediaOverlayRect | null>(null);
@@ -753,7 +802,7 @@ function RichTextEditor({
   function selectionInside(selector: string) {
     const selection = window.getSelection();
     const node = selection?.anchorNode;
-    const element = node instanceof HTMLElement ? node : node?.parentElement;
+    const element = isHtmlElement(node) ? node : node?.parentElement;
     return Boolean(element?.closest(selector));
   }
 
@@ -763,7 +812,7 @@ function RichTextEditor({
     const node = selection?.anchorNode;
     if (!editor || !node) return null;
 
-    const element = node instanceof HTMLElement ? node : node.parentElement;
+    const element = isHtmlElement(node) ? node : node.parentElement;
     if (!element || !editor.contains(element)) return null;
     return element.closest("li, h2, h3, p, div") as HTMLElement | null;
   }
@@ -1002,7 +1051,7 @@ function RichTextEditor({
     }
 
     selectedMedia.style.maxWidth = "100%";
-    if (selectedMedia instanceof HTMLImageElement) {
+    if (isImageElement(selectedMedia)) {
       selectedMedia.style.height = "auto";
     }
     syncSelectedMediaOverlay();
@@ -1024,7 +1073,7 @@ function RichTextEditor({
   }
 
   function isEmptyRichBlock(node: ChildNode | null): node is HTMLElement {
-    if (!(node instanceof HTMLElement) || (node.tagName !== "P" && node.tagName !== "DIV")) return false;
+    if (!isHtmlElement(node) || (node.tagName !== "P" && node.tagName !== "DIV")) return false;
     const text = (node.textContent ?? "").replace(/\u00a0/g, "").trim();
     return !text && !node.querySelector("img, iframe, video, table, ul, ol");
   }
@@ -1054,6 +1103,25 @@ function RichTextEditor({
     focusEditor();
     emit();
     onStatus("Đã xóa ảnh/video khỏi nội dung.");
+  }
+
+  async function deleteSelectedUploadedImage() {
+    const media = selectedMediaRef.current;
+    const editor = editorRef.current;
+    const uploadUrl = isImageElement(media) ? getUploadedMediaUrl(media.getAttribute("src") ?? media.src) : "";
+
+    if (!media || !editor?.contains(media) || !uploadUrl) return;
+    if (!window.confirm("Xóa file ảnh upload này khỏi hệ thống?")) return;
+
+    onStatus("Đang xóa ảnh upload...");
+
+    try {
+      await deleteUploadedMedia({ url: uploadUrl });
+      removeSelectedMedia();
+      onStatus("Đã xóa ảnh upload và gỡ khỏi nội dung.");
+    } catch (error) {
+      onStatus(error instanceof Error ? error.message : "Không thể xóa ảnh upload.");
+    }
   }
 
   function insertSoftLineBreak() {
@@ -1097,8 +1165,8 @@ function RichTextEditor({
   }
 
   function findMediaAtPoint(clientX: number, clientY: number, target?: EventTarget | null) {
-    const directTarget = target instanceof HTMLElement ? target.closest("img, iframe") : null;
-    if (directTarget instanceof HTMLImageElement || directTarget instanceof HTMLIFrameElement) {
+    const directTarget = isHtmlElement(target) ? target.closest("img, iframe") : null;
+    if (isImageElement(directTarget) || isIframeElement(directTarget)) {
       return directTarget;
     }
 
@@ -1170,7 +1238,7 @@ function RichTextEditor({
     if (event.button !== 0) return;
 
     const media = findMediaAtPoint(event.clientX, event.clientY, event.target);
-    if (!(media instanceof HTMLImageElement || media instanceof HTMLIFrameElement) || !editorRef.current?.contains(media)) {
+    if (!(isImageElement(media) || isIframeElement(media)) || !editorRef.current?.contains(media)) {
       selectMedia(null);
       return;
     }
@@ -1210,7 +1278,7 @@ function RichTextEditor({
     session.media.style.width = `${Math.round(nextWidth)}px`;
     session.media.style.maxWidth = "100%";
 
-    if (session.media instanceof HTMLIFrameElement) {
+    if (isIframeElement(session.media)) {
       session.media.style.height = `${Math.round(Math.max(160, nextWidth / session.aspectRatio))}px`;
     } else {
       session.media.style.height = "auto";
@@ -1230,6 +1298,9 @@ function RichTextEditor({
     syncSelectedMediaOverlay();
     emit();
   }
+
+  const selectedUploadUrl =
+    isImageElement(selectedMedia) ? getUploadedMediaUrl(selectedMedia.getAttribute("src") ?? selectedMedia.src) : "";
 
   const toolbar = (
     <div className="flex flex-wrap items-center gap-2 rounded-t-md border border-[#e1b0b0] border-b-0 bg-[#fff8f8] p-2">
@@ -1307,8 +1378,8 @@ function RichTextEditor({
           Giãn +
         </button>
       </div>
-      <EditorButton icon={<ImagePlus size={16} />} onClick={() => fileRef.current?.click()}>
-        {uploading ? "Đang tải" : "Chèn ảnh"}
+      <EditorButton icon={<ImagePlus size={16} />} onClick={() => setPickerOpen(true)}>
+        Chèn ảnh
       </EditorButton>
       <EditorButton icon={<Video size={16} />} onClick={insertVideo}>
         Nhúng video
@@ -1339,6 +1410,11 @@ function RichTextEditor({
           <EditorButton icon={<Trash2 size={16} />} onClick={removeSelectedMedia}>
             Xóa
           </EditorButton>
+          {selectedUploadUrl ? (
+            <EditorButton icon={<Trash2 size={16} />} onClick={deleteSelectedUploadedImage}>
+              Xóa file upload
+            </EditorButton>
+          ) : null}
         </div>
       ) : null}
       <input
@@ -1494,6 +1570,23 @@ function RichTextEditor({
           {editor}
         </div>
       ) : null}
+      <MediaLibraryPicker
+        open={pickerOpen}
+        title={label}
+        onClose={() => setPickerOpen(false)}
+        onSelect={(asset) => {
+          insertHtml(
+            `<img src="${asset.url}" alt="${htmlEscape(asset.alt || asset.originalName)}" draggable="false" style="display:block;position:relative;left:0;top:0;width:70%;max-width:100%;height:auto;margin:18px auto;border-radius:16px;" />`,
+          );
+          onStatus("Đã chèn ảnh từ thư viện vào nội dung.");
+        }}
+        onDeletedAsset={(asset) => {
+          const media = selectedMediaRef.current;
+          const selectedUrl = isImageElement(media) ? getUploadedMediaUrl(media.getAttribute("src") ?? media.src) : "";
+          if (selectedUrl === asset.url) removeSelectedMedia();
+        }}
+        onStatus={onStatus}
+      />
     </div>
   );
 }
@@ -1526,20 +1619,245 @@ function EditorButton({
   );
 }
 
+function formatBytes(value: number | null) {
+  if (!value) return "";
+  if (value < 1024 * 1024) return `${Math.round(value / 1024)}KB`;
+  return `${(value / (1024 * 1024)).toFixed(1)}MB`;
+}
+
+function MediaLibraryPicker({
+  open,
+  title,
+  currentAssetId,
+  onClose,
+  onSelect,
+  onDeletedAsset,
+  onStatus,
+}: {
+  open: boolean;
+  title: string;
+  currentAssetId?: number | null;
+  onClose: () => void;
+  onSelect: (asset: MediaAsset) => void;
+  onDeletedAsset?: (asset: MediaAsset) => void;
+  onStatus: (message: string) => void;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [tab, setTab] = useState<"library" | "upload">("library");
+  const [assets, setAssets] = useState<MediaAsset[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  async function loadAssets() {
+    setLoading(true);
+
+    try {
+      const data = await fetchMediaLibrary();
+      setAssets(data.assets);
+    } catch (error) {
+      onStatus(error instanceof Error ? error.message : "Không thể tải thư viện ảnh.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    setTab("library");
+    void loadAssets();
+  }, [open]);
+
+  async function handleUpload(file: File | undefined) {
+    if (!file) return;
+
+    setUploading(true);
+    onStatus("Đang upload ảnh...");
+
+    try {
+      await uploadMedia(file, title);
+      await loadAssets();
+      setTab("library");
+      onStatus("Đã upload ảnh, bạn có thể chọn để chèn.");
+    } catch (error) {
+      onStatus(error instanceof Error ? error.message : "Không thể upload ảnh.");
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  }
+
+  async function handleDelete(asset: MediaAsset) {
+    if (!asset.isUploaded) return;
+    if (!window.confirm("Xóa file ảnh upload này khỏi hệ thống?")) return;
+
+    setDeletingId(asset.id);
+    onStatus("Đang xóa ảnh upload...");
+
+    try {
+      await deleteUploadedMedia({ id: asset.id, url: asset.url });
+      setAssets((current) => current.filter((item) => item.id !== asset.id));
+      onDeletedAsset?.(asset);
+      onStatus("Đã xóa ảnh upload.");
+    } catch (error) {
+      onStatus(error instanceof Error ? error.message : "Không thể xóa ảnh upload.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[#220000]/45 p-4">
+      <div className="flex max-h-[88vh] w-full max-w-5xl flex-col overflow-hidden rounded-md border border-[#e0b4b4] bg-white shadow-[0_18px_60px_rgba(98,0,0,0.28)]">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#f0d0d0] bg-[#fff8f8] px-5 py-4">
+          <div>
+            <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Quản lý ảnh</p>
+            <h3 className="text-[22px] font-extrabold text-[#620000]">{title}</h3>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[#e7b8b8] bg-white text-[#620000] hover:bg-[#fff1f1]"
+            aria-label="Đóng"
+          >
+            <X size={18} />
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2 border-b border-[#f0d0d0] px-5 py-3">
+          <button
+            type="button"
+            onClick={() => setTab("library")}
+            className={`h-9 rounded-md border px-4 text-[13px] font-extrabold ${
+              tab === "library" ? "border-[#b80000] bg-[#b80000] text-white" : "border-[#e7b8b8] bg-white text-[#620000]"
+            }`}
+          >
+            Ảnh đã có
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab("upload")}
+            className={`h-9 rounded-md border px-4 text-[13px] font-extrabold ${
+              tab === "upload" ? "border-[#b80000] bg-[#b80000] text-white" : "border-[#e7b8b8] bg-white text-[#620000]"
+            }`}
+          >
+            Upload mới
+          </button>
+          <button
+            type="button"
+            onClick={loadAssets}
+            className="ml-auto inline-flex h-9 items-center gap-2 rounded-md border border-[#e7b8b8] bg-white px-3 text-[13px] font-extrabold text-[#620000] hover:bg-[#fff1f1]"
+          >
+            <RefreshCw size={15} />
+            Tải lại
+          </button>
+        </div>
+        {tab === "library" ? (
+          <div className="min-h-0 flex-1 overflow-auto p-5">
+            {loading ? (
+              <p className="rounded-md border border-[#f0d0d0] bg-[#fffafa] px-4 py-8 text-center text-[14px] font-bold text-[#9a4a4a]">
+                Đang tải thư viện ảnh...
+              </p>
+            ) : assets.length ? (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                {assets.map((asset) => {
+                  const active = asset.id === currentAssetId;
+
+                  return (
+                    <div
+                      key={asset.id}
+                      className={`group overflow-hidden rounded-md border bg-[#fffafa] ${
+                        active ? "border-[#b80000] ring-2 ring-[#b80000]/20" : "border-[#efd0d0]"
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onSelect(asset);
+                          onClose();
+                        }}
+                        className="block w-full text-left"
+                      >
+                        <span className="flex aspect-square items-center justify-center bg-white">
+                          <img src={asset.url} alt={asset.alt || asset.originalName} className="h-full w-full object-contain p-2" />
+                        </span>
+                        <span className="block px-3 py-2">
+                          <span className="block truncate text-[12px] font-extrabold text-[#620000]">
+                            {asset.originalName || asset.fileName}
+                          </span>
+                          <span className="mt-0.5 block truncate text-[11px] font-semibold text-[#9a4a4a]">
+                            {asset.isUploaded ? "Upload" : asset.folder || "Có sẵn"} {formatBytes(asset.sizeBytes)}
+                          </span>
+                        </span>
+                      </button>
+                      {asset.isUploaded ? (
+                        <button
+                          type="button"
+                          disabled={deletingId === asset.id}
+                          onClick={() => handleDelete(asset)}
+                          className="flex h-8 w-full items-center justify-center gap-1 border-t border-[#f0d0d0] bg-white text-[12px] font-extrabold text-[#b80000] hover:bg-[#fff1f1] disabled:opacity-60"
+                        >
+                          <Trash2 size={13} />
+                          {deletingId === asset.id ? "Đang xóa..." : "Xóa"}
+                        </button>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="rounded-md border border-[#f0d0d0] bg-[#fffafa] px-4 py-8 text-center text-[14px] font-bold text-[#9a4a4a]">
+                Chưa có ảnh trong thư viện.
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="p-5">
+            <label className="flex min-h-[220px] cursor-pointer flex-col items-center justify-center gap-3 rounded-md border border-dashed border-[#d9baba] bg-[#fffafa] px-6 text-center transition-colors hover:bg-[#fff1f1]">
+              <ImagePlus size={34} className="text-[#b80000]" />
+              <span className="text-[17px] font-extrabold text-[#620000]">
+                {uploading ? "Đang upload..." : "Chọn ảnh từ máy"}
+              </span>
+              <span className="text-[13px] font-semibold text-[#9a4a4a]">JPG, PNG, WebP hoặc SVG, tối đa 8MB</span>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                disabled={uploading}
+                onChange={(event) => handleUpload(event.target.files?.[0])}
+                className="sr-only"
+              />
+            </label>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function MediaField({
   label,
+  assetId,
   previewUrl,
   alt,
   onUploaded,
+  onDeleted,
   onStatus,
 }: {
   label: string;
+  assetId: number | null;
   previewUrl: string;
   alt: string;
   onUploaded: (asset: { id: number; url: string }) => void;
+  onDeleted: () => void;
   onStatus: (message: string) => void;
 }) {
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const uploadUrl = getUploadedMediaUrl(previewUrl);
+  const canDeleteUpload = Boolean(assetId && uploadUrl);
 
   async function handleFile(file: File | undefined) {
     if (!file) return;
@@ -1558,6 +1876,24 @@ function MediaField({
     }
   }
 
+  async function handleDeleteUpload() {
+    if (!assetId || !uploadUrl) return;
+    if (!window.confirm("Xóa file ảnh upload này khỏi hệ thống?")) return;
+
+    setDeleting(true);
+    onStatus("Đang xóa ảnh upload...");
+
+    try {
+      await deleteUploadedMedia({ id: assetId, url: uploadUrl });
+      onDeleted();
+      onStatus("Đã xóa ảnh upload.");
+    } catch (error) {
+      onStatus(error instanceof Error ? error.message : "Không thể xóa ảnh upload.");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   return (
     <div className="grid gap-2">
       <span className="text-[13px] font-bold uppercase text-[#620000]">{label}</span>
@@ -1569,21 +1905,44 @@ function MediaField({
             <ImagePlus size={34} className="text-[#b80000]" />
           )}
         </div>
-        <label className="flex min-h-[116px] cursor-pointer flex-col items-center justify-center gap-2 rounded-md border border-dashed border-[#d9baba] bg-white px-4 text-center transition-colors hover:bg-[#fff1f1]">
-          <ImagePlus size={20} className="text-[#b80000]" />
-          <span className="text-[15px] font-extrabold text-[#620000]">
-            {uploading ? "Đang upload..." : "Chọn ảnh/icon"}
-          </span>
-          <span className="text-[13px] font-semibold text-[#9a4a4a]">JPG, PNG, WebP hoặc SVG, tối đa 8MB</span>
-          <input
-            type="file"
-            accept="image/png,image/jpeg,image/webp,image/svg+xml"
-            disabled={uploading}
-            onChange={(event) => handleFile(event.target.files?.[0])}
-            className="sr-only"
-          />
-        </label>
+        <div className="grid gap-2">
+          <button
+            type="button"
+            disabled={deleting}
+            onClick={() => setPickerOpen(true)}
+            className="flex min-h-[82px] flex-col items-center justify-center gap-2 rounded-md border border-dashed border-[#d9baba] bg-white px-4 text-center transition-colors hover:bg-[#fff1f1] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <ImagePlus size={20} className="text-[#b80000]" />
+            <span className="text-[15px] font-extrabold text-[#620000]">Chọn ảnh/icon</span>
+            <span className="text-[13px] font-semibold text-[#9a4a4a]">Mở kho ảnh đã có hoặc upload ảnh mới</span>
+          </button>
+          {canDeleteUpload ? (
+            <button
+              type="button"
+              disabled={deleting}
+              onClick={handleDeleteUpload}
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#e7b8b8] bg-white px-3 text-[13px] font-extrabold text-[#b80000] transition-colors hover:bg-[#fff1f1] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Trash2 size={15} />
+              {deleting ? "Đang xóa..." : "Xóa ảnh đã upload"}
+            </button>
+          ) : null}
+        </div>
       </div>
+      <MediaLibraryPicker
+        open={pickerOpen}
+        title={label}
+        currentAssetId={assetId}
+        onClose={() => setPickerOpen(false)}
+        onSelect={(asset) => {
+          onUploaded({ id: asset.id, url: asset.url });
+          onStatus("Đã chọn ảnh từ thư viện.");
+        }}
+        onDeletedAsset={(asset) => {
+          if (asset.id === assetId) onDeleted();
+        }}
+        onStatus={onStatus}
+      />
     </div>
   );
 }
@@ -2588,21 +2947,25 @@ export default function AdminDashboard() {
                 <div className="grid gap-4 md:grid-cols-2">
                   <MediaField
                     label="Ảnh banner desktop"
+                    assetId={bannerForm.desktopImageId}
                     previewUrl={bannerForm.desktopImageUrl}
                     alt={bannerForm.title}
                     onStatus={setStatus}
                     onUploaded={(asset) =>
                       setBannerForm((f) => ({ ...f, desktopImageId: asset.id, desktopImageUrl: asset.url }))
                     }
+                    onDeleted={() => setBannerForm((f) => ({ ...f, desktopImageId: null, desktopImageUrl: "" }))}
                   />
                   <MediaField
                     label="Ảnh banner mobile"
+                    assetId={bannerForm.mobileImageId}
                     previewUrl={bannerForm.mobileImageUrl}
                     alt={bannerForm.title}
                     onStatus={setStatus}
                     onUploaded={(asset) =>
                       setBannerForm((f) => ({ ...f, mobileImageId: asset.id, mobileImageUrl: asset.url }))
                     }
+                    onDeleted={() => setBannerForm((f) => ({ ...f, mobileImageId: null, mobileImageUrl: "" }))}
                   />
                 </div>
                 <ActionButton type="submit" icon={selected ? <Edit3 size={17} /> : <Save size={17} />} disabled={saving}>
@@ -2632,12 +2995,14 @@ export default function AdminDashboard() {
                 />
                 <MediaField
                   label="Ảnh/icon minh hoạ"
+                  assetId={teachingForm.imageId}
                   previewUrl={teachingForm.imageUrl}
                   alt={teachingForm.title}
                   onStatus={setStatus}
                   onUploaded={(asset) =>
                     setTeachingForm((f) => ({ ...f, imageId: asset.id, imageUrl: asset.url }))
                   }
+                  onDeleted={() => setTeachingForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
                 />
                 <TextArea label="Mô tả card" value={teachingForm.description} onChange={(value) => setTeachingForm((f) => ({ ...f, description: value }))} />
                 <TextArea label="Tóm tắt chi tiết" value={teachingForm.excerpt} onChange={(value) => setTeachingForm((f) => ({ ...f, excerpt: value }))} />
@@ -2677,12 +3042,14 @@ export default function AdminDashboard() {
                 />
                 <MediaField
                   label="Ảnh khối lớp"
+                  assetId={classForm.imageId}
                   previewUrl={classForm.imageUrl}
                   alt={classForm.name}
                   onStatus={setStatus}
                   onUploaded={(asset) =>
                     setClassForm((f) => ({ ...f, imageId: asset.id, imageUrl: asset.url }))
                   }
+                  onDeleted={() => setClassForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
                 />
                 <TextArea label="Mô tả ngắn" value={classForm.excerpt} onChange={(value) => setClassForm((f) => ({ ...f, excerpt: value }))} />
                 <TextArea label="Mô tả chi tiết" value={classForm.description} onChange={(value) => setClassForm((f) => ({ ...f, description: value }))} />
@@ -2713,12 +3080,14 @@ export default function AdminDashboard() {
                 />
                 <MediaField
                   label="Ảnh chương trình"
+                  assetId={curriculumForm.imageId}
                   previewUrl={curriculumForm.imageUrl}
                   alt={curriculumForm.title}
                   onStatus={setStatus}
                   onUploaded={(asset) =>
                     setCurriculumForm((f) => ({ ...f, imageId: asset.id, imageUrl: asset.url }))
                   }
+                  onDeleted={() => setCurriculumForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
                 />
                 <TextArea label="Mô tả" value={curriculumForm.description} onChange={(value) => setCurriculumForm((f) => ({ ...f, description: value }))} />
                 <RichTextEditor
@@ -2765,12 +3134,14 @@ export default function AdminDashboard() {
                 />
                 <MediaField
                   label="Ảnh bìa"
+                  assetId={postForm.coverImageId}
                   previewUrl={postForm.imageUrl}
                   alt={postForm.title}
                   onStatus={setStatus}
                   onUploaded={(asset) =>
                     setPostForm((f) => ({ ...f, coverImageId: asset.id, imageUrl: asset.url }))
                   }
+                  onDeleted={() => setPostForm((f) => ({ ...f, coverImageId: null, imageUrl: "" }))}
                 />
                 <TextArea label="Tóm tắt" value={postForm.excerpt} onChange={(value) => setPostForm((f) => ({ ...f, excerpt: value }))} />
                 <RichTextEditor
@@ -2803,12 +3174,14 @@ export default function AdminDashboard() {
                 </div>
                 <MediaField
                   label="Ảnh cơ sở vật chất"
+                  assetId={facilityForm.imageId}
                   previewUrl={facilityForm.imageUrl}
                   alt={facilityForm.title}
                   onStatus={setStatus}
                   onUploaded={(asset) =>
                     setFacilityForm((f) => ({ ...f, imageId: asset.id, imageUrl: asset.url }))
                   }
+                  onDeleted={() => setFacilityForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
                 />
                 <ActionButton type="submit" icon={selected ? <Edit3 size={17} /> : <Save size={17} />} disabled={saving}>
                   Lưu
@@ -2846,12 +3219,14 @@ export default function AdminDashboard() {
                 />
                 <MediaField
                   label="Ảnh/icon giáo viên"
+                  assetId={teacherForm.imageId}
                   previewUrl={teacherForm.imageUrl}
                   alt={teacherForm.title}
                   onStatus={setStatus}
                   onUploaded={(asset) =>
                     setTeacherForm((f) => ({ ...f, imageId: asset.id, imageUrl: asset.url }))
                   }
+                  onDeleted={() => setTeacherForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
                 />
                 <TextArea
                   label="Mô tả"
@@ -2897,12 +3272,14 @@ export default function AdminDashboard() {
                 </div>
                 <MediaField
                   label="Ảnh đại diện phụ huynh"
+                  assetId={testimonialForm.avatarId}
                   previewUrl={testimonialForm.avatarUrl}
                   alt={testimonialForm.parentName}
                   onStatus={setStatus}
                   onUploaded={(asset) =>
                     setTestimonialForm((f) => ({ ...f, avatarId: asset.id, avatarUrl: asset.url }))
                   }
+                  onDeleted={() => setTestimonialForm((f) => ({ ...f, avatarId: null, avatarUrl: "" }))}
                 />
                 <TextArea
                   label="Nội dung chia sẻ"

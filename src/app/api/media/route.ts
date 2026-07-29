@@ -1,8 +1,8 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
-import type { ResultSetHeader } from "mysql2/promise";
+import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { getMysqlPool } from "@/lib/mysql";
 
 export const runtime = "nodejs";
@@ -19,6 +19,52 @@ const maxFileSize = 8 * 1024 * 1024;
 
 function cleanAlt(value: FormDataEntryValue | null, fallback: string) {
   return typeof value === "string" && value.trim() ? value.trim() : fallback;
+}
+
+type MediaAssetRow = RowDataPacket & {
+  id: number;
+  file_name: string;
+  original_name: string | null;
+  mime_type: string | null;
+  url: string;
+  alt_text: string | null;
+  size_bytes: number | null;
+  folder: string | null;
+  created_at: Date | string;
+};
+
+function isSafeUploadedUrl(value: unknown) {
+  return typeof value === "string" && /^\/uploads\/[a-zA-Z0-9._-]+$/.test(value);
+}
+
+export async function GET() {
+  try {
+    const pool = getMysqlPool();
+    const [rows] = await pool.execute<MediaAssetRow[]>(
+      `SELECT id, file_name, original_name, mime_type, url, alt_text, size_bytes, folder, created_at
+       FROM media_assets
+       WHERE mime_type LIKE 'image/%'
+       ORDER BY created_at DESC, id DESC`,
+    );
+
+    return NextResponse.json({
+      ok: true,
+      assets: rows.map((asset) => ({
+        id: asset.id,
+        fileName: asset.file_name,
+        originalName: asset.original_name ?? asset.file_name,
+        mimeType: asset.mime_type ?? "",
+        url: asset.url,
+        alt: asset.alt_text ?? asset.original_name ?? asset.file_name,
+        sizeBytes: asset.size_bytes,
+        folder: asset.folder ?? "",
+        isUploaded: isSafeUploadedUrl(asset.url),
+        createdAt: asset.created_at instanceof Date ? asset.created_at.toISOString() : String(asset.created_at),
+      })),
+    });
+  } catch {
+    return NextResponse.json({ ok: false, message: "Không thể tải thư viện ảnh." }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
@@ -80,5 +126,67 @@ export async function POST(request: Request) {
       { ok: false, message: "Không thể upload ảnh/icon." },
       { status: 500 },
     );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const body = (await request.json().catch(() => null)) as { id?: unknown; url?: unknown } | null;
+    const id = typeof body?.id === "number" ? body.id : Number(body?.id);
+    const url = isSafeUploadedUrl(body?.url) ? String(body?.url) : "";
+
+    if ((!Number.isInteger(id) || id <= 0) && !url) {
+      return NextResponse.json({ ok: false, message: "Không tìm thấy ảnh upload cần xóa." }, { status: 400 });
+    }
+
+    const pool = getMysqlPool();
+    const [rows] = await pool.execute<MediaAssetRow[]>(
+      `SELECT id, file_name, url, folder
+       FROM media_assets
+       WHERE ${url ? "url = :url" : "id = :id"}
+       LIMIT 1`,
+      { id, url },
+    );
+    const asset = rows[0];
+
+    if (!asset) {
+      return NextResponse.json({ ok: false, message: "Ảnh upload không còn tồn tại." }, { status: 404 });
+    }
+
+    if (!isSafeUploadedUrl(asset.url)) {
+      return NextResponse.json({ ok: false, message: "Chỉ có thể xóa ảnh đã upload." }, { status: 400 });
+    }
+
+    try {
+      await pool.execute<ResultSetHeader>("DELETE FROM media_assets WHERE id = :id", { id: asset.id });
+    } catch (error) {
+      const code = typeof error === "object" && error ? (error as { code?: string }).code : "";
+
+      if (code === "ER_ROW_IS_REFERENCED_2" || code === "ER_ROW_IS_REFERENCED") {
+        return NextResponse.json(
+          { ok: false, message: "Ảnh đang được dùng ở mục bắt buộc. Hãy đổi ảnh hoặc xóa mục đó trước." },
+          { status: 409 },
+        );
+      }
+
+      throw error;
+    }
+
+    const uploadRoot = path.join(process.cwd(), "public", "uploads");
+    const uploadFileName = path.basename(asset.url);
+    const filePath = path.join(uploadRoot, uploadFileName);
+
+    if (!filePath.startsWith(uploadRoot)) {
+      return NextResponse.json({ ok: false, message: "Đường dẫn ảnh upload không hợp lệ." }, { status: 400 });
+    }
+
+    await unlink(filePath).catch((error) => {
+      if (typeof error === "object" && error && (error as { code?: string }).code === "ENOENT") return;
+      throw error;
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json({ ok: false, message: "Không thể xóa ảnh upload." }, { status: 500 });
   }
 }

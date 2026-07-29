@@ -4,7 +4,6 @@ import imgFlowersPng from "../../../assets/cfa61d914b57a907c8879eea3242e5037a5a2
 import imgSection2 from "../../../assets/45e9cd713cd022e324337d1e9a3d1f01c8086db4.png";
 import imgVt8 from "../../../assets/e696912b5a14342eefaefd736c060b2d79809d72.png";
 import imgVt11 from "../../../assets/7617fb747f89ec48f0cc1ef6cd175894265b44b4.png";
-import imgVt4 from "../../../assets/15b993b41f7d29767352b2f8177c8e7c5df7d5ab.png";
 import imgCampus2Png from "../../../assets/876d64d36b6f5a9e6e8957bf3289df528594ef31.png";
 import imgSection1 from "../../../assets/e2e0d53776626afcb6870acda5507843a053b4ae.png";
 import imgVt5 from "../../../assets/c230ff021569045e95806d51dbe5b2f14f5e83b5.png";
@@ -112,16 +111,6 @@ function Vt3() {
   );
 }
 
-function Vt4() {
-  return (
-    <div className="absolute left-[-256px] size-[256px] top-0" data-name="vt">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={imgVt4.src} />
-      </div>
-    </div>
-  );
-}
-
 function Vt5() {
   return (
     <div className="absolute left-[256px] size-[256px] top-[256px]" data-name="vt">
@@ -199,7 +188,6 @@ function Container127() {
       <Vt1 />
       <Vt2 />
       <Vt3 />
-      <Vt4 />
       <Vt5 />
       <Vt6 />
       <Vt7 />
