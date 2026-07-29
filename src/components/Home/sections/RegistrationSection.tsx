@@ -17,6 +17,16 @@ const fallbackPrograms: ProgramOption[] = [
   { slug: "penguin", label: "Penguin (2-3 TUỔI)" },
 ];
 
+const appointmentTimeOptions: ProgramOption[] = [
+  { slug: "", label: "Khung giờ" },
+  { slug: "08:30", label: "08:30" },
+  { slug: "09:30", label: "09:30" },
+  { slug: "10:30", label: "10:30" },
+  { slug: "14:00", label: "14:00" },
+  { slug: "15:00", label: "15:00" },
+  { slug: "16:00", label: "16:00" },
+];
+
 const SECTION_ARTBOARD_WIDTH = 1304;
 const SECTION_ARTBOARD_HEIGHT = 907.69;
 
@@ -549,21 +559,47 @@ function TextFieldOverlay({
   ariaLabel,
   topClass,
   type = "text",
+  min,
 }: {
   value: string;
   onChange: (value: string) => void;
   ariaLabel: string;
   topClass: string;
-  type?: "text" | "tel" | "email";
+  type?: "text" | "tel" | "email" | "date";
+  min?: string;
 }) {
+  const inputValue = value ?? "";
+
   return (
     <input
       aria-label={ariaLabel}
       type={type}
-      value={value}
+      min={min}
+      value={inputValue}
       onChange={(event) => onChange(event.target.value)}
-      className={`absolute left-0 right-0 ${topClass} z-[2] h-[26px] bg-transparent px-[16px] py-0 font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] text-[18px] leading-[26px] text-[#620000] outline-none`}
+      className={`absolute left-0 right-0 ${topClass} z-[2] h-[26px] bg-transparent px-[16px] py-0 font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] text-[18px] leading-[26px] text-[#620000] outline-none ${type === "date" && !inputValue ? "[&::-webkit-datetime-edit]:text-transparent" : ""}`}
     />
+  );
+}
+
+function FieldLabel({
+  text,
+  visible,
+  required = false,
+}: {
+  text: string;
+  visible: boolean;
+  required?: boolean;
+}) {
+  return (
+    <div className={`absolute content-stretch flex flex-col items-start left-0 px-[16px] right-0 top-[15.4px] pointer-events-none ${visible ? "" : "opacity-0"}`} data-name="Label">
+      <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#620000] text-[18px] whitespace-nowrap">
+        <p>
+          <span className="leading-[26px]">{required ? `${text} ` : text}</span>
+          {required ? <span className="leading-[26px] text-[red]">*</span> : null}
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -699,6 +735,31 @@ function Container187({
   );
 }
 
+function DateField({
+  value,
+  onChange,
+  min,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  min: string;
+}) {
+  return (
+    <div className="content-stretch flex flex-col items-start pt-[3.4px] relative shrink-0 w-full" data-name="Container">
+      <Input1 />
+      <FieldLabel text="Ngày tư vấn mong muốn" visible={!value} />
+      <TextFieldOverlay
+        ariaLabel="Ngày tư vấn mong muốn"
+        min={min}
+        topClass="top-[15.4px]"
+        type="date"
+        value={value}
+        onChange={onChange}
+      />
+    </div>
+  );
+}
+
 function FieldBgSvg3() {
   return (
     <div className="h-[49.125px] relative shrink-0 w-[356.4px]" data-name="field-bg.svg">
@@ -772,7 +833,9 @@ function ComboboxMenu({
   value: string;
   onChange: (value: string) => void;
 }) {
-  const selectedLabel = programs.find((program) => program.slug === value)?.label ?? fallbackPrograms[0].label;
+  const selectValue = value ?? "";
+  const selectedLabel =
+    programs.find((program) => program.slug === selectValue)?.label ?? programs[0]?.label ?? fallbackPrograms[0].label;
 
   return (
     <div className="content-stretch flex flex-col h-[50px] items-start justify-center relative rounded-bl-[4px] rounded-br-[4px] shrink-0 w-full" data-name="Combobox menu">
@@ -781,7 +844,7 @@ function ComboboxMenu({
       <Image11 />
       <select
         aria-label="Khối lớp"
-        value={value}
+        value={selectValue}
         onChange={(event) => onChange(event.target.value)}
         className="absolute inset-0 z-[2] cursor-pointer opacity-0"
       >
@@ -914,6 +977,11 @@ function Container184({
   programs,
   grade,
   onGradeChange,
+  appointmentDate,
+  onAppointmentDateChange,
+  minAppointmentDate,
+  appointmentTime,
+  onAppointmentTimeChange,
 }: {
   consentText: string;
   checked: boolean;
@@ -927,6 +995,11 @@ function Container184({
   programs: ProgramOption[];
   grade: string;
   onGradeChange: (value: string) => void;
+  appointmentDate: string;
+  onAppointmentDateChange: (value: string) => void;
+  minAppointmentDate: string;
+  appointmentTime: string;
+  onAppointmentTimeChange: (value: string) => void;
 }) {
   return (
     <div className="content-stretch flex flex-col gap-[12.6px] items-start relative shrink-0 w-full" data-name="Container">
@@ -934,6 +1007,16 @@ function Container184({
       <Container186 value={phone} onChange={onPhoneChange} />
       <Container187 value={email} onChange={onEmailChange} />
       <ListboxMenu programs={programs} value={grade} onChange={onGradeChange} />
+      <DateField
+        value={appointmentDate}
+        onChange={onAppointmentDateChange}
+        min={minAppointmentDate}
+      />
+      <ListboxMenu
+        programs={appointmentTimeOptions}
+        value={appointmentTime}
+        onChange={onAppointmentTimeChange}
+      />
       <ListItem consentText={consentText} checked={checked} onToggle={onToggle} />
     </div>
   );
@@ -957,6 +1040,11 @@ function Form({
   programs,
   grade,
   onGradeChange,
+  appointmentDate,
+  onAppointmentDateChange,
+  minAppointmentDate,
+  appointmentTime,
+  onAppointmentTimeChange,
 }: {
   consentText: string;
   checked: boolean;
@@ -970,6 +1058,11 @@ function Form({
   programs: ProgramOption[];
   grade: string;
   onGradeChange: (value: string) => void;
+  appointmentDate: string;
+  onAppointmentDateChange: (value: string) => void;
+  minAppointmentDate: string;
+  appointmentTime: string;
+  onAppointmentTimeChange: (value: string) => void;
 }) {
   return (
     <div className="content-stretch flex flex-col gap-[25.2px] items-start pt-[5.8px] relative shrink-0 w-[370px]" data-name="Form">
@@ -986,6 +1079,11 @@ function Form({
         programs={programs}
         grade={grade}
         onGradeChange={onGradeChange}
+        appointmentDate={appointmentDate}
+        onAppointmentDateChange={onAppointmentDateChange}
+        minAppointmentDate={minAppointmentDate}
+        appointmentTime={appointmentTime}
+        onAppointmentTimeChange={onAppointmentTimeChange}
       />
     </div>
   );
@@ -1004,6 +1102,11 @@ function Container173({
   programs,
   grade,
   onGradeChange,
+  appointmentDate,
+  onAppointmentDateChange,
+  minAppointmentDate,
+  appointmentTime,
+  onAppointmentTimeChange,
 }: {
   settings: RegistrationSectionSettings;
   checked: boolean;
@@ -1017,6 +1120,11 @@ function Container173({
   programs: ProgramOption[];
   grade: string;
   onGradeChange: (value: string) => void;
+  appointmentDate: string;
+  onAppointmentDateChange: (value: string) => void;
+  minAppointmentDate: string;
+  appointmentTime: string;
+  onAppointmentTimeChange: (value: string) => void;
 }) {
   return (
     <div className="content-stretch flex flex-col gap-[16px] items-center pb-[20px] pt-[12px] px-[24px] relative shrink-0" data-name="Container">
@@ -1036,6 +1144,11 @@ function Container173({
           programs={programs}
           grade={grade}
           onGradeChange={onGradeChange}
+          appointmentDate={appointmentDate}
+          onAppointmentDateChange={onAppointmentDateChange}
+          minAppointmentDate={minAppointmentDate}
+          appointmentTime={appointmentTime}
+          onAppointmentTimeChange={onAppointmentTimeChange}
         />
       ) : null}
     </div>
@@ -1057,6 +1170,11 @@ function Background13({
   programs,
   grade,
   onGradeChange,
+  appointmentDate,
+  onAppointmentDateChange,
+  minAppointmentDate,
+  appointmentTime,
+  onAppointmentTimeChange,
 }: {
   settings: RegistrationSectionSettings;
   checked: boolean;
@@ -1072,6 +1190,11 @@ function Background13({
   programs: ProgramOption[];
   grade: string;
   onGradeChange: (value: string) => void;
+  appointmentDate: string;
+  onAppointmentDateChange: (value: string) => void;
+  minAppointmentDate: string;
+  appointmentTime: string;
+  onAppointmentTimeChange: (value: string) => void;
 }) {
   return (
     <div className="content-stretch flex flex-col h-[875.69px] items-start relative self-stretch shrink-0 w-[490.54px]" data-name="Background">
@@ -1096,6 +1219,11 @@ function Background13({
         programs={programs}
         grade={grade}
         onGradeChange={onGradeChange}
+        appointmentDate={appointmentDate}
+        onAppointmentDateChange={onAppointmentDateChange}
+        minAppointmentDate={minAppointmentDate}
+        appointmentTime={appointmentTime}
+        onAppointmentTimeChange={onAppointmentTimeChange}
       />
     </div>
   );
@@ -1110,10 +1238,17 @@ export default function RegistrationSection() {
   const [agreed, setAgreed] = useState(false);
   const [programs, setPrograms] = useState<ProgramOption[]>(fallbackPrograms);
   const [grade, setGrade] = useState(fallbackPrograms[0].slug);
+  const [appointmentDate, setAppointmentDate] = useState("");
+  const [appointmentTime, setAppointmentTime] = useState("");
   const [sectionScale, setSectionScale] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const promoImageUrl = settings.promoDesktopImageUrl || imgTask73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg.src;
   const countdownValues = useCountdownValues(settings);
+  const minAppointmentDate = (() => {
+    const today = new Date();
+    const offsetMs = today.getTimezoneOffset() * 60 * 1000;
+    return new Date(today.getTime() - offsetMs).toISOString().slice(0, 10);
+  })();
   const displaySettings = {
     ...settings,
     countdownDays: countdownValues.days,
@@ -1135,6 +1270,8 @@ export default function RegistrationSection() {
           phone,
           email,
           grade,
+          appointmentDate,
+          appointmentTime,
           agreed,
           sourcePage: window.location.pathname,
           sourceDevice: "desktop",
@@ -1146,6 +1283,8 @@ export default function RegistrationSection() {
       setName("");
       setPhone("");
       setEmail("");
+      setAppointmentDate("");
+      setAppointmentTime("");
       setAgreed(false);
     } finally {
       setIsSubmitting(false);
@@ -1230,6 +1369,11 @@ export default function RegistrationSection() {
             programs={programs}
             grade={grade}
             onGradeChange={setGrade}
+            appointmentDate={appointmentDate}
+            onAppointmentDateChange={setAppointmentDate}
+            minAppointmentDate={minAppointmentDate}
+            appointmentTime={appointmentTime}
+            onAppointmentTimeChange={setAppointmentTime}
           />
         </div>
       </div>
