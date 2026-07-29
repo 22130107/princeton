@@ -11,6 +11,8 @@ type ProgramOption = {
 
 type EnrollmentLeadFormProps = {
   variant?: "desktop" | "mobile";
+  submitLabel?: string;
+  consentText?: string;
 };
 
 type SubmitState =
@@ -28,6 +30,8 @@ function getDevice() {
 
 export default function EnrollmentLeadForm({
   variant = "desktop",
+  submitLabel = "Đăng ký ngay",
+  consentText = "Tôi xác nhận rằng các thông tin cá nhân được cung cấp là chính xác và đồng ý để Nhà trường thu thập, lưu trữ, xử lý và sử dụng theo quy định của pháp luật về bảo vệ dữ liệu cá nhân.",
 }: EnrollmentLeadFormProps) {
   const [programs, setPrograms] = useState<ProgramOption[]>([]);
   const [parentName, setParentName] = useState("");
@@ -221,7 +225,7 @@ export default function EnrollmentLeadForm({
           className="mt-1 size-5 shrink-0 accent-[#b80000]"
         />
         <span className="text-[12px] leading-relaxed text-[#620000]">
-          Toi xac nhan rang cac thong tin ca nhan duoc cung cap la chinh xac va dong y de Nha truong thu thap, luu tru, xu ly va su dung theo quy dinh cua phap luat ve bao ve du lieu ca nhan.
+          {consentText}
         </span>
       </label>
       {fieldErrors.agreed ? (
@@ -236,7 +240,7 @@ export default function EnrollmentLeadForm({
           submitState.status === "loading" ? "cursor-wait opacity-70" : "cursor-pointer",
         ].join(" ")}
       >
-        {submitState.status === "loading" ? "Dang gui..." : "Dang ky ngay"}
+        {submitState.status === "loading" ? "Đang gửi..." : submitLabel}
       </button>
 
       {submitState.message ? (

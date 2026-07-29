@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import imgItem1 from "../../assets/4067071ed218b109a3b3d760ab5b856a1c4d1556.png";
-import imgItem2 from "../../assets/ba09fe820d0f9cb663b24826afea30ad6fc2c8a2.png";
-import imgItem3 from "../../assets/6fcde84113072aa66cc43c4fc5efa3b2d4e6feb8.png";
-import imgItem4 from "../../assets/aa47a37d3cb1c1b806218e09ba36b08f5e7c4d55.png";
+import { mediaUrl } from "@/lib/media-url";
 import imgZigzagTop from "../../assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgZigzagBottom from "../../assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
 
@@ -20,7 +17,7 @@ type MobileTeachingMethod = {
 const fallbackMethods: MobileTeachingMethod[] = [
   {
     id: 1,
-    imageUrl: imgItem1.src,
+    imageUrl: mediaUrl("4067071ed218b109a3b3d760ab5b856a1c4d1556.png"),
     imageAlt: "Kết hợp nhiều phương pháp",
     title: "Kết hợp nhiều phương pháp",
     description:
@@ -28,7 +25,7 @@ const fallbackMethods: MobileTeachingMethod[] = [
   },
   {
     id: 2,
-    imageUrl: imgItem3.src,
+    imageUrl: mediaUrl("6fcde84113072aa66cc43c4fc5efa3b2d4e6feb8.png"),
     imageAlt: "Lấy trẻ làm trung tâm",
     title: "Lấy trẻ làm trung tâm",
     description:
@@ -36,7 +33,7 @@ const fallbackMethods: MobileTeachingMethod[] = [
   },
   {
     id: 3,
-    imageUrl: imgItem2.src,
+    imageUrl: mediaUrl("ba09fe820d0f9cb663b24826afea30ad6fc2c8a2.png"),
     imageAlt: "Khai phóng tư duy",
     title: "Khai phóng tư duy",
     description:
@@ -44,7 +41,7 @@ const fallbackMethods: MobileTeachingMethod[] = [
   },
   {
     id: 4,
-    imageUrl: imgItem4.src,
+    imageUrl: mediaUrl("aa47a37d3cb1c1b806218e09ba36b08f5e7c4d55.png"),
     imageAlt: "Học qua tương tác và hợp tác",
     title: "Học qua tương tác & hợp tác",
     description:

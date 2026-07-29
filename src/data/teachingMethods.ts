@@ -1,12 +1,8 @@
-import type { StaticImageData } from "next/image";
-import imgItem1 from "@/assets/4067071ed218b109a3b3d760ab5b856a1c4d1556.png";
-import imgItem2 from "@/assets/ba09fe820d0f9cb663b24826afea30ad6fc2c8a2.png";
-import imgItem3 from "@/assets/6fcde84113072aa66cc43c4fc5efa3b2d4e6feb8.png";
-import imgItem4 from "@/assets/aa47a37d3cb1c1b806218e09ba36b08f5e7c4d55.png";
+import { mediaImage, type MediaImage } from "@/lib/media-url";
 
 export type TeachingMethod = {
   slug: string;
-  image: StaticImageData;
+  image: MediaImage;
   category: string;
   title: string;
   description: string;
@@ -18,7 +14,7 @@ export type TeachingMethod = {
 export const teachingMethods: TeachingMethod[] = [
   {
     slug: "ket-hop-nhieu-phuong-phap",
-    image: imgItem1,
+    image: mediaImage("4067071ed218b109a3b3d760ab5b856a1c4d1556.png"),
     category: "Phương pháp · Tổng hợp",
     title: "Kết hợp nhiều phương pháp",
     background: "#fffefa",
@@ -34,7 +30,7 @@ export const teachingMethods: TeachingMethod[] = [
   },
   {
     slug: "lay-tre-lam-trung-tam",
-    image: imgItem3,
+    image: mediaImage("6fcde84113072aa66cc43c4fc5efa3b2d4e6feb8.png"),
     category: "Phương pháp · Cá nhân hóa",
     title: "Lấy trẻ làm trung tâm",
     background: "#fff1f1",
@@ -50,7 +46,7 @@ export const teachingMethods: TeachingMethod[] = [
   },
   {
     slug: "khai-phong-tu-duy",
-    image: imgItem2,
+    image: mediaImage("ba09fe820d0f9cb663b24826afea30ad6fc2c8a2.png"),
     category: "Phương pháp · Sáng tạo",
     title: "Khai phóng tư duy",
     background: "#e8f3e6",
@@ -66,7 +62,7 @@ export const teachingMethods: TeachingMethod[] = [
   },
   {
     slug: "hoc-qua-tuong-tac-hop-tac",
-    image: imgItem4,
+    image: mediaImage("aa47a37d3cb1c1b806218e09ba36b08f5e7c4d55.png"),
     category: "Phương pháp · Xã hội",
     title: "Học qua tương tác & hợp tác",
     background: "#e1f7fb",

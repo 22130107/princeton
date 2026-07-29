@@ -3,12 +3,14 @@ import Link from "next/link";
 import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
+import { mediaImage } from "@/lib/media-url";
 import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
-import imgMascotKoala from "@/assets/d088645c54f44b84375f6cb56aeabe8e06bc006b.png";
 import imgMascotWombat from "@/assets/3dc1ce007304dd7c637e9e4c763ad7fda6021a35.png";
-import imgMascotKangaroo from "@/assets/d0268a1bfec279b63f5d3717d847ff89893ec9a7.png";
 import imgZigzagTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgZigzagBottom from "@/assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
+
+const imgMascotKoala = mediaImage("d088645c54f44b84375f6cb56aeabe8e06bc006b.png");
+const imgMascotKangaroo = mediaImage("d0268a1bfec279b63f5d3717d847ff89893ec9a7.png");
 
 type Post = {
   title: string;

@@ -1,9 +1,13 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, type ClipboardEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { Edit3, FileText, ImagePlus, List, ListOrdered, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
+import { Edit3, Eye, EyeOff, FileText, ImagePlus, List, ListOrdered, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
+import {
+  defaultRegistrationSectionSettings,
+  type RegistrationSectionSettings,
+} from "@/lib/registration-section-config";
 
-type TabKey = "banners" | "teaching" | "programs" | "posts" | "about";
+type TabKey = "banners" | "registration" | "teaching" | "programs" | "posts" | "about";
 type ProgramMode = "classes" | "curriculum";
 type AboutMode = "facilities" | "teachers" | "testimonials";
 type CategoryScope = "teaching_methods" | "class_programs" | "curriculum_tracks" | "posts";
@@ -239,6 +243,8 @@ type TestimonialForm = {
   reactionImageUrl: string;
 };
 
+type RegistrationSectionForm = RegistrationSectionSettings;
+
 const emptyClass: ClassForm = {
   slug: "",
   name: "",
@@ -335,6 +341,10 @@ const emptyTestimonial: TestimonialForm = {
   reactionImageUrl: "",
 };
 
+const emptyRegistrationSection: RegistrationSectionForm = {
+  ...defaultRegistrationSectionSettings,
+};
+
 function lines(value: string) {
   return value
     .split("\n")
@@ -429,10 +439,32 @@ function Field({
       <span className="text-[13px] font-bold uppercase text-[#620000]">{label}</span>
       <input
         type={type}
-        value={value}
+        value={value ?? ""}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         className="h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[15px] text-[#620000] outline-none focus:border-[#b80000]"
+      />
+    </label>
+  );
+}
+
+function ToggleField({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: (value: boolean) => void;
+}) {
+  return (
+    <label className="flex h-11 items-center justify-between gap-3 rounded-md border border-[#e1b0b0] bg-white px-3 text-[15px] font-bold text-[#620000]">
+      <span>{label}</span>
+      <input
+        type="checkbox"
+        checked={Boolean(checked)}
+        onChange={(event) => onChange(event.target.checked)}
+        className="size-5 accent-[#b80000]"
       />
     </label>
   );
@@ -468,7 +500,7 @@ function CategoryPicker({
       <span className="text-[13px] font-bold uppercase text-[#620000]">{label}</span>
       <div className="grid gap-2 sm:grid-cols-[1fr_220px_auto_auto_auto]">
         <select
-          value={value}
+          value={value ?? ""}
           onChange={(event) => {
             const selected = options.find((option) => option.slug === event.target.value) ?? null;
             onChange(selected);
@@ -485,7 +517,7 @@ function CategoryPicker({
         </select>
         <input
           type="text"
-          value={addValue}
+          value={addValue ?? ""}
           onChange={(event) => onAddValue(event.target.value)}
           placeholder="Thêm danh mục"
           className="h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[15px] text-[#620000] outline-none focus:border-[#b80000]"
@@ -536,7 +568,7 @@ function TextArea({
     <div className="grid gap-1.5">
       <span className="text-[13px] font-bold uppercase text-[#620000]">{label}</span>
       <textarea
-        value={value}
+        value={value ?? ""}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         rows={rows}
@@ -2142,6 +2174,8 @@ export default function AdminDashboard() {
   const [addingCategory, setAddingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [categories, setCategories] = useState<CategoryState>(emptyCategories);
+  const [registrationForm, setRegistrationForm] =
+    useState<RegistrationSectionForm>(emptyRegistrationSection);
 
   const [bannerForm, setBannerForm] = useState(emptyBanner);
   const [classForm, setClassForm] = useState(emptyClass);
@@ -2153,6 +2187,7 @@ export default function AdminDashboard() {
   const [testimonialForm, setTestimonialForm] = useState(emptyTestimonial);
 
   const currentList = useMemo(() => {
+    if (tab === "registration") return [];
     if (tab === "banners") return data.banners;
     if (tab === "teaching") return data.teaching;
     if (tab === "posts") return data.posts;
@@ -2166,8 +2201,9 @@ export default function AdminDashboard() {
 
   async function loadAll() {
     setStatus("Đang tải dữ liệu...");
-    const [banners, classes, curriculum, teaching, posts, facilities, teachers, testimonials, categoryResponse] = await Promise.all([
+    const [banners, registration, classes, curriculum, teaching, posts, facilities, teachers, testimonials, categoryResponse] = await Promise.all([
       requestJson<{ slides: HeroSlide[] }>("/api/hero-slides"),
+      requestJson<{ settings: RegistrationSectionSettings }>("/api/home-sections/registration"),
       requestJson<{ programs: ClassProgram[] }>("/api/class-programs"),
       requestJson<{ tracks: CurriculumTrack[] }>("/api/curriculum-tracks"),
       requestJson<{ methods: TeachingMethod[] }>("/api/teaching-methods"),
@@ -2189,6 +2225,7 @@ export default function AdminDashboard() {
       testimonials: testimonials.testimonials,
     });
     setCategories(categoryResponse.categories);
+    setRegistrationForm(registration.settings);
     setStatus("Đã tải dữ liệu.");
   }
 
@@ -2206,6 +2243,7 @@ export default function AdminDashboard() {
     setFacilityForm(emptyFacility);
     setTeacherForm(emptyTeacher);
     setTestimonialForm(emptyTestimonial);
+    if (tab === "registration") setRegistrationForm(emptyRegistrationSection);
     setNewCategoryName("");
   }
 
@@ -2546,6 +2584,28 @@ export default function AdminDashboard() {
     }
   }
 
+  async function saveRegistrationSection(event: FormEvent) {
+    event.preventDefault();
+    setSaving(true);
+    try {
+      const result = await requestJson<{ settings: RegistrationSectionSettings }>(
+        "/api/home-sections/registration",
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(registrationForm),
+        },
+      );
+
+      setRegistrationForm(result.settings);
+      setStatus("Đã lưu khối đăng ký ưu đãi.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Không thể lưu khối đăng ký ưu đãi.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function archiveCurrent() {
     if (!selected) return;
 
@@ -2738,9 +2798,10 @@ export default function AdminDashboard() {
       </header>
 
       <div className="mx-auto grid max-w-[1280px] gap-6 px-8 py-8">
-        <nav className="grid grid-cols-2 overflow-hidden rounded-md border border-[#cfe0cc] bg-[#e8f3e6] md:grid-cols-5">
+        <nav className="grid grid-cols-2 overflow-hidden rounded-md border border-[#cfe0cc] bg-[#e8f3e6] md:grid-cols-6">
           {[
             ["banners", "Banner Trang Chủ"],
+            ["registration", "Đăng ký ưu đãi"],
             ["teaching", "Phương Pháp Giảng Dạy"],
             ["programs", "Chương Trình Học"],
             ["posts", "Tin Tức & Sự Kiện"],
@@ -2813,7 +2874,8 @@ export default function AdminDashboard() {
           </div>
         ) : null}
 
-        <section className="grid gap-6 lg:grid-cols-[390px_1fr]">
+        <section className={tab === "registration" ? "grid gap-6" : "grid gap-6 lg:grid-cols-[390px_1fr]"}>
+          {tab !== "registration" ? (
           <aside className="rounded-md border border-[#d9baba] bg-white">
             <div className="flex items-center justify-between border-b border-[#f0d9d9] px-4 py-3">
               <h2 className="text-[18px] font-extrabold">Danh sách</h2>
@@ -2880,16 +2942,19 @@ export default function AdminDashboard() {
               ) : null}
             </div>
           </aside>
+          ) : null}
 
           <section className="rounded-md border border-[#d9baba] bg-white p-5">
             <div className="mb-5 flex items-center justify-between gap-4">
               <div>
                 <p className="text-[13px] font-extrabold uppercase text-[#b80000]">
-                  {selected ? "Đang sửa" : "Thêm mới"}
+                  {tab === "registration" ? "Cấu hình" : selected ? "Đang sửa" : "Thêm mới"}
                 </p>
                 <h2 className="text-[24px] font-extrabold">
                   {tab === "banners"
                     ? "Banner trang chủ"
+                    : tab === "registration"
+                    ? "Đăng ký ưu đãi"
                     : tab === "teaching"
                     ? "Phương pháp giảng dạy"
                     : tab === "posts"
@@ -2906,7 +2971,7 @@ export default function AdminDashboard() {
                 </h2>
               </div>
               <div className="flex gap-2">
-                {selected ? (
+                {selected && tab !== "registration" ? (
                   <ActionButton icon={<Trash2 size={17} />} tone="danger" onClick={archiveCurrent} disabled={saving}>
                     Xóa
                   </ActionButton>
@@ -2916,6 +2981,115 @@ export default function AdminDashboard() {
                 </ActionButton>
               </div>
             </div>
+
+            {tab === "registration" ? (
+              <form className="grid gap-5" onSubmit={saveRegistrationSection}>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <ToggleField
+                    label="Hiển thị toàn bộ khối"
+                    checked={registrationForm.isActive}
+                    onChange={(value) => setRegistrationForm((form) => ({ ...form, isActive: value }))}
+                  />
+                  <ToggleField
+                    label="Hiển thị countdown"
+                    checked={registrationForm.showCountdown}
+                    onChange={(value) => setRegistrationForm((form) => ({ ...form, showCountdown: value }))}
+                  />
+                  <ToggleField
+                    label="Hiển thị ảnh ưu đãi"
+                    checked={registrationForm.showPromoImage}
+                    onChange={(value) => setRegistrationForm((form) => ({ ...form, showPromoImage: value }))}
+                  />
+                  <ToggleField
+                    label="Hiển thị form"
+                    checked={registrationForm.showForm}
+                    onChange={(value) => setRegistrationForm((form) => ({ ...form, showForm: value }))}
+                  />
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Field
+                    label="Tiêu đề"
+                    value={registrationForm.title}
+                    placeholder="ĐĂNG KÝ NHẬN ƯU ĐÃI NGAY"
+                    onChange={(value) => setRegistrationForm((form) => ({ ...form, title: value }))}
+                  />
+                  <Field
+                    label="Nhãn nút gửi"
+                    value={registrationForm.submitLabel}
+                    placeholder="Đăng ký ngay"
+                    onChange={(value) => setRegistrationForm((form) => ({ ...form, submitLabel: value }))}
+                  />
+                </div>
+
+                <Field
+                  label="Thời điểm kết thúc đếm ngược"
+                  type="datetime-local"
+                  value={registrationForm.countdownTargetAt}
+                  onChange={(value) => setRegistrationForm((form) => ({ ...form, countdownTargetAt: value }))}
+                />
+
+                <TextArea
+                  label="Nội dung xác nhận"
+                  rows={5}
+                  value={registrationForm.consentText}
+                  onChange={(value) => setRegistrationForm((form) => ({ ...form, consentText: value }))}
+                />
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <MediaField
+                    label="Ảnh ưu đãi desktop"
+                    assetId={registrationForm.promoDesktopImageId}
+                    previewUrl={registrationForm.promoDesktopImageUrl}
+                    alt={registrationForm.title}
+                    onStatus={setStatus}
+                    onUploaded={(asset) =>
+                      setRegistrationForm((form) => ({
+                        ...form,
+                        promoDesktopImageId: asset.id,
+                        promoDesktopImageUrl: asset.url,
+                      }))
+                    }
+                    onDeleted={() =>
+                      setRegistrationForm((form) => ({
+                        ...form,
+                        promoDesktopImageId: null,
+                        promoDesktopImageUrl: "",
+                      }))
+                    }
+                  />
+                  <MediaField
+                    label="Ảnh ưu đãi mobile"
+                    assetId={registrationForm.promoMobileImageId}
+                    previewUrl={registrationForm.promoMobileImageUrl}
+                    alt={registrationForm.title}
+                    onStatus={setStatus}
+                    onUploaded={(asset) =>
+                      setRegistrationForm((form) => ({
+                        ...form,
+                        promoMobileImageId: asset.id,
+                        promoMobileImageUrl: asset.url,
+                      }))
+                    }
+                    onDeleted={() =>
+                      setRegistrationForm((form) => ({
+                        ...form,
+                        promoMobileImageId: null,
+                        promoMobileImageUrl: "",
+                      }))
+                    }
+                  />
+                </div>
+
+                <ActionButton
+                  type="submit"
+                  icon={registrationForm.isActive ? <Eye size={17} /> : <EyeOff size={17} />}
+                  disabled={saving}
+                >
+                  Lưu khối đăng ký
+                </ActionButton>
+              </form>
+            ) : null}
 
             {tab === "banners" ? (
               <form className="grid gap-4" onSubmit={saveBanner}>

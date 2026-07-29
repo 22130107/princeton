@@ -1,12 +1,30 @@
+﻿"use client";
+
 import svgPaths from "../svg-g45k1n1pz5";
+import { useEffect, useRef, useState } from "react";
+import { useCountdownValues } from "@/components/Shared/useCountdownValues";
+import { useRegistrationSectionSettings } from "@/components/Shared/useRegistrationSectionSettings";
+import type { RegistrationSectionSettings } from "@/lib/registration-section-config";
 import imgTask73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg from "../../../assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aac.png";
 import imgLogo from "../../../assets/logo1.png";
 
-function Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg() {
+type ProgramOption = {
+  slug: string;
+  label: string;
+};
+
+const fallbackPrograms: ProgramOption[] = [
+  { slug: "penguin", label: "Penguin (2-3 TUỔI)" },
+];
+
+const SECTION_ARTBOARD_WIDTH = 1304;
+const SECTION_ARTBOARD_HEIGHT = 907.69;
+
+function Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg({ promoImageUrl }: { promoImageUrl: string }) {
   return (
     <div className="max-w-[764.3099975585938px] relative self-stretch shrink-0 w-[764.31px]" data-name="TASK-73-WASS-Giam-50-PHI-GHI-DANH_Desktop-TV-copy-1.jpg">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={imgTask73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg.src} />
+        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={promoImageUrl} />
       </div>
       <img
         alt="Princeton Academy"
@@ -17,18 +35,18 @@ function Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg() {
   );
 }
 
-function Picture() {
+function Picture({ promoImageUrl }: { promoImageUrl: string }) {
   return (
     <div className="content-stretch flex h-[875.69px] items-start justify-center relative shrink-0" data-name="Picture">
-      <Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg />
+      <Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg promoImageUrl={promoImageUrl} />
     </div>
   );
 }
 
-function Container171() {
+function Container171({ promoImageUrl }: { promoImageUrl: string }) {
   return (
     <div className="content-stretch flex flex-col items-center max-w-[816.47998046875px] overflow-clip relative rounded-[48px] self-stretch shrink-0 w-[764.31px]" data-name="Container">
-      <Picture />
+      <Picture promoImageUrl={promoImageUrl} />
     </div>
   );
 }
@@ -84,37 +102,53 @@ function SubmitBtnSvgClip() {
   );
 }
 
-function Button2() {
+function Button2({
+  label,
+  isSubmitting,
+  onSubmit,
+}: {
+  label: string;
+  isSubmitting: boolean;
+  onSubmit: () => void;
+}) {
   return (
-    <div className="content-stretch flex items-center justify-center px-[16px] py-[6px] relative rounded-[4px] shrink-0" data-name="Button">
+    <button
+      type="button"
+      aria-label={label}
+      disabled={isSubmitting}
+      onClick={onSubmit}
+      className="content-stretch flex cursor-pointer items-center justify-center px-[16px] py-[6px] relative rounded-[4px] shrink-0 disabled:cursor-wait disabled:opacity-80"
+      data-name="Button"
+    >
       <SubmitBtnSvgClip />
       <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#b80000] text-[26px] text-center uppercase whitespace-nowrap">
-        <p className="leading-[50px]">Đăng ký ngay</p>
+        <p className="leading-[50px]">{isSubmitting ? "ĐANG GỬI..." : label}</p>
       </div>
-    </div>
+    </button>
   );
 }
 
-function Container172() {
+function Container172({
+  label,
+  isSubmitting,
+  onSubmit,
+}: {
+  label: string;
+  isSubmitting: boolean;
+  onSubmit: () => void;
+}) {
   return (
-    <div className="absolute bottom-0 content-stretch flex flex-col items-center left-[142.26px] pt-[10px] w-[206.01px]" data-name="Container">
-      <Button2 />
+    <div className="absolute bottom-0 content-stretch flex flex-col items-center left-[142.26px] pt-[10px] w-[206.01px] z-[2]" data-name="Container">
+      <Button2 label={label} isSubmitting={isSubmitting} onSubmit={onSubmit} />
     </div>
   );
 }
 
 function CloudSvg() {
   return (
-    <div className="h-[114.364px] relative shrink-0 w-[442.54px]" data-name="cloud.svg">
-      <svg className="absolute block inset-0 size-full" fill="none" height="114.364" preserveAspectRatio="none" viewBox="0 0 442.54 114.364" width="442.54">
-        <g clipPath="url(#clip0_1_955)" id="cloud.svg">
-          <path d={svgPaths.p85c0e40} fill="var(--fill-0, #B80000)" id="Vector" />
-        </g>
-        <defs>
-          <clipPath id="clip0_1_955">
-            <rect fill="white" height="114.364" width="442.54" />
-          </clipPath>
-        </defs>
+    <div className="h-[114.364px] overflow-visible relative shrink-0 w-[442.54px]" data-name="cloud.svg">
+      <svg className="absolute block inset-0 overflow-visible size-full" fill="none" height="114.364" preserveAspectRatio="none" viewBox="0 0 442.54 114.364" width="442.54">
+        <path d={svgPaths.p85c0e40} fill="var(--fill-0, #B80000)" id="Vector" />
       </svg>
     </div>
   );
@@ -122,31 +156,33 @@ function CloudSvg() {
 
 function CloudSvgClip() {
   return (
-    <div className="absolute content-stretch flex flex-col inset-[0_0.46px_0_0] items-center justify-center overflow-clip" data-name="cloud.svg clip">
+    <div className="absolute content-stretch flex flex-col inset-[0_0.46px_0_0] items-center justify-center overflow-visible" data-name="cloud.svg clip">
       <CloudSvg />
     </div>
   );
 }
 
-function Container174() {
+function Container174({ title }: { title: string }) {
+  const displayTitle = title.toLocaleUpperCase("vi-VN");
+
   return (
-    <div className="content-stretch flex items-start justify-center p-[16px] relative shrink-0" data-name="Container">
+    <div className="content-stretch flex items-center justify-center min-w-[360px] px-[32px] py-[16px] relative shrink-0" data-name="Container">
       <div className="-translate-y-1/2 absolute bg-[#ffc300] left-0 rounded-[10px] size-[10px] top-1/2" data-name="Background" />
-      <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[28px] text-center text-white whitespace-nowrap">
-        <p className="leading-[50px]">ĐĂNG KÝ NHẬN ƯU ĐÃI NGAY</p>
+      <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[24px] text-center text-white whitespace-nowrap w-full">
+        <p className="leading-[50px]">{displayTitle}</p>
       </div>
       <div className="-translate-y-1/2 absolute bg-[#ffc300] right-0 rounded-[10px] size-[10px] top-1/2" data-name="Background" />
     </div>
   );
 }
 
-function Heading6() {
+function Heading6({ title }: { title: string }) {
   return (
     <div className="max-w-[480px] relative shrink-0 w-full" data-name="Heading 2">
       <div className="flex flex-col items-center max-w-[inherit] size-full">
         <div className="content-stretch flex flex-col items-center max-w-[inherit] px-[24px] py-[16px] relative size-full">
           <CloudSvgClip />
-          <Container174 />
+          <Container174 title={title} />
         </div>
       </div>
     </div>
@@ -195,12 +231,12 @@ function TimeBoxSvgClip() {
   );
 }
 
-function Background14() {
+function Background14({ value }: { value: string }) {
   return (
-    <div className="aspect-[60/60] content-stretch flex items-center justify-center pb-[10.4px] pt-[9.6px] relative shrink-0" data-name="Background">
+    <div className="content-stretch flex size-[60px] items-center justify-center pb-[10.4px] pt-[9.6px] relative shrink-0" data-name="Background">
       <TimeBoxSvgClip />
       <div className="[word-break:break-word] flex flex-col font-semibold justify-center leading-[0] relative shrink-0 text-[#b80000] text-[40px] text-center whitespace-nowrap">
-        <p className="leading-[40px]">04</p>
+        <p className="leading-[40px]">{value}</p>
       </div>
     </div>
   );
@@ -216,10 +252,10 @@ function Container177() {
   );
 }
 
-function Container176() {
+function Container176({ value }: { value: string }) {
   return (
-    <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0" data-name="Container">
-      <Background14 />
+    <div className="content-stretch flex w-[60px] flex-col gap-[12px] items-center relative shrink-0" data-name="Container">
+      <Background14 value={value} />
       <Container177 />
     </div>
   );
@@ -267,12 +303,12 @@ function TimeBoxSvgClip1() {
   );
 }
 
-function Background15() {
+function Background15({ value }: { value: string }) {
   return (
-    <div className="aspect-[60/60] content-stretch flex items-center justify-center pb-[10.4px] pt-[9.6px] relative shrink-0" data-name="Background">
+    <div className="content-stretch flex size-[60px] items-center justify-center pb-[10.4px] pt-[9.6px] relative shrink-0" data-name="Background">
       <TimeBoxSvgClip1 />
       <div className="[word-break:break-word] flex flex-col font-semibold justify-center leading-[0] relative shrink-0 text-[#b80000] text-[40px] text-center whitespace-nowrap">
-        <p className="leading-[40px]">12</p>
+        <p className="leading-[40px]">{value}</p>
       </div>
     </div>
   );
@@ -288,10 +324,10 @@ function Container179() {
   );
 }
 
-function Container178() {
+function Container178({ value }: { value: string }) {
   return (
-    <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0" data-name="Container">
-      <Background15 />
+    <div className="content-stretch flex w-[60px] flex-col gap-[12px] items-center relative shrink-0" data-name="Container">
+      <Background15 value={value} />
       <Container179 />
     </div>
   );
@@ -339,12 +375,12 @@ function TimeBoxSvgClip2() {
   );
 }
 
-function Background16() {
+function Background16({ value }: { value: string }) {
   return (
-    <div className="aspect-[60/60] content-stretch flex items-center justify-center pb-[10.4px] pt-[9.6px] relative shrink-0" data-name="Background">
+    <div className="content-stretch flex size-[60px] items-center justify-center pb-[10.4px] pt-[9.6px] relative shrink-0" data-name="Background">
       <TimeBoxSvgClip2 />
       <div className="[word-break:break-word] flex flex-col font-semibold justify-center leading-[0] relative shrink-0 text-[#b80000] text-[40px] text-center whitespace-nowrap">
-        <p className="leading-[40px]">05</p>
+        <p className="leading-[40px]">{value}</p>
       </div>
     </div>
   );
@@ -360,10 +396,10 @@ function Container181() {
   );
 }
 
-function Container180() {
+function Container180({ value }: { value: string }) {
   return (
-    <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0" data-name="Container">
-      <Background16 />
+    <div className="content-stretch flex w-[60px] flex-col gap-[12px] items-center relative shrink-0" data-name="Container">
+      <Background16 value={value} />
       <Container181 />
     </div>
   );
@@ -411,12 +447,12 @@ function TimeBoxSvgClip3() {
   );
 }
 
-function Background17() {
+function Background17({ value }: { value: string }) {
   return (
-    <div className="aspect-[60/60] content-stretch flex items-center justify-center pb-[10.4px] pt-[9.6px] relative shrink-0" data-name="Background">
+    <div className="content-stretch flex size-[60px] items-center justify-center pb-[10.4px] pt-[9.6px] relative shrink-0" data-name="Background">
       <TimeBoxSvgClip3 />
       <div className="[word-break:break-word] flex flex-col font-semibold justify-center leading-[0] relative shrink-0 text-[#b80000] text-[40px] text-center whitespace-nowrap">
-        <p className="leading-[40px]">09</p>
+        <p className="leading-[40px]">{value}</p>
       </div>
     </div>
   );
@@ -432,35 +468,35 @@ function Container183() {
   );
 }
 
-function Container182() {
+function Container182({ value }: { value: string }) {
   return (
-    <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0" data-name="Container">
-      <Background17 />
+    <div className="content-stretch flex w-[60px] flex-col gap-[12px] items-center relative shrink-0" data-name="Container">
+      <Background17 value={value} />
       <Container183 />
     </div>
   );
 }
 
-function Container175() {
+function Container175({ settings }: { settings: RegistrationSectionSettings }) {
   return (
     <div className="relative shrink-0 w-full" data-name="Container">
       <div className="flex flex-row items-center justify-center size-full">
-        <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[24px] items-center justify-center pb-[12px] pt-[20px] px-[16px] relative size-full">
-          <Container176 />
-          <Container178 />
-          <Container180 />
-          <Container182 />
+        <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[24px] items-center justify-center pb-[12px] pt-[20px] relative size-full">
+          <Container176 value={settings.countdownDays} />
+          <Container178 value={settings.countdownHours} />
+          <Container180 value={settings.countdownMinutes} />
+          <Container182 value={settings.countdownSeconds} />
         </div>
       </div>
     </div>
   );
 }
 
-function BackgroundBorderShadow() {
+function BackgroundBorderShadow({ settings }: { settings: RegistrationSectionSettings }) {
   return (
     <div className="bg-[#fff1f1] content-stretch drop-shadow-[4px_4px_0px_#b80000] flex flex-col items-start max-w-[400px] pb-px pt-[18.8px] px-[44px] relative rounded-[10px] shrink-0 w-[400px]" data-name="Background+Border+Shadow">
       <div aria-hidden className="absolute border border-[#b80000] border-solid inset-0 pointer-events-none rounded-[10px]" />
-      <Container175 />
+      <Container175 settings={settings} />
     </div>
   );
 }
@@ -494,9 +530,9 @@ function Input() {
   );
 }
 
-function Label() {
+function Label({ visible }: { visible: boolean }) {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 px-[16px] right-0 top-[12px]" data-name="Label">
+    <div className={`absolute content-stretch flex flex-col items-start left-0 px-[16px] right-0 top-[12px] pointer-events-none ${visible ? "" : "opacity-0"}`} data-name="Label">
       <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#620000] text-[18px] whitespace-nowrap">
         <p>
           <span className="leading-[26px]">{`Họ và tên `}</span>
@@ -507,11 +543,42 @@ function Label() {
   );
 }
 
-function Container185() {
+function TextFieldOverlay({
+  value,
+  onChange,
+  ariaLabel,
+  topClass,
+  type = "text",
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  ariaLabel: string;
+  topClass: string;
+  type?: "text" | "tel" | "email";
+}) {
+  return (
+    <input
+      aria-label={ariaLabel}
+      type={type}
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      className={`absolute left-0 right-0 ${topClass} z-[2] h-[26px] bg-transparent px-[16px] py-0 font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] text-[18px] leading-[26px] text-[#620000] outline-none`}
+    />
+  );
+}
+
+function Container185({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <Input />
-      <Label />
+      <Label visible={!value} />
+      <TextFieldOverlay ariaLabel="Họ và tên" topClass="top-[12px]" value={value} onChange={onChange} />
     </div>
   );
 }
@@ -545,9 +612,9 @@ function InputSDinThoi() {
   );
 }
 
-function Label1() {
+function Label1({ visible }: { visible: boolean }) {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 px-[16px] right-0 top-[15.4px]" data-name="Label">
+    <div className={`absolute content-stretch flex flex-col items-start left-0 px-[16px] right-0 top-[15.4px] pointer-events-none ${visible ? "" : "opacity-0"}`} data-name="Label">
       <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#620000] text-[18px] whitespace-nowrap">
         <p>
           <span className="leading-[26px]">{`Số điện thoại `}</span>
@@ -558,11 +625,18 @@ function Label1() {
   );
 }
 
-function Container186() {
+function Container186({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
   return (
     <div className="content-stretch flex flex-col items-start pt-[3.4px] relative shrink-0 w-full" data-name="Container">
       <InputSDinThoi />
-      <Label1 />
+      <Label1 visible={!value} />
+      <TextFieldOverlay ariaLabel="Số điện thoại" topClass="top-[15.4px]" type="tel" value={value} onChange={onChange} />
     </div>
   );
 }
@@ -596,9 +670,9 @@ function Input1() {
   );
 }
 
-function Label2() {
+function Label2({ visible }: { visible: boolean }) {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 px-[16px] right-0 top-[15.4px]" data-name="Label">
+    <div className={`absolute content-stretch flex flex-col items-start left-0 px-[16px] right-0 top-[15.4px] pointer-events-none ${visible ? "" : "opacity-0"}`} data-name="Label">
       <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#620000] text-[18px] whitespace-nowrap">
         <p>
           <span className="leading-[26px]">{`Email `}</span>
@@ -609,11 +683,18 @@ function Label2() {
   );
 }
 
-function Container187() {
+function Container187({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
   return (
     <div className="content-stretch flex flex-col items-start pt-[3.4px] relative shrink-0 w-full" data-name="Container">
       <Input1 />
-      <Label2 />
+      <Label2 visible={!value} />
+      <TextFieldOverlay ariaLabel="Email" topClass="top-[15.4px]" type="email" value={value} onChange={onChange} />
     </div>
   );
 }
@@ -643,13 +724,13 @@ function FieldBgSvgClip() {
   );
 }
 
-function Textbox() {
+function Textbox({ label }: { label: string }) {
   return (
     <div className="flex-[1_0_0] min-h-px relative w-full" data-name="Textbox">
       <div className="flex flex-col justify-center overflow-clip rounded-[inherit] size-full">
         <div className="content-stretch flex flex-col items-start justify-center pl-[16px] pr-[32px] relative size-full">
           <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#620000] text-[18px] w-full">
-            <p className="leading-[26px]">Penguin (2-3 TUỔI)</p>
+            <p className="leading-[26px]">{label}</p>
           </div>
         </div>
       </div>
@@ -682,32 +763,70 @@ function Image11() {
   );
 }
 
-function ComboboxMenu() {
+function ComboboxMenu({
+  programs,
+  value,
+  onChange,
+}: {
+  programs: ProgramOption[];
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const selectedLabel = programs.find((program) => program.slug === value)?.label ?? fallbackPrograms[0].label;
+
   return (
     <div className="content-stretch flex flex-col h-[50px] items-start justify-center relative rounded-bl-[4px] rounded-br-[4px] shrink-0 w-full" data-name="Combobox menu">
       <FieldBgSvgClip />
-      <Textbox />
+      <Textbox label={selectedLabel} />
       <Image11 />
+      <select
+        aria-label="Khối lớp"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="absolute inset-0 z-[2] cursor-pointer opacity-0"
+      >
+        {programs.map((program) => (
+          <option key={program.slug} value={program.slug}>
+            {program.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
 
-function Container188() {
+function Container188({
+  programs,
+  value,
+  onChange,
+}: {
+  programs: ProgramOption[];
+  value: string;
+  onChange: (value: string) => void;
+}) {
   return (
     <div className="flex-[1_0_0] min-w-px relative" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start relative size-full">
-        <ComboboxMenu />
+        <ComboboxMenu programs={programs} value={value} onChange={onChange} />
       </div>
     </div>
   );
 }
 
-function ListboxMenu() {
+function ListboxMenu({
+  programs,
+  value,
+  onChange,
+}: {
+  programs: ProgramOption[];
+  value: string;
+  onChange: (value: string) => void;
+}) {
   return (
     <div className="bg-white min-h-[38px] relative shrink-0 w-full" data-name="Listbox menu">
       <div className="flex flex-row items-center justify-center min-h-[inherit] overflow-clip rounded-[inherit] size-full">
         <div className="content-center flex flex-wrap items-center justify-center min-h-[inherit] pb-px pt-[4px] px-[6.8px] relative size-full">
-          <Container188 />
+          <Container188 programs={programs} value={value} onChange={onChange} />
         </div>
       </div>
       <div aria-hidden className="absolute border border-[rgba(0,0,0,0)] border-solid inset-0 pointer-events-none" />
@@ -715,66 +834,107 @@ function ListboxMenu() {
   );
 }
 
-function Label3() {
+function Label3({ text }: { text: string }) {
   return (
     <div className="[word-break:break-word] font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] leading-[0] max-w-[360.68px] not-italic relative shrink-0 text-[#620000] text-[16px] w-[360.68px]" data-name="Label">
-      <div className="flex flex-col justify-center left-[32px] px-[32px] relative top-0 w-[328px]">
-        <p className="leading-[18px] text-[13px]">Tôi xác nhận rằng các thông tin cá nhân được cung cấp là chính xác và đồng ý để Nhà trường thu thập, lưu trữ, xử lý và sử dụng theo quy định của pháp luật về bảo vệ dữ liệu cá nhân.</p>
+      <div className="flex flex-col justify-center left-[28px] relative top-0 w-[332px]">
+        <p className="leading-[18px] text-[13px]">{text}</p>
       </div>
     </div>
   );
 }
 
-function ChkboxSvg() {
+function Input2({
+  checked,
+  onToggle,
+}: {
+  checked: boolean;
+  onToggle: () => void;
+}) {
   return (
-    <div className="h-[25px] relative shrink-0 w-[24px]" data-name="chkbox.svg">
-      <svg className="absolute block inset-0 size-full" fill="none" height="25" preserveAspectRatio="none" viewBox="0 0 24 25" width="24">
-        <g clipPath="url(#clip0_1_1014)" id="chkbox.svg">
-          <path clipRule="evenodd" d={svgPaths.pa6a1f00} fill="var(--fill-0, #C40000)" fillRule="evenodd" id="Vector" />
-        </g>
-        <defs>
-          <clipPath id="clip0_1_1014">
-            <rect fill="white" height="25" width="24" />
-          </clipPath>
-        </defs>
-      </svg>
+    <div className="absolute left-0 top-0 z-[2] size-[18px] bg-white" data-name="Input">
+      <div className="absolute inset-0 border border-[#c40000]" />
+      {checked ? (
+        <svg
+          aria-hidden
+          className="absolute left-[2px] top-[-3px] h-[18px] w-[20px]"
+          fill="none"
+          viewBox="0 0 20 18"
+        >
+          <path
+            d="M2 9.5L7.1 14.5L18 2"
+            stroke="#c40000"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+          />
+        </svg>
+      ) : null}
+      <input
+        aria-label="Xác nhận thông tin cá nhân"
+        type="checkbox"
+        checked={checked}
+        onChange={onToggle}
+        className="absolute left-0 top-0 z-[3] size-[24px] cursor-pointer opacity-0"
+      />
     </div>
   );
 }
 
-function Image12() {
+function ListItem({
+  consentText,
+  checked,
+  onToggle,
+}: {
+  consentText: string;
+  checked: boolean;
+  onToggle: () => void;
+}) {
   return (
-    <div className="absolute content-stretch flex items-center justify-center left-0 overflow-clip top-[-0.5px] w-[24px]" data-name="Image">
-      <ChkboxSvg />
-    </div>
+    <label
+      className="content-stretch flex flex-col items-start relative shrink-0 w-full cursor-pointer"
+      data-name="List Item"
+    >
+      <Label3 text={consentText} />
+      <Input2 checked={checked} onToggle={onToggle} />
+    </label>
   );
 }
 
-function Input2() {
-  return (
-    <div className="absolute bg-white left-[3px] size-[14px] top-[3.2px]" data-name="Input">
-      <Image12 />
-    </div>
-  );
-}
-
-function ListItem() {
-  return (
-    <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="List Item">
-      <Label3 />
-      <Input2 />
-    </div>
-  );
-}
-
-function Container184() {
+function Container184({
+  consentText,
+  checked,
+  onToggle,
+  name,
+  onNameChange,
+  phone,
+  onPhoneChange,
+  email,
+  onEmailChange,
+  programs,
+  grade,
+  onGradeChange,
+}: {
+  consentText: string;
+  checked: boolean;
+  onToggle: () => void;
+  name: string;
+  onNameChange: (value: string) => void;
+  phone: string;
+  onPhoneChange: (value: string) => void;
+  email: string;
+  onEmailChange: (value: string) => void;
+  programs: ProgramOption[];
+  grade: string;
+  onGradeChange: (value: string) => void;
+}) {
   return (
     <div className="content-stretch flex flex-col gap-[12.6px] items-start relative shrink-0 w-full" data-name="Container">
-      <Container185 />
-      <Container186 />
-      <Container187 />
-      <ListboxMenu />
-      <ListItem />
+      <Container185 value={name} onChange={onNameChange} />
+      <Container186 value={phone} onChange={onPhoneChange} />
+      <Container187 value={email} onChange={onEmailChange} />
+      <ListboxMenu programs={programs} value={grade} onChange={onGradeChange} />
+      <ListItem consentText={consentText} checked={checked} onToggle={onToggle} />
     </div>
   );
 }
@@ -784,39 +944,295 @@ function Container184() {
 
 
 
-function Form() {
+function Form({
+  consentText,
+  checked,
+  onToggle,
+  name,
+  onNameChange,
+  phone,
+  onPhoneChange,
+  email,
+  onEmailChange,
+  programs,
+  grade,
+  onGradeChange,
+}: {
+  consentText: string;
+  checked: boolean;
+  onToggle: () => void;
+  name: string;
+  onNameChange: (value: string) => void;
+  phone: string;
+  onPhoneChange: (value: string) => void;
+  email: string;
+  onEmailChange: (value: string) => void;
+  programs: ProgramOption[];
+  grade: string;
+  onGradeChange: (value: string) => void;
+}) {
   return (
     <div className="content-stretch flex flex-col gap-[25.2px] items-start pt-[5.8px] relative shrink-0 w-[370px]" data-name="Form">
-      <Container184 />
+      <Container184
+        consentText={consentText}
+        checked={checked}
+        onToggle={onToggle}
+        name={name}
+        onNameChange={onNameChange}
+        phone={phone}
+        onPhoneChange={onPhoneChange}
+        email={email}
+        onEmailChange={onEmailChange}
+        programs={programs}
+        grade={grade}
+        onGradeChange={onGradeChange}
+      />
     </div>
   );
 }
 
-function Container173() {
+function Container173({
+  settings,
+  checked,
+  onToggleConsent,
+  name,
+  onNameChange,
+  phone,
+  onPhoneChange,
+  email,
+  onEmailChange,
+  programs,
+  grade,
+  onGradeChange,
+}: {
+  settings: RegistrationSectionSettings;
+  checked: boolean;
+  onToggleConsent: () => void;
+  name: string;
+  onNameChange: (value: string) => void;
+  phone: string;
+  onPhoneChange: (value: string) => void;
+  email: string;
+  onEmailChange: (value: string) => void;
+  programs: ProgramOption[];
+  grade: string;
+  onGradeChange: (value: string) => void;
+}) {
   return (
     <div className="content-stretch flex flex-col gap-[16px] items-center pb-[20px] pt-[12px] px-[24px] relative shrink-0" data-name="Container">
-      <Heading6 />
-      <BackgroundBorderShadow />
-      <Form />
+      <Heading6 title={settings.title} />
+      {settings.showCountdown ? <BackgroundBorderShadow settings={settings} /> : null}
+      {settings.showForm ? (
+        <Form
+          consentText={settings.consentText}
+          checked={checked}
+          onToggle={onToggleConsent}
+          name={name}
+          onNameChange={onNameChange}
+          phone={phone}
+          onPhoneChange={onPhoneChange}
+          email={email}
+          onEmailChange={onEmailChange}
+          programs={programs}
+          grade={grade}
+          onGradeChange={onGradeChange}
+        />
+      ) : null}
     </div>
   );
 }
 
-function Background13() {
+function Background13({
+  settings,
+  checked,
+  onToggleConsent,
+  isSubmitting,
+  onSubmit,
+  name,
+  onNameChange,
+  phone,
+  onPhoneChange,
+  email,
+  onEmailChange,
+  programs,
+  grade,
+  onGradeChange,
+}: {
+  settings: RegistrationSectionSettings;
+  checked: boolean;
+  onToggleConsent: () => void;
+  isSubmitting: boolean;
+  onSubmit: () => void;
+  name: string;
+  onNameChange: (value: string) => void;
+  phone: string;
+  onPhoneChange: (value: string) => void;
+  email: string;
+  onEmailChange: (value: string) => void;
+  programs: ProgramOption[];
+  grade: string;
+  onGradeChange: (value: string) => void;
+}) {
   return (
-    <div className="content-stretch flex flex-col items-start relative self-stretch shrink-0" data-name="Background">
+    <div className="content-stretch flex flex-col h-[875.69px] items-start relative self-stretch shrink-0 w-[490.54px]" data-name="Background">
       <FormBgSvgClip />
-      <Container172 />
-      <Container173 />
+      {settings.showForm ? (
+        <Container172
+          label={settings.submitLabel}
+          isSubmitting={isSubmitting}
+          onSubmit={onSubmit}
+        />
+      ) : null}
+      <Container173
+        settings={settings}
+        checked={checked}
+        onToggleConsent={onToggleConsent}
+        name={name}
+        onNameChange={onNameChange}
+        phone={phone}
+        onPhoneChange={onPhoneChange}
+        email={email}
+        onEmailChange={onEmailChange}
+        programs={programs}
+        grade={grade}
+        onGradeChange={onGradeChange}
+      />
     </div>
   );
 }
 
 export default function RegistrationSection() {
+  const settings = useRegistrationSectionSettings();
+  const slotRef = useRef<HTMLDivElement>(null);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [agreed, setAgreed] = useState(false);
+  const [programs, setPrograms] = useState<ProgramOption[]>(fallbackPrograms);
+  const [grade, setGrade] = useState(fallbackPrograms[0].slug);
+  const [sectionScale, setSectionScale] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const promoImageUrl = settings.promoDesktopImageUrl || imgTask73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg.src;
+  const countdownValues = useCountdownValues(settings);
+  const displaySettings = {
+    ...settings,
+    countdownDays: countdownValues.days,
+    countdownHours: countdownValues.hours,
+    countdownMinutes: countdownValues.minutes,
+    countdownSeconds: countdownValues.seconds,
+  };
+
+  async function submitLead() {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/enrollment-leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          parentName: name,
+          phone,
+          email,
+          grade,
+          agreed,
+          sourcePage: window.location.pathname,
+          sourceDevice: "desktop",
+        }),
+      });
+
+      if (!response.ok) return;
+
+      setName("");
+      setPhone("");
+      setEmail("");
+      setAgreed(false);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  useEffect(() => {
+    const updateScale = () => {
+      const width = slotRef.current?.offsetWidth ?? 0;
+      if (!width) return;
+      setSectionScale(Math.min(1, width / SECTION_ARTBOARD_WIDTH));
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    fetch("/api/class-programs")
+      .then((response) => response.json())
+      .then((data) => {
+        if (!mounted || !Array.isArray(data.programs)) return;
+
+        const nextPrograms = data.programs
+          .map((program: any) => ({
+            slug: String(program.slug || ""),
+            label: String(program.label || `${program.name || ""} ${program.age ? `(${program.age})` : ""}`),
+          }))
+          .filter((program: ProgramOption) => program.slug && program.label.trim());
+
+        if (!nextPrograms.length) return;
+        setPrograms(nextPrograms);
+        setGrade((current) => (nextPrograms.some((program: ProgramOption) => program.slug === current) ? current : nextPrograms[0].slug));
+      })
+      .catch(() => undefined);
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (!settings.isActive) return null;
+
   return (
-    <div className="absolute bg-[#b80000] content-stretch flex gap-[16px] h-[907.69px] items-start left-[116px] p-[16px] right-[116px] rounded-[48px] top-[8482.35px]" data-name="Section">
-      <Container171 />
-      <Background13 />
+    <div
+      ref={slotRef}
+      className="absolute left-[64px] right-[64px] top-[8482.35px]"
+      style={{ height: SECTION_ARTBOARD_HEIGHT * sectionScale }}
+    >
+      <div
+        className="mx-auto"
+        style={{
+          height: SECTION_ARTBOARD_HEIGHT * sectionScale,
+          width: SECTION_ARTBOARD_WIDTH * sectionScale,
+        }}
+      >
+        <div
+          className="bg-[#b80000] content-stretch flex gap-[16px] h-[907.69px] items-start p-[16px] rounded-[48px]"
+          data-name="Section"
+          style={{
+            transform: `scale(${sectionScale})`,
+            transformOrigin: "top left",
+            width: SECTION_ARTBOARD_WIDTH,
+          }}
+        >
+          {settings.showPromoImage ? <Container171 promoImageUrl={promoImageUrl} /> : null}
+          <Background13
+            settings={displaySettings}
+            checked={agreed}
+            onToggleConsent={() => setAgreed((value) => !value)}
+            isSubmitting={isSubmitting}
+            onSubmit={submitLead}
+            name={name}
+            onNameChange={setName}
+            phone={phone}
+            onPhoneChange={setPhone}
+            email={email}
+            onEmailChange={setEmail}
+            programs={programs}
+            grade={grade}
+            onGradeChange={setGrade}
+          />
+        </div>
+      </div>
     </div>
   );
 }

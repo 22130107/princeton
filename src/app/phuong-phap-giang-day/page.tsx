@@ -4,8 +4,9 @@ import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import TeachingMethodsSection from "@/components/Shared/TeachingMethodsSection";
 import { getTeachingMethods } from "@/lib/content";
+import { mediaImage } from "@/lib/media-url";
 import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
-import imgMascotKoala from "@/assets/d088645c54f44b84375f6cb56aeabe8e06bc006b.png";
+const imgMascotKoala = mediaImage("d088645c54f44b84375f6cb56aeabe8e06bc006b.png");
 
 export const metadata: Metadata = {
   title: "Phương Pháp Giáo Dục | Trường Mầm non Princeton",

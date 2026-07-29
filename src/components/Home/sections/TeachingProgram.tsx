@@ -3,13 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import svgPaths from "../svg-g45k1n1pz5";
+import { mediaUrl } from "@/lib/media-url";
 import imgImage from "../../../assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgTeachingMethodPlanePng from "../../../assets/87b0baec94bf2f1f980990704ca31b5f776eae03.png";
-import imgTeachingMethodItem2Png from "../../../assets/ba09fe820d0f9cb663b24826afea30ad6fc2c8a2.png";
 import imgImage1 from "../../../assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
-import imgTeachingMethodItem4Png from "../../../assets/aa47a37d3cb1c1b806218e09ba36b08f5e7c4d55.png";
-import imgTeachingMethodItem1Png from "../../../assets/4067071ed218b109a3b3d760ab5b856a1c4d1556.png";
-import imgTeachingMethodItem3Png from "../../../assets/6fcde84113072aa66cc43c4fc5efa3b2d4e6feb8.png";
 
 type HomeTeachingMethod = {
   id: number;
@@ -25,7 +22,7 @@ const fallbackTeachingMethods: HomeTeachingMethod[] = [
     title: "Kết hợp nhiều phương pháp",
     description:
       "Trẻ được tiếp cận các phương pháp giáo dục hiện đại, nổi bật là Play-based Learning, giúp trẻ học tập thông qua các hoạt động vui chơi và tiếp thu kiến thức một cách tự nhiên.",
-    imageUrl: imgTeachingMethodItem1Png.src,
+    imageUrl: mediaUrl("4067071ed218b109a3b3d760ab5b856a1c4d1556.png"),
     imageAlt: "Kết hợp nhiều phương pháp",
   },
   {
@@ -33,7 +30,7 @@ const fallbackTeachingMethods: HomeTeachingMethod[] = [
     title: "Lấy trẻ làm trung tâm",
     description:
       "Trẻ được tôn trọng sở thích, bản sắc cá nhân và nhịp độ phát triển. Thầy cô tạo cơ hội để trẻ chủ động khám phá, đặt câu hỏi và học hỏi theo cách riêng của mình.",
-    imageUrl: imgTeachingMethodItem3Png.src,
+    imageUrl: mediaUrl("6fcde84113072aa66cc43c4fc5efa3b2d4e6feb8.png"),
     imageAlt: "Lấy trẻ làm trung tâm",
   },
   {
@@ -41,7 +38,7 @@ const fallbackTeachingMethods: HomeTeachingMethod[] = [
     title: "Khai phóng tư duy",
     description:
       "Trẻ được tham gia các hoạt động đa dạng trong lớp và sau giờ học như Câu lạc bộ, Học tập thực tế, sự kiện, từ đó phát triển tư duy độc lập và tự do thể hiện bản thân.",
-    imageUrl: imgTeachingMethodItem2Png.src,
+    imageUrl: mediaUrl("ba09fe820d0f9cb663b24826afea30ad6fc2c8a2.png"),
     imageAlt: "Khai phóng tư duy",
   },
   {
@@ -49,7 +46,7 @@ const fallbackTeachingMethods: HomeTeachingMethod[] = [
     title: "Học qua tương tác & hợp tác",
     description:
       "Trẻ phát triển kỹ năng xã hội, khả năng lắng nghe thông qua các hoạt động giao tiếp, chia sẻ và hợp tác với bạn bè, thầy cô và môi trường xung quanh.",
-    imageUrl: imgTeachingMethodItem4Png.src,
+    imageUrl: mediaUrl("aa47a37d3cb1c1b806218e09ba36b08f5e7c4d55.png"),
     imageAlt: "Học qua tương tác và hợp tác",
   },
 ];
@@ -94,7 +91,7 @@ function TeachingMethodItem1Png() {
   return (
     <div className="aspect-[154/154] max-w-[154px] relative shrink-0 w-full" data-name="teaching-method-item-1.png">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={imgTeachingMethodItem1Png.src} />
+        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={fallbackTeachingMethods[0].imageUrl} />
       </div>
     </div>
   );
@@ -163,7 +160,7 @@ function TeachingMethodItem3Png() {
   return (
     <div className="aspect-[154/154] max-w-[154px] relative shrink-0 w-full" data-name="teaching-method-item-3.png">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={imgTeachingMethodItem3Png.src} />
+        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={fallbackTeachingMethods[1].imageUrl} />
       </div>
     </div>
   );
@@ -232,7 +229,7 @@ function TeachingMethodItem2Png() {
   return (
     <div className="aspect-[154/162.44000244140625] max-w-[154px] relative shrink-0 w-full" data-name="teaching-method-item-2.png">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={imgTeachingMethodItem2Png.src} />
+        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={fallbackTeachingMethods[2].imageUrl} />
       </div>
     </div>
   );
@@ -301,7 +298,7 @@ function TeachingMethodItem4Png() {
   return (
     <div className="aspect-[154/154] max-w-[154px] relative shrink-0 w-full" data-name="teaching-method-item-4.png">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={imgTeachingMethodItem4Png.src} />
+        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={fallbackTeachingMethods[3].imageUrl} />
       </div>
     </div>
   );

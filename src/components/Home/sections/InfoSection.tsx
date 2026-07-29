@@ -3,14 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import svgPaths from "../svg-g45k1n1pz5";
+import { mediaUrl } from "@/lib/media-url";
 import imgBackground6 from "../../../assets/76ae85eb95c1037d24fc4b213196313a7543a830.png";
 import imgBackground4 from "../../../assets/451163d5761eb2fd4f4fc21e0662c4d50571045a.png";
 import imgClassWombatPng from "../../../assets/3dc1ce007304dd7c637e9e4c763ad7fda6021a35.png";
 import imgBackgroundBorder from "../../../assets/b8936ceb2afcdcf3ec9bf2508692d1c0866ccf6e.png";
 import imgClassPenguinPng from "../../../assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
-import imgClassKoalaPng from "../../../assets/d088645c54f44b84375f6cb56aeabe8e06bc006b.png";
-import imgClassPreschoolPng from "../../../assets/58895c008a094b06474cacb153601040cef3cf48.png";
-import imgClassKangarooPng from "../../../assets/d0268a1bfec279b63f5d3717d847ff89893ec9a7.png";
 import imgImage8 from "../../../assets/19f3ec75d04d4778613b623fd67426de89defdb9.png";
 import imgBackground7 from "../../../assets/15745d29eddade36047a580e4620dc891bb7902d.png";
 import imgBackground8 from "../../../assets/2733e2352734e4c64d23bbca5e0cf9b52124bf84.png";
@@ -162,7 +160,7 @@ function ClassKoalaPng() {
   return (
     <div className="h-[100px] max-h-[100px] max-w-[213.16000366210938px] relative shrink-0 w-[129.13px]" data-name="class-koala.png">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute h-full left-[-32.54%] max-w-none top-0 w-[165.07%]" src={imgClassKoalaPng.src} />
+        <img alt="" className="absolute h-full left-[-32.54%] max-w-none top-0 w-[165.07%]" src={mediaUrl("d088645c54f44b84375f6cb56aeabe8e06bc006b.png")} />
       </div>
     </div>
   );
@@ -218,7 +216,7 @@ function ClassKangarooPng() {
   return (
     <div className="h-[100px] max-h-[100px] max-w-[213.16000366210938px] relative shrink-0 w-[87.38px]" data-name="class-kangaroo.png">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={imgClassKangarooPng.src} />
+        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={mediaUrl("d0268a1bfec279b63f5d3717d847ff89893ec9a7.png")} />
       </div>
     </div>
   );
@@ -274,7 +272,7 @@ function ClassPreschoolPng() {
   return (
     <div className="h-[100px] max-h-[100px] max-w-[213.16000366210938px] relative shrink-0 w-[88.78px]" data-name="class-preschool.png">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute h-full left-0 max-w-none top-0 w-[99.99%]" src={imgClassPreschoolPng.src} />
+        <img alt="" className="absolute h-full left-0 max-w-none top-0 w-[99.99%]" src={mediaUrl("58895c008a094b06474cacb153601040cef3cf48.png")} />
       </div>
     </div>
   );

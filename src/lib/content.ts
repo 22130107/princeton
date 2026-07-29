@@ -1,6 +1,12 @@
 import type { RowDataPacket } from "mysql2/promise";
 import { ensureCategoryStorage } from "./categories";
 import { getMysqlPool } from "./mysql";
+import {
+  defaultRegistrationSectionSettings,
+  normalizeRegistrationSectionSettings,
+  type RegistrationSectionSettings,
+} from "./registration-section-config";
+import { repairMojibakeText } from "./text-encoding";
 
 export type DbImage = {
   url: string;
@@ -161,6 +167,13 @@ type HeroSlideRow = RowDataPacket & {
   cta_href: string | null;
 };
 
+type HomeSectionRow = RowDataPacket & {
+  title: string | null;
+  subtitle: string | null;
+  config: unknown;
+  is_active: number | boolean;
+};
+
 type ScheduleRow = RowDataPacket & {
   class_program_id: number;
   description: string;
@@ -269,7 +282,7 @@ type TestimonialRow = RowDataPacket & {
 };
 
 function text(value: string | null | undefined) {
-  return value?.trim() ?? "";
+  return value ? repairMojibakeText(value) : "";
 }
 
 function dateToIso(value: Date | string | null) {
@@ -331,6 +344,7 @@ function uniqueBy<T>(items: T[], getKey: (item: T) => string) {
 
 let aboutStorageReady: Promise<void> | null = null;
 let heroSlideStorageReady: Promise<void> | null = null;
+let homeSectionStorageReady: Promise<void> | null = null;
 let testimonialStorageReady: Promise<void> | null = null;
 
 async function ensureHeroSlideStorageInternal() {
@@ -369,6 +383,37 @@ export async function ensureHeroSlideStorage() {
   }
 
   return heroSlideStorageReady;
+}
+
+async function ensureHomeSectionStorageInternal() {
+  const pool = getMysqlPool();
+
+  await pool.execute(`
+    CREATE TABLE IF NOT EXISTS home_sections (
+      id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+      section_key VARCHAR(128) NOT NULL,
+      title VARCHAR(255) NULL,
+      subtitle TEXT NULL,
+      config JSON NULL,
+      sort_order INT NOT NULL DEFAULT 0,
+      is_active BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY home_sections_key_unique (section_key)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+}
+
+export async function ensureHomeSectionStorage() {
+  if (!homeSectionStorageReady) {
+    homeSectionStorageReady = ensureHomeSectionStorageInternal().catch((error) => {
+      homeSectionStorageReady = null;
+      throw error;
+    });
+  }
+
+  return homeSectionStorageReady;
 }
 
 async function ensureTestimonialStorageInternal() {
@@ -505,6 +550,29 @@ export async function getHeroSlides(): Promise<DbHeroSlide[]> {
       };
     })
     .filter((slide) => slide.desktopImageUrl || slide.mobileImageUrl);
+}
+
+export async function getRegistrationSectionSettings(): Promise<RegistrationSectionSettings> {
+  await ensureHomeSectionStorage();
+  const pool = getMysqlPool();
+  const [rows] = await pool.execute<HomeSectionRow[]>(
+    `SELECT title, subtitle, config, is_active
+     FROM home_sections
+     WHERE section_key = 'registration'
+     LIMIT 1`,
+  );
+
+  const row = rows[0];
+  if (!row) return defaultRegistrationSectionSettings;
+
+  const config = parseJson(row.config);
+  const savedConfig = config && typeof config === "object" ? config : {};
+
+  return normalizeRegistrationSectionSettings({
+    ...(savedConfig as Record<string, unknown>),
+    title: text(row.title) || (savedConfig as Record<string, unknown>).title,
+    isActive: Boolean(row.is_active),
+  });
 }
 
 export async function getClassPrograms(): Promise<DbClassProgram[]> {

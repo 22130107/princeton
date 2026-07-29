@@ -1,15 +1,12 @@
-import type { StaticImageData } from "next/image";
+import { mediaImage, type MediaImage } from "@/lib/media-url";
 import imgPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
 import imgWombat from "@/assets/3dc1ce007304dd7c637e9e4c763ad7fda6021a35.png";
-import imgKoala from "@/assets/d088645c54f44b84375f6cb56aeabe8e06bc006b.png";
-import imgKangaroo from "@/assets/d0268a1bfec279b63f5d3717d847ff89893ec9a7.png";
-import imgPreschool from "@/assets/58895c008a094b06474cacb153601040cef3cf48.png";
 
 export type ClassProgram = {
   slug: string;
   name: string;
   age: string;
-  image: StaticImageData;
+  image: MediaImage;
   color: string;
   category: string;
   excerpt: string;
@@ -53,7 +50,7 @@ export const classPrograms: ClassProgram[] = [
     slug: "koala",
     name: "Koala",
     age: "4 - 5 tuổi",
-    image: imgKoala,
+    image: mediaImage("d088645c54f44b84375f6cb56aeabe8e06bc006b.png"),
     color: "#dcf6d6",
     category: "Khối lớp · Mầm non",
     excerpt:
@@ -69,7 +66,7 @@ export const classPrograms: ClassProgram[] = [
     slug: "kangaroo",
     name: "Kangaroo",
     age: "5 - 6 tuổi",
-    image: imgKangaroo,
+    image: mediaImage("d0268a1bfec279b63f5d3717d847ff89893ec9a7.png"),
     color: "#ffe0cf",
     category: "Khối lớp · Tiền tiểu học",
     excerpt:
@@ -85,7 +82,7 @@ export const classPrograms: ClassProgram[] = [
     slug: "preschool",
     name: "Preschool",
     age: "5 - 6 tuổi",
-    image: imgPreschool,
+    image: mediaImage("58895c008a094b06474cacb153601040cef3cf48.png"),
     color: "#ffd7e0",
     category: "Khối lớp · Tiền tiểu học",
     excerpt:

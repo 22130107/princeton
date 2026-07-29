@@ -1,7 +1,11 @@
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { ensureCategoryStorage } from "./categories";
-import { ensureAboutStorage, ensureHeroSlideStorage, ensureTestimonialStorage } from "./content";
+import { ensureAboutStorage, ensureHeroSlideStorage, ensureHomeSectionStorage, ensureTestimonialStorage } from "./content";
 import { getMysqlPool } from "./mysql";
+import {
+  normalizeRegistrationSectionSettings,
+  type RegistrationSectionSettings,
+} from "./registration-section-config";
 
 export type CreateClassProgramInput = {
   slug: string;
@@ -94,6 +98,7 @@ export type UpdatePostInput = CreatePostInput;
 export type UpdateFacilityImageInput = CreateFacilityImageInput;
 export type UpdateTeacherTeamInput = CreateTeacherTeamInput;
 export type UpdateTestimonialInput = CreateTestimonialInput;
+export type UpdateRegistrationSectionInput = Partial<RegistrationSectionSettings>;
 
 type SortRow = RowDataPacket & {
   next_sort_order: number;
@@ -648,6 +653,30 @@ export async function updateHeroSlide(idValue: unknown, input: Partial<UpdateHer
      WHERE id = :id`,
     { ...data, id },
   );
+}
+
+export async function updateRegistrationSectionSettings(input: UpdateRegistrationSectionInput) {
+  await ensureHomeSectionStorage();
+  const data = normalizeRegistrationSectionSettings(input);
+  const { isActive, ...config } = data;
+  const pool = getMysqlPool();
+
+  await pool.execute(
+    `INSERT INTO home_sections (section_key, title, subtitle, config, sort_order, is_active)
+     VALUES ('registration', :title, NULL, :config, 90, :isActive)
+     ON DUPLICATE KEY UPDATE
+       title = VALUES(title),
+       subtitle = VALUES(subtitle),
+       config = VALUES(config),
+       is_active = VALUES(is_active)`,
+    {
+      title: data.title,
+      config: JSON.stringify(config),
+      isActive,
+    },
+  );
+
+  return data;
 }
 
 export async function archiveHeroSlide(idValue: unknown) {
