@@ -1,13 +1,13 @@
 ﻿"use client";
 
 import { FormEvent, type ClipboardEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { Edit3, Eye, EyeOff, FileText, ImagePlus, List, ListOrdered, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
+import { CalendarClock, CheckCircle2, Edit3, Eye, EyeOff, FileText, ImagePlus, List, ListOrdered, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
 import {
   defaultRegistrationSectionSettings,
   type RegistrationSectionSettings,
 } from "@/lib/registration-section-config";
 
-type TabKey = "banners" | "registration" | "teaching" | "programs" | "posts" | "about";
+type TabKey = "banners" | "registration" | "schedules" | "teaching" | "programs" | "posts" | "about";
 type ProgramMode = "classes" | "curriculum";
 type AboutMode = "facilities" | "teachers" | "testimonials";
 type CategoryScope = "teaching_methods" | "class_programs" | "curriculum_tracks" | "posts";
@@ -134,6 +134,28 @@ type Testimonial = {
   reactionImageAlt: string;
 };
 
+type RegistrationScheduleStatus = "new" | "confirmed" | "completed" | "cancelled" | "no_show";
+
+type RegistrationSchedule = {
+  id: number;
+  leadId: number;
+  parentName: string;
+  phone: string;
+  email: string;
+  grade: string;
+  classProgramName: string;
+  requestedAt: string | null;
+  status: RegistrationScheduleStatus;
+  sourcePage: string;
+  sourceDevice: string;
+  emailStatus: string;
+  emailSentAt: string | null;
+  emailError: string;
+  internalNote: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 type LoadState = {
   banners: HeroSlide[];
   classes: ClassProgram[];
@@ -143,6 +165,7 @@ type LoadState = {
   facilities: FacilityImage[];
   teachers: TeacherTeamItem[];
   testimonials: Testimonial[];
+  schedules: RegistrationSchedule[];
 };
 
 type CategoryState = {
@@ -243,6 +266,12 @@ type TestimonialForm = {
   reactionImageUrl: string;
 };
 
+type RegistrationScheduleForm = {
+  requestedAt: string;
+  status: RegistrationScheduleStatus;
+  internalNote: string;
+};
+
 type RegistrationSectionForm = RegistrationSectionSettings;
 
 const emptyClass: ClassForm = {
@@ -341,6 +370,12 @@ const emptyTestimonial: TestimonialForm = {
   reactionImageUrl: "",
 };
 
+const emptySchedule: RegistrationScheduleForm = {
+  requestedAt: "",
+  status: "new",
+  internalNote: "",
+};
+
 const emptyRegistrationSection: RegistrationSectionForm = {
   ...defaultRegistrationSectionSettings,
 };
@@ -374,6 +409,41 @@ function slugify(value: string) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function formatDateTime(value: string | null | undefined) {
+  if (!value) return "Chờ xếp lịch";
+
+  try {
+    return new Intl.DateTimeFormat("vi-VN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: "Asia/Ho_Chi_Minh",
+    }).format(new Date(value));
+  } catch {
+    return value;
+  }
+}
+
+function toDateTimeLocal(value: string | null | undefined) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const offsetMs = date.getTimezoneOffset() * 60 * 1000;
+  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
+}
+
+function scheduleStatusLabel(status: RegistrationScheduleStatus) {
+  const labels: Record<RegistrationScheduleStatus, string> = {
+    new: "Mới",
+    confirmed: "Đã xác nhận",
+    completed: "Đã hoàn tất",
+    cancelled: "Đã huỷ",
+    no_show: "Không đến",
+  };
+
+  return labels[status] ?? status;
 }
 
 async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
@@ -2113,10 +2183,17 @@ function getListPreview(item: any, tab: TabKey, programMode: ProgramMode, aboutM
       : tab === "about" && aboutMode === "testimonials"
         ? item.avatarUrl || ""
         : item.imageUrl || "";
-  const category = tab === "banners" ? "Trang chủ" : item.category || item.categoryName || "Chưa phân loại";
+  const category =
+    tab === "banners"
+      ? "Trang chủ"
+      : tab === "schedules"
+        ? scheduleStatusLabel(item.status ?? "new")
+        : item.category || item.categoryName || "Chưa phân loại";
   const description =
     tab === "banners"
       ? item.subtitle || item.ctaLabel || "Banner trang chủ"
+      : tab === "schedules"
+        ? `${item.phone || "Chưa có SĐT"} - ${formatDateTime(item.requestedAt)}`
       : tab === "about" && aboutMode === "testimonials"
         ? item.quote || "Chưa có nội dung chia sẻ."
         : item.excerpt || item.description || item.age || "Chưa có mô tả ngắn.";
@@ -2133,6 +2210,8 @@ function getListPreview(item: any, tab: TabKey, programMode: ProgramMode, aboutM
   const typeLabel =
     tab === "banners"
       ? "Banner"
+      : tab === "schedules"
+      ? "Lịch đăng ký"
       : tab === "teaching"
       ? "Phương pháp"
       : tab === "posts"
@@ -2167,6 +2246,7 @@ export default function AdminDashboard() {
     facilities: [],
     teachers: [],
     testimonials: [],
+    schedules: [],
   });
   const [selected, setSelected] = useState<number | null>(null);
   const [status, setStatus] = useState("");
@@ -2185,10 +2265,12 @@ export default function AdminDashboard() {
   const [facilityForm, setFacilityForm] = useState(emptyFacility);
   const [teacherForm, setTeacherForm] = useState(emptyTeacher);
   const [testimonialForm, setTestimonialForm] = useState(emptyTestimonial);
+  const [scheduleForm, setScheduleForm] = useState<RegistrationScheduleForm>(emptySchedule);
 
   const currentList = useMemo(() => {
     if (tab === "registration") return [];
     if (tab === "banners") return data.banners;
+    if (tab === "schedules") return data.schedules;
     if (tab === "teaching") return data.teaching;
     if (tab === "posts") return data.posts;
     if (tab === "about") {
@@ -2201,9 +2283,10 @@ export default function AdminDashboard() {
 
   async function loadAll() {
     setStatus("Đang tải dữ liệu...");
-    const [banners, registration, classes, curriculum, teaching, posts, facilities, teachers, testimonials, categoryResponse] = await Promise.all([
+    const [banners, registration, schedules, classes, curriculum, teaching, posts, facilities, teachers, testimonials, categoryResponse] = await Promise.all([
       requestJson<{ slides: HeroSlide[] }>("/api/hero-slides"),
       requestJson<{ settings: RegistrationSectionSettings }>("/api/home-sections/registration"),
+      requestJson<{ schedules: RegistrationSchedule[] }>("/api/registration-schedules"),
       requestJson<{ programs: ClassProgram[] }>("/api/class-programs"),
       requestJson<{ tracks: CurriculumTrack[] }>("/api/curriculum-tracks"),
       requestJson<{ methods: TeachingMethod[] }>("/api/teaching-methods"),
@@ -2223,6 +2306,7 @@ export default function AdminDashboard() {
       facilities: facilities.images,
       teachers: teachers.teachers,
       testimonials: testimonials.testimonials,
+      schedules: schedules.schedules,
     });
     setCategories(categoryResponse.categories);
     setRegistrationForm(registration.settings);
@@ -2243,6 +2327,7 @@ export default function AdminDashboard() {
     setFacilityForm(emptyFacility);
     setTeacherForm(emptyTeacher);
     setTestimonialForm(emptyTestimonial);
+    setScheduleForm(emptySchedule);
     if (tab === "registration") setRegistrationForm(emptyRegistrationSection);
     setNewCategoryName("");
   }
@@ -2260,6 +2345,15 @@ export default function AdminDashboard() {
         mobileImageUrl: item.mobileImageUrl ?? "",
         ctaLabel: item.ctaLabel ?? "",
         ctaHref: item.ctaHref ?? "",
+      });
+      return;
+    }
+
+    if (tab === "schedules") {
+      setScheduleForm({
+        requestedAt: toDateTimeLocal(item.requestedAt),
+        status: item.status ?? "new",
+        internalNote: item.internalNote ?? "",
       });
       return;
     }
@@ -2606,6 +2700,62 @@ export default function AdminDashboard() {
     }
   }
 
+  async function saveSchedule(event: FormEvent) {
+    event.preventDefault();
+    if (!selected) {
+      setStatus("Vui lòng chọn lịch đăng ký.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await requestJson(`/api/registration-schedules/${selected}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: scheduleForm.status,
+          requestedAt: scheduleForm.requestedAt ? new Date(scheduleForm.requestedAt).toISOString() : null,
+          internalNote: scheduleForm.internalNote,
+        }),
+      });
+
+      resetSelection();
+      await loadAll();
+      setStatus("Đã cập nhật lịch đăng ký.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Không thể cập nhật lịch đăng ký.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function deleteSchedule() {
+    if (!selectedSchedule) {
+      setStatus("Vui lòng chọn lịch đăng ký cần xoá.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Xoá lịch đăng ký của "${selectedSchedule.parentName}"? Thao tác này sẽ xoá bản đăng ký khỏi danh sách.`,
+    );
+    if (!confirmed) return;
+
+    setSaving(true);
+    try {
+      await requestJson(`/api/registration-schedules/${selectedSchedule.id}`, {
+        method: "DELETE",
+      });
+
+      resetSelection();
+      await loadAll();
+      setStatus("Đã xoá lịch đăng ký.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Không thể xoá lịch đăng ký.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function archiveCurrent() {
     if (!selected) return;
 
@@ -2686,6 +2836,11 @@ export default function AdminDashboard() {
         setCurriculumForm((form) => ({ ...form, category: option?.name ?? "" })),
     };
   }, [categories, classForm.category, curriculumForm.category, postForm.categorySlug, programMode, tab, teachingForm.category]);
+
+  const selectedSchedule = useMemo(
+    () => data.schedules.find((item) => item.id === selected) ?? null,
+    [data.schedules, selected],
+  );
 
   async function addCurrentCategory() {
     if (!newCategoryName.trim()) {
@@ -2798,10 +2953,11 @@ export default function AdminDashboard() {
       </header>
 
       <div className="mx-auto grid max-w-[1280px] gap-6 px-8 py-8">
-        <nav className="grid grid-cols-2 overflow-hidden rounded-md border border-[#cfe0cc] bg-[#e8f3e6] md:grid-cols-6">
+        <nav className="grid grid-cols-2 overflow-hidden rounded-md border border-[#cfe0cc] bg-[#e8f3e6] md:grid-cols-7">
           {[
             ["banners", "Banner Trang Chủ"],
             ["registration", "Đăng ký ưu đãi"],
+            ["schedules", "Lịch đăng ký"],
             ["teaching", "Phương Pháp Giảng Dạy"],
             ["programs", "Chương Trình Học"],
             ["posts", "Tin Tức & Sự Kiện"],
@@ -2879,25 +3035,39 @@ export default function AdminDashboard() {
           <aside className="rounded-md border border-[#d9baba] bg-white">
             <div className="flex items-center justify-between border-b border-[#f0d9d9] px-4 py-3">
               <h2 className="text-[18px] font-extrabold">Danh sách</h2>
-              <ActionButton icon={<Plus size={17} />} tone="quiet" onClick={resetSelection}>
-                Mới
-              </ActionButton>
+              {tab !== "schedules" ? (
+                <ActionButton icon={<Plus size={17} />} tone="quiet" onClick={resetSelection}>
+                  Mới
+                </ActionButton>
+              ) : null}
             </div>
             <div className="space-y-2 p-2">
               {currentList.map((item: any) => {
                 const preview = getListPreview(item, tab, programMode, aboutMode);
                 const isActive = selected === item.id;
+                const isNewSchedule = tab === "schedules" && item.status === "new";
 
                 return (
                   <button
                     key={item.id}
                     onClick={() => selectItem(item)}
-                    className={`group flex w-full gap-3 rounded-[14px] border p-3 text-left transition-all hover:border-[#e8b6b6] hover:bg-[#fff8f8] hover:shadow-[0_8px_20px_rgba(98,0,0,0.08)] ${
-                      isActive ? "border-[#b80000] bg-[#fff1f1] shadow-[0_8px_20px_rgba(184,0,0,0.12)]" : "border-transparent bg-white"
+                    className={`group relative flex w-full gap-3 rounded-[14px] border p-3 text-left transition-all hover:border-[#e8b6b6] hover:bg-[#fff8f8] hover:shadow-[0_8px_20px_rgba(98,0,0,0.08)] ${
+                      isActive
+                        ? "border-[#b80000] bg-[#fff1f1] shadow-[0_8px_20px_rgba(184,0,0,0.12)]"
+                        : isNewSchedule
+                          ? "border-[#b80000] bg-[#fff7f7] shadow-[0_8px_20px_rgba(184,0,0,0.10)]"
+                          : "border-transparent bg-white"
                     }`}
                   >
+                    {isNewSchedule ? (
+                      <span className="absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#b80000] text-white shadow-[0_4px_10px_rgba(184,0,0,0.25)]">
+                        <CheckCircle2 size={15} />
+                      </span>
+                    ) : null}
                     <span
-                      className="flex h-[58px] w-[58px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#f0d0d0] text-[22px] font-extrabold text-[#b80000]"
+                      className={`flex h-[58px] w-[58px] shrink-0 items-center justify-center overflow-hidden rounded-xl border text-[22px] font-extrabold text-[#b80000] ${
+                        isNewSchedule ? "border-[#f0a8a8] bg-[#fff1f1]" : "border-[#f0d0d0]"
+                      }`}
                       style={{ backgroundColor: preview.color }}
                     >
                       {preview.imageUrl ? (
@@ -2914,6 +3084,10 @@ export default function AdminDashboard() {
                         {isActive ? (
                           <span className="mt-0.5 shrink-0 rounded-full bg-[#b80000] px-2 py-1 text-[10px] font-extrabold uppercase text-white">
                             Chọn
+                          </span>
+                        ) : isNewSchedule ? (
+                          <span className="mt-0.5 shrink-0 rounded-full bg-[#b80000] px-2 py-1 text-[10px] font-extrabold uppercase text-white">
+                            Chưa xác nhận
                           </span>
                         ) : null}
                       </span>
@@ -2948,13 +3122,23 @@ export default function AdminDashboard() {
             <div className="mb-5 flex items-center justify-between gap-4">
               <div>
                 <p className="text-[13px] font-extrabold uppercase text-[#b80000]">
-                  {tab === "registration" ? "Cấu hình" : selected ? "Đang sửa" : "Thêm mới"}
+                  {tab === "registration"
+                    ? "Cấu hình"
+                    : tab === "schedules"
+                      ? selectedSchedule
+                        ? "Đang xem"
+                        : "Danh sách"
+                      : selected
+                        ? "Đang sửa"
+                        : "Thêm mới"}
                 </p>
                 <h2 className="text-[24px] font-extrabold">
                   {tab === "banners"
                     ? "Banner trang chủ"
                     : tab === "registration"
                     ? "Đăng ký ưu đãi"
+                    : tab === "schedules"
+                    ? "Lịch đăng ký"
                     : tab === "teaching"
                     ? "Phương pháp giảng dạy"
                     : tab === "posts"
@@ -2971,7 +3155,12 @@ export default function AdminDashboard() {
                 </h2>
               </div>
               <div className="flex gap-2">
-                {selected && tab !== "registration" ? (
+                {selectedSchedule && tab === "schedules" ? (
+                  <ActionButton icon={<Trash2 size={17} />} tone="danger" onClick={deleteSchedule} disabled={saving}>
+                    Xóa
+                  </ActionButton>
+                ) : null}
+                {selected && tab !== "registration" && tab !== "schedules" ? (
                   <ActionButton icon={<Trash2 size={17} />} tone="danger" onClick={archiveCurrent} disabled={saving}>
                     Xóa
                   </ActionButton>
@@ -3089,6 +3278,95 @@ export default function AdminDashboard() {
                   Lưu khối đăng ký
                 </ActionButton>
               </form>
+            ) : null}
+
+            {tab === "schedules" ? (
+              selectedSchedule ? (
+                <form className="grid gap-5" onSubmit={saveSchedule}>
+                  <div className="grid gap-3 rounded-md border border-[#efd0d0] bg-[#fff8f8] p-4 md:grid-cols-2">
+                    <div>
+                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Phụ huynh</p>
+                      <p className="mt-1 text-[18px] font-extrabold">{selectedSchedule.parentName}</p>
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Liên hệ</p>
+                      <p className="mt-1 text-[15px] font-bold">{selectedSchedule.phone}</p>
+                      <p className="text-[14px] font-semibold text-[#7e3d3d]">{selectedSchedule.email || "Chưa có email"}</p>
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Khối lớp</p>
+                      <p className="mt-1 text-[15px] font-bold">
+                        {selectedSchedule.classProgramName || selectedSchedule.grade || "Chưa chọn"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Email xác nhận</p>
+                      <p className="mt-1 text-[15px] font-bold uppercase">{selectedSchedule.emailStatus}</p>
+                      {selectedSchedule.emailError ? (
+                        <p className="mt-1 text-[12px] font-semibold text-red-600">{selectedSchedule.emailError}</p>
+                      ) : null}
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Nguồn</p>
+                      <p className="mt-1 text-[13px] font-semibold text-[#7e3d3d]">
+                        {selectedSchedule.sourcePage || "/"} - {selectedSchedule.sourceDevice}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Ngày tạo</p>
+                      <p className="mt-1 text-[13px] font-semibold text-[#7e3d3d]">
+                        {formatDateTime(selectedSchedule.createdAt)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <Field
+                      label="Thời gian tư vấn"
+                      type="datetime-local"
+                      value={scheduleForm.requestedAt}
+                      onChange={(value) => setScheduleForm((form) => ({ ...form, requestedAt: value }))}
+                    />
+                    <label className="grid gap-1.5">
+                      <span className="text-[13px] font-bold uppercase text-[#620000]">Trạng thái</span>
+                      <select
+                        value={scheduleForm.status}
+                        onChange={(event) =>
+                          setScheduleForm((form) => ({
+                            ...form,
+                            status: event.target.value as RegistrationScheduleStatus,
+                          }))
+                        }
+                        className="h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[15px] text-[#620000] outline-none focus:border-[#b80000]"
+                      >
+                        <option value="new">Mới</option>
+                        <option value="confirmed">Đã xác nhận</option>
+                        <option value="completed">Đã hoàn tất</option>
+                        <option value="cancelled">Đã huỷ</option>
+                        <option value="no_show">Không đến</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <TextArea
+                    label="Ghi chú nội bộ"
+                    rows={5}
+                    value={scheduleForm.internalNote}
+                    onChange={(value) => setScheduleForm((form) => ({ ...form, internalNote: value }))}
+                  />
+
+                  <ActionButton type="submit" icon={<CalendarClock size={17} />} disabled={saving}>
+                    Lưu lịch đăng ký
+                  </ActionButton>
+                </form>
+              ) : (
+                <div className="rounded-md border border-dashed border-[#d9baba] bg-[#fffefa] px-5 py-10 text-center">
+                  <p className="text-[18px] font-extrabold text-[#620000]">Chọn một lịch đăng ký để xem chi tiết.</p>
+                  <p className="mt-2 text-[14px] font-semibold text-[#7e3d3d]">
+                    Các đăng ký thành công sẽ tự xuất hiện trong danh sách bên trái.
+                  </p>
+                </div>
+              )
             ) : null}
 
             {tab === "banners" ? (

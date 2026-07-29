@@ -1,5 +1,6 @@
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { getMysqlPool } from "./mysql";
+import { sendRegistrationConfirmationEmail } from "./registration-email";
 
 export type EnrollmentLeadInput = {
   parentName: string;
@@ -14,6 +15,8 @@ export type EnrollmentLeadInput = {
   utmCampaign?: string;
   utmContent?: string;
   utmTerm?: string;
+  appointmentDate?: string;
+  appointmentTime?: string;
 };
 
 type ClassProgramRow = RowDataPacket & {
@@ -45,6 +48,30 @@ function normalizeGradeToSlug(grade: string) {
   if (direct) return direct;
 
   return Object.keys(gradeSlugMap).find((slug) => normalized.includes(slug)) ?? null;
+}
+
+function getRequestedAppointmentAt(date?: string | null, time?: string | null) {
+  const normalizedDate = date?.trim();
+  const normalizedTime = time?.trim();
+
+  if (!normalizedDate || !normalizedTime) return null;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(normalizedDate)) return null;
+  if (!/^\d{2}:\d{2}$/.test(normalizedTime)) return null;
+
+  const appointment = new Date(`${normalizedDate}T${normalizedTime}:00`);
+  if (Number.isNaN(appointment.getTime())) return null;
+
+  return appointment;
+}
+
+function formatAppointmentLabel(value: Date | null) {
+  if (!value) return "Cho nha truong xep lich";
+
+  return new Intl.DateTimeFormat("vi-VN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Asia/Ho_Chi_Minh",
+  }).format(value);
 }
 
 export function validateEnrollmentLead(input: Partial<EnrollmentLeadInput>) {
@@ -89,6 +116,8 @@ export function validateEnrollmentLead(input: Partial<EnrollmentLeadInput>) {
       utmCampaign: input.utmCampaign?.trim() || null,
       utmContent: input.utmContent?.trim() || null,
       utmTerm: input.utmTerm?.trim() || null,
+      appointmentDate: input.appointmentDate?.trim() || null,
+      appointmentTime: input.appointmentTime?.trim() || null,
     },
   };
 }
@@ -109,6 +138,10 @@ export async function createEnrollmentLead(
     await connection.beginTransaction();
 
     const gradeSlug = normalizeGradeToSlug(validation.data.grade);
+    const requestedAppointmentAt = getRequestedAppointmentAt(
+      validation.data.appointmentDate,
+      validation.data.appointmentTime,
+    );
 
     const [programRows] = await connection.execute<ClassProgramRow[]>(
       "SELECT id FROM class_programs WHERE slug = :slug AND is_active = TRUE LIMIT 1",
@@ -202,12 +235,56 @@ export async function createEnrollmentLead(
       { leadId: leadResult.insertId },
     );
 
+    await connection.execute(
+      `INSERT INTO registration_schedules (
+        lead_id,
+        requested_at,
+        status,
+        email_status
+      ) VALUES (
+        :leadId,
+        :requestedAt,
+        'new',
+        'pending'
+      )`,
+      {
+        leadId: leadResult.insertId,
+        requestedAt: requestedAppointmentAt
+          ? requestedAppointmentAt.toISOString().slice(0, 19).replace("T", " ")
+          : null,
+      },
+    );
+
     await connection.commit();
+
+    const emailResult = await sendRegistrationConfirmationEmail({
+      to: validation.data.email,
+      parentName: validation.data.parentName,
+      phone: validation.data.phone,
+      grade: validation.data.grade,
+      appointmentLabel: formatAppointmentLabel(requestedAppointmentAt),
+      leadId: leadResult.insertId,
+    });
+
+    await connection.execute(
+      `UPDATE registration_schedules
+       SET
+        email_status = :emailStatus,
+        email_sent_at = CASE WHEN :emailStatus = 'sent' THEN NOW() ELSE email_sent_at END,
+        email_error = :emailError
+       WHERE lead_id = :leadId`,
+      {
+        leadId: leadResult.insertId,
+        emailStatus: emailResult.status,
+        emailError: "error" in emailResult ? emailResult.error : null,
+      },
+    );
 
     return {
       ok: true as const,
       status: 201,
       leadId: leadResult.insertId,
+      emailStatus: emailResult.status,
     };
   } catch (error) {
     await connection.rollback();

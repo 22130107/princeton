@@ -26,7 +26,8 @@ export async function POST(request: Request) {
       {
         ok: true,
         leadId: result.leadId,
-        message: "Đăng ký thành công.",
+        emailStatus: result.emailStatus,
+        message: "\u0110\u0103ng k\u00fd th\u00e0nh c\u00f4ng.",
       },
       { status: result.status },
     );
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         ok: false,
-        message: "Không thể lưu đăng ký. Vui lòng thử lại sau.",
+        message: "Kh\u00f4ng th\u1ec3 l\u01b0u \u0111\u0103ng k\u00fd. Vui l\u00f2ng th\u1eed l\u1ea1i sau.",
       },
       { status: 500 },
     );

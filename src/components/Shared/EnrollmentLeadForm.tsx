@@ -38,6 +38,8 @@ export default function EnrollmentLeadForm({
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [grade, setGrade] = useState("");
+  const [appointmentDate, setAppointmentDate] = useState("");
+  const [appointmentTime, setAppointmentTime] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitState, setSubmitState] = useState<SubmitState>({
@@ -84,10 +86,16 @@ export default function EnrollmentLeadForm({
       ? "mb-1 block text-[15px] font-semibold text-[#620000]"
       : "mb-1 block text-[13px] font-medium text-[#620000]";
 
+  const minAppointmentDate = useMemo(() => {
+    const today = new Date();
+    const offsetMs = today.getTimezoneOffset() * 60 * 1000;
+    return new Date(today.getTime() - offsetMs).toISOString().slice(0, 10);
+  }, []);
+
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFieldErrors({});
-    setSubmitState({ status: "loading", message: "Dang gui dang ky..." });
+    setSubmitState({ status: "loading", message: "Đang gửi đăng ký..." });
 
     try {
       const response = await fetch("/api/enrollment-leads", {
@@ -100,6 +108,8 @@ export default function EnrollmentLeadForm({
           phone,
           email,
           grade,
+          appointmentDate,
+          appointmentTime,
           agreed,
           sourcePage: window.location.pathname,
           sourceDevice: getDevice(),
@@ -112,7 +122,7 @@ export default function EnrollmentLeadForm({
         setFieldErrors(data.errors ?? {});
         setSubmitState({
           status: "error",
-          message: data.message ?? "Thong tin chua hop le. Vui long kiem tra lai.",
+          message: data.message ?? "Thông tin chưa hợp lệ. Vui lòng kiểm tra lại.",
         });
         return;
       }
@@ -120,15 +130,17 @@ export default function EnrollmentLeadForm({
       setParentName("");
       setPhone("");
       setEmail("");
+      setAppointmentDate("");
+      setAppointmentTime("");
       setAgreed(false);
       setSubmitState({
         status: "success",
-        message: data.message ?? "Dang ky thanh cong.",
+        message: "Đăng ký thành công. Nhà trường đã nhận lịch và sẽ liên hệ xác nhận sớm.",
       });
     } catch {
       setSubmitState({
         status: "error",
-        message: "Khong the gui dang ky. Vui long thu lai sau.",
+        message: "Không thể gửi đăng ký. Vui lòng thử lại sau.",
       });
     }
   }
@@ -141,6 +153,22 @@ export default function EnrollmentLeadForm({
       ].join(" ")}
       onSubmit={onSubmit}
     >
+      {submitState.message ? (
+        <div
+          role="status"
+          className={[
+            "rounded-md border px-4 py-3 text-center text-[14px] font-bold leading-6",
+            submitState.status === "success"
+              ? "border-green-300 bg-green-50 text-green-800"
+              : submitState.status === "loading"
+                ? "border-[#e1b0b0] bg-white text-[#620000]"
+                : "border-red-300 bg-red-50 text-red-700",
+          ].join(" ")}
+        >
+          {submitState.message}
+        </div>
+      ) : null}
+
       <div>
         <label className={labelClass}>
           Ho va ten <span className="text-red-500">*</span>
@@ -217,6 +245,46 @@ export default function EnrollmentLeadForm({
         ) : null}
       </div>
 
+      <div className={variant === "desktop" ? "grid gap-3 md:grid-cols-2" : "grid gap-3"}>
+        <div>
+          <label className={labelClass}>Ngay tu van mong muon</label>
+          <input
+            type="date"
+            value={appointmentDate}
+            min={minAppointmentDate}
+            onChange={(event) => setAppointmentDate(event.target.value)}
+            className={fieldClass}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>Khung gio</label>
+          <div className="relative">
+            <select
+              value={appointmentTime}
+              onChange={(event) => setAppointmentTime(event.target.value)}
+              className={`${fieldClass} appearance-none pr-9`}
+            >
+              <option value="">Nha truong xep lich</option>
+              <option value="08:30">08:30</option>
+              <option value="09:30">09:30</option>
+              <option value="10:30">10:30</option>
+              <option value="14:00">14:00</option>
+              <option value="15:00">15:00</option>
+              <option value="16:00">16:00</option>
+            </select>
+            <svg
+              aria-hidden
+              className="pointer-events-none absolute right-3 top-1/2 h-2 w-3 -translate-y-1/2"
+              viewBox="0 0 16 11"
+              fill="none"
+            >
+              <path d="M1 1L8 9L15 1" stroke="#620000" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
       <label className="mt-1 flex cursor-pointer items-start gap-3">
         <input
           type="checkbox"
@@ -243,16 +311,6 @@ export default function EnrollmentLeadForm({
         {submitState.status === "loading" ? "Đang gửi..." : submitLabel}
       </button>
 
-      {submitState.message ? (
-        <p
-          className={[
-            "text-center text-[13px] font-semibold",
-            submitState.status === "success" ? "text-green-700" : "text-red-600",
-          ].join(" ")}
-        >
-          {submitState.message}
-        </p>
-      ) : null}
     </form>
   );
 }
