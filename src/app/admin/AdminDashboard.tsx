@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, type MouseEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, type MouseEvent, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Edit3, Eye, FileText, ImagePlus, List, ListOrdered, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
 
 type TabKey = "banners" | "teaching" | "programs" | "posts" | "about";
@@ -556,6 +556,29 @@ function normalizeVideoUrl(value: string) {
 }
 
 type RichMediaElement = HTMLImageElement | HTMLIFrameElement;
+type MediaDragMode = "move" | "resize";
+
+type MediaDragSession = {
+  mode: MediaDragMode;
+  media: RichMediaElement;
+  captureTarget: Element;
+  pointerId: number;
+  startX: number;
+  startY: number;
+  startLeft: number;
+  startTop: number;
+  startWidth: number;
+  minWidth: number;
+  maxWidth: number;
+  aspectRatio: number;
+};
+
+type MediaOverlayRect = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
 
 function RichTextEditor({
   label,
@@ -571,11 +594,15 @@ function RichTextEditor({
   onStatus: (message: string) => void;
 }) {
   const editorRef = useRef<HTMLDivElement>(null);
+  const editorFrameRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const selectedMediaRef = useRef<RichMediaElement | null>(null);
+  const dragSessionRef = useRef<MediaDragSession | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [preview, setPreview] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<RichMediaElement | null>(null);
+  const [mediaOverlay, setMediaOverlay] = useState<MediaOverlayRect | null>(null);
   const textValue = value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
   const wordsCount = textValue ? textValue.split(" ").length : 0;
 
@@ -588,9 +615,52 @@ function RichTextEditor({
     }
   }, [value]);
 
+  useEffect(() => {
+    window.addEventListener("resize", syncSelectedMediaOverlay);
+
+    return () => {
+      window.removeEventListener("resize", syncSelectedMediaOverlay);
+      document.removeEventListener("pointermove", handleDocumentPointerMove);
+      document.removeEventListener("pointerup", handleDocumentPointerUp);
+      document.removeEventListener("pointercancel", handleDocumentPointerUp);
+    };
+  }, []);
+
   function emit() {
     const html = editorRef.current?.innerHTML ?? "";
     onChange(html.trim());
+  }
+
+  function selectMedia(media: RichMediaElement | null) {
+    selectedMediaRef.current?.classList.remove("rich-admin-media-active");
+    selectedMediaRef.current = media;
+    media?.classList.add("rich-admin-media-active");
+    setSelectedMedia(media);
+    if (media) {
+      window.requestAnimationFrame(syncSelectedMediaOverlay);
+    } else {
+      setMediaOverlay(null);
+    }
+  }
+
+  function syncSelectedMediaOverlay() {
+    const media = selectedMediaRef.current;
+    const frame = editorFrameRef.current;
+    const editor = editorRef.current;
+
+    if (!media || !frame || !editor || !editor.contains(media)) {
+      setMediaOverlay(null);
+      return;
+    }
+
+    const mediaRect = media.getBoundingClientRect();
+    const frameRect = frame.getBoundingClientRect();
+    setMediaOverlay({
+      left: mediaRect.left - frameRect.left,
+      top: mediaRect.top - frameRect.top,
+      width: mediaRect.width,
+      height: mediaRect.height,
+    });
   }
 
   function focusEditor() {
@@ -616,7 +686,7 @@ function RichTextEditor({
     try {
       const result = await uploadMedia(file, label);
       insertHtml(
-        `<img src="${result.asset.url}" alt="${htmlEscape(result.asset.alt)}" style="display:block;width:70%;max-width:100%;height:auto;margin:18px auto;border-radius:16px;" />`,
+        `<img src="${result.asset.url}" alt="${htmlEscape(result.asset.alt)}" draggable="false" style="display:block;position:relative;left:0;top:0;width:70%;max-width:100%;height:auto;margin:18px auto;border-radius:16px;" />`,
       );
       onStatus("Đã chèn ảnh vào nội dung.");
     } catch (error) {
@@ -633,37 +703,181 @@ function RichTextEditor({
 
     const src = normalizeVideoUrl(input);
     insertHtml(
-      `<iframe src="${htmlEscape(src)}" style="display:block;width:70%;max-width:100%;height:360px;margin:18px auto;border:0;border-radius:16px;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><p><br></p>`,
+      `<iframe src="${htmlEscape(src)}" style="display:block;position:relative;left:0;top:0;width:70%;max-width:100%;height:360px;margin:18px auto;border:0;border-radius:16px;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><p><br></p>`,
     );
     onStatus("Đã nhúng video vào nội dung.");
   }
 
   function resizeSelectedMedia(delta: number) {
     if (!selectedMedia || !editorRef.current?.contains(selectedMedia)) return;
-    const current = Number.parseFloat(selectedMedia.style.width || "70");
-    const next = Math.max(25, Math.min(100, current + delta));
-    selectedMedia.style.width = `${next}%`;
+    selectedMedia.style.position = "relative";
+
+    if (selectedMedia.style.width.endsWith("px")) {
+      const editorWidth = editorRef.current.getBoundingClientRect().width;
+      const current = selectedMedia.getBoundingClientRect().width;
+      const next = Math.max(80, Math.min(editorWidth, current + delta * 4));
+      selectedMedia.style.width = `${Math.round(next)}px`;
+    } else {
+      const current = Number.parseFloat(selectedMedia.style.width || "70");
+      const next = Math.max(25, Math.min(100, current + delta));
+      selectedMedia.style.width = `${next}%`;
+    }
+
     selectedMedia.style.maxWidth = "100%";
-    if (selectedMedia.tagName === "IMG") {
+    if (selectedMedia instanceof HTMLImageElement) {
       selectedMedia.style.height = "auto";
     }
+    syncSelectedMediaOverlay();
     emit();
   }
 
   function alignSelectedMedia(position: "left" | "center" | "right") {
     if (!selectedMedia || !editorRef.current?.contains(selectedMedia)) return;
     selectedMedia.style.display = "block";
+    selectedMedia.style.position = "relative";
+    selectedMedia.style.left = "0px";
+    selectedMedia.style.top = "0px";
     selectedMedia.style.marginTop = "18px";
     selectedMedia.style.marginBottom = "18px";
     selectedMedia.style.marginLeft = position === "left" ? "0" : position === "center" ? "auto" : "auto";
     selectedMedia.style.marginRight = position === "right" ? "0" : position === "center" ? "auto" : "auto";
+    syncSelectedMediaOverlay();
     emit();
   }
 
+  function findMediaAtPoint(clientX: number, clientY: number, target?: EventTarget | null) {
+    const directTarget = target instanceof HTMLElement ? target.closest("img, iframe") : null;
+    if (directTarget instanceof HTMLImageElement || directTarget instanceof HTMLIFrameElement) {
+      return directTarget;
+    }
+
+    const editor = editorRef.current;
+    if (!editor) return null;
+
+    const mediaItems = Array.from(editor.querySelectorAll<RichMediaElement>("img, iframe")).reverse();
+    return (
+      mediaItems.find((item) => {
+        const rect = item.getBoundingClientRect();
+        return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+      }) ?? null
+    );
+  }
+
   function pickMedia(event: MouseEvent<HTMLDivElement>) {
-    const target = event.target as HTMLElement;
-    const media = target.closest("img, iframe");
-    setSelectedMedia(media instanceof HTMLImageElement || media instanceof HTMLIFrameElement ? media : null);
+    selectMedia(findMediaAtPoint(event.clientX, event.clientY, event.target));
+  }
+
+  function getMediaDragMode(event: PointerEvent<HTMLDivElement>, media: RichMediaElement): MediaDragMode {
+    const rect = media.getBoundingClientRect();
+    const handleSize = 26;
+    return event.clientX >= rect.right - handleSize && event.clientY >= rect.bottom - handleSize ? "resize" : "move";
+  }
+
+  function beginMediaDrag(
+    media: RichMediaElement,
+    mode: MediaDragMode,
+    pointerId: number,
+    clientX: number,
+    clientY: number,
+    captureTarget: Element,
+  ) {
+    const editor = editorRef.current;
+    if (!editor?.contains(media)) return;
+
+    media.draggable = false;
+    media.style.display = "block";
+    media.style.position = "relative";
+    media.style.maxWidth = "100%";
+
+    const editorRect = editor.getBoundingClientRect();
+    const mediaRect = media.getBoundingClientRect();
+    const startWidth = mediaRect.width;
+    const startHeight = mediaRect.height;
+
+    dragSessionRef.current = {
+      mode,
+      media,
+      captureTarget,
+      pointerId,
+      startX: clientX,
+      startY: clientY,
+      startLeft: Number.parseFloat(media.style.left || "0") || 0,
+      startTop: Number.parseFloat(media.style.top || "0") || 0,
+      startWidth,
+      minWidth: Math.min(140, Math.max(80, editorRect.width * 0.2)),
+      maxWidth: Math.max(180, editorRect.width),
+      aspectRatio: startWidth / Math.max(1, startHeight),
+    };
+
+    captureTarget.setPointerCapture?.(pointerId);
+    document.addEventListener("pointermove", handleDocumentPointerMove);
+    document.addEventListener("pointerup", handleDocumentPointerUp);
+    document.addEventListener("pointercancel", handleDocumentPointerUp);
+  }
+
+  function startMediaDrag(event: PointerEvent<HTMLDivElement>) {
+    if (event.button !== 0) return;
+
+    const media = findMediaAtPoint(event.clientX, event.clientY, event.target);
+    if (!(media instanceof HTMLImageElement || media instanceof HTMLIFrameElement) || !editorRef.current?.contains(media)) {
+      selectMedia(null);
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    selectMedia(media);
+    beginMediaDrag(media, getMediaDragMode(event, media), event.pointerId, event.clientX, event.clientY, media);
+  }
+
+  function startSelectedMediaResize(event: PointerEvent<HTMLButtonElement>) {
+    if (event.button !== 0 || !selectedMedia || !editorRef.current?.contains(selectedMedia)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    selectMedia(selectedMedia);
+    beginMediaDrag(selectedMedia, "resize", event.pointerId, event.clientX, event.clientY, event.currentTarget);
+  }
+
+  function handleDocumentPointerMove(event: globalThis.PointerEvent) {
+    const session = dragSessionRef.current;
+    if (!session || event.pointerId !== session.pointerId) return;
+
+    event.preventDefault();
+    const dx = event.clientX - session.startX;
+    const dy = event.clientY - session.startY;
+
+    if (session.mode === "move") {
+      session.media.style.left = `${Math.round(session.startLeft + dx)}px`;
+      session.media.style.top = `${Math.round(session.startTop + dy)}px`;
+      syncSelectedMediaOverlay();
+      return;
+    }
+
+    const nextWidth = Math.max(session.minWidth, Math.min(session.maxWidth, session.startWidth + dx));
+    session.media.style.width = `${Math.round(nextWidth)}px`;
+    session.media.style.maxWidth = "100%";
+
+    if (session.media instanceof HTMLIFrameElement) {
+      session.media.style.height = `${Math.round(Math.max(160, nextWidth / session.aspectRatio))}px`;
+    } else {
+      session.media.style.height = "auto";
+    }
+    syncSelectedMediaOverlay();
+  }
+
+  function handleDocumentPointerUp(event: globalThis.PointerEvent) {
+    const session = dragSessionRef.current;
+    if (!session || event.pointerId !== session.pointerId) return;
+
+    session.captureTarget.releasePointerCapture?.(event.pointerId);
+    dragSessionRef.current = null;
+    document.removeEventListener("pointermove", handleDocumentPointerMove);
+    document.removeEventListener("pointerup", handleDocumentPointerUp);
+    document.removeEventListener("pointercancel", handleDocumentPointerUp);
+    syncSelectedMediaOverlay();
+    emit();
   }
 
   const toolbar = (
@@ -740,20 +954,48 @@ function RichTextEditor({
         />
       ) : (
         <div
-          ref={editorRef}
-          role="textbox"
-          aria-label={label}
-          contentEditable
-          suppressContentEditableWarning
-          onInput={emit}
-          onClick={pickMedia}
-          className={`${expanded ? "min-h-0 flex-1 overflow-auto" : "min-h-[320px]"} rich-admin-content rounded-b-md border border-[#e1b0b0] bg-white px-5 py-4 text-[16px] leading-8 text-[#620000] outline-none focus:border-[#b80000]`}
-        />
+          ref={editorFrameRef}
+          className={expanded ? "relative min-h-0 flex-1" : "relative"}
+        >
+          <div
+            ref={editorRef}
+            role="textbox"
+            aria-label={label}
+            contentEditable
+            suppressContentEditableWarning
+            onInput={emit}
+            onClick={pickMedia}
+            onPointerDown={startMediaDrag}
+            onScroll={syncSelectedMediaOverlay}
+            className={`${expanded ? "h-full min-h-0 overflow-auto" : "min-h-[320px]"} rich-admin-content rounded-b-md border border-[#e1b0b0] bg-white px-5 py-4 text-[16px] leading-8 text-[#620000] outline-none focus:border-[#b80000]`}
+          />
+          {selectedMedia && mediaOverlay ? (
+            <div
+              className="pointer-events-none absolute z-10 rounded-[16px] border-2 border-dashed border-[#b80000]"
+              style={{
+                left: `${mediaOverlay.left}px`,
+                top: `${mediaOverlay.top}px`,
+                width: `${mediaOverlay.width}px`,
+                height: `${mediaOverlay.height}px`,
+              }}
+            >
+              <button
+                type="button"
+                aria-label="Kéo để đổi kích thước ảnh/video"
+                title="Kéo để đổi kích thước"
+                onPointerDown={startSelectedMediaResize}
+                className="pointer-events-auto absolute bottom-[-12px] right-[-12px] flex h-6 w-6 cursor-nwse-resize items-center justify-center rounded-full border-2 border-white bg-[#b80000] shadow-[0_3px_10px_rgba(98,0,0,0.28)]"
+              >
+                <span className="block h-2.5 w-2.5 rounded-full bg-white" />
+              </button>
+            </div>
+          ) : null}
+        </div>
       )}
       <div className="flex flex-wrap justify-between gap-2 rounded-b-md border-x border-b border-[#f0d0d0] bg-[#fffefa] px-3 py-2 text-[12px] font-semibold text-[#9a4a4a]">
         <span>{wordsCount} từ</span>
         <span>{value.length} ký tự HTML</span>
-        <span>Bấm ảnh/video rồi dùng nút thu nhỏ/phóng to</span>
+        <span>Bấm ảnh/video, kéo ảnh để đổi vị trí, kéo chấm đỏ để đổi kích thước</span>
       </div>
       <style jsx global>{`
         .rich-admin-content h2 {
@@ -766,6 +1008,20 @@ function RichTextEditor({
         .rich-admin-content p {
           margin: 0 0 1rem;
         }
+        .rich-admin-content div {
+          margin: 0 0 1rem;
+        }
+        .rich-admin-content p:last-child,
+        .rich-admin-content div:last-child {
+          margin-bottom: 0;
+        }
+        .rich-admin-content p:empty,
+        .rich-admin-content div:empty,
+        .rich-admin-content p:has(> br:only-child),
+        .rich-admin-content div:has(> br:only-child) {
+          min-height: 0.75rem;
+          margin-bottom: 0.5rem;
+        }
         .rich-admin-content ul,
         .rich-admin-content ol {
           margin: 0 0 1rem 1.4rem;
@@ -775,10 +1031,19 @@ function RichTextEditor({
         .rich-admin-content iframe {
           cursor: pointer;
           outline-offset: 5px;
+          touch-action: none;
+          user-select: none;
         }
         .rich-admin-content img:hover,
-        .rich-admin-content iframe:hover {
+        .rich-admin-content iframe:hover,
+        .rich-admin-content .rich-admin-media-active {
           outline: 2px dashed #b80000;
+        }
+        .rich-admin-content .rich-admin-media-active {
+          cursor: move;
+        }
+        .rich-admin-content[contenteditable="true"] iframe {
+          pointer-events: none;
         }
       `}</style>
     </div>

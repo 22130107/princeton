@@ -46,6 +46,20 @@ export default function RichContent({ blocks }: { blocks: string[] }) {
         .rich-content p {
           margin: 0 0 1.25rem;
         }
+        .rich-content > div > div {
+          margin: 0 0 1.25rem;
+        }
+        .rich-content p:last-child,
+        .rich-content > div > div:last-child {
+          margin-bottom: 0;
+        }
+        .rich-content p:empty,
+        .rich-content > div > div:empty,
+        .rich-content p:has(> br:only-child),
+        .rich-content > div > div:has(> br:only-child) {
+          min-height: 0.8rem;
+          margin-bottom: 0.6rem;
+        }
         .rich-content ul,
         .rich-content ol {
           margin: 0 0 1.35rem 1.5rem;
@@ -70,6 +84,8 @@ export default function RichContent({ blocks }: { blocks: string[] }) {
           .rich-content iframe {
             width: 100% !important;
             height: auto;
+            left: 0 !important;
+            top: 0 !important;
             min-height: 220px;
           }
         }
