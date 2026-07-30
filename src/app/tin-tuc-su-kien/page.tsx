@@ -20,8 +20,35 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function TinTucSuKienPage() {
+const POSTS_PER_PAGE = 6;
+
+type TinTucSuKienPageProps = {
+  searchParams?: Promise<{
+    page?: string | string[];
+  }>;
+};
+
+function getPageParam(value: string | string[] | undefined) {
+  const pageValue = Array.isArray(value) ? value[0] : value;
+  const parsedPage = Number.parseInt(pageValue ?? "1", 10);
+
+  return Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+}
+
+function getPageHref(pageNumber: number) {
+  return `/tin-tuc-su-kien?page=${pageNumber}`;
+}
+
+export default async function TinTucSuKienPage({
+  searchParams,
+}: TinTucSuKienPageProps) {
+  const params = await searchParams;
   const newsPosts = await getNewsPosts();
+  const totalPages = Math.max(1, Math.ceil(newsPosts.length / POSTS_PER_PAGE));
+  const currentPage = Math.min(getPageParam(params?.page), totalPages);
+  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+  const paginatedPosts = newsPosts.slice(startIndex, startIndex + POSTS_PER_PAGE);
+  const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 
   return (
     <main className="min-h-screen bg-[#fffefa] pt-[64px] text-[#620000] md:pt-[99px]">
@@ -51,7 +78,7 @@ export default async function TinTucSuKienPage() {
           </p>
 
           <div className="mt-9 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {newsPosts.map((post) => (
+            {paginatedPosts.map((post) => (
               <article
                 key={post.slug}
                 className="flex min-h-[520px] flex-col overflow-hidden border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.16)]"
@@ -92,6 +119,50 @@ export default async function TinTucSuKienPage() {
               </article>
             ))}
           </div>
+
+          {totalPages > 1 ? (
+            <nav
+              aria-label="Phân trang tin tức"
+              className="mt-10 flex flex-wrap items-center justify-center gap-3"
+            >
+              {currentPage > 1 ? (
+                <Link
+                  href={getPageHref(currentPage - 1)}
+                  className="inline-flex min-h-11 items-center rounded-full border border-[#b80000] bg-[#fffefa] px-5 text-[15px] font-extrabold uppercase text-[#b80000] no-underline shadow-[0_3px_0_rgba(184,0,0,0.16)]"
+                >
+                  Trang trước
+                </Link>
+              ) : null}
+
+              {pageNumbers.map((pageNumber) => {
+                const isCurrentPage = pageNumber === currentPage;
+
+                return (
+                  <Link
+                    key={pageNumber}
+                    href={getPageHref(pageNumber)}
+                    aria-current={isCurrentPage ? "page" : undefined}
+                    className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border px-4 text-[15px] font-extrabold no-underline shadow-[0_3px_0_rgba(184,0,0,0.16)] ${
+                      isCurrentPage
+                        ? "border-[#620000] bg-[#b80000] text-white"
+                        : "border-[#b80000] bg-[#fffefa] text-[#b80000]"
+                    }`}
+                  >
+                    Trang {pageNumber}
+                  </Link>
+                );
+              })}
+
+              {currentPage < totalPages ? (
+                <Link
+                  href={getPageHref(currentPage + 1)}
+                  className="inline-flex min-h-11 items-center rounded-full border border-[#b80000] bg-[#fffefa] px-5 text-[15px] font-extrabold uppercase text-[#b80000] no-underline shadow-[0_3px_0_rgba(184,0,0,0.16)]"
+                >
+                  Trang sau
+                </Link>
+              ) : null}
+            </nav>
+          ) : null}
         </div>
       </section>
       <SiteFooter />

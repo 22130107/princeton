@@ -434,6 +434,16 @@ function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+function syncAutoSlug(currentSlug: string, previousValue: string, nextValue: string) {
+  const previousAutoSlug = slugify(previousValue);
+
+  if (!currentSlug || currentSlug === previousAutoSlug) {
+    return slugify(nextValue);
+  }
+
+  return currentSlug;
+}
+
 function formatDateTime(value: string | null | undefined) {
   if (!value) return "Chờ xếp lịch";
 
@@ -4609,7 +4619,7 @@ export default function AdminDashboard() {
             {tab === "teaching" ? (
               <form className="grid gap-4" onSubmit={saveTeaching}>
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="Tiêu đề" value={teachingForm.title} onChange={(value) => setTeachingForm((f) => ({ ...f, title: value, slug: f.slug || slugify(value) }))} />
+                  <Field label="Tiêu đề" value={teachingForm.title} onChange={(value) => setTeachingForm((f) => ({ ...f, title: value, slug: syncAutoSlug(f.slug, f.title, value) }))} />
                   <Field label="Slug" value={teachingForm.slug} onChange={(value) => setTeachingForm((f) => ({ ...f, slug: value }))} />
                   <Field label="Màu nền" type="color" value={teachingForm.backgroundHex} onChange={(value) => setTeachingForm((f) => ({ ...f, backgroundHex: value }))} />
                 </div>
@@ -4653,7 +4663,7 @@ export default function AdminDashboard() {
             {tab === "programs" && programMode === "classes" ? (
               <form className="grid gap-4" onSubmit={saveClass}>
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="Tên lớp" value={classForm.name} onChange={(value) => setClassForm((f) => ({ ...f, name: value, slug: f.slug || slugify(value) }))} />
+                  <Field label="Tên lớp" value={classForm.name} onChange={(value) => setClassForm((f) => ({ ...f, name: value, slug: syncAutoSlug(f.slug, f.name, value) }))} />
                   <Field label="Slug" value={classForm.slug} onChange={(value) => setClassForm((f) => ({ ...f, slug: value }))} />
                   <Field label="Độ tuổi hiển thị" value={classForm.ageLabel} placeholder="2 - 3 tuổi" onChange={(value) => setClassForm((f) => ({ ...f, ageLabel: value }))} />
                   <Field label="Màu card" type="color" value={classForm.colorHex} onChange={(value) => setClassForm((f) => ({ ...f, colorHex: value }))} />
@@ -4703,7 +4713,7 @@ export default function AdminDashboard() {
             {tab === "programs" && programMode === "curriculum" ? (
               <form className="grid gap-4" onSubmit={saveCurriculum}>
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="Tiêu đề" value={curriculumForm.title} onChange={(value) => setCurriculumForm((f) => ({ ...f, title: value, slug: f.slug || slugify(value) }))} />
+                  <Field label="Tiêu đề" value={curriculumForm.title} onChange={(value) => setCurriculumForm((f) => ({ ...f, title: value, slug: syncAutoSlug(f.slug, f.title, value) }))} />
                   <Field label="Slug" value={curriculumForm.slug} onChange={(value) => setCurriculumForm((f) => ({ ...f, slug: value }))} />
                 </div>
                 <CategoryPicker
@@ -4745,7 +4755,7 @@ export default function AdminDashboard() {
             {tab === "posts" ? (
               <form className="grid gap-4" onSubmit={savePost}>
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="Tiêu đề" value={postForm.title} onChange={(value) => setPostForm((f) => ({ ...f, title: value, slug: f.slug || slugify(value) }))} />
+                  <Field label="Tiêu đề" value={postForm.title} onChange={(value) => setPostForm((f) => ({ ...f, title: value, slug: syncAutoSlug(f.slug, f.title, value) }))} />
                   <Field label="Slug" value={postForm.slug} onChange={(value) => setPostForm((f) => ({ ...f, slug: value }))} />
                   <label className="grid gap-1.5">
                     <span className="text-[13px] font-bold uppercase text-[#620000]">Loại bài</span>
