@@ -2,6 +2,16 @@
 
 import { FormEvent, type ClipboardEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { CalendarClock, CheckCircle2, Edit3, Eye, EyeOff, ImagePlus, List, ListOrdered, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
+import { Extension, Node, mergeAttributes } from "@tiptap/core";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Color from "@tiptap/extension-color";
+import FontFamily from "@tiptap/extension-font-family";
+import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
+import TextAlign from "@tiptap/extension-text-align";
+import { TextStyle } from "@tiptap/extension-text-style";
+import Underline from "@tiptap/extension-underline";
 import {
   defaultRegistrationSectionSettings,
   type RegistrationSectionSettings,
@@ -726,7 +736,7 @@ function ScheduleActivitiesEditor({
     <div className="grid gap-2">
       <span className="text-[13px] font-bold uppercase text-[#620000]">{label}</span>
       <div className="grid gap-3 rounded-md border border-[#e1b0b0] bg-[#fffafa] p-3">
-        <RichTextEditor
+        <TiptapRichTextEditor
           key={editorResetKey}
           label={isEditing ? "Editor sửa hoạt động" : "Editor thêm hoạt động"}
           value={draft}
@@ -879,7 +889,10 @@ function getRichFontSize(value: string) {
 
 function getRichFontFamily(value: string) {
   const fromData = value.match(/data-rich-font-family=["']([^"']+)["']/i)?.[1];
-  return RICH_FONT_OPTIONS.some((option) => option.value === fromData) ? fromData : DEFAULT_RICH_FONT_FAMILY;
+  if (RICH_FONT_OPTIONS.some((option) => option.value === fromData)) return fromData;
+
+  const fromStyle = value.match(/font-family\s*:\s*([^;"]+)/i)?.[1]?.toLowerCase() ?? "";
+  return RICH_FONT_OPTIONS.find((option) => option.css && fromStyle.includes(option.value))?.value ?? DEFAULT_RICH_FONT_FAMILY;
 }
 
 function getRichFontCss(value: string) {
@@ -911,6 +924,110 @@ function getRichTextColor(value: string) {
 }
 
 const RICH_SELECTION_HIGHLIGHT = "rich-admin-saved-selection";
+
+const RichFontSize = Extension.create({
+  name: "richFontSize",
+  addGlobalAttributes() {
+    return [
+      {
+        types: ["textStyle"],
+        attributes: {
+          dataRichFontFamily: {
+            default: null,
+            parseHTML: (element) => element.getAttribute("data-rich-font-family"),
+            renderHTML: (attributes) =>
+              attributes.dataRichFontFamily ? { "data-rich-font-family": attributes.dataRichFontFamily } : {},
+          },
+          fontSize: {
+            default: null,
+            parseHTML: (element) => element.style.fontSize || null,
+            renderHTML: (attributes) =>
+              attributes.fontSize
+                ? {
+                    style: `font-size: ${attributes.fontSize}`,
+                    "data-rich-font-size": String(Number.parseFloat(String(attributes.fontSize))),
+                  }
+                : {},
+          },
+        },
+      },
+    ];
+  },
+});
+
+const RichLineHeight = Extension.create({
+  name: "richLineHeight",
+  addGlobalAttributes() {
+    return [
+      {
+        types: ["paragraph", "heading", "listItem"],
+        attributes: {
+          lineHeight: {
+            default: null,
+            parseHTML: (element) =>
+              element.getAttribute("data-rich-line-height") || element.style.lineHeight || null,
+            renderHTML: (attributes) =>
+              attributes.lineHeight
+                ? {
+                    style: `line-height: ${attributes.lineHeight}`,
+                    "data-rich-line-height": String(attributes.lineHeight),
+                  }
+                : {},
+          },
+        },
+      },
+    ];
+  },
+});
+
+const AdminImage = Image.extend({
+  addAttributes() {
+    return {
+      src: { default: null },
+      alt: { default: null },
+      title: { default: null },
+      style: {
+        default: null,
+        parseHTML: (element) => element.getAttribute("style"),
+        renderHTML: (attributes) => (attributes.style ? { style: attributes.style } : {}),
+      },
+      draggable: {
+        default: "false",
+        parseHTML: (element) => element.getAttribute("draggable") || "false",
+        renderHTML: (attributes) => ({ draggable: attributes.draggable || "false" }),
+      },
+    };
+  },
+});
+
+const AdminIframe = Node.create({
+  name: "iframe",
+  group: "block",
+  atom: true,
+  draggable: true,
+  selectable: true,
+  addAttributes() {
+    return {
+      src: { default: null },
+      title: { default: null },
+      style: {
+        default: null,
+        parseHTML: (element) => element.getAttribute("style"),
+      },
+      allow: {
+        default: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+      },
+      allowfullscreen: { default: "true" },
+      frameborder: { default: "0" },
+    };
+  },
+  parseHTML() {
+    return [{ tag: "iframe" }];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ["iframe", mergeAttributes(HTMLAttributes)];
+  },
+});
 
 function getRichSelectionHighlightSupport() {
   if (typeof window === "undefined" || typeof CSS === "undefined") return null;
@@ -990,6 +1107,606 @@ type MediaOverlayRect = {
   width: number;
   height: number;
 };
+
+function TiptapRichTextEditor({
+  label,
+  value,
+  onChange,
+  placeholder,
+  onStatus,
+  getHtmlRef,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  onStatus: (message: string) => void;
+  getHtmlRef?: { current: (() => string) | null };
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const editorFrameRef = useRef<HTMLDivElement>(null);
+  const selectedMediaRef = useRef<RichMediaElement | null>(null);
+  const onChangeRef = useRef(onChange);
+  const onStatusRef = useRef(onStatus);
+  const [expanded, setExpanded] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [selectedMedia, setSelectedMedia] = useState<RichMediaElement | null>(null);
+  const [mediaOverlay, setMediaOverlay] = useState<MediaOverlayRect | null>(null);
+  const [lineHeight, setLineHeight] = useState(() => getRichLineHeight(value));
+  const [fontSize, setFontSize] = useState(() => getRichFontSize(value));
+  const [fontSizeInput, setFontSizeInput] = useState(() => `${getRichFontSize(value)}`);
+  const [fontFamily, setFontFamily] = useState(() => getRichFontFamily(value));
+  const [textColor, setTextColor] = useState(() => getRichTextColor(value));
+
+  const initialContent = useMemo(() => {
+    const next = value.trim();
+    if (!next) return "<p></p>";
+    return looksLikeHtml(next) ? next : plainTextToHtml(next);
+  }, []);
+
+  const editor = useEditor({
+    immediatelyRender: false,
+    extensions: [
+      StarterKit.configure({
+        heading: { levels: [2, 3] },
+      }),
+      Underline,
+      TextStyle,
+      Color,
+      FontFamily.configure({ types: ["textStyle"] }),
+      Link.configure({ openOnClick: false }),
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
+      RichFontSize,
+      RichLineHeight,
+      AdminImage.configure({ allowBase64: false }),
+      AdminIframe,
+    ],
+    content: initialContent,
+    editorProps: {
+      handlePaste(_view, event) {
+        const text = event.clipboardData?.getData("text/plain") ?? "";
+        if (!text.trim()) return false;
+
+        event.preventDefault();
+        editor?.commands.insertContent(pastedTextToHtml(text));
+        onStatusRef.current("Đã dán nội dung và chuẩn hóa khoảng cách dòng.");
+        return true;
+      },
+    },
+    onUpdate({ editor: currentEditor }) {
+      selectMedia(null);
+      syncToolbarWithEditor(currentEditor);
+      onChangeRef.current(currentEditor.getHTML().trim());
+    },
+    onSelectionUpdate({ editor: currentEditor }) {
+      syncToolbarWithEditor(currentEditor);
+    },
+  });
+
+  const textValue = (editor?.getText() || value.replace(/<[^>]*>/g, " "))
+    .replace(/\s+/g, " ")
+    .trim();
+  const wordsCount = textValue ? textValue.split(" ").length : 0;
+  const htmlLength = editor?.getHTML().length ?? value.length;
+  const selectedUploadUrl =
+    isImageElement(selectedMedia) ? getUploadedMediaUrl(selectedMedia.getAttribute("src") ?? selectedMedia.src) : "";
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  useEffect(() => {
+    onStatusRef.current = onStatus;
+  }, [onStatus]);
+
+  useEffect(() => {
+    if (!editor) return;
+    const next = value.trim() ? (looksLikeHtml(value) ? value : plainTextToHtml(value)) : "<p></p>";
+    if (!editor.isFocused && editor.getHTML().trim() !== next.trim()) {
+      editor.commands.setContent(next, { emitUpdate: false });
+      syncToolbarWithEditor(editor);
+      selectMedia(null);
+    }
+  }, [editor, value]);
+
+  useEffect(() => {
+    if (!getHtmlRef) return;
+    getHtmlRef.current = () => (editor?.getHTML() ?? "").replace(/\u200b/g, "").trim();
+
+    return () => {
+      getHtmlRef.current = null;
+    };
+  }, [editor, getHtmlRef]);
+
+  useEffect(() => {
+    window.addEventListener("resize", syncSelectedMediaOverlay);
+    return () => window.removeEventListener("resize", syncSelectedMediaOverlay);
+  }, []);
+
+  function syncToolbarWithEditor(currentEditor = editor) {
+    if (!currentEditor) return;
+    const html = currentEditor.getHTML();
+    const textStyle = currentEditor.getAttributes("textStyle") as Record<string, unknown>;
+    const paragraph = currentEditor.getAttributes("paragraph") as Record<string, unknown>;
+    const heading = currentEditor.getAttributes("heading") as Record<string, unknown>;
+
+    const nextLineHeight = Number.parseFloat(String(paragraph.lineHeight || heading.lineHeight || ""));
+    const lineHeightValue = Number.isFinite(nextLineHeight) ? clampRichLineHeight(nextLineHeight) : getRichLineHeight(html);
+    setLineHeight(lineHeightValue);
+
+    const nextFontSize = Number.parseFloat(String(textStyle.fontSize || ""));
+    const fontSizeValue = Number.isFinite(nextFontSize) ? clampRichFontSize(nextFontSize) : getRichFontSize(html);
+    setFontSize(fontSizeValue);
+    setFontSizeInput(`${fontSizeValue}`);
+
+    const nextFamily = String(textStyle.dataRichFontFamily || "");
+    setFontFamily(RICH_FONT_OPTIONS.some((option) => option.value === nextFamily) ? nextFamily : getRichFontFamily(html));
+
+    setTextColor(normalizeRichColor(String(textStyle.color || getRichTextColor(html))));
+  }
+
+  function focusEditor() {
+    editor?.chain().focus().run();
+  }
+
+  function insertHtml(html: string) {
+    editor?.chain().focus().insertContent(html).run();
+  }
+
+  function selectMedia(media: RichMediaElement | null) {
+    selectedMediaRef.current?.classList.remove("rich-admin-media-active");
+    selectedMediaRef.current = media;
+    media?.classList.add("rich-admin-media-active");
+    setSelectedMedia(media);
+    if (media) {
+      window.requestAnimationFrame(syncSelectedMediaOverlay);
+    } else {
+      setMediaOverlay(null);
+    }
+  }
+
+  function syncSelectedMediaOverlay() {
+    const media = selectedMediaRef.current;
+    const frame = editorFrameRef.current;
+    const root = editor?.view.dom;
+
+    if (!media || !frame || !root || !root.contains(media)) {
+      setMediaOverlay(null);
+      return;
+    }
+
+    const mediaRect = media.getBoundingClientRect();
+    const frameRect = frame.getBoundingClientRect();
+    setMediaOverlay({
+      left: mediaRect.left - frameRect.left,
+      top: mediaRect.top - frameRect.top,
+      width: mediaRect.width,
+      height: mediaRect.height,
+    });
+  }
+
+  function pickMedia(event: MouseEvent<HTMLDivElement>) {
+    const target = event.target;
+    const element = isHtmlElement(target) ? target.closest("img, iframe") : null;
+    if ((isImageElement(element) || isIframeElement(element)) && editor?.view.dom.contains(element)) {
+      selectMedia(element);
+      return;
+    }
+    selectMedia(null);
+  }
+
+  function persistMediaDom() {
+    if (!editor) return;
+    const html = editor.view.dom.innerHTML;
+    editor.commands.setContent(html, { emitUpdate: true });
+    window.requestAnimationFrame(syncSelectedMediaOverlay);
+  }
+
+  function resizeSelectedMedia(delta: number) {
+    if (!selectedMedia || !editor) return;
+    const editorWidth = editor.view.dom.getBoundingClientRect().width;
+    const current = selectedMedia.getBoundingClientRect().width || editorWidth * 0.7;
+    const next = Math.max(80, Math.min(editorWidth, current + delta * 4));
+    selectedMedia.style.width = `${Math.round(next)}px`;
+    selectedMedia.style.maxWidth = "100%";
+    selectedMedia.style.height = isIframeElement(selectedMedia) ? `${Math.max(160, Math.round(next * 0.5625))}px` : "auto";
+    persistMediaDom();
+  }
+
+  function alignSelectedMedia(alignment: "left" | "center" | "right") {
+    if (!selectedMedia) return;
+    const margin =
+      alignment === "left"
+        ? "18px auto 18px 0"
+        : alignment === "right"
+          ? "18px 0 18px auto"
+          : "18px auto";
+
+    selectedMedia.style.display = "block";
+    selectedMedia.style.position = "relative";
+    selectedMedia.style.left = "0";
+    selectedMedia.style.top = "0";
+    selectedMedia.style.maxWidth = "100%";
+    selectedMedia.style.margin = margin;
+    if (isImageElement(selectedMedia)) selectedMedia.style.height = "auto";
+    persistMediaDom();
+  }
+
+  function removeSelectedMedia() {
+    if (!selectedMedia) return;
+    selectedMedia.remove();
+    selectMedia(null);
+    persistMediaDom();
+  }
+
+  async function deleteSelectedUploadedImage() {
+    if (!selectedUploadUrl) return;
+    try {
+      await deleteUploadedMedia({ url: selectedUploadUrl });
+      removeSelectedMedia();
+      onStatus("Đã xoá file upload khỏi thư viện.");
+    } catch (error) {
+      onStatus(error instanceof Error ? error.message : "Không thể xoá file upload.");
+    }
+  }
+
+  async function uploadEditorImage(file: File | undefined) {
+    if (!file) return;
+    setUploading(true);
+    try {
+      const result = await uploadMedia(file, file.name);
+      insertHtml(
+        `<img src="${result.asset.url}" alt="${htmlEscape(result.asset.alt)}" draggable="false" style="display:block;position:relative;left:0;top:0;width:70%;max-width:100%;height:auto;margin:18px auto;border-radius:16px;" />`,
+      );
+      onStatus("Đã upload và chèn ảnh vào nội dung.");
+    } catch (error) {
+      onStatus(error instanceof Error ? error.message : "Không thể upload ảnh.");
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  }
+
+  function insertVideo() {
+    const input = window.prompt("Dán link YouTube/Vimeo hoặc mã iframe:");
+    if (!input?.trim()) return;
+    const src = normalizeVideoUrl(input);
+    insertHtml(
+      `<iframe src="${htmlEscape(src)}" title="Video" style="display:block;position:relative;left:0;top:0;width:70%;max-width:100%;height:315px;margin:18px auto;border:0;border-radius:16px;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="true" frameborder="0"></iframe>`,
+    );
+    onStatus("Đã nhúng video vào nội dung.");
+  }
+
+  function applyFontSize(nextValue: number) {
+    if (!editor) return;
+    const next = clampRichFontSize(nextValue);
+    setFontSize(next);
+    setFontSizeInput(`${next}`);
+    editor.chain().focus().setMark("textStyle", { fontSize: `${next}px` }).run();
+  }
+
+  function commitFontSizeInput() {
+    applyFontSize(Number.parseFloat(fontSizeInput));
+  }
+
+  function applyLineHeight(nextValue: number) {
+    if (!editor) return;
+    const next = clampRichLineHeight(nextValue);
+    setLineHeight(next);
+    const chain = editor.chain().focus();
+    if (editor.isActive("heading")) {
+      chain.updateAttributes("heading", { lineHeight: `${next}` }).run();
+    } else if (editor.isActive("listItem")) {
+      chain.updateAttributes("listItem", { lineHeight: `${next}` }).run();
+    } else {
+      chain.updateAttributes("paragraph", { lineHeight: `${next}` }).run();
+    }
+  }
+
+  function applyFontFamily(nextValue: string) {
+    if (!editor) return;
+    const next = RICH_FONT_OPTIONS.some((option) => option.value === nextValue) ? nextValue : DEFAULT_RICH_FONT_FAMILY;
+    const css = getRichFontCss(next);
+    setFontFamily(next);
+    if (!css) {
+      editor.chain().focus().unsetFontFamily().setMark("textStyle", { dataRichFontFamily: null }).removeEmptyTextStyle().run();
+    } else {
+      editor.chain().focus().setFontFamily(css).setMark("textStyle", { dataRichFontFamily: next }).run();
+    }
+    onStatus(`Đã đổi font chữ sang ${RICH_FONT_OPTIONS.find((option) => option.value === next)?.label ?? "Mặc định"}.`);
+  }
+
+  function applyTextColor(nextValue: string) {
+    if (!editor) return;
+    const next = normalizeRichColor(nextValue);
+    setTextColor(next);
+    editor.chain().focus().setColor(next).run();
+  }
+
+  const toolbar = (
+    <div className="flex flex-wrap items-center gap-2 rounded-t-md border border-[#e1b0b0] border-b-0 bg-[#fff8f8] p-2">
+      <EditorButton active={Boolean(editor?.isActive("bold"))} icon={<span className="text-[15px]">B</span>} onClick={() => editor?.chain().focus().toggleBold().run()}>
+        Đậm
+      </EditorButton>
+      <EditorButton active={Boolean(editor?.isActive("italic"))} icon={<span className="text-[15px] italic">I</span>} onClick={() => editor?.chain().focus().toggleItalic().run()}>
+        Nghiêng
+      </EditorButton>
+      <EditorButton active={Boolean(editor?.isActive("underline"))} icon={<span className="text-[15px] underline">U</span>} onClick={() => editor?.chain().focus().toggleUnderline().run()}>
+        Gạch chân
+      </EditorButton>
+      <EditorButton active={Boolean(editor?.isActive("bulletList"))} icon={<List size={16} />} onClick={() => editor?.chain().focus().toggleBulletList().run()}>
+        Bullet
+      </EditorButton>
+      <EditorButton active={Boolean(editor?.isActive("orderedList"))} icon={<ListOrdered size={16} />} onClick={() => editor?.chain().focus().toggleOrderedList().run()}>
+        Số thứ tự
+      </EditorButton>
+      <select
+        value={fontFamily}
+        onChange={(event) => applyFontFamily(event.target.value)}
+        className="h-9 rounded-md border border-[#e7b8b8] bg-white px-3 text-[13px] font-extrabold text-[#620000] outline-none transition-colors hover:bg-[#fff1f1] focus:border-[#b80000]"
+        title="Font chữ"
+      >
+        {RICH_FONT_OPTIONS.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <label
+        className="inline-flex h-9 items-center gap-2 rounded-md border border-[#e7b8b8] bg-white px-3 text-[13px] font-extrabold text-[#620000] transition-colors hover:bg-[#fff1f1]"
+        title="Màu chữ"
+      >
+        <span>Màu</span>
+        <input
+          type="color"
+          value={textColor}
+          onChange={(event) => applyTextColor(event.target.value)}
+          className="h-5 w-7 cursor-pointer rounded border border-[#e7b8b8] bg-transparent p-0"
+          aria-label="Màu chữ"
+        />
+      </label>
+      <div className="inline-flex h-9 items-center overflow-hidden rounded-md border border-[#e7b8b8] bg-white text-[13px] font-extrabold text-[#620000]">
+        <button type="button" onClick={() => applyFontSize(fontSize - 1)} className="flex h-full items-center gap-1 px-3 transition-colors hover:bg-[#fff1f1]">
+          A-
+        </button>
+        <label className="flex h-full min-w-16 items-center justify-center border-x border-[#e7b8b8] bg-[#fff8f8] px-1 text-[#b80000]">
+          <span className="sr-only">Cỡ chữ</span>
+          <input
+            type="number"
+            min={MIN_RICH_FONT_SIZE}
+            max={MAX_RICH_FONT_SIZE}
+            value={fontSizeInput}
+            onChange={(event) => setFontSizeInput(event.target.value)}
+            onBlur={commitFontSizeInput}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                commitFontSizeInput();
+                event.currentTarget.blur();
+              }
+            }}
+            className="h-full w-10 bg-transparent text-center text-[13px] font-extrabold text-[#b80000] outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            title="Nhập cỡ chữ"
+          />
+          <span className="pr-1">px</span>
+        </label>
+        <button type="button" onClick={() => applyFontSize(fontSize + 1)} className="flex h-full items-center gap-1 px-3 transition-colors hover:bg-[#fff1f1]">
+          A+
+        </button>
+      </div>
+      <div className="inline-flex h-9 items-center overflow-hidden rounded-md border border-[#e7b8b8] bg-white text-[13px] font-extrabold text-[#620000]">
+        <button type="button" onClick={() => applyLineHeight(lineHeight - 0.1)} className="flex h-full items-center gap-1 px-3 transition-colors hover:bg-[#fff1f1]">
+          <span>LH-</span>
+          Giãn -
+        </button>
+        <span className="flex h-full min-w-14 items-center justify-center border-x border-[#e7b8b8] bg-[#fff8f8] px-2 text-[#b80000]">
+          {lineHeight.toFixed(1)}x
+        </span>
+        <button type="button" onClick={() => applyLineHeight(lineHeight + 0.1)} className="flex h-full items-center gap-1 px-3 transition-colors hover:bg-[#fff1f1]">
+          <span>LH+</span>
+          Giãn +
+        </button>
+      </div>
+      <EditorButton icon={<ImagePlus size={16} />} onClick={() => setPickerOpen(true)}>
+        Chèn ảnh
+      </EditorButton>
+      <EditorButton icon={<Video size={16} />} onClick={insertVideo}>
+        Nhúng video
+      </EditorButton>
+      <span className="ml-auto flex items-center gap-2">
+        <EditorButton icon={expanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />} onClick={() => setExpanded((current) => !current)}>
+          {expanded ? "Thu nhỏ" : "Phóng to"}
+        </EditorButton>
+      </span>
+      {selectedMedia ? (
+        <div className="flex w-full flex-wrap items-center gap-2 rounded-md border border-[#f0c6c6] bg-white p-2 text-[12px] font-bold text-[#620000]">
+          <span className="mr-1 uppercase text-[#b80000]">Media đang chọn</span>
+          <EditorButton icon={<span>-</span>} onClick={() => resizeSelectedMedia(-10)}>
+            Thu nhỏ
+          </EditorButton>
+          <EditorButton icon={<Plus size={16} />} onClick={() => resizeSelectedMedia(10)}>
+            Phóng to
+          </EditorButton>
+          <EditorButton icon={<span>L</span>} onClick={() => alignSelectedMedia("left")}>
+            Trái
+          </EditorButton>
+          <EditorButton icon={<span>C</span>} onClick={() => alignSelectedMedia("center")}>
+            Giữa
+          </EditorButton>
+          <EditorButton icon={<span>R</span>} onClick={() => alignSelectedMedia("right")}>
+            Phải
+          </EditorButton>
+          <EditorButton icon={<Trash2 size={16} />} onClick={removeSelectedMedia}>
+            Xóa
+          </EditorButton>
+          {selectedUploadUrl ? (
+            <EditorButton icon={<Trash2 size={16} />} onClick={deleteSelectedUploadedImage}>
+              Xóa file upload
+            </EditorButton>
+          ) : null}
+        </div>
+      ) : null}
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/svg+xml"
+        className="hidden"
+        onChange={(event) => uploadEditorImage(event.target.files?.[0])}
+      />
+    </div>
+  );
+
+  const editorShell = (
+    <div className={expanded ? "flex min-h-0 flex-1 flex-col" : "grid gap-0"}>
+      {toolbar}
+      <div ref={editorFrameRef} className={expanded ? "relative min-h-0 flex-1" : "relative"}>
+        <div
+          className={`${expanded ? "rich-admin-expanded h-full min-h-0" : "min-h-[560px]"} rich-admin-content rounded-b-md border border-[#e1b0b0] bg-white text-[16px] leading-8 text-[#620000] outline-none focus-within:border-[#b80000]`}
+          onClick={pickMedia}
+          onScroll={syncSelectedMediaOverlay}
+        >
+          {!textValue && placeholder ? (
+            <span className="pointer-events-none absolute left-5 top-4 text-[15px] text-[#620000]/40">{placeholder}</span>
+          ) : null}
+          <EditorContent editor={editor} />
+        </div>
+        {selectedMedia && mediaOverlay ? (
+          <div
+            className="pointer-events-none absolute z-10 rounded-[16px] border-2 border-dashed border-[#b80000]"
+            style={{
+              left: `${mediaOverlay.left}px`,
+              top: `${mediaOverlay.top}px`,
+              width: `${mediaOverlay.width}px`,
+              height: `${mediaOverlay.height}px`,
+            }}
+          >
+            <button
+              type="button"
+              aria-label="Xóa ảnh/video"
+              title="Xóa ảnh/video"
+              onClick={removeSelectedMedia}
+              className="pointer-events-auto absolute right-[-12px] top-[-12px] flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-[#620000] text-white shadow-[0_3px_10px_rgba(98,0,0,0.28)]"
+            >
+              <X size={14} strokeWidth={3} />
+            </button>
+            <button
+              type="button"
+              aria-label="Đổi kích thước ảnh/video"
+              title="Bấm để phóng to ảnh/video"
+              onClick={() => resizeSelectedMedia(10)}
+              className="pointer-events-auto absolute bottom-[-12px] right-[-12px] flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-[#b80000] shadow-[0_3px_10px_rgba(98,0,0,0.28)]"
+            >
+              <Plus size={13} className="text-white" />
+            </button>
+          </div>
+        ) : null}
+      </div>
+      <div className="flex flex-wrap justify-between gap-2 rounded-b-md border-x border-b border-[#f0d0d0] bg-[#fffefa] px-3 py-2 text-[12px] font-semibold text-[#9a4a4a]">
+        <span>{wordsCount} từ</span>
+        <span>{htmlLength} ký tự HTML</span>
+        <span>Bấm ảnh/video để căn chỉnh, đổi kích thước hoặc xoá</span>
+      </div>
+      <style jsx global>{`
+        .rich-admin-content {
+          position: relative;
+        }
+        .rich-admin-content .ProseMirror {
+          min-height: 560px;
+          padding: 1rem 1.25rem;
+          outline: none;
+        }
+        .rich-admin-content.rich-admin-expanded .ProseMirror {
+          height: 100%;
+          min-height: 0;
+          overflow: auto;
+        }
+        .rich-admin-content h2 {
+          margin: 1.2rem 0 0.65rem;
+          color: #b80000;
+          font-size: 1.55rem;
+          font-weight: 900;
+          line-height: 1.25;
+        }
+        .rich-admin-content p {
+          margin: 0 0 1rem;
+        }
+        .rich-admin-content p:last-child {
+          margin-bottom: 0;
+        }
+        .rich-admin-content p:empty,
+        .rich-admin-content p:has(> br:only-child) {
+          min-height: 0.75rem;
+          margin-bottom: 0.5rem;
+        }
+        .rich-admin-content ul,
+        .rich-admin-content ol {
+          margin: 0 0 1rem 1.4rem;
+          padding-left: 1rem;
+        }
+        .rich-admin-content ul {
+          list-style: disc;
+        }
+        .rich-admin-content ol {
+          list-style: decimal;
+        }
+        .rich-admin-content li {
+          display: list-item;
+        }
+        .rich-admin-content img,
+        .rich-admin-content iframe {
+          cursor: pointer;
+          outline-offset: 5px;
+          user-select: none;
+        }
+        .rich-admin-content img:hover,
+        .rich-admin-content iframe:hover,
+        .rich-admin-content .rich-admin-media-active {
+          outline: 2px dashed #b80000;
+        }
+      `}</style>
+    </div>
+  );
+
+  return (
+    <div className="grid gap-1.5">
+      <span className="text-[13px] font-bold uppercase text-[#620000]">{label}</span>
+      {expanded ? null : editorShell}
+      {expanded ? (
+        <div className="fixed inset-0 z-[100] flex flex-col bg-[#fffefa] p-6">
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[13px] font-extrabold uppercase text-[#b80000]">Rich editor</p>
+              <h3 className="text-[28px] font-extrabold text-[#620000]">{label}</h3>
+            </div>
+            <ActionButton icon={<Minimize2 size={17} />} tone="quiet" onClick={() => setExpanded(false)}>
+              Thu nhỏ
+            </ActionButton>
+          </div>
+          {editorShell}
+        </div>
+      ) : null}
+      <MediaLibraryPicker
+        open={pickerOpen}
+        title={label}
+        onClose={() => setPickerOpen(false)}
+        onSelect={(asset) => {
+          insertHtml(
+            `<img src="${asset.url}" alt="${htmlEscape(asset.alt || asset.originalName)}" draggable="false" style="display:block;position:relative;left:0;top:0;width:70%;max-width:100%;height:auto;margin:18px auto;border-radius:16px;" />`,
+          );
+          onStatus("Đã chèn ảnh từ thư viện vào nội dung.");
+        }}
+        onDeletedAsset={(asset) => {
+          const media = selectedMediaRef.current;
+          const selectedUrl = isImageElement(media) ? getUploadedMediaUrl(media.getAttribute("src") ?? media.src) : "";
+          if (selectedUrl === asset.url) removeSelectedMedia();
+        }}
+        onStatus={onStatus}
+      />
+      {uploading ? <p className="text-[12px] font-bold text-[#b80000]">Đang upload ảnh...</p> : null}
+    </div>
+  );
+}
 
 function RichTextEditor({
   label,
@@ -3921,7 +4638,7 @@ export default function AdminDashboard() {
                 />
                 <TextArea label="Mô tả card" value={teachingForm.description} onChange={(value) => setTeachingForm((f) => ({ ...f, description: value }))} />
                 <TextArea label="Tóm tắt chi tiết" value={teachingForm.excerpt} onChange={(value) => setTeachingForm((f) => ({ ...f, excerpt: value }))} />
-                <RichTextEditor
+                <TiptapRichTextEditor
                   label="Nội dung chi tiết"
                   value={teachingForm.contentText}
                   onChange={(value) => setTeachingForm((f) => ({ ...f, contentText: value }))}
@@ -3965,7 +4682,7 @@ export default function AdminDashboard() {
                   onDeleted={() => setClassForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
                 />
                 <TextArea label="Mô tả ngắn" value={classForm.excerpt} onChange={(value) => setClassForm((f) => ({ ...f, excerpt: value }))} />
-                <RichTextEditor
+                <TiptapRichTextEditor
                   label="Mô tả chi tiết"
                   value={classForm.description}
                   onChange={(value) => setClassForm((f) => ({ ...f, description: value }))}
@@ -4013,7 +4730,7 @@ export default function AdminDashboard() {
                   onDeleted={() => setCurriculumForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
                 />
                 <TextArea label="Mô tả" value={curriculumForm.description} onChange={(value) => setCurriculumForm((f) => ({ ...f, description: value }))} />
-                <RichTextEditor
+                <TiptapRichTextEditor
                   label="Nội dung chương trình"
                   value={curriculumForm.contentText}
                   onChange={(value) => setCurriculumForm((f) => ({ ...f, contentText: value }))}
@@ -4067,7 +4784,7 @@ export default function AdminDashboard() {
                   onDeleted={() => setPostForm((f) => ({ ...f, coverImageId: null, imageUrl: "" }))}
                 />
                 <TextArea label="Tóm tắt" value={postForm.excerpt} onChange={(value) => setPostForm((f) => ({ ...f, excerpt: value }))} />
-                <RichTextEditor
+                <TiptapRichTextEditor
                   label="Nội dung tin tức/sự kiện"
                   value={postForm.contentText}
                   onChange={(value) => setPostForm((f) => ({ ...f, contentText: value }))}
