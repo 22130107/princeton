@@ -23,8 +23,10 @@ export async function GET(_request: Request, { params }: MediaRouteProps) {
     return NextResponse.json({ message: "Invalid media file." }, { status: 400 });
   }
 
+  const uploadRoot = path.join(/*turbopackIgnore: true*/ process.cwd(), "public", "uploads");
   const assetRoot = path.join(/*turbopackIgnore: true*/ process.cwd(), "src", "assets");
   const candidates = [
+    path.join(uploadRoot, file),
     path.join(assetRoot, file),
     path.join(assetRoot, "sticker", file),
   ];
