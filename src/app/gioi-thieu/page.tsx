@@ -293,7 +293,7 @@ export default async function GioiThieuPage() {
         <div className="mx-auto grid max-w-[1240px] gap-6 md:grid-cols-[1fr_0.85fr]">
           <div className="overflow-hidden rounded-[32px] bg-[#fffefa]">
             <iframe
-              src="https://www.youtube.com/embed/A5OgwcjA2v8"
+              src="https://www.youtube.com/embed/T5pfrxobVtE?vq=hd720&rel=0"
               title="Video giới thiệu Trường Mầm non Princeton"
               className="h-[260px] w-full md:h-[420px]"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
