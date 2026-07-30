@@ -37,8 +37,10 @@ function Heading() {
 function Container33() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[18px] w-full">
-        <p className="leading-[26px]">Trường Mầm non Princeton là nơi mang đến môi trường giáo dục hiện đại, năng động, hướng đến mục tiêu đào tạo nên những thế hệ học sinh phát triển toàn diện, có nhân cách tốt, giàu bản lĩnh và có khả năng tạo nên những giá trị tích cực cho xã hội khi trưởng thành.</p>
+      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[16px] w-full">
+        <p className="leading-[24px]">
+          <strong className="font-extrabold">Princeton Academy Premier</strong> là trường mầm non quốc tế định hướng phát triển toàn diện cho trẻ thông qua môi trường học tập hiện đại, an toàn và truyền cảm hứng. Nhà trường chú trọng xây dựng nền tảng vững chắc về <strong className="font-extrabold">ngôn ngữ, tư duy và nhân cách</strong>, giúp trẻ tự tin khám phá thế giới, phát huy tiềm năng và sẵn sàng cho hành trình học tập trong tương lai.
+        </p>
       </div>
     </div>
   );
@@ -47,8 +49,10 @@ function Container33() {
 function Container34() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[18px] w-full">
-        <p className="leading-[26px]">Chương trình học tại Trường Mầm non Princeton được xây dựng dựa trên sự kết hợp giữa chương trình của Bộ Giáo dục & Đào tạo Việt Nam và Chương trình Mầm non Bang Tây Úc, khuyến khích các em học sinh tự do khám phá, chủ động tư duy, nuôi dưỡng sự tò mò và hứng thú học tập, đồng thời trang bị những kiến thức và kỹ năng sống cần thiết cho các cấp học tiếp theo.</p>
+      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[16px] w-full">
+        <p className="leading-[24px]">
+          Chương trình học tại Princeton Academy Premier được thiết kế theo định hướng giáo dục quốc tế với <strong className="font-extrabold">80-100% thời lượng học bằng tiếng Anh</strong> tùy độ tuổi. Trẻ được tiếp cận <strong className="font-extrabold">9 môn học chuẩn Mỹ</strong> như Ngôn ngữ, Toán, Khoa học STEM, Mỹ thuật, Montessori, Âm nhạc, Giáo dục thể chất, Khoa học xã hội và Giáo dục nhân cách. Đồng thời, chương trình còn tích hợp các phương pháp giáo dục tiên tiến như <strong className="font-extrabold">Montessori, Reggio Emilia, Glenn Doman, Howard Gardner</strong> và phương pháp <strong className="font-extrabold">Socratic Questioning (SQM)</strong> nhằm khuyến khích tư duy phản biện, sáng tạo và khả năng giải quyết vấn đề.
+        </p>
       </div>
     </div>
   );
@@ -56,7 +60,7 @@ function Container34() {
 
 function Container32() {
   return (
-    <div className="content-stretch flex flex-col gap-[16px] items-start max-w-[512px] relative shrink-0 w-[512px]" data-name="Container">
+    <div className="content-stretch flex flex-col gap-[14px] items-start max-w-[560px] relative shrink-0 w-[560px]" data-name="Container">
       <Container33 />
       <Container34 />
     </div>
@@ -389,7 +393,7 @@ function Container35() {
 function Container30() {
   return (
     <div className="mr-[-80px] relative self-stretch shrink-0 w-[648px]" data-name="Container">
-      <div className="content-stretch flex flex-col gap-[16px] items-start pb-[72px] pt-[80px] relative size-full">
+      <div className="content-stretch flex flex-col gap-[14px] items-start pb-[48px] pt-[58px] relative size-full">
         <Heading />
         <Container32 />
         <Container35 />

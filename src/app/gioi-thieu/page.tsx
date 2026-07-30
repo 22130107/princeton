@@ -179,8 +179,8 @@ export default async function GioiThieuPage() {
             <h1 className="text-[38px] font-extrabold uppercase leading-[1.05] md:text-[64px]">
               Nơi mỗi ngày đến trường là một hành trình lớn lên hạnh phúc
             </h1>
-            <p className="mt-5 max-w-[660px] text-[16px] font-medium leading-7 text-[#620000] md:text-[20px] md:leading-8">
-              Trường Mầm non Princeton xây dựng môi trường giáo dục hiện đại, an toàn và giàu tình yêu thương, giúp trẻ tự tin khám phá, chủ động học hỏi và phát triển toàn diện.
+            <p className="mt-5 max-w-[680px] text-[16px] font-medium leading-7 text-[#620000] md:text-[20px] md:leading-8">
+              <strong className="font-extrabold">Princeton Academy Premier</strong> mang đến môi trường mầm non quốc tế hiện đại, an toàn và truyền cảm hứng, giúp trẻ phát triển nền tảng <strong className="font-extrabold">ngôn ngữ, tư duy và nhân cách</strong> để tự tin bước vào hành trình học tập tương lai.
             </p>
           </div>
 
