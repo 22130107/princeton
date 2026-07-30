@@ -146,6 +146,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
             window.setTimeout(() => inputRef.current?.focus(), 0);
           }}
           onKeyDown={(event) => {
+            if (isSearchOpen) return;
             if (event.key !== "Enter" && event.key !== " ") return;
             event.preventDefault();
             setIsSearchOpen(true);
