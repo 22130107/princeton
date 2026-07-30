@@ -6,7 +6,6 @@ import { useCountdownValues } from "@/components/Shared/useCountdownValues";
 import { useRegistrationSectionSettings } from "@/components/Shared/useRegistrationSectionSettings";
 import type { RegistrationSectionSettings } from "@/lib/registration-section-config";
 import imgTask73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg from "../../../assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aac.png";
-import imgLogo from "../../../assets/logo1.png";
 
 type ProgramOption = {
   slug: string;
@@ -36,11 +35,6 @@ function Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg({ promoImageUrl }: { promoI
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <img alt="" className="absolute left-0 max-w-none size-full top-0" src={promoImageUrl} />
       </div>
-      <img
-        alt="Princeton Academy"
-        className="absolute left-[34px] top-[34px] h-[192px] w-[192px] object-contain"
-        src={imgLogo.src}
-      />
     </div>
   );
 }

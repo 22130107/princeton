@@ -4,7 +4,6 @@ import EnrollmentLeadForm from "@/components/Shared/EnrollmentLeadForm";
 import { useCountdownValues } from "@/components/Shared/useCountdownValues";
 import { useRegistrationSectionSettings } from "@/components/Shared/useRegistrationSectionSettings";
 import imgPromo from "../../assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aac.png";
-import imgLogo from "../../assets/logo1.png";
 
 export default function MobileRegistrationSection() {
   const settings = useRegistrationSectionSettings();
@@ -19,11 +18,6 @@ export default function MobileRegistrationSection() {
         {settings.showPromoImage ? (
         <div className="relative mb-4 overflow-hidden rounded-[24px]">
           <img src={promoImageUrl} alt="Ưu đãi đăng ký" className="block w-full h-auto" />
-          <img
-            src={imgLogo.src}
-            alt="Princeton Academy"
-            className="absolute left-4 top-4 h-[136px] w-[136px] object-contain"
-          />
         </div>
         ) : null}
 
