@@ -4399,6 +4399,12 @@ export default function AdminDashboard() {
                     placeholder="Đăng ký ngay"
                     onChange={(value) => setRegistrationForm((form) => ({ ...form, submitLabel: value }))}
                   />
+                  <Field
+                    label="Màu nền"
+                    type="color"
+                    value={registrationForm.backgroundColor}
+                    onChange={(value) => setRegistrationForm((form) => ({ ...form, backgroundColor: value }))}
+                  />
                 </div>
 
                 <Field

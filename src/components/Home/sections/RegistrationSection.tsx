@@ -1339,9 +1339,10 @@ export default function RegistrationSection() {
         }}
       >
         <div
-          className="bg-[#b80000] content-stretch flex gap-[16px] h-[907.69px] items-start p-[16px] rounded-[48px]"
+          className="content-stretch flex gap-[16px] h-[907.69px] items-start p-[16px] rounded-[48px]"
           data-name="Section"
           style={{
+            backgroundColor: settings.backgroundColor,
             transform: `scale(${sectionScale})`,
             transformOrigin: "top left",
             width: SECTION_ARTBOARD_WIDTH,

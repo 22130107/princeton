@@ -14,7 +14,10 @@ export default function MobileRegistrationSection() {
 
   return (
     <section className="bg-[#fffefa] px-3 py-8">
-      <div className="mx-auto max-w-[480px] rounded-[30px] bg-[#b80000] p-3">
+      <div
+        className="mx-auto max-w-[480px] rounded-[30px] p-3"
+        style={{ backgroundColor: settings.backgroundColor }}
+      >
         {settings.showPromoImage ? (
         <div className="relative mb-4 overflow-hidden rounded-[24px]">
           <img src={promoImageUrl} alt="Ưu đãi đăng ký" className="block w-full h-auto" />

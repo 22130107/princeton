@@ -13,6 +13,7 @@ export type RegistrationSectionSettings = {
   showCountdown: boolean;
   showPromoImage: boolean;
   showForm: boolean;
+  backgroundColor: string;
   promoDesktopImageId: number | null;
   promoDesktopImageUrl: string;
   promoMobileImageId: number | null;
@@ -33,6 +34,7 @@ export const defaultRegistrationSectionSettings: RegistrationSectionSettings = {
   showCountdown: true,
   showPromoImage: true,
   showForm: true,
+  backgroundColor: "#b80000",
   promoDesktopImageId: null,
   promoDesktopImageUrl: "",
   promoMobileImageId: null,
@@ -84,6 +86,13 @@ function optionalDateTime(value: unknown) {
   return Number.isFinite(timestamp) ? raw : "";
 }
 
+function optionalColor(value: unknown, fallback: string) {
+  if (typeof value !== "string") return fallback;
+  const raw = value.trim();
+
+  return /^#[0-9a-fA-F]{6}$/.test(raw) ? raw.toLowerCase() : fallback;
+}
+
 export function normalizeRegistrationSectionSettings(
   input: Partial<RegistrationSectionSettings> | Record<string, unknown> | null | undefined,
 ): RegistrationSectionSettings {
@@ -102,6 +111,7 @@ export function normalizeRegistrationSectionSettings(
     showCountdown: optionalBoolean(source.showCountdown, defaultRegistrationSectionSettings.showCountdown),
     showPromoImage: optionalBoolean(source.showPromoImage, defaultRegistrationSectionSettings.showPromoImage),
     showForm: optionalBoolean(source.showForm, defaultRegistrationSectionSettings.showForm),
+    backgroundColor: optionalColor(source.backgroundColor, defaultRegistrationSectionSettings.backgroundColor),
     promoDesktopImageId: optionalNumber(source.promoDesktopImageId),
     promoDesktopImageUrl: optionalText(source.promoDesktopImageUrl, ""),
     promoMobileImageId: optionalNumber(source.promoMobileImageId),
