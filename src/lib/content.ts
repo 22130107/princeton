@@ -9,8 +9,14 @@ import {
 import { repairMojibakeText } from "./text-encoding";
 
 export type DbImage = {
+  id: number;
+  imageId: number | null;
+  imageUrl: string;
+  imageAlt: string;
   url: string;
   alt: string;
+  title: string;
+  description: string;
 };
 
 export type DbClassProgram = {
@@ -255,6 +261,15 @@ type FacilityImageRow = RowDataPacket & {
   image_alt: string | null;
 };
 
+type GalleryImageRow = RowDataPacket & {
+  id: number;
+  title: string | null;
+  description: string | null;
+  image_id: number | null;
+  image_url: string | null;
+  image_alt: string | null;
+};
+
 type TeacherTeamRow = RowDataPacket & {
   id: number;
   title: string;
@@ -343,6 +358,7 @@ function uniqueBy<T>(items: T[], getKey: (item: T) => string) {
 }
 
 let aboutStorageReady: Promise<void> | null = null;
+let galleryStorageReady: Promise<void> | null = null;
 let heroSlideStorageReady: Promise<void> | null = null;
 let homeSectionStorageReady: Promise<void> | null = null;
 let testimonialStorageReady: Promise<void> | null = null;
@@ -502,6 +518,38 @@ export async function ensureAboutStorage() {
   }
 
   return aboutStorageReady;
+}
+
+async function ensureGalleryStorageInternal() {
+  const pool = getMysqlPool();
+
+  await pool.execute(`
+    CREATE TABLE IF NOT EXISTS gallery_items (
+      id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+      title VARCHAR(255) NULL,
+      description TEXT NULL,
+      image_id BIGINT UNSIGNED NOT NULL,
+      sort_order INT NOT NULL DEFAULT 0,
+      is_featured BOOLEAN NOT NULL DEFAULT FALSE,
+      is_active BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      KEY gallery_items_image_idx (image_id),
+      CONSTRAINT gallery_items_image_fk FOREIGN KEY (image_id) REFERENCES media_assets(id) ON DELETE RESTRICT
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+}
+
+export async function ensureGalleryStorage() {
+  if (!galleryStorageReady) {
+    galleryStorageReady = ensureGalleryStorageInternal().catch((error) => {
+      galleryStorageReady = null;
+      throw error;
+    });
+  }
+
+  return galleryStorageReady;
 }
 
 export async function getHeroSlides(): Promise<DbHeroSlide[]> {
@@ -856,19 +904,38 @@ export async function getCampuses(): Promise<DbCampus[]> {
 }
 
 export async function getGalleryImages(): Promise<DbImage[]> {
+  await ensureGalleryStorage();
   const pool = getMysqlPool();
-  const [rows] = await pool.execute<(RowDataPacket & DbImage)[]>(
-    `SELECT ma.url, COALESCE(ma.alt_text, gallery_items.title, '') AS alt
-     FROM gallery_items
-     INNER JOIN media_assets ma ON ma.id = gallery_items.image_id
-     WHERE gallery_items.is_active = TRUE
-     ORDER BY gallery_items.sort_order ASC, gallery_items.id ASC`,
+  const [rows] = await pool.execute<GalleryImageRow[]>(
+    `SELECT
+       gi.id,
+       gi.title,
+       gi.description,
+       gi.image_id,
+       ma.url AS image_url,
+       ma.alt_text AS image_alt
+     FROM gallery_items gi
+     INNER JOIN media_assets ma ON ma.id = gi.image_id
+     WHERE gi.is_active = TRUE
+     ORDER BY gi.sort_order ASC, gi.id ASC`,
   );
 
-  return rows.map((row) => ({
-    url: text(row.url),
-    alt: text(row.alt),
-  })).filter((image) => image.url);
+  return rows.map((row) => {
+    const title = text(row.title);
+    const imageUrl = text(row.image_url);
+    const imageAlt = text(row.image_alt) || title || "Khoảnh khắc Princeton";
+
+    return {
+      id: row.id,
+      title,
+      description: text(row.description),
+      imageId: row.image_id,
+      imageUrl,
+      imageAlt,
+      url: imageUrl,
+      alt: imageAlt,
+    };
+  }).filter((image) => image.url);
 }
 
 export async function getFacilityImages(): Promise<DbFacilityImage[]> {
@@ -984,14 +1051,16 @@ export async function getTestimonials(): Promise<DbTestimonial[]> {
 }
 
 export async function getAboutContent() {
-  const [facilityImages, teacherTeamItems] = await Promise.all([
+  const [facilityImages, teacherTeamItems, galleryImages] = await Promise.all([
     getFacilityImages(),
     getTeacherTeamItems(),
+    getGalleryImages(),
   ]);
 
   return {
     facilityImages,
     teacherTeamItems,
+    galleryImages,
   };
 }
 

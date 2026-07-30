@@ -19,7 +19,7 @@ import {
 
 type TabKey = "banners" | "registration" | "schedules" | "teaching" | "programs" | "posts" | "about";
 type ProgramMode = "classes" | "curriculum";
-type AboutMode = "facilities" | "teachers" | "testimonials";
+type AboutMode = "facilities" | "moments" | "teachers" | "testimonials";
 type CategoryScope = "teaching_methods" | "class_programs" | "curriculum_tracks" | "posts";
 
 type CategoryOption = {
@@ -118,6 +118,8 @@ type FacilityImage = {
   imageAlt: string;
 };
 
+type GalleryImage = FacilityImage;
+
 type TeacherTeamItem = {
   id: number;
   title: string;
@@ -173,6 +175,7 @@ type LoadState = {
   teaching: TeachingMethod[];
   posts: Post[];
   facilities: FacilityImage[];
+  moments: GalleryImage[];
   teachers: TeacherTeamItem[];
   testimonials: Testimonial[];
   schedules: RegistrationSchedule[];
@@ -252,6 +255,8 @@ type FacilityForm = {
   imageId: number | null;
   imageUrl: string;
 };
+
+type GalleryForm = FacilityForm;
 
 type TeacherForm = {
   title: string;
@@ -349,6 +354,13 @@ const emptyPost: PostForm = {
 };
 
 const emptyFacility: FacilityForm = {
+  title: "",
+  description: "",
+  imageId: null,
+  imageUrl: "",
+};
+
+const emptyGallery: GalleryForm = {
   title: "",
   description: "",
   imageId: null,
@@ -3437,6 +3449,8 @@ function getListPreview(item: any, tab: TabKey, programMode: ProgramMode, aboutM
         : tab === "about"
           ? aboutMode === "facilities"
             ? "Cơ sở"
+            : aboutMode === "moments"
+              ? "Khoảnh khắc"
             : aboutMode === "teachers"
               ? "Giáo viên"
               : "Phụ huynh"
@@ -3458,6 +3472,7 @@ export default function AdminDashboard() {
     teaching: [],
     posts: [],
     facilities: [],
+    moments: [],
     teachers: [],
     testimonials: [],
     schedules: [],
@@ -3477,6 +3492,7 @@ export default function AdminDashboard() {
   const [teachingForm, setTeachingForm] = useState(emptyTeaching);
   const [postForm, setPostForm] = useState(emptyPost);
   const [facilityForm, setFacilityForm] = useState(emptyFacility);
+  const [galleryForm, setGalleryForm] = useState(emptyGallery);
   const [teacherForm, setTeacherForm] = useState(emptyTeacher);
   const [testimonialForm, setTestimonialForm] = useState(emptyTestimonial);
   const [scheduleForm, setScheduleForm] = useState<RegistrationScheduleForm>(emptySchedule);
@@ -3489,6 +3505,7 @@ export default function AdminDashboard() {
     if (tab === "posts") return data.posts;
     if (tab === "about") {
       if (aboutMode === "facilities") return data.facilities;
+      if (aboutMode === "moments") return data.moments;
       if (aboutMode === "teachers") return data.teachers;
       return data.testimonials;
     }
@@ -3497,7 +3514,7 @@ export default function AdminDashboard() {
 
   async function loadAll() {
     setStatus("Đang tải dữ liệu...");
-    const [banners, registration, schedules, classes, curriculum, teaching, posts, facilities, teachers, testimonials, categoryResponse] = await Promise.all([
+    const [banners, registration, schedules, classes, curriculum, teaching, posts, facilities, moments, teachers, testimonials, categoryResponse] = await Promise.all([
       requestJson<{ slides: HeroSlide[] }>("/api/hero-slides"),
       requestJson<{ settings: RegistrationSectionSettings }>("/api/home-sections/registration"),
       requestJson<{ schedules: RegistrationSchedule[] }>("/api/registration-schedules"),
@@ -3506,6 +3523,7 @@ export default function AdminDashboard() {
       requestJson<{ methods: TeachingMethod[] }>("/api/teaching-methods"),
       requestJson<{ posts: Post[] }>("/api/posts"),
       requestJson<{ images: FacilityImage[] }>("/api/facility-images"),
+      requestJson<{ images: GalleryImage[] }>("/api/gallery-images"),
       requestJson<{ teachers: TeacherTeamItem[] }>("/api/teacher-team"),
       requestJson<{ testimonials: Testimonial[] }>("/api/testimonials"),
       requestJson<{ categories: CategoryState }>("/api/categories"),
@@ -3518,6 +3536,7 @@ export default function AdminDashboard() {
       teaching: teaching.methods,
       posts: posts.posts,
       facilities: facilities.images,
+      moments: moments.images,
       teachers: teachers.teachers,
       testimonials: testimonials.testimonials,
       schedules: schedules.schedules,
@@ -3539,6 +3558,7 @@ export default function AdminDashboard() {
     setTeachingForm(emptyTeaching);
     setPostForm(emptyPost);
     setFacilityForm(emptyFacility);
+    setGalleryForm(emptyGallery);
     setTeacherForm(emptyTeacher);
     setTestimonialForm(emptyTestimonial);
     setScheduleForm(emptySchedule);
@@ -3605,6 +3625,16 @@ export default function AdminDashboard() {
 
     if (tab === "about" && aboutMode === "facilities") {
       setFacilityForm({
+        title: item.title ?? "",
+        description: item.description ?? "",
+        imageId: item.imageId ?? null,
+        imageUrl: item.imageUrl ?? "",
+      });
+      return;
+    }
+
+    if (tab === "about" && aboutMode === "moments") {
+      setGalleryForm({
         title: item.title ?? "",
         description: item.description ?? "",
         imageId: item.imageId ?? null,
@@ -3834,6 +3864,30 @@ export default function AdminDashboard() {
     }
   }
 
+  async function saveGalleryImage(event: FormEvent) {
+    event.preventDefault();
+    setSaving(true);
+    try {
+      const body = {
+        title: galleryForm.title,
+        description: galleryForm.description,
+        imageId: galleryForm.imageId,
+      };
+      await requestJson(selected ? `/api/gallery-images/${selected}` : "/api/gallery-images", {
+        method: selected ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      resetSelection();
+      await loadAll();
+      setStatus("Đã lưu ảnh khoảnh khắc.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Không thể lưu ảnh khoảnh khắc.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function saveTeacher(event: FormEvent) {
     event.preventDefault();
     setSaving(true);
@@ -3978,6 +4032,8 @@ export default function AdminDashboard() {
       url =
         aboutMode === "facilities"
           ? `/api/facility-images/${selected}`
+          : aboutMode === "moments"
+            ? `/api/gallery-images/${selected}`
           : aboutMode === "teachers"
             ? `/api/teacher-team/${selected}`
             : `/api/testimonials/${selected}`;
@@ -4209,7 +4265,7 @@ export default function AdminDashboard() {
         ) : null}
 
         {tab === "about" ? (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={() => {
                 setAboutMode("facilities");
@@ -4218,6 +4274,15 @@ export default function AdminDashboard() {
               className={`h-10 rounded-md border px-4 font-bold ${aboutMode === "facilities" ? "border-[#b80000] bg-[#b80000] text-white" : "border-[#d9baba] bg-white"}`}
             >
               Cơ sở vật chất
+            </button>
+            <button
+              onClick={() => {
+                setAboutMode("moments");
+                resetSelection();
+              }}
+              className={`h-10 rounded-md border px-4 font-bold ${aboutMode === "moments" ? "border-[#b80000] bg-[#b80000] text-white" : "border-[#d9baba] bg-white"}`}
+            >
+              Khoảnh khắc
             </button>
             <button
               onClick={() => {
@@ -4356,6 +4421,8 @@ export default function AdminDashboard() {
                       : tab === "about"
                         ? aboutMode === "facilities"
                           ? "Cơ sở vật chất"
+                          : aboutMode === "moments"
+                            ? "Khoảnh khắc Princeton"
                           : aboutMode === "teachers"
                             ? "Đội ngũ giáo viên"
                             : "Phụ huynh chia sẻ"
@@ -4858,6 +4925,39 @@ export default function AdminDashboard() {
                     setFacilityForm((f) => ({ ...f, imageId: asset.id, imageUrl: asset.url }))
                   }
                   onDeleted={() => setFacilityForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
+                />
+                <ActionButton type="submit" icon={selected ? <Edit3 size={17} /> : <Save size={17} />} disabled={saving}>
+                  Lưu
+                </ActionButton>
+              </form>
+            ) : null}
+
+            {tab === "about" && aboutMode === "moments" ? (
+              <form className="grid gap-4" onSubmit={saveGalleryImage}>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Field
+                    label="Tiêu đề ảnh"
+                    value={galleryForm.title}
+                    placeholder="Ngày hội trải nghiệm"
+                    onChange={(value) => setGalleryForm((f) => ({ ...f, title: value }))}
+                  />
+                  <Field
+                    label="Mô tả ngắn"
+                    value={galleryForm.description}
+                    placeholder="Hoạt động học tập, vui chơi..."
+                    onChange={(value) => setGalleryForm((f) => ({ ...f, description: value }))}
+                  />
+                </div>
+                <MediaField
+                  label="Ảnh khoảnh khắc"
+                  assetId={galleryForm.imageId}
+                  previewUrl={galleryForm.imageUrl}
+                  alt={galleryForm.title}
+                  onStatus={setStatus}
+                  onUploaded={(asset) =>
+                    setGalleryForm((f) => ({ ...f, imageId: asset.id, imageUrl: asset.url }))
+                  }
+                  onDeleted={() => setGalleryForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
                 />
                 <ActionButton type="submit" icon={selected ? <Edit3 size={17} /> : <Save size={17} />} disabled={saving}>
                   Lưu

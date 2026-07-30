@@ -9,8 +9,6 @@ import { mediaImage } from "@/lib/media-url";
 import imgHero from "@/assets/7152d23b5ad0228ac40827979cdce9d4dfc3a8fb.png";
 import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
 import imgMascotWombat from "@/assets/3dc1ce007304dd7c637e9e4c763ad7fda6021a35.png";
-import imgZigzagTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
-import imgZigzagBottom from "@/assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
 import imgFloatStar from "@/assets/ca5376ce92d1f2dc22b4ce037286566eecbabbfd.png";
 import imgFloatPencil from "@/assets/8be1034309901c74e010831c2ccb706a7d4de7c5.png";
 import imgFloatCornerA from "@/assets/e2e0d53776626afcb6870acda5507843a053b4ae.png";
@@ -18,6 +16,13 @@ import imgFloatCornerB from "@/assets/45e9cd713cd022e324337d1e9a3d1f01c8086db4.p
 
 const imgMascotKoala = mediaImage("d088645c54f44b84375f6cb56aeabe8e06bc006b.png");
 const imgMascotKangaroo = mediaImage("d0268a1bfec279b63f5d3717d847ff89893ec9a7.png");
+
+const sectionColors = {
+  surface: "#fffefa",
+  facility: "#ffc107",
+  moments: "#bdeffc",
+  teachers: "#fff1f1",
+};
 
 export const metadata: Metadata = {
   title: "Giới Thiệu | Trường Mầm non Princeton",
@@ -116,11 +121,28 @@ function assetSrc(image: { src: string } | string) {
   return typeof image === "string" ? image : image.src;
 }
 
+function WaveDivider({ from, to }: { from: string; to: string }) {
+  return (
+    <div aria-hidden className="relative h-[46px] overflow-hidden" style={{ backgroundColor: to }}>
+      <svg className="block h-full w-full" viewBox="0 0 1440 80" preserveAspectRatio="none">
+        <path
+          fill={from}
+          d="M0 0H1440V37C1400 58 1360 58 1320 37C1280 16 1240 16 1200 37C1160 58 1120 58 1080 37C1040 16 1000 16 960 37C920 58 880 58 840 37C800 16 760 16 720 37C680 58 640 58 600 37C560 16 520 16 480 37C440 58 400 58 360 37C320 16 280 16 240 37C200 58 160 58 120 37C80 16 40 16 0 37V0Z"
+        />
+      </svg>
+    </div>
+  );
+}
+
 export default async function GioiThieuPage() {
   const aboutContent = await getAboutContent();
   const facilitySlides = aboutContent.facilityImages.map((item) => ({
     image: item.imageUrl,
     title: item.title,
+  }));
+  const momentSlides = aboutContent.galleryImages.map((item, index) => ({
+    image: item.url,
+    title: item.title || item.alt || `Khoảnh khắc ${index + 1}`,
   }));
   const teachers = aboutContent.teacherTeamItems.map((item) => ({
     id: item.id,
@@ -230,11 +252,9 @@ export default async function GioiThieuPage() {
       </section>
 
       {facilitySlides.length ? (
+        <>
+        <WaveDivider from={sectionColors.surface} to={sectionColors.facility} />
         <section className="relative bg-[#ffc107]">
-          <div
-            className="h-[25px] bg-repeat-x"
-            style={{ backgroundImage: `url("${imgZigzagTop.src}")`, backgroundSize: "176px 25px" }}
-          />
           <div className="mx-auto grid max-w-[1240px] gap-8 px-4 py-12 md:grid-cols-2 md:px-10 md:py-20">
             <FacilityCarousel slides={facilitySlides} />
             <div className="flex flex-col justify-center">
@@ -251,14 +271,46 @@ export default async function GioiThieuPage() {
               </p>
             </div>
           </div>
-          <div
-            className="h-[25px] rotate-180 bg-repeat-x"
-            style={{ backgroundImage: `url("${imgZigzagBottom.src}")`, backgroundSize: "176px 25px" }}
-          />
         </section>
+        <WaveDivider
+          from={sectionColors.facility}
+          to={momentSlides.length ? sectionColors.moments : teachers.length ? sectionColors.teachers : sectionColors.surface}
+        />
+        </>
+      ) : null}
+
+      {momentSlides.length ? (
+        <>
+        {!facilitySlides.length ? <WaveDivider from={sectionColors.surface} to={sectionColors.moments} /> : null}
+        <section className="relative bg-[#bdeffc]">
+          <div className="mx-auto grid max-w-[1240px] gap-8 px-4 py-12 md:grid-cols-2 md:px-10 md:py-20">
+            <div className="order-2 flex flex-col justify-center md:order-1">
+              <img
+                src={imgMascotWombat.src}
+                alt=""
+                className="mb-4 h-20 w-20 object-contain"
+              />
+              <h2 className="text-[30px] font-extrabold uppercase leading-tight md:text-[48px]">
+                Khoảnh khắc đáng nhớ tại Princeton
+              </h2>
+              <p className="mt-5 text-[16px] font-medium leading-7 md:text-[20px] md:leading-8">
+                Những hình ảnh học tập, vui chơi và trải nghiệm mỗi ngày giúp ba mẹ nhìn thấy con tự tin hơn, mạnh dạn hơn và lớn lên trong môi trường đầy yêu thương.
+              </p>
+            </div>
+            <div className="order-1 md:order-2">
+              <FacilityCarousel slides={momentSlides} imageContext="khoảnh khắc Princeton" />
+            </div>
+          </div>
+        </section>
+        <WaveDivider from={sectionColors.moments} to={teachers.length ? sectionColors.teachers : sectionColors.surface} />
+        </>
       ) : null}
 
       {teachers.length ? (
+        <>
+        {!facilitySlides.length && !momentSlides.length ? (
+          <WaveDivider from={sectionColors.surface} to={sectionColors.teachers} />
+        ) : null}
         <section className="bg-[#fff1f1] px-4 py-12 md:px-10 md:py-20">
           <div className="mx-auto max-w-[1180px]">
             <h2 className="max-w-[760px] text-[30px] font-extrabold uppercase leading-tight md:text-[52px]">
@@ -287,6 +339,8 @@ export default async function GioiThieuPage() {
             </div>
           </div>
         </section>
+        <WaveDivider from={sectionColors.teachers} to={sectionColors.surface} />
+        </>
       ) : null}
 
       <section className="bg-[#fffefa] px-4 py-12 md:px-10 md:py-20">

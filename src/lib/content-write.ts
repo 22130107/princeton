@@ -1,6 +1,12 @@
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { ensureCategoryStorage } from "./categories";
-import { ensureAboutStorage, ensureHeroSlideStorage, ensureHomeSectionStorage, ensureTestimonialStorage } from "./content";
+import {
+  ensureAboutStorage,
+  ensureGalleryStorage,
+  ensureHeroSlideStorage,
+  ensureHomeSectionStorage,
+  ensureTestimonialStorage,
+} from "./content";
 import { getMysqlPool } from "./mysql";
 import {
   normalizeRegistrationSectionSettings,
@@ -72,6 +78,12 @@ export type CreateFacilityImageInput = {
   imageId?: number | null;
 };
 
+export type CreateGalleryImageInput = {
+  title: string;
+  description?: string | null;
+  imageId?: number | null;
+};
+
 export type CreateTeacherTeamInput = {
   title: string;
   description?: string | null;
@@ -96,6 +108,7 @@ export type UpdateHeroSlideInput = CreateHeroSlideInput;
 export type UpdateTeachingMethodInput = CreateTeachingMethodInput;
 export type UpdatePostInput = CreatePostInput;
 export type UpdateFacilityImageInput = CreateFacilityImageInput;
+export type UpdateGalleryImageInput = CreateGalleryImageInput;
 export type UpdateTeacherTeamInput = CreateTeacherTeamInput;
 export type UpdateTestimonialInput = CreateTestimonialInput;
 export type UpdateRegistrationSectionInput = Partial<RegistrationSectionSettings>;
@@ -213,6 +226,14 @@ export function normalizePostInput(input: Partial<CreatePostInput>) {
 }
 
 export function normalizeFacilityImageInput(input: Partial<CreateFacilityImageInput>) {
+  return {
+    title: requiredText(input.title, "title"),
+    description: optionalText(input.description),
+    imageId: optionalNumber(input.imageId),
+  };
+}
+
+export function normalizeGalleryImageInput(input: Partial<CreateGalleryImageInput>) {
   return {
     title: requiredText(input.title, "title"),
     description: optionalText(input.description),
@@ -457,6 +478,24 @@ export async function createFacilityImage(input: Partial<CreateFacilityImageInpu
   const [result] = await pool.execute<ResultSetHeader>(
     `INSERT INTO facility_images (title, description, image_id, sort_order, is_active)
      VALUES (:title, :description, :imageId, :sortOrder, TRUE)`,
+    { ...data, sortOrder },
+  );
+
+  return result.insertId;
+}
+
+export async function createGalleryImage(input: Partial<CreateGalleryImageInput>) {
+  await ensureGalleryStorage();
+  const data = normalizeGalleryImageInput(input);
+  if (!data.imageId) {
+    throw new Error("Vui lòng upload ảnh khoảnh khắc.");
+  }
+
+  const pool = getMysqlPool();
+  const sortOrder = await nextSortOrder("gallery_items");
+  const [result] = await pool.execute<ResultSetHeader>(
+    `INSERT INTO gallery_items (title, description, image_id, sort_order, is_featured, is_active)
+     VALUES (:title, :description, :imageId, :sortOrder, FALSE, TRUE)`,
     { ...data, sortOrder },
   );
 
@@ -834,6 +873,30 @@ export async function archiveFacilityImage(idValue: unknown) {
   const id = positiveId(idValue);
   const pool = getMysqlPool();
   await pool.execute("UPDATE facility_images SET is_active = FALSE WHERE id = :id", { id });
+}
+
+export async function updateGalleryImage(idValue: unknown, input: Partial<UpdateGalleryImageInput>) {
+  await ensureGalleryStorage();
+  const id = positiveId(idValue);
+  const data = normalizeGalleryImageInput(input);
+  const pool = getMysqlPool();
+
+  await pool.execute(
+    `UPDATE gallery_items
+     SET title = :title,
+         description = :description,
+         image_id = COALESCE(:imageId, image_id),
+         is_active = TRUE
+     WHERE id = :id`,
+    { ...data, id },
+  );
+}
+
+export async function archiveGalleryImage(idValue: unknown) {
+  await ensureGalleryStorage();
+  const id = positiveId(idValue);
+  const pool = getMysqlPool();
+  await pool.execute("UPDATE gallery_items SET is_active = FALSE WHERE id = :id", { id });
 }
 
 export async function updateTeacherTeamItem(idValue: unknown, input: Partial<UpdateTeacherTeamInput>) {
