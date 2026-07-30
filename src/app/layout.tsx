@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   title: "Trường Mầm non Princeton",
   description:
     "Trường Mầm non Princeton - Chương trình giáo dục mầm non chất lượng cao theo chuẩn quốc tế.",
+  icons: {
+    icon: [{ url: "/favicon.png", type: "image/png" }],
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
