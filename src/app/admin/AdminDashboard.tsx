@@ -864,8 +864,23 @@ const MAX_RICH_FONT_SIZE = 96;
 const DEFAULT_RICH_FONT_SIZE = 16;
 const DEFAULT_RICH_FONT_FAMILY = "system";
 const DEFAULT_RICH_TEXT_COLOR = "#620000";
-const RICH_FONT_OPTIONS = [
+type RichFontOption = {
+  label: string;
+  value: string;
+  css: string;
+  aliases?: string[];
+};
+
+const RICH_FONT_OPTIONS: RichFontOption[] = [
   { label: "Mặc định", value: "system", css: "" },
+  { label: "COUTURE", value: "couture", css: "\"Couture\", Montserrat, Arial, Helvetica, sans-serif" },
+  { label: "Baloo Tamma", value: "baloo-tamma", css: "\"Baloo Tamma 2\", \"Baloo Tamma\", \"Baloo Paaji 2\", Arial, Helvetica, sans-serif", aliases: ["baloo tamma 2", "baloo tamma"] },
+  { label: "iCiel Koni Black", value: "iciel-koni-black", css: "\"iCiel Koni Black\", \"iCielKoni-Black\", \"Baloo Tamma 2\", \"Baloo Paaji 2\", Arial, Helvetica, sans-serif", aliases: ["iciel koni black", "icielkoni-black"] },
+  { label: "Montserrat", value: "montserrat", css: "Montserrat, Arial, Helvetica, sans-serif" },
+  { label: "HLT Fall For You", value: "hlt-fall-for-you", css: "\"HLT Fall For You\", \"HLT Fall For You Regular\", \"Coming Soon\", Arial, Helvetica, sans-serif", aliases: ["hlt fall for you", "hlt fall for you regular"] },
+  { label: "SMC Fabulous", value: "smc-fabulous", css: "\"SMC Fabulous\", \"SMC Fabulous Regular\", \"Great Vibes\", cursive", aliases: ["smc fabulous", "smc fabulous regular"] },
+  { label: "SVN-Bebas Neue", value: "svn-bebas-neue", css: "\"SVN-Bebas Neue\", \"Bebas Neue\", Arial, Helvetica, sans-serif", aliases: ["svn-bebas neue", "bebas neue"] },
+  { label: "AdrianeSwash", value: "adriane-swash", css: "AdrianeSwash, \"Adriane Swash\", Georgia, serif", aliases: ["adrianeswash", "adriane swash"] },
   { label: "Arial", value: "arial", css: "Arial, Helvetica, sans-serif" },
   { label: "Times", value: "times", css: "\"Times New Roman\", Times, serif" },
   { label: "Georgia", value: "georgia", css: "Georgia, serif" },
@@ -901,8 +916,13 @@ function getRichFontFamily(value: string) {
   const fromData = value.match(/data-rich-font-family=["']([^"']+)["']/i)?.[1];
   if (RICH_FONT_OPTIONS.some((option) => option.value === fromData)) return fromData;
 
-  const fromStyle = value.match(/font-family\s*:\s*([^;"]+)/i)?.[1]?.toLowerCase() ?? "";
-  return RICH_FONT_OPTIONS.find((option) => option.css && fromStyle.includes(option.value))?.value ?? DEFAULT_RICH_FONT_FAMILY;
+  const fromStyle = value.match(/font-family\s*:\s*([^;]+)/i)?.[1]?.replace(/["']/g, "").toLowerCase() ?? "";
+  return (
+    RICH_FONT_OPTIONS.find((option) => {
+      const aliases = [option.value, option.label, ...(option.aliases ?? [])];
+      return option.css && aliases.some((alias) => fromStyle.includes(alias.toLowerCase()));
+    })?.value ?? DEFAULT_RICH_FONT_FAMILY
+  );
 }
 
 function getRichFontCss(value: string) {
