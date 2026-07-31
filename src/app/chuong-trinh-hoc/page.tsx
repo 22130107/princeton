@@ -87,7 +87,7 @@ export default async function ChuongTrinhHocPage() {
                   <h2 className="mt-3 text-[23px] font-extrabold leading-tight md:text-[25px]">
                     {track.title}
                   </h2>
-                  <p className="mt-3 text-[16px] font-medium leading-7">
+                  <p className="mt-3 line-clamp-3 text-[16px] font-medium leading-7">
                     {track.description}
                   </p>
                   <Link

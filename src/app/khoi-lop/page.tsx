@@ -120,7 +120,7 @@ export default async function KhoiLopPage() {
                   <p className="mt-2 inline-flex w-fit rounded-full border border-[#b80000] bg-white px-4 py-2 text-[16px] font-bold text-[#620000]">
                     {program.age}
                   </p>
-                  <p className="mt-3 text-[16px] font-medium leading-7">
+                  <p className="mt-3 line-clamp-3 text-[16px] font-medium leading-7">
                     {program.excerpt}
                   </p>
                   <Link
