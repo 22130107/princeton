@@ -1,6 +1,8 @@
 import svgPaths from "../svg-g45k1n1pz5";
 import { imgGroup1, imgGroup2 } from "../svg-ddib6";
 
+const FACEBOOK_URL = "https://www.facebook.com/princetonacademy.vietnam";
+
 function Group4() {
   return (
     <div className="absolute inset-[0.1%_0.33%_2.61%_0.12%] mask-alpha mask-intersect mask-no-clip mask-no-repeat mask-position-[-0.039px_-0.031px] mask-size-[33.391px_31.165px]" style={{ maskImage: `url("${imgGroup1}")` }} data-name="Group">
@@ -90,10 +92,17 @@ function IconMessengerSvg() {
 
 function Link16() {
   return (
-    <div className="bg-[#b80000] content-stretch flex flex-col items-start p-[12.8px] relative rounded-[28.8px] shrink-0" data-name="Link">
+    <a
+      href={FACEBOOK_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Liên hệ Princeton Academy qua Facebook"
+      className="bg-[#b80000] content-stretch flex flex-col items-start p-[12.8px] relative rounded-[28.8px] shrink-0"
+      data-name="Link"
+    >
       <div aria-hidden className="absolute border border-[rgba(244,230,182,0.5)] border-solid inset-0 pointer-events-none rounded-[28.8px]" />
       <IconMessengerSvg />
-    </div>
+    </a>
   );
 }
 

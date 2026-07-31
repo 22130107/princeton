@@ -1,14 +1,47 @@
-import svgPaths from "../svg-g45k1n1pz5";
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
 import imgChuongTrinhTieuChuanPng from "../../../assets/b6916482933e67cc337ea1071a428e34d7abe5f3.png";
 import imgLogo from "../../../assets/logo.png";
 
-function CurriculumLogo() {
-  return (
-    <div className="flex items-start">
-      <img src={imgLogo.src} alt="" className="h-[112px] w-[112px] object-contain" />
-    </div>
-  );
-}
+type CurriculumTrack = {
+  id: number;
+  slug: string;
+  title: string;
+  category: string;
+  description: string;
+  imageUrl: string;
+  imageAlt: string;
+  logoUrl: string;
+  logoAlt: string;
+};
+
+const fallbackTracks: CurriculumTrack[] = [
+  {
+    id: 1,
+    slug: "chuong-trinh-tieu-chuan",
+    title: "Chương trình Tiêu chuẩn",
+    category: "Tiêu chuẩn",
+    description:
+      "Được xây dựng trên nền tảng Chương trình Giáo dục Mầm non của Bộ GD&ĐT Việt Nam cùng Khung Giáo dục Mầm non Quốc gia Úc (EYLF), chương trình khuyến khích học sinh tự do khám phá và chủ động học hỏi. Qua mỗi hoạt động, trẻ từng bước hình thành phản xạ giao tiếp tự nhiên, kỹ năng xã hội - cảm xúc, từ đó xây dựng nền tảng vững chắc cho các giai đoạn học tập tiếp theo.",
+    imageUrl: imgChuongTrinhTieuChuanPng.src,
+    imageAlt: "Chương trình Tiêu chuẩn",
+    logoUrl: imgLogo.src,
+    logoAlt: "Princeton Academy",
+  },
+  {
+    id: 2,
+    slug: "chuong-trinh-nang-cao",
+    title: "Chương trình Nâng cao",
+    category: "Nâng cao",
+    description:
+      "Chương trình được thiết kế để mở rộng trải nghiệm học tập, giúp trẻ phát triển ngôn ngữ, tư duy phản biện, khả năng hợp tác và sự tự tin thông qua các hoạt động khám phá, dự án và thực hành sáng tạo.",
+    imageUrl: imgChuongTrinhTieuChuanPng.src,
+    imageAlt: "Chương trình Nâng cao",
+    logoUrl: imgLogo.src,
+    logoAlt: "Princeton Academy",
+  },
+];
 
 function Heading1() {
   return (
@@ -20,130 +53,166 @@ function Heading1() {
   );
 }
 
-function Item() {
+function CurriculumLogo({ track }: { track: CurriculumTrack }) {
   return (
-    <div className="bg-[#b80000] flex-[1_0_0] min-w-px relative rounded-tl-[24px] rounded-tr-[24px] self-stretch" data-name="Item">
-      <div aria-hidden className="absolute border-[#b80000] border-l-[0.8px] border-r-[0.8px] border-solid border-t-[0.8px] inset-0 pointer-events-none rounded-tl-[24px] rounded-tr-[24px]" />
+    <div className="flex items-start">
+      <img
+        src={track.logoUrl || imgLogo.src}
+        alt={track.logoAlt || "Princeton Academy"}
+        className="h-[112px] w-[112px] object-contain"
+      />
+    </div>
+  );
+}
+
+function TrackTab({
+  track,
+  active,
+  onClick,
+}: {
+  track: CurriculumTrack;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`${active ? "bg-[#b80000]" : "bg-white"} flex-[1_0_0] min-w-px relative rounded-tl-[24px] rounded-tr-[24px] self-stretch`}
+      data-name="Item"
+    >
+      <div
+        aria-hidden
+        className="absolute border-[#b80000] border-l-[0.8px] border-r-[0.8px] border-solid border-t-[0.8px] inset-0 pointer-events-none rounded-tl-[24px] rounded-tr-[24px]"
+      />
       <div className="flex flex-col items-center size-full">
         <div className="content-stretch flex flex-col items-center pb-[16px] pt-[16.8px] px-[32.8px] relative size-full">
-          <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[30px] text-center text-white whitespace-nowrap">
-            <p className="leading-[45px]">Chương trình Tiêu chuẩn</p>
+          <div
+            className={`[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[30px] text-center whitespace-nowrap ${
+              active ? "text-white" : "text-[#b80000]"
+            }`}
+          >
+            <p className="leading-[45px]">{track.title}</p>
           </div>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
-function Item1() {
+function TrackTabs({
+  tracks,
+  active,
+  onChange,
+}: {
+  tracks: CurriculumTrack[];
+  active: number;
+  onChange: (index: number) => void;
+}) {
   return (
-    <div className="bg-white flex-[1_0_0] min-w-px relative rounded-tl-[24px] rounded-tr-[24px] self-stretch" data-name="Item">
-      <div aria-hidden className="absolute border-[#b80000] border-l-[0.8px] border-r-[0.8px] border-solid border-t-[0.8px] inset-0 pointer-events-none rounded-tl-[24px] rounded-tr-[24px]" />
-      <div className="flex flex-col items-center size-full">
-        <div className="content-stretch flex flex-col items-center pb-[16px] pt-[16.8px] px-[32.8px] relative size-full">
-          <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[#b80000] text-[30px] text-center whitespace-nowrap">
-            <p className="leading-[45px]">Chương trình Nâng cao</p>
-          </div>
-        </div>
-      </div>
+    <div
+      className="content-stretch flex gap-[12px] h-[77.8px] items-start justify-center overflow-auto relative shrink-0 w-full z-[2]"
+      data-name="List"
+    >
+      {tracks.map((track, index) => (
+        <TrackTab
+          key={track.slug || track.id}
+          track={track}
+          active={active === index}
+          onClick={() => onChange(index)}
+        />
+      ))}
     </div>
   );
 }
 
-function List() {
-  return (
-    <div className="content-stretch flex gap-[12px] h-[77.8px] items-start justify-center overflow-auto relative shrink-0 w-full z-[2]" data-name="List">
-      <Item />
-      <Item1 />
-    </div>
-  );
-}
-
-function Container91() {
-  return (
-    <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[22px] w-full">
-        <p className="leading-[33px]">Được xây dựng trên nền tảng Chương trình Giáo dục Mầm {`non của Bộ GD&ĐT Việt Nam cùng Khung Giáo dục Mầm non`} Quốc gia Úc (EYLF), chương trình khuyến khích học sinh tự do khám phá và chủ động học hỏi. Qua mỗi hoạt động, trẻ từng bước hình thành phản xạ giao tiếp tự nhiên, kỹ năng xã hội - cảm xúc, từ đó xây dựng nền tảng vững chắc cho các giai đoạn học tập tiếp theo.</p>
-      </div>
-    </div>
-  );
-}
-
-function Container90() {
-  return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px pb-[16px] relative" data-name="Container">
-      <Container91 />
-    </div>
-  );
-}
-
-function ChuongTrinhTieuChuanPng() {
-  return (
-    <div className="aspect-[575.2000122070312/343.510009765625] relative shrink-0 w-full" data-name="chuong_trinh_tieu_chuan.png">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={imgChuongTrinhTieuChuanPng.src} />
-      </div>
-    </div>
-  );
-}
-
-function Container92() {
-  return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative rounded-[14px]" data-name="Container">
-      <ChuongTrinhTieuChuanPng />
-    </div>
-  );
-}
-
-function Container89() {
-  return (
-    <div className="relative shrink-0 w-full" data-name="Container">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[24px] items-start justify-center relative size-full">
-        <div className="shrink-0 pt-[4px] w-[112px]">
-          <CurriculumLogo />
-        </div>
-        <Container90 />
-        <Container92 />
-      </div>
-    </div>
-  );
-}
-
-function BackgroundBorder() {
+function TrackContent({ track }: { track: CurriculumTrack }) {
   return (
     <div className="bg-white relative rounded-bl-[28px] rounded-br-[28px] shrink-0 w-full z-[1]" data-name="Background+Border">
-      <div aria-hidden className="absolute border border-[#b80000] border-solid inset-0 pointer-events-none rounded-bl-[28px] rounded-br-[28px]" />
+      <div
+        aria-hidden
+        className="absolute border border-[#b80000] border-solid inset-0 pointer-events-none rounded-bl-[28px] rounded-br-[28px]"
+      />
       <div className="content-stretch flex flex-col items-start p-[32.8px] relative size-full">
-        <Container89 />
-      </div>
-    </div>
-  );
-}
+        <div className="relative shrink-0 w-full" data-name="Container">
+          <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[24px] items-start justify-center relative size-full">
+            <div className="shrink-0 pt-[4px] w-[112px]">
+              <CurriculumLogo track={track} />
+            </div>
 
-function Container88() {
-  return (
-    <div className="content-stretch flex flex-col isolate items-start relative shrink-0 w-full" data-name="Container">
-      <List />
-      <BackgroundBorder />
-    </div>
-  );
-}
+            <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px pb-[16px] relative" data-name="Container">
+              <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
+                <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[22px] w-full">
+                  <p className="leading-[33px]">{track.description}</p>
+                </div>
+              </div>
+            </div>
 
-function Container87() {
-  return (
-    <div className="max-w-[1320px] relative shrink-0 w-full" data-name="Container">
-      <div className="content-stretch flex flex-col gap-[80px] items-start max-w-[inherit] px-[12px] relative size-full">
-        <Heading1 />
-        <Container88 />
+            <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative rounded-[14px]" data-name="Container">
+              <div
+                className="aspect-[575.2000122070312/343.510009765625] relative shrink-0 w-full"
+                data-name="chuong_trinh_tieu_chuan.png"
+              >
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <img
+                    alt={track.imageAlt || track.title}
+                    className="absolute left-0 max-w-none size-full top-0 object-cover"
+                    src={track.imageUrl || imgChuongTrinhTieuChuanPng.src}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
 export default function CurriculumSection() {
+  const [active, setActive] = useState(0);
+  const [tracks, setTracks] = useState<CurriculumTrack[]>(fallbackTracks);
+  const visibleTracks = useMemo(() => tracks.slice(0, 2), [tracks]);
+  const activeTrack = visibleTracks[Math.min(active, visibleTracks.length - 1)] ?? visibleTracks[0];
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/curriculum-tracks")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { tracks?: CurriculumTrack[] } | null) => {
+        const nextTracks = Array.isArray(data?.tracks) ? data.tracks.slice(0, 2) : [];
+
+        if (!cancelled && nextTracks.length) {
+          setTracks(nextTracks);
+          setActive(0);
+        }
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
-    <div className="absolute bg-[#fff1f1] content-stretch flex flex-col items-start left-0 pb-[80px] pt-[84px] px-[104px] right-0 top-[3642.04px]" data-name="Section">
-      <Container87 />
+    <div
+      className="absolute bg-[#fff1f1] content-stretch flex flex-col items-start left-0 pb-[80px] pt-[84px] px-[104px] right-0 top-[3642.04px]"
+      data-name="Section"
+    >
+      <div className="max-w-[1320px] relative shrink-0 w-full" data-name="Container">
+        <div className="content-stretch flex flex-col gap-[80px] items-start max-w-[inherit] px-[12px] relative size-full">
+          <Heading1 />
+          <div className="content-stretch flex flex-col isolate items-start relative shrink-0 w-full" data-name="Container">
+            <TrackTabs
+              tracks={visibleTracks}
+              active={Math.min(active, visibleTracks.length - 1)}
+              onChange={setActive}
+            />
+            <TrackContent track={activeTrack} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
