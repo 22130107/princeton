@@ -139,10 +139,10 @@ export default function MobileAboutSection() {
 
       {/* Description */}
       <div className="mx-auto max-w-[390px] text-center">
-        <p className="mb-5 text-[#d40000] font-medium text-[14px] leading-[1.75]">
+        <p className="mb-5 text-[#620000] font-medium text-[14px] leading-[1.75]">
           <strong className="font-extrabold">Princeton Academy Premier</strong> là trường mầm non quốc tế định hướng phát triển toàn diện cho trẻ thông qua môi trường học tập hiện đại, an toàn và truyền cảm hứng. Nhà trường chú trọng xây dựng nền tảng vững chắc về <strong className="font-extrabold">ngôn ngữ, tư duy và nhân cách</strong>, giúp trẻ tự tin khám phá thế giới, phát huy tiềm năng và sẵn sàng cho hành trình học tập trong tương lai.
         </p>
-        <p className="text-[#d40000] font-medium text-[14px] leading-[1.75]">
+        <p className="text-[#620000] font-medium text-[14px] leading-[1.75]">
           Chương trình học tại Princeton Academy Premier được thiết kế theo định hướng giáo dục quốc tế với <strong className="font-extrabold">80-100% thời lượng học bằng tiếng Anh</strong> tùy độ tuổi. Trẻ được tiếp cận <strong className="font-extrabold">9 môn học chuẩn Mỹ</strong> như Ngôn ngữ, Toán, Khoa học STEM, Mỹ thuật, Montessori, Âm nhạc, Giáo dục thể chất, Khoa học xã hội và Giáo dục nhân cách. Đồng thời, chương trình còn tích hợp các phương pháp giáo dục tiên tiến như <strong className="font-extrabold">Montessori, Reggio Emilia, Glenn Doman, Howard Gardner</strong> và phương pháp <strong className="font-extrabold">Socratic Questioning (SQM)</strong> nhằm khuyến khích tư duy phản biện, sáng tạo và khả năng giải quyết vấn đề.
         </p>
       </div>
