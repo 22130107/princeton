@@ -49,10 +49,10 @@ export default async function PhuongPhapGiangDayPage() {
             Phương pháp giáo dục
           </p>
           <h1 className="text-[40px] font-extrabold uppercase leading-[1.05] md:text-[68px]">
-            Học qua trải nghiệm, lớn lên bằng sự tò mò
+            Học bằng trải nghiệm, trưởng thành bằng tư duy chủ động
           </h1>
           <p className="mx-auto mt-5 max-w-[760px] text-[17px] font-medium leading-7 md:text-[22px] md:leading-8">
-            Sự kết hợp hài hòa giữa các triết lý giáo dục hiện đại giúp khơi mở trọn vẹn tiềm năng tự nhiên, nuôi dưỡng tư duy độc lập và niềm yêu thích học tập suốt đời của con.
+            Tại Princeton Academy, chúng tôi biến mỗi bài học thành hành trình <strong className="font-extrabold">"Học qua trải nghiệm - Chơi có chủ đích"</strong>. Nơi con được tự do đặt câu hỏi, kiên nhẫn thử nghiệm và tự hào reo lên: <strong className="font-extrabold">"Con tự làm được!"</strong>
           </p>
         </div>
       </section>
