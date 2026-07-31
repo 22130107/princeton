@@ -28,9 +28,6 @@ const floatingStickers = [
   { image: stickerA, className: "left-[4%] top-[18%] h-16 w-16 md:h-24 md:w-24", duration: "6.4s", delay: "-1.2s", rotate: "-10deg" },
   { image: stickerB, className: "right-[6%] top-[12%] h-20 w-20 md:h-28 md:w-28", duration: "7.1s", delay: "-3.1s", rotate: "12deg" },
   { image: stickerC, className: "left-[8%] bottom-[12%] h-16 w-16 md:h-24 md:w-24", duration: "5.8s", delay: "-2.4s", rotate: "8deg" },
-  { image: stickerD, className: "right-[9%] bottom-[18%] h-20 w-20 md:h-32 md:w-32", duration: "7.8s", delay: "-4.2s", rotate: "-14deg" },
-  { image: stickerB, className: "left-[39%] top-[24%] hidden h-16 w-16 md:block md:h-24 md:w-24", duration: "6.8s", delay: "-5.2s", rotate: "-6deg" },
-  { image: stickerA, className: "right-[30%] bottom-[7%] hidden h-14 w-14 md:block md:h-20 md:w-20", duration: "5.6s", delay: "-0.8s", rotate: "16deg" },
 ];
 
 function FloatingStickers() {
