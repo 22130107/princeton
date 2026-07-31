@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { FormEvent, type ClipboardEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { CalendarClock, CheckCircle2, Edit3, Eye, EyeOff, ImagePlus, List, ListOrdered, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
+import { CalendarClock, CheckCircle2, Edit3, Eye, EyeOff, ImagePlus, List, ListOrdered, LogOut, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
 import { Extension, Node, mergeAttributes } from "@tiptap/core";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -4204,6 +4204,15 @@ export default function AdminDashboard() {
     }
   }
 
+  async function logout() {
+    try {
+      await requestJson<{ ok: true }>("/api/admin/logout", { method: "POST" });
+      window.location.href = "/admin/login";
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Không thể đăng xuất.");
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[#f4fbf2] text-[#620000]">
       <header className="border-b border-[#dbe7d8] bg-[#e8f3e6] px-8 py-6">
@@ -4212,9 +4221,14 @@ export default function AdminDashboard() {
             <p className="text-[13px] font-extrabold uppercase text-[#b80000]">Princeton Academy</p>
             <h1 className="mt-1 text-[34px] font-extrabold leading-tight">Quản lý nội dung</h1>
           </div>
-          <ActionButton icon={<RefreshCw size={18} />} tone="quiet" onClick={() => loadAll()}>
-            Tải lại
-          </ActionButton>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <ActionButton icon={<RefreshCw size={18} />} tone="quiet" onClick={() => loadAll()}>
+              Tải lại
+            </ActionButton>
+            <ActionButton icon={<LogOut size={18} />} tone="quiet" onClick={logout}>
+              Đăng xuất
+            </ActionButton>
+          </div>
         </div>
       </header>
 

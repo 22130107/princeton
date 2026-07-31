@@ -130,6 +130,12 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
     inputRef.current?.focus();
   }
 
+  function closeSearch() {
+    setQuery("");
+    setPage(1);
+    setIsSearchOpen(false);
+  }
+
   function updateQuery(value: string) {
     setQuery(value);
     setPage(1);
@@ -137,7 +143,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
 
   return (
     <section className="mt-8">
-      <div className="mx-auto flex max-w-[820px] justify-end">
+      <div className="flex w-full justify-end">
         <div
           role="button"
           tabIndex={0}
@@ -155,7 +161,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
           aria-label="Mở tìm kiếm"
           title="Mở tìm kiếm"
           className={`flex items-end gap-2 text-[#b80000] transition-[width] duration-300 ${
-            isSearchOpen ? "w-[min(100%,260px)] md:w-[320px]" : "w-[58px]"
+            isSearchOpen ? "w-[min(100%,300px)] md:w-[380px]" : "w-[58px]"
           }`}
         >
           <div className="relative min-w-0 flex-1 border-b-2 border-[#b80000]">
@@ -179,9 +185,9 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
                 }}
                 aria-label="Xóa tìm kiếm"
                 title="Xóa tìm kiếm"
-                className="absolute right-0 top-1/2 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-[#b80000] transition-colors hover:bg-[#fff1f1]"
+                className="absolute right-0 top-1/2 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-[#b80000]/70 transition-colors hover:bg-white/70 hover:text-[#b80000]"
               >
-                <X size={15} />
+                <X size={14} strokeWidth={3} />
               </button>
             ) : null}
           </div>
@@ -192,6 +198,20 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
           ) : (
             <Search className="mb-2 shrink-0 stroke-[3]" size={22} />
           )}
+          {isSearchOpen ? (
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                closeSearch();
+              }}
+              aria-label="Đóng tìm kiếm"
+              title="Đóng tìm kiếm"
+              className="mb-1 inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-[#b80000]/20 bg-white/75 text-[#b80000] shadow-[0_3px_8px_rgba(98,0,0,0.12)] transition-all hover:-translate-y-0.5 hover:bg-[#b80000] hover:text-white"
+            >
+              <X size={15} strokeWidth={3} />
+            </button>
+          ) : null}
         </div>
       </div>
 
