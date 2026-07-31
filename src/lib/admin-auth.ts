@@ -108,6 +108,15 @@ export function isAdminAuthConfigured() {
   return getAdminCredentials().configured || process.env.NODE_ENV !== "production";
 }
 
+export function isAdminCookieSecure() {
+  const value = process.env.ADMIN_COOKIE_SECURE?.trim().toLowerCase();
+
+  if (value === "false" || value === "0" || value === "no") return false;
+  if (value === "true" || value === "1" || value === "yes") return true;
+
+  return process.env.NODE_ENV === "production";
+}
+
 export async function createAdminSessionToken(username: string) {
   const credentials = getAdminCredentials();
   const payload: AdminSessionPayload = {

@@ -4,6 +4,7 @@ import {
   adminSessionMaxAgeSeconds,
   createAdminSessionToken,
   isAdminAuthConfigured,
+  isAdminCookieSecure,
   verifyAdminCredentials,
 } from "@/lib/admin-auth";
 
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
   response.cookies.set(adminSessionCookieName, token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: isAdminCookieSecure(),
     path: "/",
     maxAge: adminSessionMaxAgeSeconds,
   });
