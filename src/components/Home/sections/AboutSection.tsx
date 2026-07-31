@@ -39,7 +39,7 @@ function Container33() {
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[16px] w-full">
         <p className="leading-[24px]">
-          <strong className="font-extrabold">Princeton Academy Premier</strong> là trường mầm non quốc tế định hướng phát triển toàn diện cho trẻ thông qua môi trường học tập hiện đại, an toàn và truyền cảm hứng. Nhà trường chú trọng xây dựng nền tảng vững chắc về <strong className="font-extrabold">ngôn ngữ, tư duy và nhân cách</strong>, giúp trẻ tự tin khám phá thế giới, phát huy tiềm năng và sẵn sàng cho hành trình học tập trong tương lai.
+          <strong className="font-extrabold">Princeton Academy</strong> là hệ thống mầm non quốc tế ra đời từ niềm tin: <strong className="font-extrabold">Giáo dục không phải là lấp đầy kiến thức, mà là kiến tạo mảnh đất màu mỡ để mỗi hạt giống độc bản được lớn lên.</strong> Chúng tôi không chỉ chuẩn bị cho trẻ vào lớp Một, mà tập trung vun đắp <strong className="font-extrabold">7 nhu cầu phát triển gốc rễ về Thể - Trí - Tâm - Nhân cách</strong>, giúp con xây dựng nội lực vững vàng để tự tin khám phá thế giới.
         </p>
       </div>
     </div>
@@ -51,7 +51,7 @@ function Container34() {
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[16px] w-full">
         <p className="leading-[24px]">
-          Chương trình học tại Princeton Academy Premier được thiết kế theo định hướng giáo dục quốc tế với <strong className="font-extrabold">80-100% thời lượng học bằng tiếng Anh</strong> tùy độ tuổi. Trẻ được tiếp cận <strong className="font-extrabold">9 môn học chuẩn Mỹ</strong> như Ngôn ngữ, Toán, Khoa học STEM, Mỹ thuật, Montessori, Âm nhạc, Giáo dục thể chất, Khoa học xã hội và Giáo dục nhân cách. Đồng thời, chương trình còn tích hợp các phương pháp giáo dục tiên tiến như <strong className="font-extrabold">Montessori, Reggio Emilia, Glenn Doman, Howard Gardner</strong> và phương pháp <strong className="font-extrabold">Socratic Questioning (SQM)</strong> nhằm khuyến khích tư duy phản biện, sáng tạo và khả năng giải quyết vấn đề.
+          Chương trình học tại Princeton Academy được thiết kế chuẩn quốc tế với <strong className="font-extrabold">80–100% thời lượng tiếng Anh</strong>, tích hợp <strong className="font-extrabold">9 môn giáo dục sớm chuẩn Mỹ</strong> cùng chương trình <strong className="font-extrabold">Tư duy phản biện sớm (ECT)</strong>. Thông qua phương pháp độc quyền <strong className="font-extrabold">PEAK (Học qua trải nghiệm & Chơi có chủ đích)</strong>, ngôn ngữ và kiến thức đến với con một cách tự nhiên nhẹ nhàng, đánh thức sự tò mò và trao cho con niềm tin tự hào: <strong className="font-extrabold">"Con tự làm được!"</strong>.
         </p>
       </div>
     </div>

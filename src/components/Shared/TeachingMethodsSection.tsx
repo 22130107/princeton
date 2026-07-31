@@ -105,7 +105,7 @@ export default function TeachingMethodsSection({
               Phương pháp giáo dục
             </h2>
             <p className="mt-5 text-[18px] font-medium leading-7 text-[#620000] md:text-[24px] md:leading-8">
-              Trường Mầm non Princeton áp dụng những phương pháp giáo dục tiên tiến, mang đến cho trẻ các trải nghiệm học tập trọn vẹn và đầy hứng khởi.
+              Sự kết hợp hài hòa giữa các triết lý giáo dục hiện đại giúp khơi mở trọn vẹn tiềm năng tự nhiên, nuôi dưỡng tư duy độc lập và niềm yêu thích học tập suốt đời của con.
             </p>
           </div>
         ) : null}

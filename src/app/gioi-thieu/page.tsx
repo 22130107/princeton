@@ -6,7 +6,7 @@ import FacilityCarousel from "@/components/Shared/FacilityCarousel";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { getAboutContent } from "@/lib/content";
 import { mediaImage } from "@/lib/media-url";
-import imgHero from "@/assets/7152d23b5ad0228ac40827979cdce9d4dfc3a8fb.png";
+import imgHero from "@/assets/1785508275307_2464196110406402971_2464196110406402971_908152b1927fedcdd7fc0a83d44529f3.jpg";
 import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
 import imgMascotWombat from "@/assets/3dc1ce007304dd7c637e9e4c763ad7fda6021a35.png";
 import imgFloatStar from "@/assets/ca5376ce92d1f2dc22b4ce037286566eecbabbfd.png";
@@ -176,11 +176,11 @@ export default async function GioiThieuPage() {
             <p className="mb-3 inline-flex rounded-full border border-[#b80000] bg-white px-4 py-2 text-[14px] font-bold uppercase text-[#b80000]">
               Về Princeton
             </p>
-            <h1 className="text-[38px] font-extrabold uppercase leading-[1.05] md:text-[64px]">
-              Nơi mỗi ngày đến trường là một hành trình lớn lên hạnh phúc
+            <h1 className="text-[34px] font-extrabold uppercase leading-[1.05] md:text-[56px]">
+              Giáo dục không chỉ cho lớp một, giáo dục là cho cả cuộc đời
             </h1>
             <p className="mt-5 max-w-[680px] text-[16px] font-medium leading-7 text-[#620000] md:text-[20px] md:leading-8">
-              <strong className="font-extrabold">Princeton Academy Premier</strong> mang đến môi trường mầm non quốc tế hiện đại, an toàn và truyền cảm hứng, giúp trẻ phát triển nền tảng <strong className="font-extrabold">ngôn ngữ, tư duy và nhân cách</strong> để tự tin bước vào hành trình học tập tương lai.
+              Chúng tôi không đúc khuôn hay lấp đầy kiến thức, mà nuôi dưỡng sự tò mò và nội lực tự thân để mỗi đứa trẻ được lớn lên theo đúng nhịp độ phát triển rực rỡ nhất của chính mình.
             </p>
           </div>
 
@@ -357,10 +357,10 @@ export default async function GioiThieuPage() {
           <div className="relative rounded-[32px] bg-[#b80000] p-8 text-white">
             <img src={imgMascotKoala.src} alt="" className="absolute -right-2 -top-8 h-24 w-24 object-contain" />
             <h2 className="max-w-[460px] text-[30px] font-extrabold uppercase leading-tight md:text-[44px]">
-              Cùng con bắt đầu một hành trình mới
+              Bắt đầu hành trình bằng sự thấu hiểu
             </h2>
             <p className="mt-5 text-[16px] font-medium leading-7 md:text-[19px]">
-              Ba mẹ có thể đăng ký tham quan trường để cảm nhận trực tiếp không gian học tập, đội ngũ giáo viên và nhịp sinh hoạt hằng ngày của trẻ.
+              Mời ba mẹ ghé thăm Princeton Academy để trực tiếp cảm nhận không gian học tập an toàn, gặp gỡ đội ngũ thầy cô tận tâm và cùng lắng nghe nhịp lớn lên hạnh phúc của con mỗi ngày.
             </p>
             <Link
               href="/dang-ky"

@@ -11,39 +11,39 @@ import iconChungNhan from "../../../assets/52ac58af3b511906b500df5fdebc3493147b6
 const CARDS = [
   {
     icon: iconHocPhi,
-    title: "Học phí hợp lý",
+    title: "Học phí hợp lý & Tối ưu",
     description:
-      "Với học phí chỉ từ 10 triệu đồng/tháng, trẻ được tiếp cận chương trình giáo dục Bang Tây Úc giúp phát triển toàn diện.",
+      "Với mức học phí hợp lý, trẻ được tiếp cận môi trường giáo dục chuẩn quốc tế, giúp gia đình tối ưu chi phí mà vẫn đảm bảo con được phát triển toàn diện Thể – Trí – Tâm.",
   },
   {
     icon: iconSongNgu,
-    title: "Chương trình song ngữ",
+    title: "Chương trình Song ngữ Chuẩn Mỹ",
     description:
-      "Số lượng tiết tiếng Anh lên đến 18-20 tiết/tuần, giúp trẻ hình thành nền tảng ngôn ngữ vững chắc và tự tin giao tiếp.",
+      "Thời lượng tiếng Anh vượt trội cùng giáo viên bản ngữ giúp trẻ thẩm thấu ngôn ngữ tự nhiên, hình thành Tư duy phản biện sớm (ECT) và tự tin kết nối với thế giới.",
   },
   {
     icon: iconMoiTruong,
-    title: "Môi trường tích cực",
+    title: "Môi trường An toàn & Tích cực",
     description:
-      "Môi trường học tập an toàn, thân thiện - nơi trẻ được lắng nghe, thấu hiểu và tự tin thể hiện bản thân.",
+      "Môi trường học tập ấm áp, nơi trẻ luôn cảm thấy an toàn, được lắng nghe, tôn trọng bản sắc riêng và tự do thể hiện suy nghĩ của chính mình.",
   },
   {
     icon: iconCanBang,
-    title: "Sự cân bằng trải nghiệm",
+    title: "Phương pháp PEAK Độc quyền",
     description:
-      "Chương trình kết hợp giữa học thuật và hoạt động trải nghiệm đa dạng, giúp trẻ phát triển trí tuệ, kỹ năng và cảm xúc.",
+      'Kết hợp hài hòa giữa kiến thức học thuật và trải nghiệm thực tế ("Học qua trải nghiệm - Chơi có chủ đích"), khơi gợi lòng tò mò và trao cho con niềm tin: "Con tự làm được!".',
   },
   {
     icon: iconBuaAn,
-    title: "Bữa ăn dinh dưỡng",
+    title: "Dinh dưỡng & Thể chất Toàn diện",
     description:
-      "Mỗi bữa ăn đều đảm bảo an toàn vệ sinh, bổ sung đủ dinh dưỡng, thực đơn đa dạng được thay đổi mỗi ngày.",
+      "Bữa ăn chuẩn khoa học, phong phú và an toàn tuyệt đối, kết hợp với các hoạt động vận động giúp trẻ phát triển tầm vóc khỏe mạnh và tinh thần minh mẫn.",
   },
   {
     icon: iconChungNhan,
-    title: "Chứng nhận tốt nghiệp",
+    title: "Hành trang Vững chắc vào Lớp 1",
     description:
-      "Trẻ được nhận chứng nhận của Bộ GD&ĐT Việt Nam và chứng nhận do WASS cấp sau khi hoàn thành chương trình Mầm non.",
+      "Trẻ được trang bị trọn vẹn về tư duy, ngôn ngữ, kỹ năng tự lập và nhận Chứng nhận hoàn thành chương trình Mầm non từ Hệ thống Princeton Academy.",
   },
 ];
 
@@ -71,10 +71,10 @@ function Background() {
       {/* Header */}
       <div className="content-stretch flex flex-col items-center text-center gap-4 max-w-[900px] z-10 mt-8">
         <h2 className="font-bold text-[#620000] text-[42px] leading-[1.2] uppercase tracking-wide">
-          TẠI SAO CHỌN TRƯỜNG MẦM NON PRINCETON?
+          TẠI SAO CHỌN TRƯỜNG MẦM NON PRINCETON ACADEMY?
         </h2>
         <p className="font-medium text-[#333333] text-[18px] leading-[26px]">
-          Trở thành học sinh của Trường Mầm non Tây Úc, các em sẽ được sinh hoạt và học tập trong môi trường tràn đầy tình yêu thương và sự thấu hiểu. Đó là nền tảng để mỗi bạn nhỏ phát triển mạnh mẽ trong suốt hành trình học tập.
+          Trở thành học sinh của Princeton Academy, các em sẽ được sinh hoạt và học tập trong một môi trường an toàn, tràn ngập tình yêu thương và sự thấu hiểu. Đó là nền tảng vững chắc để mỗi bạn nhỏ phát triển nội lực, nuôi dưỡng sự tự tin và hạnh phúc trong suốt hành trình trưởng thành.
         </p>
       </div>
 

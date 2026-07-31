@@ -52,7 +52,7 @@ export default async function PhuongPhapGiangDayPage() {
             Học qua trải nghiệm, lớn lên bằng sự tò mò
           </h1>
           <p className="mx-auto mt-5 max-w-[760px] text-[17px] font-medium leading-7 md:text-[22px] md:leading-8">
-            Princeton kết hợp nhiều phương pháp giáo dục hiện đại để trẻ được chơi, được hỏi, được thử và được tự tin thể hiện theo nhịp phát triển riêng.
+            Sự kết hợp hài hòa giữa các triết lý giáo dục hiện đại giúp khơi mở trọn vẹn tiềm năng tự nhiên, nuôi dưỡng tư duy độc lập và niềm yêu thích học tập suốt đời của con.
           </p>
         </div>
       </section>
