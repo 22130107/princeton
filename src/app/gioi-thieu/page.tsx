@@ -19,7 +19,7 @@ const imgMascotKangaroo = mediaImage("d0268a1bfec279b63f5d3717d847ff89893ec9a7.p
 
 const sectionColors = {
   surface: "#fffefa",
-  facility: "#ffc107",
+  facility: "#ffe27a",
   moments: "#bdeffc",
   teachers: "#fff1f1",
 };
@@ -254,7 +254,7 @@ export default async function GioiThieuPage() {
       {facilitySlides.length ? (
         <>
         <WaveDivider from={sectionColors.surface} to={sectionColors.facility} />
-        <section className="relative bg-[#ffc107]">
+        <section className="relative bg-[#ffe27a]">
           <div className="mx-auto grid max-w-[1240px] gap-8 px-4 py-12 md:grid-cols-2 md:px-10 md:py-20">
             <FacilityCarousel slides={facilitySlides} />
             <div className="flex flex-col justify-center">
