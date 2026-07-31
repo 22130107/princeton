@@ -86,7 +86,7 @@ export default function MobileTeachingProgram() {
   }, []);
 
   return (
-    <section className="relative bg-[#FFC107]">
+    <section className="relative bg-[#ffe27a]">
       <div
         className="h-[25px] w-full bg-repeat-x"
         style={{
@@ -106,10 +106,10 @@ export default function MobileTeachingProgram() {
 
         <div className="flex flex-col gap-4">
           {methods.map((method) => (
-            <div key={method.id} className="relative rounded-[20px] bg-[#FFC107]">
+            <div key={method.id} className="relative rounded-[20px] bg-[#fffefa] shadow-[6px_6px_0_rgba(184,0,0,0.3)]">
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-0 rounded-[20px] border-2 border-dashed border-white"
+                className="pointer-events-none absolute inset-0 rounded-[20px] border-2 border-dashed border-[#ff7777]"
               />
               <div className="relative flex items-center gap-4 p-[18px]">
                 <div className="h-[88px] w-[88px] shrink-0">

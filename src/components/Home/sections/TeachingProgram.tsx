@@ -367,8 +367,8 @@ function TeachingMethodCard({ method, index }: { method: HomeTeachingMethod; ind
   const gridClass = cardGridClasses[index] ?? "";
 
   return (
-    <div className={`${gridClass} justify-self-stretch relative rounded-[20px] self-start shrink-0`} data-name="Border">
-      <div aria-hidden className="absolute border-2 border-[#fffefa] border-dashed inset-0 pointer-events-none rounded-[20px]" />
+    <div className={`${gridClass} justify-self-stretch relative rounded-[20px] self-start shrink-0 bg-[#fffefa] shadow-[6px_6px_0_rgba(184,0,0,0.3)]`} data-name="Border">
+      <div aria-hidden className="absolute border-2 border-[#ff7777] border-dashed inset-0 pointer-events-none rounded-[20px]" />
       <div className={`content-stretch flex flex-col items-start ${index === 3 ? "pb-[26.84px] pt-[18.4px] px-[18.4px]" : "p-[18.4px]"} relative size-full`}>
         <div className="relative shrink-0 w-full" data-name="Container">
           <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[16px] items-center relative size-full">
@@ -469,7 +469,7 @@ export default function TeachingProgram() {
   }, []);
 
   return (
-    <div className="absolute bg-[#FFC107] content-stretch flex flex-col items-start left-0 pb-[132px] pt-[100px] px-[104px] right-0 top-[2776px]" data-name="Section">
+    <div className="absolute bg-[#ffe27a] content-stretch flex flex-col items-start left-0 pb-[132px] pt-[100px] px-[104px] right-0 top-[2776px]" data-name="Section">
       <div className="absolute bg-size-[176px_25px] bg-top-left h-[25px] left-0 right-0 top-0" style={{ backgroundImage: `url("${imgImage.src}")` }} data-name="Image" />
       <Container62 methods={methods} />
       <Link
