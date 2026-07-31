@@ -12,8 +12,6 @@ type CurriculumTrack = {
   description: string;
   imageUrl: string;
   imageAlt: string;
-  logoUrl: string;
-  logoAlt: string;
 };
 
 const fallbackTracks: CurriculumTrack[] = [
@@ -26,8 +24,6 @@ const fallbackTracks: CurriculumTrack[] = [
       "Được xây dựng trên nền tảng Chương trình Giáo dục Mầm non của Bộ GD&ĐT Việt Nam cùng Khung Giáo dục Mầm non Quốc gia Úc (EYLF), chương trình khuyến khích học sinh tự do khám phá và chủ động học hỏi. Qua mỗi hoạt động, trẻ từng bước hình thành phản xạ giao tiếp tự nhiên, kỹ năng xã hội - cảm xúc, từ đó xây dựng nền tảng vững chắc cho các giai đoạn học tập tiếp theo.",
     imageUrl: imgChuongTrinh.src,
     imageAlt: "Chương trình Tiêu chuẩn",
-    logoUrl: imgLogo.src,
-    logoAlt: "Princeton Academy",
   },
   {
     id: 2,
@@ -38,17 +34,15 @@ const fallbackTracks: CurriculumTrack[] = [
       "Chương trình được thiết kế để mở rộng trải nghiệm học tập, giúp trẻ phát triển ngôn ngữ, tư duy phản biện, khả năng hợp tác và sự tự tin thông qua các hoạt động khám phá, dự án và thực hành sáng tạo.",
     imageUrl: imgChuongTrinh.src,
     imageAlt: "Chương trình Nâng cao",
-    logoUrl: imgLogo.src,
-    logoAlt: "Princeton Academy",
   },
 ];
 
-function CurriculumLogo({ track }: { track: CurriculumTrack }) {
+function CurriculumLogo() {
   return (
     <div className="flex w-full justify-center">
       <img
-        src={track.logoUrl || imgLogo.src}
-        alt={track.logoAlt || "Princeton Academy"}
+        src={imgLogo.src}
+        alt="Princeton Academy"
         className="h-[104px] w-[104px] object-contain"
       />
     </div>
@@ -117,7 +111,7 @@ export default function MobileCurriculumSection() {
             className="absolute inset-0 border border-[#b80000] pointer-events-none rounded-bl-[28px] rounded-br-[28px]"
           />
           <div className="relative p-5 flex flex-col gap-4">
-            <CurriculumLogo track={activeTrack} />
+            <CurriculumLogo />
             <p className="text-[#620000] font-medium text-[14px] leading-relaxed">
               {activeTrack.description}
             </p>

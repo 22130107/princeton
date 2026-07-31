@@ -12,8 +12,6 @@ type CurriculumTrack = {
   description: string;
   imageUrl: string;
   imageAlt: string;
-  logoUrl: string;
-  logoAlt: string;
 };
 
 const fallbackTracks: CurriculumTrack[] = [
@@ -26,8 +24,6 @@ const fallbackTracks: CurriculumTrack[] = [
       "Được xây dựng trên nền tảng Chương trình Giáo dục Mầm non của Bộ GD&ĐT Việt Nam cùng Khung Giáo dục Mầm non Quốc gia Úc (EYLF), chương trình khuyến khích học sinh tự do khám phá và chủ động học hỏi. Qua mỗi hoạt động, trẻ từng bước hình thành phản xạ giao tiếp tự nhiên, kỹ năng xã hội - cảm xúc, từ đó xây dựng nền tảng vững chắc cho các giai đoạn học tập tiếp theo.",
     imageUrl: imgChuongTrinhTieuChuanPng.src,
     imageAlt: "Chương trình Tiêu chuẩn",
-    logoUrl: imgLogo.src,
-    logoAlt: "Princeton Academy",
   },
   {
     id: 2,
@@ -38,8 +34,6 @@ const fallbackTracks: CurriculumTrack[] = [
       "Chương trình được thiết kế để mở rộng trải nghiệm học tập, giúp trẻ phát triển ngôn ngữ, tư duy phản biện, khả năng hợp tác và sự tự tin thông qua các hoạt động khám phá, dự án và thực hành sáng tạo.",
     imageUrl: imgChuongTrinhTieuChuanPng.src,
     imageAlt: "Chương trình Nâng cao",
-    logoUrl: imgLogo.src,
-    logoAlt: "Princeton Academy",
   },
 ];
 
@@ -53,12 +47,12 @@ function Heading1() {
   );
 }
 
-function CurriculumLogo({ track }: { track: CurriculumTrack }) {
+function CurriculumLogo() {
   return (
     <div className="flex items-start">
       <img
-        src={track.logoUrl || imgLogo.src}
-        alt={track.logoAlt || "Princeton Academy"}
+        src={imgLogo.src}
+        alt="Princeton Academy"
         className="h-[112px] w-[112px] object-contain"
       />
     </div>
@@ -137,7 +131,7 @@ function TrackContent({ track }: { track: CurriculumTrack }) {
         <div className="relative shrink-0 w-full" data-name="Container">
           <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[24px] items-start justify-center relative size-full">
             <div className="shrink-0 pt-[4px] w-[112px]">
-              <CurriculumLogo track={track} />
+              <CurriculumLogo />
             </div>
 
             <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px pb-[16px] relative" data-name="Container">
