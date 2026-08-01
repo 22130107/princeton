@@ -3,6 +3,7 @@ import Link from "next/link";
 import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import { getClassPrograms } from "@/lib/content";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
@@ -105,7 +106,15 @@ export default async function KhoiLopPage() {
                     className="absolute left-4 top-4 h-[78px] w-[78px] object-contain"
                   />
                   {program.imageUrl ? (
-                    <img src={program.imageUrl} alt={program.imageAlt} className="h-[150px] w-[150px] rounded-[16px] object-cover" />
+                    <div className="h-[150px] w-[150px] overflow-hidden rounded-[16px]">
+                      <CoverImage
+                        src={program.imageUrl}
+                        alt={program.imageAlt}
+                        zoom={program.coverZoom}
+                        position={program.coverPosition}
+                        frameAspect={1}
+                      />
+                    </div>
                   ) : (
                     <img src={imgLogo.src} alt="Princeton Academy" className="h-[150px] w-[150px] rounded-[16px] object-cover" />
                   )}

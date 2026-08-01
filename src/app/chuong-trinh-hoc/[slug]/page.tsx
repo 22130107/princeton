@@ -5,6 +5,7 @@ import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import { getCurriculumTracks } from "@/lib/content";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
@@ -118,10 +119,12 @@ export default async function CurriculumDetailPage({ params }: CurriculumDetailP
                 >
                   <div className="relative h-[160px] bg-[#fffefa]">
                     {item.imageUrl ? (
-                      <img
+                      <CoverImage
                         src={item.imageUrl}
                         alt={item.imageAlt}
-                        className="h-full w-full object-cover"
+                        zoom={item.coverZoom}
+                        position={item.coverPosition}
+                        frameAspect={2.375}
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center">

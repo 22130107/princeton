@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import imgChuongTrinhTieuChuanPng from "../../../assets/b6916482933e67cc337ea1071a428e34d7abe5f3.png";
 import imgLogo from "../../../assets/logo.png";
 
@@ -12,6 +13,8 @@ type CurriculumTrack = {
   description: string;
   imageUrl: string;
   imageAlt: string;
+  coverPosition: string;
+  coverZoom: number;
 };
 
 const fallbackTracks: CurriculumTrack[] = [
@@ -24,6 +27,8 @@ const fallbackTracks: CurriculumTrack[] = [
       "Được xây dựng trên nền tảng Chương trình Giáo dục Mầm non của Bộ GD&ĐT Việt Nam cùng Khung Giáo dục Mầm non Quốc gia Úc (EYLF), chương trình khuyến khích học sinh tự do khám phá và chủ động học hỏi. Qua mỗi hoạt động, trẻ từng bước hình thành phản xạ giao tiếp tự nhiên, kỹ năng xã hội - cảm xúc, từ đó xây dựng nền tảng vững chắc cho các giai đoạn học tập tiếp theo.",
     imageUrl: imgChuongTrinhTieuChuanPng.src,
     imageAlt: "Chương trình Tiêu chuẩn",
+    coverPosition: "50% 50%",
+    coverZoom: 1,
   },
   {
     id: 2,
@@ -34,6 +39,8 @@ const fallbackTracks: CurriculumTrack[] = [
       "Chương trình được thiết kế để mở rộng trải nghiệm học tập, giúp trẻ phát triển ngôn ngữ, tư duy phản biện, khả năng hợp tác và sự tự tin thông qua các hoạt động khám phá, dự án và thực hành sáng tạo.",
     imageUrl: imgChuongTrinhTieuChuanPng.src,
     imageAlt: "Chương trình Nâng cao",
+    coverPosition: "50% 50%",
+    coverZoom: 1,
   },
 ];
 
@@ -148,10 +155,12 @@ function TrackContent({ track }: { track: CurriculumTrack }) {
                 data-name="chuong_trinh_tieu_chuan.png"
               >
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                  <img
-                    alt={track.imageAlt || track.title}
-                    className="absolute left-0 max-w-none size-full top-0 object-cover"
+                  <CoverImage
                     src={track.imageUrl || imgChuongTrinhTieuChuanPng.src}
+                    alt={track.imageAlt || track.title}
+                    zoom={track.coverZoom}
+                    position={track.coverPosition}
+                    frameAspect={575.2 / 343.51}
                   />
                 </div>
               </div>

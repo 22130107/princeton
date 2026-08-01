@@ -3,6 +3,7 @@ import Link from "next/link";
 import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import { getCurriculumTracks } from "@/lib/content";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
@@ -61,10 +62,12 @@ export default async function ChuongTrinhHocPage() {
               >
                 <div className="relative h-[225px] bg-[#fff1f1]">
                   {track.imageUrl ? (
-                    <img
+                    <CoverImage
                       src={track.imageUrl}
                       alt={track.imageAlt}
-                      className="h-full w-full object-cover"
+                      zoom={track.coverZoom}
+                      position={track.coverPosition}
+                      frameAspect={575.2 / 343.51}
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center">

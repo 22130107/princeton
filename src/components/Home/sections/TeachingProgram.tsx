@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import svgPaths from "../svg-g45k1n1pz5";
 import { mediaUrl } from "@/lib/media-url";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import imgImage from "../../../assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgTeachingMethodPlanePng from "../../../assets/87b0baec94bf2f1f980990704ca31b5f776eae03.png";
 import imgImage1 from "../../../assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
@@ -14,6 +15,8 @@ type HomeTeachingMethod = {
   description: string;
   imageUrl: string;
   imageAlt: string;
+  coverPosition: string;
+  coverZoom: number;
 };
 
 const fallbackTeachingMethods: HomeTeachingMethod[] = [
@@ -24,6 +27,8 @@ const fallbackTeachingMethods: HomeTeachingMethod[] = [
       "Trẻ được tiếp cận các phương pháp giáo dục hiện đại, nổi bật là Play-based Learning, giúp trẻ học tập thông qua các hoạt động vui chơi và tiếp thu kiến thức một cách tự nhiên.",
     imageUrl: mediaUrl("4067071ed218b109a3b3d760ab5b856a1c4d1556.png"),
     imageAlt: "Kết hợp nhiều phương pháp",
+    coverPosition: "50% 50%",
+    coverZoom: 1,
   },
   {
     id: 2,
@@ -32,6 +37,8 @@ const fallbackTeachingMethods: HomeTeachingMethod[] = [
       "Trẻ được tôn trọng sở thích, bản sắc cá nhân và nhịp độ phát triển. Thầy cô tạo cơ hội để trẻ chủ động khám phá, đặt câu hỏi và học hỏi theo cách riêng của mình.",
     imageUrl: mediaUrl("6fcde84113072aa66cc43c4fc5efa3b2d4e6feb8.png"),
     imageAlt: "Lấy trẻ làm trung tâm",
+    coverPosition: "50% 50%",
+    coverZoom: 1,
   },
   {
     id: 3,
@@ -40,6 +47,8 @@ const fallbackTeachingMethods: HomeTeachingMethod[] = [
       "Trẻ được tham gia các hoạt động đa dạng trong lớp và sau giờ học như Câu lạc bộ, Học tập thực tế, sự kiện, từ đó phát triển tư duy độc lập và tự do thể hiện bản thân.",
     imageUrl: mediaUrl("ba09fe820d0f9cb663b24826afea30ad6fc2c8a2.png"),
     imageAlt: "Khai phóng tư duy",
+    coverPosition: "50% 50%",
+    coverZoom: 1,
   },
   {
     id: 4,
@@ -48,6 +57,8 @@ const fallbackTeachingMethods: HomeTeachingMethod[] = [
       "Trẻ phát triển kỹ năng xã hội, khả năng lắng nghe thông qua các hoạt động giao tiếp, chia sẻ và hợp tác với bạn bè, thầy cô và môi trường xung quanh.",
     imageUrl: mediaUrl("aa47a37d3cb1c1b806218e09ba36b08f5e7c4d55.png"),
     imageAlt: "Học qua tương tác và hợp tác",
+    coverPosition: "50% 50%",
+    coverZoom: 1,
   },
 ];
 
@@ -373,9 +384,17 @@ function TeachingMethodCard({ method, index }: { method: HomeTeachingMethod; ind
         <div className="relative shrink-0 w-full" data-name="Container">
           <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[16px] items-center relative size-full">
             <div className="content-stretch flex flex-col items-start relative shrink-0 w-[154px]" data-name="Container">
-              <div className="aspect-[154/154] max-w-[154px] relative shrink-0 w-full" data-name="teaching-method-db-item.png">
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                  <img alt={method.imageAlt} className="absolute left-0 max-w-none size-full top-0 object-contain" src={method.imageUrl} />
+              <div className="aspect-[154/154] max-w-[154px] relative shrink-0 overflow-hidden rounded-[16px] w-full" data-name="teaching-method-db-item.png">
+                <div className="absolute inset-0 pointer-events-none">
+                  {method.imageUrl ? (
+                    <CoverImage
+                      src={method.imageUrl}
+                      alt={method.imageAlt}
+                      zoom={method.coverZoom}
+                      position={method.coverPosition}
+                      frameAspect={1}
+                    />
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -452,6 +471,8 @@ export default function TeachingProgram() {
             description: item.description || item.excerpt || fallback.description,
             imageUrl: item.imageUrl || fallback.imageUrl,
             imageAlt: item.imageAlt || item.title || fallback.imageAlt,
+            coverPosition: item.coverPosition ?? "50% 50%",
+            coverZoom: item.coverZoom ?? 1,
           };
         });
 

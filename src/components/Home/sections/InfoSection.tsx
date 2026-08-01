@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import svgPaths from "../svg-g45k1n1pz5";
 import { mediaUrl } from "@/lib/media-url";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import imgBackground6 from "../../../assets/76ae85eb95c1037d24fc4b213196313a7543a830.png";
 import imgBackground4 from "../../../assets/451163d5761eb2fd4f4fc21e0662c4d50571045a.png";
 import imgClassWombatPng from "../../../assets/3dc1ce007304dd7c637e9e4c763ad7fda6021a35.png";
@@ -21,15 +22,17 @@ type HomeClassProgram = {
   age: string;
   imageUrl: string;
   imageAlt: string;
+  coverPosition: string;
+  coverZoom: number;
   color: string;
 };
 
 const classCardStyles = [
-  { background: imgBackground4.src, border: "#92d0db", imageWidth: "w-[122.76px]", imageClass: "h-full left-[-36.82%] top-0 w-[173.64%]" },
-  { background: imgBackground5.src, border: "#ffcf82", imageWidth: "w-[125.71px]", imageClass: "h-full left-[-34.78%] top-0 w-[169.56%]" },
-  { background: imgBackground6.src, border: "#abe099", imageWidth: "w-[129.13px]", imageClass: "h-full left-[-32.54%] top-0 w-[165.07%]" },
-  { background: imgBackground7.src, border: "#f9ba93", imageWidth: "w-[87.38px]", imageClass: "left-0 top-0 size-full" },
-  { background: imgBackground8.src, border: "#ffacb9", imageWidth: "w-[88.78px]", imageClass: "h-full left-0 top-0 w-full" },
+  { background: imgBackground4.src, border: "#92d0db", imageWidth: "w-[122.76px]", imageWidthPx: 122.76 },
+  { background: imgBackground5.src, border: "#ffcf82", imageWidth: "w-[125.71px]", imageWidthPx: 125.71 },
+  { background: imgBackground6.src, border: "#abe099", imageWidth: "w-[129.13px]", imageWidthPx: 129.13 },
+  { background: imgBackground7.src, border: "#f9ba93", imageWidth: "w-[87.38px]", imageWidthPx: 87.38 },
+  { background: imgBackground8.src, border: "#ffacb9", imageWidth: "w-[88.78px]", imageWidthPx: 88.78 },
 ];
 
 function Container201() {
@@ -342,10 +345,12 @@ function ClassProgramCard({ program, index }: { program: HomeClassProgram; index
             <div className={`h-[100px] max-h-[100px] max-w-[213.16px] relative shrink-0 ${style.imageWidth}`} data-name="class-program-db.png">
               <div className="absolute inset-0 overflow-hidden rounded-[16px] pointer-events-none">
                 {program.imageUrl ? (
-                  <img
-                    alt={program.imageAlt || program.name}
-                    className="absolute max-w-none size-full object-cover"
+                  <CoverImage
                     src={program.imageUrl}
+                    alt={program.imageAlt || program.name}
+                    zoom={program.coverZoom}
+                    position={program.coverPosition}
+                    frameAspect={style.imageWidthPx / 100}
                   />
                 ) : null}
               </div>
@@ -434,6 +439,8 @@ export default function InfoSection() {
             age: item.age || "",
             imageUrl: item.imageUrl || "",
             imageAlt: item.imageAlt || item.name || "Khối lớp Princeton",
+            coverPosition: item.coverPosition || "50% 50%",
+            coverZoom: typeof item.coverZoom === "number" ? item.coverZoom : 1,
             color: item.color || "#fffefa",
           })),
         );

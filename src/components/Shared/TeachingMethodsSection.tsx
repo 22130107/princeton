@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { DbTeachingMethod } from "@/lib/content";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import imgPlane from "@/assets/87b0baec94bf2f1f980990704ca31b5f776eae03.png";
 import imgZigzagTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgZigzagBottom from "@/assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
@@ -11,12 +12,14 @@ function TeachingMethodCard({ method }: { method: DbTeachingMethod }) {
       className="group block rounded-[20px] border-2 border-dashed border-[#ff7777] bg-[#fffefa] text-[#620000] no-underline transition-transform duration-200 hover:-translate-y-1"
     >
       <div className="flex min-h-[210px] flex-col gap-6 p-6 sm:flex-row sm:items-center md:min-h-[238px] md:p-8">
-        <div className="mx-auto flex h-[140px] w-[140px] shrink-0 items-center justify-center sm:mx-0 md:h-[166px] md:w-[166px]">
+        <div className="relative mx-auto h-[140px] w-[140px] shrink-0 overflow-hidden rounded-[16px] sm:mx-0 md:h-[166px] md:w-[166px]">
           {method.imageUrl ? (
-            <img
+            <CoverImage
               src={method.imageUrl}
               alt={method.imageAlt}
-              className="h-full w-full object-contain"
+              zoom={method.coverZoom}
+              position={method.coverPosition}
+              frameAspect={1}
             />
           ) : null}
         </div>

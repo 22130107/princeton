@@ -26,6 +26,8 @@ export type CreateClassProgramInput = {
   description?: string | null;
   colorHex?: string | null;
   imageId?: number | null;
+  coverPosition?: string | null;
+  coverZoom?: number | null;
   schedule?: string[];
 };
 
@@ -35,6 +37,8 @@ export type CreateCurriculumTrackInput = {
   category?: string | null;
   description?: string | null;
   imageId?: number | null;
+  coverPosition?: string | null;
+  coverZoom?: number | null;
   logoMediaId?: number | null;
   content?: string[];
 };
@@ -59,6 +63,8 @@ export type CreateTeachingMethodInput = {
   description?: string | null;
   excerpt?: string | null;
   imageId?: number | null;
+  coverPosition?: string | null;
+  coverZoom?: number | null;
   backgroundHex?: string | null;
   content?: string[];
 };
@@ -165,6 +171,8 @@ export function normalizeClassProgramInput(input: Partial<CreateClassProgramInpu
     description: optionalText(input.description),
     colorHex: optionalText(input.colorHex),
     imageId: optionalNumber(input.imageId),
+    coverPosition: normalizeCoverPosition(input.coverPosition),
+    coverZoom: normalizeCoverZoom(input.coverZoom),
     schedule: contentBlocks(input.schedule),
   };
 }
@@ -176,6 +184,8 @@ export function normalizeCurriculumTrackInput(input: Partial<CreateCurriculumTra
     category: optionalText(input.category),
     description: optionalText(input.description),
     imageId: optionalNumber(input.imageId),
+    coverPosition: normalizeCoverPosition(input.coverPosition),
+    coverZoom: normalizeCoverZoom(input.coverZoom),
     logoMediaId: optionalNumber(input.logoMediaId),
     content: contentBlocks(input.content),
   };
@@ -211,6 +221,8 @@ export function normalizeTeachingMethodInput(input: Partial<CreateTeachingMethod
     description: optionalText(input.description),
     excerpt: optionalText(input.excerpt),
     imageId: optionalNumber(input.imageId),
+    coverPosition: normalizeCoverPosition(input.coverPosition),
+    coverZoom: normalizeCoverZoom(input.coverZoom),
     backgroundHex: optionalText(input.backgroundHex),
     content: contentBlocks(input.content),
   };
@@ -322,10 +334,10 @@ export async function createClassProgram(input: Partial<CreateClassProgramInput>
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO class_programs (
         slug, name, age_min, age_max, age_label, category, excerpt, description,
-        image_id, color_hex, sort_order, is_active
+        image_id, cover_position, cover_zoom, color_hex, sort_order, is_active
       ) VALUES (
         :slug, :name, :ageMin, :ageMax, :ageLabel, :category, :excerpt, :description,
-        :imageId, :colorHex, :sortOrder, TRUE
+        :imageId, :coverPosition, :coverZoom, :colorHex, :sortOrder, TRUE
       )`,
       { ...data, sortOrder },
     );
@@ -365,9 +377,9 @@ export async function createCurriculumTrack(input: Partial<CreateCurriculumTrack
 
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO curriculum_tracks (
-        slug, title, category, description, image_id, logo_media_id, sort_order, is_active
+        slug, title, category, description, image_id, cover_position, cover_zoom, logo_media_id, sort_order, is_active
       ) VALUES (
-        :slug, :title, :category, :description, :imageId, :logoMediaId, :sortOrder, TRUE
+        :slug, :title, :category, :description, :imageId, :coverPosition, :coverZoom, :logoMediaId, :sortOrder, TRUE
       )`,
       { ...data, sortOrder },
     );
@@ -405,9 +417,9 @@ export async function createTeachingMethod(input: Partial<CreateTeachingMethodIn
 
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO teaching_methods (
-        slug, title, category, description, excerpt, image_id, background_hex, sort_order, status
+        slug, title, category, description, excerpt, image_id, cover_position, cover_zoom, background_hex, sort_order, status
       ) VALUES (
-        :slug, :title, :category, :description, :excerpt, :imageId, :backgroundHex, :sortOrder, 'published'
+        :slug, :title, :category, :description, :excerpt, :imageId, :coverPosition, :coverZoom, :backgroundHex, :sortOrder, 'published'
       )`,
       { ...data, sortOrder },
     );
@@ -611,6 +623,8 @@ export async function updateClassProgram(idValue: unknown, input: Partial<Update
            excerpt = :excerpt,
            description = :description,
            image_id = COALESCE(:imageId, image_id),
+           cover_position = :coverPosition,
+           cover_zoom = :coverZoom,
            color_hex = :colorHex,
            is_active = TRUE
        WHERE id = :id`,
@@ -667,6 +681,8 @@ export async function updateCurriculumTrack(idValue: unknown, input: Partial<Upd
            category = :category,
            description = :description,
            image_id = COALESCE(:imageId, image_id),
+           cover_position = :coverPosition,
+           cover_zoom = :coverZoom,
            logo_media_id = COALESCE(:logoMediaId, logo_media_id),
            is_active = TRUE
        WHERE id = :id`,
@@ -774,6 +790,8 @@ export async function updateTeachingMethod(idValue: unknown, input: Partial<Upda
            description = :description,
            excerpt = :excerpt,
            image_id = COALESCE(:imageId, image_id),
+           cover_position = :coverPosition,
+           cover_zoom = :coverZoom,
            background_hex = :backgroundHex,
            status = 'published'
        WHERE id = :id`,

@@ -205,6 +205,8 @@ type ClassForm = {
   description: string;
   imageId: number | null;
   imageUrl: string;
+  coverPosition: string;
+  coverZoom: number;
   colorHex: string;
   scheduleText: string;
 };
@@ -231,6 +233,8 @@ type CurriculumForm = {
   description: string;
   imageId: number | null;
   imageUrl: string;
+  coverPosition: string;
+  coverZoom: number;
   contentText: string;
 };
 
@@ -242,6 +246,8 @@ type TeachingForm = {
   excerpt: string;
   imageId: number | null;
   imageUrl: string;
+  coverPosition: string;
+  coverZoom: number;
   backgroundHex: string;
   contentText: string;
 };
@@ -310,6 +316,8 @@ const emptyClass: ClassForm = {
   description: "",
   imageId: null,
   imageUrl: "",
+  coverPosition: "50% 50%",
+  coverZoom: 1,
   colorHex: "#fffefa",
   scheduleText: "",
 };
@@ -336,6 +344,8 @@ const emptyCurriculum: CurriculumForm = {
   description: "",
   imageId: null,
   imageUrl: "",
+  coverPosition: "50% 50%",
+  coverZoom: 1,
   contentText: "",
 };
 
@@ -354,6 +364,8 @@ const emptyTeaching: TeachingForm = {
   excerpt: "",
   imageId: null,
   imageUrl: "",
+  coverPosition: "50% 50%",
+  coverZoom: 1,
   backgroundHex: "#fffefa",
   contentText: "",
 };
@@ -3345,6 +3357,9 @@ const BANNER_MOBILE_FRAME_ASPECT = 4096 / 2731;
 const BANNER_MIN_ZOOM = 0.5;
 const BANNER_MAX_ZOOM = 3;
 const TEACHER_FRAME_ASPECT = 1.75;
+const CLASS_FRAME_ASPECT = 1;
+const CURRICULUM_FRAME_ASPECT = 575.2 / 343.51;
+const TEACHING_FRAME_ASPECT = 1;
 
 function BannerCoverEditor({
   url,
@@ -3862,6 +3877,8 @@ export default function AdminDashboard() {
         excerpt: item.excerpt ?? "",
         imageId: item.imageId ?? null,
         imageUrl: item.imageUrl ?? "",
+        coverPosition: item.coverPosition ?? "50% 50%",
+        coverZoom: item.coverZoom ?? 1,
         backgroundHex: item.background ?? "#fffefa",
         contentText: (item.content ?? []).join("\n"),
       });
@@ -3943,6 +3960,8 @@ export default function AdminDashboard() {
         description: item.description ?? "",
         imageId: item.imageId ?? null,
         imageUrl: item.imageUrl ?? "",
+        coverPosition: item.coverPosition ?? "50% 50%",
+        coverZoom: item.coverZoom ?? 1,
         colorHex: item.color ?? "#fffefa",
         scheduleText: scheduleItemsToText(item.schedule ?? []),
       });
@@ -3956,6 +3975,8 @@ export default function AdminDashboard() {
       description: item.description ?? "",
       imageId: item.imageId ?? null,
       imageUrl: item.imageUrl ?? "",
+      coverPosition: item.coverPosition ?? "50% 50%",
+      coverZoom: item.coverZoom ?? 1,
       contentText: (item.content ?? []).join("\n"),
     });
   }
@@ -4002,6 +4023,8 @@ export default function AdminDashboard() {
         description: teachingForm.description,
         excerpt: teachingForm.excerpt,
         imageId: teachingForm.imageId,
+        coverPosition: teachingForm.coverPosition,
+        coverZoom: teachingForm.coverZoom,
         backgroundHex: teachingForm.backgroundHex,
         content: richBlocks(teachingForm.contentText),
       };
@@ -4033,6 +4056,8 @@ export default function AdminDashboard() {
         description: classForm.description,
         colorHex: classForm.colorHex,
         imageId: classForm.imageId,
+        coverPosition: classForm.coverPosition,
+        coverZoom: classForm.coverZoom,
         schedule: scheduleTextToItems(classForm.scheduleText),
       };
       await requestJson(selected ? `/api/class-programs/${selected}` : "/api/class-programs", {
@@ -4060,6 +4085,8 @@ export default function AdminDashboard() {
         category: curriculumForm.category,
         description: curriculumForm.description,
         imageId: curriculumForm.imageId,
+        coverPosition: curriculumForm.coverPosition,
+        coverZoom: curriculumForm.coverZoom,
         content: richBlocks(curriculumForm.contentText),
       };
       await requestJson(selected ? `/api/curriculum-tracks/${selected}` : "/api/curriculum-tracks", {
@@ -5081,6 +5108,12 @@ export default function AdminDashboard() {
                     setTeachingForm((f) => ({ ...f, imageId: asset.id, imageUrl: asset.url }))
                   }
                   onDeleted={() => setTeachingForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
+                  coverPosition={teachingForm.coverPosition}
+                  coverZoom={teachingForm.coverZoom}
+                  coverFrameAspect={TEACHING_FRAME_ASPECT}
+                  onCoverChange={(value) =>
+                    setTeachingForm((f) => ({ ...f, coverPosition: value.position, coverZoom: value.zoom }))
+                  }
                 />
                 <TextArea label="Mô tả card" value={teachingForm.description} onChange={(value) => setTeachingForm((f) => ({ ...f, description: value }))} />
                 <TextArea label="Tóm tắt chi tiết" value={teachingForm.excerpt} onChange={(value) => setTeachingForm((f) => ({ ...f, excerpt: value }))} />
@@ -5126,6 +5159,12 @@ export default function AdminDashboard() {
                     setClassForm((f) => ({ ...f, imageId: asset.id, imageUrl: asset.url }))
                   }
                   onDeleted={() => setClassForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
+                  coverPosition={classForm.coverPosition}
+                  coverZoom={classForm.coverZoom}
+                  coverFrameAspect={CLASS_FRAME_ASPECT}
+                  onCoverChange={(value) =>
+                    setClassForm((f) => ({ ...f, coverPosition: value.position, coverZoom: value.zoom }))
+                  }
                 />
                 <TextArea label="Mô tả ngắn" value={classForm.excerpt} onChange={(value) => setClassForm((f) => ({ ...f, excerpt: value }))} />
                 <TiptapRichTextEditor
@@ -5174,6 +5213,12 @@ export default function AdminDashboard() {
                     setCurriculumForm((f) => ({ ...f, imageId: asset.id, imageUrl: asset.url }))
                   }
                   onDeleted={() => setCurriculumForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
+                  coverPosition={curriculumForm.coverPosition}
+                  coverZoom={curriculumForm.coverZoom}
+                  coverFrameAspect={CURRICULUM_FRAME_ASPECT}
+                  onCoverChange={(value) =>
+                    setCurriculumForm((f) => ({ ...f, coverPosition: value.position, coverZoom: value.zoom }))
+                  }
                 />
                 <TextArea label="Mô tả" value={curriculumForm.description} onChange={(value) => setCurriculumForm((f) => ({ ...f, description: value }))} />
                 <TiptapRichTextEditor

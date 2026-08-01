@@ -5,6 +5,7 @@ import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import { getClassProgram, getClassPrograms } from "@/lib/content";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
@@ -151,7 +152,15 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
                     className="absolute left-3 top-3 h-[62px] w-[62px] object-contain"
                   />
                   {item.imageUrl ? (
-                    <img src={item.imageUrl} alt={item.imageAlt} className="h-16 w-16 rounded-[12px] object-cover" />
+                    <div className="h-16 w-16 overflow-hidden rounded-[12px]">
+                      <CoverImage
+                        src={item.imageUrl}
+                        alt={item.imageAlt}
+                        zoom={item.coverZoom}
+                        position={item.coverPosition}
+                        frameAspect={1}
+                      />
+                    </div>
                   ) : (
                     <img src={imgLogo.src} alt="Princeton Academy" className="h-16 w-16 rounded-[12px] object-cover" />
                   )}

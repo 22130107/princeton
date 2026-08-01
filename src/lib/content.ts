@@ -30,6 +30,8 @@ export type DbClassProgram = {
   imageId: number | null;
   imageUrl: string;
   imageAlt: string;
+  coverPosition: string;
+  coverZoom: number;
   color: string;
   schedule: string[];
 };
@@ -40,6 +42,8 @@ export type DbTeachingMethod = {
   imageId: number | null;
   imageUrl: string;
   imageAlt: string;
+  coverPosition: string;
+  coverZoom: number;
   category: string;
   title: string;
   description: string;
@@ -72,6 +76,8 @@ export type DbCurriculumTrack = {
   imageId: number | null;
   imageUrl: string;
   imageAlt: string;
+  coverPosition: string;
+  coverZoom: number;
   logoMediaId: number | null;
   logoUrl: string;
   logoAlt: string;
@@ -160,6 +166,8 @@ type ProgramRow = RowDataPacket & {
   image_id: number | null;
   image_url: string | null;
   image_alt: string | null;
+  cover_position: string | null;
+  cover_zoom: number | null;
   color_hex: string | null;
 };
 
@@ -203,6 +211,8 @@ type TeachingMethodRow = RowDataPacket & {
   image_id: number | null;
   image_url: string | null;
   image_alt: string | null;
+  cover_position: string | null;
+  cover_zoom: number | null;
   background_hex: string | null;
 };
 
@@ -235,6 +245,8 @@ type CurriculumRow = RowDataPacket & {
   image_id: number | null;
   image_url: string | null;
   image_alt: string | null;
+  cover_position: string | null;
+  cover_zoom: number | null;
   logo_media_id: number | null;
   logo_url: string | null;
   logo_alt: string | null;
@@ -317,6 +329,15 @@ export function clampHeroSlideZoom(value: unknown) {
   const zoom = Number(value);
   if (!Number.isFinite(zoom)) return 1;
   return Math.round(Math.max(HERO_SLIDE_MIN_ZOOM, Math.min(HERO_SLIDE_MAX_ZOOM, zoom)) * 100) / 100;
+}
+
+export const COVER_MIN_ZOOM = 0.5;
+export const COVER_MAX_ZOOM = 3;
+
+export function clampCoverZoom(value: unknown) {
+  const zoom = Number(value);
+  if (!Number.isFinite(zoom)) return 1;
+  return Math.round(Math.max(COVER_MIN_ZOOM, Math.min(COVER_MAX_ZOOM, zoom)) * 100) / 100;
 }
 
 export function normalizeHeroSlidePosition(value: unknown) {
@@ -694,6 +715,8 @@ export async function getClassPrograms(): Promise<DbClassProgram[]> {
       cp.description,
       cp.color_hex,
       cp.image_id,
+      cp.cover_position,
+      cp.cover_zoom,
       ma.url AS image_url,
       ma.alt_text AS image_alt
     FROM class_programs cp
@@ -732,6 +755,8 @@ export async function getClassPrograms(): Promise<DbClassProgram[]> {
     imageId: row.image_id,
     imageUrl: text(row.image_url),
     imageAlt: text(row.image_alt) || row.name,
+    coverPosition: text(row.cover_position) || "50% 50%",
+    coverZoom: clampCoverZoom(row.cover_zoom),
     color: text(row.color_hex) || "#fffefa",
     schedule: scheduleByProgram.get(row.id) ?? [],
   }));
@@ -754,6 +779,8 @@ export async function getTeachingMethods(): Promise<DbTeachingMethod[]> {
       tm.excerpt,
       tm.background_hex,
       tm.image_id,
+      tm.cover_position,
+      tm.cover_zoom,
       ma.url AS image_url,
       ma.alt_text AS image_alt
     FROM teaching_methods tm
@@ -781,6 +808,8 @@ export async function getTeachingMethods(): Promise<DbTeachingMethod[]> {
     imageId: row.image_id,
     imageUrl: text(row.image_url),
     imageAlt: text(row.image_alt) || row.title,
+    coverPosition: text(row.cover_position) || "50% 50%",
+    coverZoom: clampCoverZoom(row.cover_zoom),
     category: text(row.category),
     title: row.title,
     description: text(row.description),
@@ -862,6 +891,8 @@ export async function getCurriculumTracks(): Promise<DbCurriculumTrack[]> {
       ct.category,
       ct.description,
       ct.image_id,
+      ct.cover_position,
+      ct.cover_zoom,
       image_media.url AS image_url,
       image_media.alt_text AS image_alt,
       ct.logo_media_id,
@@ -896,6 +927,8 @@ export async function getCurriculumTracks(): Promise<DbCurriculumTrack[]> {
     imageId: row.image_id,
     imageUrl: text(row.image_url),
     imageAlt: text(row.image_alt) || row.title,
+    coverPosition: text(row.cover_position) || "50% 50%",
+    coverZoom: clampCoverZoom(row.cover_zoom),
     logoMediaId: row.logo_media_id,
     logoUrl: text(row.logo_url),
     logoAlt: text(row.logo_alt) || "Princeton Academy",
@@ -1060,10 +1093,7 @@ export async function getTeacherTeamItems(): Promise<DbTeacherTeamItem[]> {
     imageUrl: text(row.image_url),
     imageAlt: text(row.image_alt) || row.title,
     coverPosition: text(row.cover_position) || "50% 50%",
-    coverZoom:
-      typeof row.cover_zoom === "number" && Number.isFinite(row.cover_zoom)
-        ? Math.max(0.5, Math.min(3, row.cover_zoom))
-        : 1,
+    coverZoom: clampCoverZoom(row.cover_zoom),
     color: text(row.color_hex) || "#fffefa",
     shape: text(row.shape_class) || "rounded-[42px]",
     rotate: text(row.rotate_class),
