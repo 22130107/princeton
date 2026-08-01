@@ -112,11 +112,11 @@ export default function MobileTeachingProgram() {
                 className="pointer-events-none absolute inset-0 rounded-[20px] border-2 border-dashed border-[#ff7777]"
               />
               <div className="relative flex items-center gap-4 p-[18px]">
-                <div className="h-[88px] w-[88px] shrink-0">
+                <div className="h-[88px] w-[88px] shrink-0 overflow-hidden rounded-[16px]">
                   <img
                     src={method.imageUrl}
                     alt={method.imageAlt}
-                    className="h-full w-full object-contain"
+                    className="h-full w-full object-cover"
                   />
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col gap-2">
