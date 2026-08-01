@@ -105,9 +105,9 @@ export default async function KhoiLopPage() {
                     className="absolute left-4 top-4 h-[78px] w-[78px] object-contain"
                   />
                   {program.imageUrl ? (
-                    <img src={program.imageUrl} alt={program.imageAlt} className="h-[135px] w-[135px] object-contain" />
+                    <img src={program.imageUrl} alt={program.imageAlt} className="h-[150px] w-[150px] rounded-[16px] object-cover" />
                   ) : (
-                    <img src={imgLogo.src} alt="Princeton Academy" className="h-[135px] w-[135px] object-contain" />
+                    <img src={imgLogo.src} alt="Princeton Academy" className="h-[150px] w-[150px] rounded-[16px] object-cover" />
                   )}
                 </div>
                 <div className="flex flex-1 flex-col p-5">

@@ -73,7 +73,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
             <img
               src={imgLogo.src}
               alt="Princeton Academy"
-              className="h-[92px] w-auto object-contain md:h-[118px]"
+              className="h-[92px] w-[92px] rounded-[16px] object-cover md:h-[118px] md:w-[118px]"
             />
             <div className="mt-6 w-full px-5 py-3 md:px-9 md:py-5">
               <p className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[#b80000] md:text-[15px]">
@@ -151,9 +151,9 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
                     className="absolute left-3 top-3 h-[62px] w-[62px] object-contain"
                   />
                   {item.imageUrl ? (
-                    <img src={item.imageUrl} alt={item.imageAlt} className="h-16 w-16 object-contain" />
+                    <img src={item.imageUrl} alt={item.imageAlt} className="h-16 w-16 rounded-[12px] object-cover" />
                   ) : (
-                    <img src={imgLogo.src} alt="Princeton Academy" className="h-16 w-16 object-contain" />
+                    <img src={imgLogo.src} alt="Princeton Academy" className="h-16 w-16 rounded-[12px] object-cover" />
                   )}
                 </div>
                 <div className="bg-[#fffefa] p-4">

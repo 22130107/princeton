@@ -110,7 +110,7 @@ export default function MobileInfoSection() {
                         <img
                           src={classItem.imageUrl}
                           alt={classItem.imageAlt}
-                          className="max-h-full max-w-[86px] object-contain"
+                          className="max-h-full max-w-[86px] rounded-[12px] object-contain"
                         />
                       ) : null}
                     </div>

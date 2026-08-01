@@ -340,11 +340,11 @@ function ClassProgramCard({ program, index }: { program: HomeClassProgram; index
         <div className="content-stretch flex flex-col gap-[12px] items-center px-[16px] py-[48px] relative size-full">
           <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
             <div className={`h-[100px] max-h-[100px] max-w-[213.16px] relative shrink-0 ${style.imageWidth}`} data-name="class-program-db.png">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute inset-0 overflow-hidden rounded-[16px] pointer-events-none">
                 {program.imageUrl ? (
                   <img
                     alt={program.imageAlt || program.name}
-                    className={`absolute max-w-none object-contain ${style.imageClass}`}
+                    className="absolute max-w-none size-full object-cover"
                     src={program.imageUrl}
                   />
                 ) : null}
