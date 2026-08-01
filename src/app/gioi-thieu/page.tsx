@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 const stats = [
-  { number: "02", label: "Cơ sở", icon: imgMascotPenguin, shape: "circle", color: "#fff2f2" },
+  { number: "10", label: "Cơ sở", icon: imgMascotPenguin, shape: "circle", color: "#fff2f2" },
   { number: "02", label: "Ngôn ngữ", icon: imgMascotWombat, shape: "sun", color: "#fff4c4" },
   { number: "10+", label: "Câu lạc bộ", icon: imgMascotKoala, shape: "square", color: "#dcf6d6" },
   { number: "30+", label: "Sự kiện", icon: imgMascotKangaroo, shape: "triangle", color: "#d8f7ff" },

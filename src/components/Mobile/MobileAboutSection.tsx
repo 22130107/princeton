@@ -122,7 +122,7 @@ function StatItem({ decoration, numbers, label }: StatProps) {
 
 export default function MobileAboutSection() {
   const stats: StatProps[] = [
-    { decoration: <AboutCounter1Svg />, numbers: ["02"], label: "Cơ Sở" },
+    { decoration: <AboutCounter1Svg />, numbers: ["10"], label: "Cơ Sở" },
     { decoration: <AboutCounter2Svg />, numbers: ["02"], label: "Ngôn ngữ" },
     { decoration: <AboutCounter3Svg />, numbers: ["02"], label: "Chương trình học" },
     { decoration: <AboutCounter4Svg />, numbers: ["10", "+"], label: "Câu lạc bộ" },

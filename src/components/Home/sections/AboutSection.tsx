@@ -96,7 +96,7 @@ function Container38() {
   return (
     <div className="content-stretch flex flex-col items-center relative self-stretch shrink-0" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[#b32025] text-[56px] text-center text-shadow-[3px_3px_0px_white,-3px_3px_0px_white,3px_-3px_0px_white,-3px_-3px_0px_white] whitespace-nowrap">
-        <p className="leading-[56px]">02</p>
+        <p className="leading-[56px]">10</p>
       </div>
     </div>
   );
