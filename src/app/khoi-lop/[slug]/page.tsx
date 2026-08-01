@@ -131,7 +131,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
                 className="overflow-hidden border border-[#ff1f1f] bg-[#fffefa] text-center text-[#620000] no-underline shadow-[4px_4px_0_rgba(255,31,31,0.12)]"
               >
                 <div
-                  className="relative h-[128px] overflow-hidden"
+                  className="relative aspect-[575.2/343.51] overflow-hidden"
                   style={{ backgroundColor: item.color || "#fffefa" }}
                 >
                   {item.imageUrl ? (

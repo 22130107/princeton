@@ -62,7 +62,7 @@ export function CoverImage({
     const observer = new ResizeObserver(update);
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [loaded]);
 
   if (!loaded) {
     return (

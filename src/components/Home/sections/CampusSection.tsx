@@ -798,7 +798,7 @@ function Container140({
             key={c.name}
             type="button"
             onClick={() => onSelect(index)}
-            className={`relative w-full rounded-[24px] p-3 text-left transition-colors ${
+            className={`relative w-full shrink-0 rounded-[24px] p-3 text-left transition-colors ${
               active
                 ? "border-[3px] border-dashed border-[#b80000] bg-[#fff1f1] shadow-[3px_3px_0_rgba(184,0,0,0.28)]"
                 : "border-2 border-transparent bg-[#fff1f1] hover:border-[#f0a0a0]"

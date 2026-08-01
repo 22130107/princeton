@@ -97,7 +97,7 @@ export default async function KhoiLopPage() {
                 className="flex min-h-[520px] flex-col overflow-hidden border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.16)]"
               >
                 <div
-                  className="relative h-[225px] overflow-hidden"
+                  className="relative aspect-[575.2/343.51] overflow-hidden"
                   style={{ backgroundColor: program.color }}
                 >
                   {program.imageUrl ? (

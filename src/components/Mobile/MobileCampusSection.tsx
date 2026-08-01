@@ -111,7 +111,7 @@ export default function MobileCampusSection() {
                   key={c.name}
                   type="button"
                   onClick={() => setSelected(index)}
-                  className={`min-h-[64px] rounded-3xl border-2 p-3 text-left transition-colors ${
+                  className={`min-h-[64px] shrink-0 rounded-3xl border-2 p-3 text-left transition-colors ${
                     active
                       ? "border-[3px] border-dashed border-[#b80000] bg-[#fff1f1] shadow-[3px_3px_0_rgba(184,0,0,0.28)]"
                       : "border-transparent bg-[#fff1f1] hover:border-[#f0a0a0]"
