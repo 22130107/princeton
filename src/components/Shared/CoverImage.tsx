@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function useNaturalAspect(src: string | undefined, fallback: number) {
   const [state, setState] = useState<{ aspect: number; loaded: boolean }>({
@@ -46,6 +46,23 @@ export function CoverImage({
   frameAspect: number;
 }) {
   const { aspect: naturalAspect, loaded } = useNaturalAspect(src, frameAspect);
+  const boxRef = useRef<HTMLSpanElement>(null);
+  const [boxAspect, setBoxAspect] = useState<number>(frameAspect);
+
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const update = () => {
+      const rect = el.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        setBoxAspect(rect.width / rect.height);
+      }
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   if (!loaded) {
     return (
@@ -58,18 +75,22 @@ export function CoverImage({
     );
   }
 
-  const ratioW = zoom >= 1 ? Math.max(1, naturalAspect / frameAspect) : Math.min(1, naturalAspect / frameAspect);
-  const ratioH = zoom >= 1 ? Math.max(1, frameAspect / naturalAspect) : Math.min(1, frameAspect / naturalAspect);
+  const scaleToFrame =
+    zoom >= 1
+      ? Math.max(1, frameAspect / naturalAspect)
+      : Math.min(1, frameAspect / naturalAspect);
+  const scaleFrameToBox = Math.max(1, boxAspect / frameAspect);
 
   return (
     <span
+      ref={boxRef}
       className="absolute inset-0 block overflow-hidden"
       role="img"
       aria-label={alt}
       style={{
         backgroundImage: `url("${src}")`,
         backgroundRepeat: "no-repeat",
-        backgroundSize: `${zoom * ratioW * 100}% ${zoom * ratioH * 100}%`,
+        backgroundSize: `${zoom * scaleToFrame * scaleFrameToBox * (naturalAspect / boxAspect) * 100}% ${zoom * scaleToFrame * scaleFrameToBox * 100}%`,
         backgroundPosition: position,
       }}
     />
