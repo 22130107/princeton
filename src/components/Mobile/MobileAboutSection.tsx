@@ -143,7 +143,7 @@ export default function MobileAboutSection() {
         <img
           src={imgWebKindergarten2Jpg1.src}
           alt="Trường Mầm non Princeton"
-          className="h-[190px] w-full object-cover object-[48%_center]"
+          className="aspect-[15/14] w-full object-cover object-[48%_center]"
         />
       </div>
 

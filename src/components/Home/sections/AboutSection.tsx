@@ -425,7 +425,7 @@ function WebKindergarten2Jpg() {
       data-name="web_kindergarten-2.jpg"
     >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute h-full left-[-16.23%] max-w-none top-0 w-[132.47%] object-cover" src={imgWebKindergarten2Jpg1.src} />
+        <img alt="" className="absolute h-full left-[-5%] max-w-none top-0 w-[110%] object-cover" src={imgWebKindergarten2Jpg1.src} />
       </div>
     </div>
   );
