@@ -89,18 +89,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
             </div>
           </header>
 
-          <div className="mx-auto mt-8 max-w-[1040px] md:mt-10">
-            <div className="flex min-h-[260px] items-center justify-center bg-[#fff1f1] md:min-h-[430px]">
-              {program.imageUrl ? (
-                <img
-                  src={program.imageUrl}
-                  alt={program.imageAlt}
-                  className="max-h-[210px] max-w-[72%] object-contain md:max-h-[340px]"
-                />
-              ) : null}
-            </div>
-
-            <div className="px-2 py-7 md:px-6 md:py-9">
+          <div className="px-2 py-7 md:px-6 md:py-9">
               <p className="text-[18px] font-bold leading-8 text-[#620000] md:text-[22px] md:leading-9">
                 {program.excerpt}
               </p>
@@ -128,7 +117,6 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
                 </section>
               ) : null}
             </div>
-          </div>
         </article>
 
         <section className="mx-auto mt-10 max-w-[1180px]">
