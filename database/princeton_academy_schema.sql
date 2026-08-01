@@ -496,6 +496,8 @@ CREATE TABLE posts (
   excerpt TEXT NULL,
   category_id BIGINT UNSIGNED NULL,
   cover_image_id BIGINT UNSIGNED NULL,
+  cover_position VARCHAR(32) NOT NULL DEFAULT '50% 50%',
+  cover_zoom DECIMAL(4,2) NOT NULL DEFAULT 1.00,
   post_type ENUM('news', 'event', 'activity') NOT NULL DEFAULT 'news',
   status ENUM('draft', 'published', 'archived') NOT NULL DEFAULT 'draft',
   published_at DATETIME NULL,

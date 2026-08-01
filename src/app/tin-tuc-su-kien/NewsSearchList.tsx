@@ -4,14 +4,18 @@ import Link from "next/link";
 import { Loader2, Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import imgCardLogo from "@/assets/logo1.png";
+import { CoverImage } from "@/components/Shared/CoverImage";
 
 const POSTS_PER_PAGE = 6;
+const POST_CARD_ASPECT = 360 / 225;
 
 export type NewsSearchPost = {
   id: number;
   slug: string;
   imageUrl: string;
   imageAlt: string;
+  coverPosition: string;
+  coverZoom: number;
   category: string;
   title: string;
   excerpt: string;
@@ -224,11 +228,15 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
             >
               <div className="relative">
                 {post.imageUrl ? (
-                  <img
-                    src={post.imageUrl}
-                    alt={post.imageAlt}
-                    className="h-[225px] w-full object-cover"
-                  />
+                  <div className="relative h-[225px] w-full">
+                    <CoverImage
+                      src={post.imageUrl}
+                      alt={post.imageAlt}
+                      zoom={post.coverZoom}
+                      position={post.coverPosition}
+                      frameAspect={POST_CARD_ASPECT}
+                    />
+                  </div>
                 ) : (
                   <div className="h-[225px] w-full bg-[#fff1f1]" />
                 )}

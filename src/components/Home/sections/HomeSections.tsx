@@ -12,7 +12,7 @@ import InfoSection from "./InfoSection";
 
 export default function HomeSections() {
   return (
-    <div className="absolute h-[9470.04px] left-0 right-0 top-0" data-name="Main - CONTENT">
+    <div className="absolute h-[9010.04px] left-0 right-0 top-0" data-name="Main - CONTENT">
       <DecorationSection />
       <HeroBanner />
       <AboutSection />

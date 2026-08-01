@@ -5,6 +5,7 @@ import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import { getNewsPost, getNewsPosts } from "@/lib/content";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
@@ -86,11 +87,15 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
 
           <div className="mx-auto mt-8 max-w-[1040px] md:mt-10">
             {post.imageUrl ? (
-              <img
-                src={post.imageUrl}
-                alt={post.imageAlt}
-                className="h-[260px] w-full rounded-[18px] object-cover md:h-[460px]"
-              />
+              <div className="relative h-[260px] w-full overflow-hidden rounded-[18px] md:h-[460px]">
+                <CoverImage
+                  src={post.imageUrl}
+                  alt={post.imageAlt}
+                  zoom={post.coverZoom}
+                  position={post.coverPosition}
+                  frameAspect={1040 / 460}
+                />
+              </div>
             ) : null}
             <div className="px-2 py-7 md:px-6 md:py-9">
               <p className="text-[18px] font-bold leading-8 text-[#620000] md:text-[22px] md:leading-9">
@@ -117,7 +122,15 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
               >
                 <div className="relative">
                   {item.imageUrl ? (
-                    <img src={item.imageUrl} alt={item.imageAlt} className="h-[160px] w-full object-cover" />
+                    <div className="relative h-[160px] w-full">
+                      <CoverImage
+                        src={item.imageUrl}
+                        alt={item.imageAlt}
+                        zoom={item.coverZoom}
+                        position={item.coverPosition}
+                        frameAspect={2.25}
+                      />
+                    </div>
                   ) : (
                     <div className="h-[160px] w-full bg-[#fff1f1]" />
                   )}

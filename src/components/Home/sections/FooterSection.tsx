@@ -485,7 +485,7 @@ function Container213() {
 
 export default function FooterSection() {
   return (
-    <div className="absolute bg-[#e8f3e6] bottom-0 content-stretch flex flex-col items-start left-0 pt-[28px] px-[116px] right-0 top-[9109.04px]" data-name="Footer - FOOTER">
+    <div className="absolute bg-[#e8f3e6] bottom-0 content-stretch flex flex-col items-start left-0 pt-[28px] px-[116px] right-0 top-[9569.04px]" data-name="Footer - FOOTER">
       <Container213 />
     </div>
   );

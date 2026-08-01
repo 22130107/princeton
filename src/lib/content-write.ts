@@ -76,6 +76,8 @@ export type CreatePostInput = {
   categorySlug?: string | null;
   categoryName?: string | null;
   coverImageId?: number | null;
+  coverPosition?: string | null;
+  coverZoom?: number | null;
   postType?: "news" | "event" | "activity";
   status?: "draft" | "published";
   eventStartsAt?: string | null;
@@ -240,6 +242,8 @@ export function normalizePostInput(input: Partial<CreatePostInput>) {
     categorySlug: optionalText(input.categorySlug),
     categoryName: optionalText(input.categoryName),
     coverImageId: optionalNumber(input.coverImageId),
+    coverPosition: normalizeCoverPosition(input.coverPosition),
+    coverZoom: normalizeCoverZoom(input.coverZoom),
     postType,
     status,
     eventStartsAt: optionalText(input.eventStartsAt),
@@ -475,10 +479,10 @@ export async function createPost(input: Partial<CreatePostInput>) {
 
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO posts (
-        slug, title, excerpt, category_id, cover_image_id, post_type, status,
+        slug, title, excerpt, category_id, cover_image_id, cover_position, cover_zoom, post_type, status,
         published_at, event_starts_at, event_ends_at, event_location
       ) VALUES (
-        :slug, :title, :excerpt, :categoryId, :coverImageId, :postType, :status,
+        :slug, :title, :excerpt, :categoryId, :coverImageId, :coverPosition, :coverZoom, :postType, :status,
         IF(:status = 'published', NOW(), NULL), :eventStartsAt, :eventEndsAt, :eventLocation
       )`,
       { ...data, categoryId },
@@ -861,8 +865,10 @@ export async function updatePost(idValue: unknown, input: Partial<UpdatePostInpu
            title = :title,
            excerpt = :excerpt,
            category_id = :categoryId,
-           cover_image_id = COALESCE(:coverImageId, cover_image_id),
-           post_type = :postType,
+       cover_image_id = COALESCE(:coverImageId, cover_image_id),
+       cover_position = :coverPosition,
+       cover_zoom = :coverZoom,
+       post_type = :postType,
            status = :status,
            published_at = IF(:status = 'published', COALESCE(published_at, NOW()), NULL),
            event_starts_at = :eventStartsAt,

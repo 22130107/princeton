@@ -59,6 +59,8 @@ export type DbNewsPost = {
   coverImageId: number | null;
   imageUrl: string;
   imageAlt: string;
+  coverPosition: string;
+  coverZoom: number;
   categorySlug: string;
   category: string;
   title: string;
@@ -229,6 +231,8 @@ type PostRow = RowDataPacket & {
   excerpt: string | null;
   post_type: "news" | "event" | "activity";
   cover_image_id: number | null;
+  cover_position: string | null;
+  cover_zoom: number | null;
   category_slug: string | null;
   category: string | null;
   image_url: string | null;
@@ -834,6 +838,8 @@ export async function getNewsPosts(): Promise<DbNewsPost[]> {
       p.excerpt,
       p.post_type,
       p.cover_image_id,
+      p.cover_position,
+      p.cover_zoom,
       pc.slug AS category_slug,
       pc.name AS category,
       ma.url AS image_url,
@@ -866,6 +872,8 @@ export async function getNewsPosts(): Promise<DbNewsPost[]> {
     coverImageId: row.cover_image_id,
     imageUrl: text(row.image_url),
     imageAlt: text(row.image_alt) || row.title,
+    coverPosition: text(row.cover_position) || "50% 50%",
+    coverZoom: clampCoverZoom(row.cover_zoom),
     categorySlug: text(row.category_slug),
     category: text(row.category),
     title: row.title,

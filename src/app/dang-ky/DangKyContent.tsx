@@ -37,7 +37,7 @@ export default function DangKyContent() {
         <HeaderSection />
       </div>
       <div className="relative mx-auto h-[956px] max-w-[1536px] overflow-hidden">
-        <div className="absolute left-0 top-[-8482.35px] h-[9470px] w-full">
+        <div className="absolute left-0 top-[-8022.35px] h-[9470px] w-full">
           <RegistrationSection />
         </div>
       </div>

@@ -9,7 +9,7 @@ import SiteFooter from "@/components/Shared/SiteFooter";
 import bannerMask from "@/assets/d082e0a60a126345af429a7e01c4ba8161c21e0e.png";
 
 const DESIGN_WIDTH = 1536;
-const PAGE_HEIGHT = 9470.04;
+const PAGE_HEIGHT = 9010.04;
 const MOBILE_BREAKPOINT = 768;
 
 export default function Home() {

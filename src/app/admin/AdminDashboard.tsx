@@ -262,6 +262,8 @@ type PostForm = {
   categoryName: string;
   coverImageId: number | null;
   imageUrl: string;
+  coverPosition: string;
+  coverZoom: number;
   postType: PostType;
   status: "published";
   contentText: string;
@@ -378,6 +380,8 @@ const emptyPost: PostForm = {
   categoryName: "",
   coverImageId: null,
   imageUrl: "",
+  coverPosition: "50% 50%",
+  coverZoom: 1,
   postType: "news",
   status: "published",
   contentText: "",
@@ -3360,6 +3364,7 @@ const TEACHER_FRAME_ASPECT = 1.75;
 const CLASS_FRAME_ASPECT = 1;
 const CURRICULUM_FRAME_ASPECT = 575.2 / 343.51;
 const TEACHING_FRAME_ASPECT = 1;
+const POST_FRAME_ASPECT = 360 / 225;
 
 function BannerCoverEditor({
   url,
@@ -3894,6 +3899,8 @@ export default function AdminDashboard() {
         categoryName: item.category ?? "",
         coverImageId: item.coverImageId ?? null,
         imageUrl: item.imageUrl ?? "",
+        coverPosition: item.coverPosition ?? "50% 50%",
+        coverZoom: item.coverZoom ?? 1,
         postType: item.postType ?? "news",
         status: "published",
         contentText: (item.content ?? []).join("\n"),
@@ -4115,6 +4122,8 @@ export default function AdminDashboard() {
         categorySlug: postForm.categorySlug,
         categoryName: postForm.categoryName,
         coverImageId: postForm.coverImageId,
+        coverPosition: postForm.coverPosition,
+        coverZoom: postForm.coverZoom,
         postType: postForm.postType,
         status: postForm.status,
         content: richBlocks(postForm.contentText),
@@ -5273,6 +5282,12 @@ export default function AdminDashboard() {
                     setPostForm((f) => ({ ...f, coverImageId: asset.id, imageUrl: asset.url }))
                   }
                   onDeleted={() => setPostForm((f) => ({ ...f, coverImageId: null, imageUrl: "" }))}
+                  coverPosition={postForm.coverPosition}
+                  coverZoom={postForm.coverZoom}
+                  coverFrameAspect={POST_FRAME_ASPECT}
+                  onCoverChange={(value) =>
+                    setPostForm((f) => ({ ...f, coverPosition: value.position, coverZoom: value.zoom }))
+                  }
                 />
                 <TextArea label="Tóm tắt" value={postForm.excerpt} onChange={(value) => setPostForm((f) => ({ ...f, excerpt: value }))} />
                 <TiptapRichTextEditor
