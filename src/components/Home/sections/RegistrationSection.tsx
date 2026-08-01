@@ -1015,16 +1015,6 @@ function Container184({
       <Container186 value={phone} onChange={onPhoneChange} />
       <Container187 value={email} onChange={onEmailChange} />
       <ListboxMenu programs={programs} value={grade} onChange={onGradeChange} />
-      <DateField
-        value={appointmentDate}
-        onChange={onAppointmentDateChange}
-        min={minAppointmentDate}
-      />
-      <ListboxMenu
-        programs={appointmentTimeOptions}
-        value={appointmentTime}
-        onChange={onAppointmentTimeChange}
-      />
       <ListItem consentText={consentText} checked={checked} onToggle={onToggle} />
     </div>
   );
