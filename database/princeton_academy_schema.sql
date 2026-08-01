@@ -288,6 +288,8 @@ CREATE TABLE teacher_team_items (
   title VARCHAR(255) NOT NULL,
   description TEXT NULL,
   image_id BIGINT UNSIGNED NULL,
+  cover_position VARCHAR(32) NOT NULL DEFAULT '50% 50%',
+  cover_zoom DECIMAL(4,2) NOT NULL DEFAULT 1.00,
   color_hex VARCHAR(32) NULL,
   shape_class VARCHAR(255) NULL,
   rotate_class VARCHAR(255) NULL,

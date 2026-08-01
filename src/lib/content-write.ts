@@ -94,6 +94,8 @@ export type CreateTeacherTeamInput = {
   title: string;
   description?: string | null;
   imageId?: number | null;
+  coverPosition?: string | null;
+  coverZoom?: number | null;
   colorHex?: string | null;
   shapeClass?: string | null;
   rotateClass?: string | null;
@@ -256,10 +258,26 @@ export function normalizeTeacherTeamInput(input: Partial<CreateTeacherTeamInput>
     title: requiredText(input.title, "title"),
     description: optionalText(input.description),
     imageId: optionalNumber(input.imageId),
+    coverPosition: normalizeCoverPosition(input.coverPosition),
+    coverZoom: normalizeCoverZoom(input.coverZoom),
     colorHex: optionalText(input.colorHex) ?? "#fffefa",
     shapeClass: optionalText(input.shapeClass) ?? "rounded-[42px]",
     rotateClass: optionalText(input.rotateClass),
   };
+}
+
+function normalizeCoverPosition(value: unknown) {
+  if (typeof value !== "string") return "50% 50%";
+  const match = value.trim().match(/^(\d{1,3})%\s+(\d{1,3})%$/);
+  if (!match) return "50% 50%";
+  const x = Math.max(0, Math.min(100, Number(match[1])));
+  const y = Math.max(0, Math.min(100, Number(match[2])));
+  return `${x}% ${y}%`;
+}
+
+function normalizeCoverZoom(value: unknown) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return 1;
+  return Math.max(0.5, Math.min(3, value));
 }
 
 export function normalizeTestimonialInput(input: Partial<CreateTestimonialInput>) {
@@ -536,9 +554,9 @@ export async function createTeacherTeamItem(input: Partial<CreateTeacherTeamInpu
   const sortOrder = await nextSortOrder("teacher_team_items");
   const [result] = await pool.execute<ResultSetHeader>(
     `INSERT INTO teacher_team_items (
-      title, description, image_id, color_hex, shape_class, rotate_class, sort_order, is_active
+      title, description, image_id, cover_position, cover_zoom, color_hex, shape_class, rotate_class, sort_order, is_active
     ) VALUES (
-      :title, :description, :imageId, :colorHex, :shapeClass, :rotateClass, :sortOrder, TRUE
+      :title, :description, :imageId, :coverPosition, :coverZoom, :colorHex, :shapeClass, :rotateClass, :sortOrder, TRUE
     )`,
     { ...data, sortOrder },
   );
@@ -924,6 +942,8 @@ export async function updateTeacherTeamItem(idValue: unknown, input: Partial<Upd
      SET title = :title,
          description = :description,
          image_id = COALESCE(:imageId, image_id),
+         cover_position = :coverPosition,
+         cover_zoom = :coverZoom,
          color_hex = :colorHex,
          shape_class = :shapeClass,
          rotate_class = :rotateClass,

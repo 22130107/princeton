@@ -128,6 +128,8 @@ export type DbTeacherTeamItem = {
   imageId: number | null;
   imageUrl: string;
   imageAlt: string;
+  coverPosition: string;
+  coverZoom: number;
   color: string;
   shape: string;
   rotate: string;
@@ -281,6 +283,8 @@ type TeacherTeamRow = RowDataPacket & {
   title: string;
   description: string | null;
   image_id: number | null;
+  cover_position: string | null;
+  cover_zoom: number | null;
   image_url: string | null;
   image_alt: string | null;
   color_hex: string | null;
@@ -539,6 +543,8 @@ async function ensureAboutStorageInternal() {
       title VARCHAR(255) NOT NULL,
       description TEXT NULL,
       image_id BIGINT UNSIGNED NULL,
+      cover_position VARCHAR(32) NOT NULL DEFAULT '50% 50%',
+      cover_zoom DECIMAL(4,2) NOT NULL DEFAULT 1.00,
       color_hex VARCHAR(32) NULL,
       shape_class VARCHAR(255) NULL,
       rotate_class VARCHAR(255) NULL,
@@ -1033,6 +1039,8 @@ export async function getTeacherTeamItems(): Promise<DbTeacherTeamItem[]> {
       tti.title,
       tti.description,
       tti.image_id,
+      tti.cover_position,
+      tti.cover_zoom,
       tti.color_hex,
       tti.shape_class,
       tti.rotate_class,
@@ -1051,6 +1059,11 @@ export async function getTeacherTeamItems(): Promise<DbTeacherTeamItem[]> {
     imageId: row.image_id,
     imageUrl: text(row.image_url),
     imageAlt: text(row.image_alt) || row.title,
+    coverPosition: text(row.cover_position) || "50% 50%",
+    coverZoom:
+      typeof row.cover_zoom === "number" && Number.isFinite(row.cover_zoom)
+        ? Math.max(0.5, Math.min(3, row.cover_zoom))
+        : 1,
     color: text(row.color_hex) || "#fffefa",
     shape: text(row.shape_class) || "rounded-[42px]",
     rotate: text(row.rotate_class),

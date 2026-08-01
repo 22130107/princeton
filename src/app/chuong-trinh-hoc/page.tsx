@@ -4,6 +4,7 @@ import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { getCurriculumTracks } from "@/lib/content";
+import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 
@@ -68,7 +69,7 @@ export default async function ChuongTrinhHocPage() {
                   ) : (
                     <div className="flex h-full w-full items-center justify-center">
                       <img
-                        src={imgCardLogo.src}
+                        src={imgLogo.src}
                         alt="Princeton Academy"
                         className="h-[118px] w-auto object-contain"
                       />

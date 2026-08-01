@@ -152,7 +152,9 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
                   />
                   {item.imageUrl ? (
                     <img src={item.imageUrl} alt={item.imageAlt} className="h-16 w-16 object-contain" />
-                  ) : null}
+                  ) : (
+                    <img src={imgLogo.src} alt="Princeton Academy" className="h-16 w-16 object-contain" />
+                  )}
                 </div>
                 <div className="bg-[#fffefa] p-4">
                   <h3 className="text-[20px] font-extrabold">{item.name}</h3>

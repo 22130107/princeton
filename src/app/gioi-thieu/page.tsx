@@ -4,6 +4,7 @@ import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import FacilityCarousel from "@/components/Shared/FacilityCarousel";
 import SiteFooter from "@/components/Shared/SiteFooter";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import { getAboutContent } from "@/lib/content";
 import { mediaImage } from "@/lib/media-url";
 import imgHero from "@/assets/1785508275307_2464196110406402971_2464196110406402971_908152b1927fedcdd7fc0a83d44529f3.jpg";
@@ -149,6 +150,8 @@ export default async function GioiThieuPage() {
     icon: item.imageUrl,
     title: item.title,
     text: item.description,
+    coverPosition: item.coverPosition,
+    coverZoom: item.coverZoom,
     shape: item.shape,
     color: item.color,
     rotate: item.rotate,
@@ -323,14 +326,22 @@ export default async function GioiThieuPage() {
               {teachers.map((value, index) => (
                 <article
                   key={`teacher-${value.id}-${index}`}
-                  className={`relative min-h-[280px] border border-[#b80000] p-6 shadow-[4px_4px_0_rgba(184,0,0,0.18)] ${value.shape} ${value.rotate}`}
+                  className={`relative flex min-h-[280px] flex-col overflow-hidden border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.18)] ${value.shape} ${value.rotate}`}
                   style={{ backgroundColor: value.color }}
                 >
-                  <div className="pointer-events-none absolute inset-2 rounded-[inherit] border border-dashed border-[#b80000]/30" />
-                  <div className="relative z-[1] flex h-full flex-col text-left">
-                    {value.icon ? (
-                      <img src={assetSrc(value.icon)} alt="" className="mx-auto mb-6 h-28 w-28 object-contain md:h-32 md:w-32" />
-                    ) : null}
+                  {value.icon ? (
+                    <div className="relative h-[190px] shrink-0 overflow-hidden md:h-[220px]">
+                      <CoverImage
+                        src={assetSrc(value.icon)}
+                        alt=""
+                        zoom={value.coverZoom}
+                        position={value.coverPosition}
+                        frameAspect={1.75}
+                      />
+                    </div>
+                  ) : null}
+                  <div className="relative flex flex-1 flex-col p-6">
+                    <div className="pointer-events-none absolute inset-2 rounded-[inherit] border border-dashed border-[#b80000]/30" />
                     <h3 className="text-[22px] font-extrabold leading-tight">{value.title}</h3>
                     <p className="mt-4 text-[16px] font-medium leading-7 text-[#620000]">{value.text}</p>
                   </div>

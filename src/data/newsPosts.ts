@@ -1,6 +1,6 @@
 import type { StaticImageData } from "next/image";
 import imgClassroom from "@/assets/2f18e7a31d31b9b85df3a6588823571bdaf40d53.png";
-import imgEventKids from "@/assets/eca0f00994a6add059898b0052a18055c5e2de11.png";
+import imgEventKids from "@/assets/eca0f00994a6add059898b0052a18055c5e2de11.jpg";
 import imgTeacher from "@/assets/7152d23b5ad0228ac40827979cdce9d4dfc3a8fb.png";
 import imgWorkshop from "@/assets/d442605c9e1be0223245da5e9e29abf7ea1bef64.png";
 import imgFacility from "@/assets/d7d7345887319e335a13681880e24de534f764ac.png";

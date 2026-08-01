@@ -4,6 +4,7 @@ import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { getClassPrograms } from "@/lib/content";
+import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import stickerA from "@/assets/sticker/58895c008a094b06474cacb153601040cef3cf48.png";
@@ -105,7 +106,9 @@ export default async function KhoiLopPage() {
                   />
                   {program.imageUrl ? (
                     <img src={program.imageUrl} alt={program.imageAlt} className="h-[135px] w-[135px] object-contain" />
-                  ) : null}
+                  ) : (
+                    <img src={imgLogo.src} alt="Princeton Academy" className="h-[135px] w-[135px] object-contain" />
+                  )}
                 </div>
                 <div className="flex flex-1 flex-col p-5">
                   <p className="text-[13px] font-extrabold uppercase text-[#b80000]">

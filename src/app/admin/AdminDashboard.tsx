@@ -19,6 +19,7 @@ import {
 } from "@/lib/registration-section-config";
 import bannerCoverMask from "@/assets/d082e0a60a126345af429a7e01c4ba8161c21e0e.png";
 import promoFallbackImage from "@/assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aac.png";
+import { CoverImage } from "@/components/Shared/CoverImage";
 
 type TabKey = "banners" | "registration" | "schedules" | "teaching" | "programs" | "posts" | "about";
 type ProgramMode = "classes" | "curriculum";
@@ -132,6 +133,8 @@ type TeacherTeamItem = {
   imageId: number | null;
   imageUrl: string;
   imageAlt: string;
+  coverPosition: string;
+  coverZoom: number;
   color: string;
   shape: string;
   rotate: string;
@@ -272,6 +275,8 @@ type TeacherForm = {
   description: string;
   imageId: number | null;
   imageUrl: string;
+  coverPosition: string;
+  coverZoom: number;
   colorHex: string;
   shapeClass: string;
   rotateClass: string;
@@ -385,6 +390,8 @@ const emptyTeacher: TeacherForm = {
   description: "",
   imageId: null,
   imageUrl: "",
+  coverPosition: "50% 50%",
+  coverZoom: 1,
   colorHex: "#fffefa",
   shapeClass: "rounded-[42px]",
   rotateClass: "",
@@ -3337,6 +3344,7 @@ const BANNER_FRAME_ASPECT = 1014 / 546;
 const BANNER_MOBILE_FRAME_ASPECT = 4096 / 2731;
 const BANNER_MIN_ZOOM = 0.5;
 const BANNER_MAX_ZOOM = 3;
+const TEACHER_FRAME_ASPECT = 1.75;
 
 function BannerCoverEditor({
   url,
@@ -3569,6 +3577,8 @@ function TeacherCardPreview({
   colorHex,
   shapeClass,
   rotateClass,
+  coverPosition,
+  coverZoom,
 }: {
   title: string;
   description: string;
@@ -3576,23 +3586,33 @@ function TeacherCardPreview({
   colorHex: string;
   shapeClass: string;
   rotateClass: string;
+  coverPosition: string;
+  coverZoom: number;
 }) {
   return (
     <div className="grid gap-2">
       <span className="text-[13px] font-bold uppercase text-[#620000]">Xem trước card</span>
       <article
-        className={`relative min-h-[230px] max-w-[420px] border border-[#b80000] p-6 shadow-[4px_4px_0_rgba(184,0,0,0.18)] ${shapeClass} ${rotateClass}`}
+        className={`relative flex min-h-[230px] max-w-[420px] flex-col overflow-hidden border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.18)] ${shapeClass} ${rotateClass}`}
         style={{ backgroundColor: colorHex || "#fffefa" }}
       >
-        <div className="pointer-events-none absolute inset-2 rounded-[inherit] border border-dashed border-[#b80000]/30" />
-        <div className="relative z-[1] flex min-h-[190px] flex-col">
+        <div className="relative h-[150px] shrink-0 overflow-hidden">
           {imageUrl ? (
-            <img src={imageUrl} alt={title || "Ảnh giáo viên"} className="mx-auto mb-6 h-28 w-28 object-contain" />
+            <CoverImage
+              src={imageUrl}
+              alt={title || "Ảnh giáo viên"}
+              zoom={coverZoom}
+              position={coverPosition}
+              frameAspect={TEACHER_FRAME_ASPECT}
+            />
           ) : (
-            <div className="mx-auto mb-6 flex h-28 w-28 items-center justify-center rounded-full bg-white/80 text-[#b80000]">
+            <div className="flex h-full w-full items-center justify-center bg-white/80 text-[#b80000]">
               <ImagePlus size={34} />
             </div>
           )}
+        </div>
+        <div className="relative flex flex-1 flex-col p-5">
+          <div className="pointer-events-none absolute inset-2 rounded-[inherit] border border-dashed border-[#b80000]/30" />
           <h3 className="text-[22px] font-extrabold leading-tight">{title || "Tiêu đề card"}</h3>
           <p className="mt-4 text-[16px] font-medium leading-7 text-[#620000]">
             {description || "Mô tả ngắn của giáo viên sẽ hiển thị tại đây."}
@@ -3890,6 +3910,8 @@ export default function AdminDashboard() {
         description: item.description ?? "",
         imageId: item.imageId ?? null,
         imageUrl: item.imageUrl ?? "",
+        coverPosition: item.coverPosition ?? "50% 50%",
+        coverZoom: item.coverZoom ?? 1,
         colorHex: item.color ?? "#fffefa",
         shapeClass: item.shape ?? "rounded-[42px]",
         rotateClass: item.rotate ?? "",
@@ -4141,6 +4163,8 @@ export default function AdminDashboard() {
         title: teacherForm.title,
         description: teacherForm.description,
         imageId: teacherForm.imageId,
+        coverPosition: teacherForm.coverPosition,
+        coverZoom: teacherForm.coverZoom,
         colorHex: teacherForm.colorHex,
         shapeClass: teacherForm.shapeClass,
         rotateClass: teacherForm.rotateClass,
@@ -5322,6 +5346,12 @@ export default function AdminDashboard() {
                     setTeacherForm((f) => ({ ...f, imageId: asset.id, imageUrl: asset.url }))
                   }
                   onDeleted={() => setTeacherForm((f) => ({ ...f, imageId: null, imageUrl: "" }))}
+                  coverPosition={teacherForm.coverPosition}
+                  coverZoom={teacherForm.coverZoom}
+                  coverFrameAspect={TEACHER_FRAME_ASPECT}
+                  onCoverChange={(value) =>
+                    setTeacherForm((f) => ({ ...f, coverPosition: value.position, coverZoom: value.zoom }))
+                  }
                 />
                 <TextArea
                   label="Mô tả"
@@ -5335,6 +5365,8 @@ export default function AdminDashboard() {
                   colorHex={teacherForm.colorHex}
                   shapeClass={teacherForm.shapeClass}
                   rotateClass={teacherForm.rotateClass}
+                  coverPosition={teacherForm.coverPosition}
+                  coverZoom={teacherForm.coverZoom}
                 />
                 <ActionButton type="submit" icon={selected ? <Edit3 size={17} /> : <Save size={17} />} disabled={saving}>
                   Lưu

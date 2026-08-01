@@ -1,6 +1,6 @@
 import svgPaths from "../Home/svg-g45k1n1pz5";
 import Link from "next/link";
-import imgWebKindergarten2Jpg1 from "../../assets/7152d23b5ad0228ac40827979cdce9d4dfc3a8fb.png";
+import imgWebKindergarten2Jpg1 from "../../assets/1785508275307_2464196110406402971_2464196110406402971_908152b1927fedcdd7fc0a83d44529f3.jpg";
 import imgLogo from "../../assets/logo.png";
 
 function CornerBrandLogo() {
@@ -76,7 +76,7 @@ function AboutCounter4Svg() {
 // ─── Stat item — giống cấu trúc PC: SVG absolute phía sau, số ở trên ──────
 
 type StatProps = {
-  decoration: React.ReactNode;
+  decoration?: React.ReactNode;
   /** Mảng các span số, ví dụ ["02"] hoặc ["10", "+"] */
   numbers: string[];
   label: string;
@@ -88,12 +88,14 @@ function StatItem({ decoration, numbers, label }: StatProps) {
       {/* Row số + decoration */}
       <div className="flex items-start relative shrink-0">
         {/* SVG decoration absolute phía sau */}
-        <div
-          className="absolute pointer-events-none"
-          style={{ inset: "-17px 0px 17px -4px" }}
-        >
-          {decoration}
-        </div>
+        {decoration ? (
+          <div
+            className="absolute pointer-events-none"
+            style={{ inset: "-17px 0px 17px -4px" }}
+          >
+            {decoration}
+          </div>
+        ) : null}
         {/* Số */}
         {numbers.map((n, i) => (
           <span
@@ -119,6 +121,14 @@ function StatItem({ decoration, numbers, label }: StatProps) {
 // ─── Main section ──────────────────────────────────────────────────────────
 
 export default function MobileAboutSection() {
+  const stats: StatProps[] = [
+    { decoration: <AboutCounter1Svg />, numbers: ["02"], label: "Cơ Sở" },
+    { decoration: <AboutCounter2Svg />, numbers: ["02"], label: "Ngôn ngữ" },
+    { decoration: <AboutCounter3Svg />, numbers: ["02"], label: "Chương trình học" },
+    { decoration: <AboutCounter4Svg />, numbers: ["10", "+"], label: "Câu lạc bộ" },
+    { numbers: ["30", "+"], label: "Sự kiện" },
+  ];
+
   return (
     <section className="bg-[#e8f3e6] px-[14px] pb-8 pt-10">
       <CornerBrandLogo />
@@ -140,11 +150,29 @@ export default function MobileAboutSection() {
       {/* Description */}
       <div className="mx-auto max-w-[390px] text-center">
         <p className="mb-5 text-[#620000] font-medium text-[14px] leading-[1.75]">
-          <strong className="font-extrabold">Princeton Academy Premier</strong> là trường mầm non quốc tế định hướng phát triển toàn diện cho trẻ thông qua môi trường học tập hiện đại, an toàn và truyền cảm hứng. Nhà trường chú trọng xây dựng nền tảng vững chắc về <strong className="font-extrabold">ngôn ngữ, tư duy và nhân cách</strong>, giúp trẻ tự tin khám phá thế giới, phát huy tiềm năng và sẵn sàng cho hành trình học tập trong tương lai.
+          <strong className="font-extrabold">Princeton Academy</strong> là hệ thống mầm non quốc tế ra đời từ niềm tin: <strong className="font-extrabold">Giáo dục không phải là lấp đầy kiến thức, mà là kiến tạo mảnh đất màu mỡ để mỗi hạt giống độc bản được lớn lên.</strong> Chúng tôi không chỉ chuẩn bị cho trẻ vào lớp Một, mà tập trung vun đắp <strong className="font-extrabold">7 nhu cầu phát triển gốc rễ về Thể - Trí - Tâm - Nhân cách</strong>, giúp con xây dựng nội lực vững vàng để tự tin khám phá thế giới.
         </p>
         <p className="text-[#620000] font-medium text-[14px] leading-[1.75]">
-          Chương trình học tại Princeton Academy Premier được thiết kế theo định hướng giáo dục quốc tế với <strong className="font-extrabold">80-100% thời lượng học bằng tiếng Anh</strong> tùy độ tuổi. Trẻ được tiếp cận <strong className="font-extrabold">9 môn học chuẩn Mỹ</strong> như Ngôn ngữ, Toán, Khoa học STEM, Mỹ thuật, Montessori, Âm nhạc, Giáo dục thể chất, Khoa học xã hội và Giáo dục nhân cách. Đồng thời, chương trình còn tích hợp các phương pháp giáo dục tiên tiến như <strong className="font-extrabold">Montessori, Reggio Emilia, Glenn Doman, Howard Gardner</strong> và phương pháp <strong className="font-extrabold">Socratic Questioning (SQM)</strong> nhằm khuyến khích tư duy phản biện, sáng tạo và khả năng giải quyết vấn đề.
+          Chương trình học tại Princeton Academy được thiết kế chuẩn quốc tế với <strong className="font-extrabold">80–100% thời lượng tiếng Anh</strong>, tích hợp <strong className="font-extrabold">9 môn giáo dục sớm chuẩn Mỹ</strong> cùng chương trình <strong className="font-extrabold">Tư duy phản biện sớm (ECT)</strong>. Thông qua phương pháp độc quyền <strong className="font-extrabold">PEAK (Học qua trải nghiệm &amp; Chơi có chủ đích)</strong>, ngôn ngữ và kiến thức đến với con một cách tự nhiên nhẹ nhàng, đánh thức sự tò mò và trao cho con niềm tin tự hào: <strong className="font-extrabold">"Con tự làm được!"</strong>.
         </p>
+      </div>
+
+      {/* Stats */}
+      <div className="mx-auto mt-7 flex max-w-[390px] flex-wrap items-start justify-center">
+        {stats.map((stat, index) => (
+          <div key={index} className="w-1/3 px-1">
+            <StatItem {...stat} />
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 flex justify-center">
+        <Link
+          href="/gioi-thieu"
+          className="inline-flex rounded-full bg-[#b80000] px-7 py-3 text-[16px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000] transition-transform duration-200 hover:-translate-y-0.5"
+        >
+          Xem thêm
+        </Link>
       </div>
     </section>
   );
