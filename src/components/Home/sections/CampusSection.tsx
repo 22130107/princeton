@@ -1,4 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import svgPaths from "../svg-g45k1n1pz5";
+import { campuses, campusMapUrl, campusMapLink, type Campus } from "@/lib/campuses";
 import imgCampus1Png from "../../../assets/62871bbc160db404d7a748757114301f94ce2edc.png";
 import imgFlowersPng from "../../../assets/cfa61d914b57a907c8879eea3242e5037a5a2c78.png";
 import imgSection2 from "../../../assets/45e9cd713cd022e324337d1e9a3d1f01c8086db4.png";
@@ -604,20 +608,51 @@ function HtmlBody() {
   );
 }
 
-function Iframe() {
+function Iframe({
+  mapUrl,
+  mapLink,
+  title,
+}: {
+  mapUrl: string;
+  mapLink: string;
+  title: string;
+}) {
   return (
     <div className="aspect-[470/535.780029296875] content-stretch flex flex-[1_0_0] items-start justify-center max-w-[470px] min-h-px overflow-clip relative rounded-[16px]" data-name="Iframe">
-      <HtmlBody />
+      <iframe
+        src={mapUrl}
+        title={title}
+        className="absolute inset-0 h-full w-full border-0"
+        loading="lazy"
+        allowFullScreen
+        referrerPolicy="no-referrer-when-downgrade"
+      />
+      <a
+        href={mapLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute bottom-3 right-3 z-[2] inline-flex rounded-full bg-[#b80000] px-4 py-2 text-[13px] font-bold uppercase text-white no-underline shadow-[0_2px_8px_rgba(0,0,0,0.18)]"
+      >
+        Xem bản đồ
+      </a>
     </div>
   );
 }
 
-function Container124() {
+function Container124({
+  mapUrl,
+  mapLink,
+  title,
+}: {
+  mapUrl: string;
+  mapLink: string;
+  title: string;
+}) {
   return (
     <div className="flex-[1_0_0] min-w-px relative self-stretch" data-name="Container">
       <div className="flex flex-col justify-center size-full">
         <div className="content-stretch flex flex-col items-start justify-center pb-[20px] relative size-full">
-          <Iframe />
+          <Iframe mapUrl={mapUrl} mapLink={mapLink} title={title} />
         </div>
       </div>
     </div>
@@ -628,7 +663,7 @@ function Heading3() {
   return (
     <div className="absolute content-stretch flex flex-col items-start left-0 pb-[0.6px] right-0 top-[-0.6px]" data-name="Heading 2">
       <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#620000] text-[35px]">
-        <p className="leading-[44px]">TRƯỜNG MẦM NON PRINCETON NGAY GẦN BẠN</p>
+        <p className="leading-[44px]">HỆ THỐNG CƠ SỞ PRINCETON</p>
       </div>
     </div>
   );
@@ -636,7 +671,7 @@ function Heading3() {
 
 function Container139() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 right-0 top-[100px]" data-name="Container">
+    <div className="absolute content-stretch flex flex-col items-start left-0 right-0 top-[58px]" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[20px]">
         <p className="leading-[26px]">Tọa lạc tại các vị trí trung tâm, dễ dàng kết nối với các tuyến đường chính, thuận tiện cho ba mẹ đưa đón trẻ.</p>
       </div>
@@ -745,11 +780,39 @@ function Button1() {
   );
 }
 
-function Container140() {
+function Container140({
+  list,
+  selected,
+  onSelect,
+}: {
+  list: Campus[];
+  selected: number;
+  onSelect: (index: number) => void;
+}) {
   return (
-    <div className="absolute content-stretch flex flex-col gap-[15.99px] items-start left-0 overflow-clip right-0 top-[214px]" data-name="Container">
-      <Button />
-      <Button1 />
+    <div className="campus-scroll absolute left-0 right-0 top-[200px] flex h-[290px] flex-col gap-[12px] overflow-y-auto pr-[6px]" data-name="Container">
+      {list.map((c, index) => {
+        const active = index === selected;
+        return (
+          <button
+            key={c.name}
+            type="button"
+            onClick={() => onSelect(index)}
+            className={`relative w-full rounded-[24px] p-3 text-left transition-colors ${
+              active
+                ? "border-[3px] border-dashed border-[#b80000] bg-[#fff1f1] shadow-[3px_3px_0_rgba(184,0,0,0.28)]"
+                : "border-2 border-transparent bg-[#fff1f1] hover:border-[#f0a0a0]"
+            }`}
+          >
+            <span className="block text-[19px] font-extrabold leading-[24px] text-[#620000]">
+              {c.name}
+            </span>
+            <span className="mt-0.5 block text-[15px] font-medium leading-[20px] text-[#9a4a4a]">
+              {c.address}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -764,44 +827,96 @@ function FlowersPng() {
   );
 }
 
-function Container138() {
+function Container138({
+  list,
+  selected,
+  onSelect,
+}: {
+  list: Campus[];
+  selected: number;
+  onSelect: (index: number) => void;
+}) {
   return (
     <div className="flex-[1_0_0] min-w-px relative self-stretch" data-name="Container">
       <Heading3 />
       <Container139 />
-      <Container140 />
+      <Container140 list={list} selected={selected} onSelect={onSelect} />
       <FlowersPng />
     </div>
   );
 }
 
-function Background9() {
+function Background9({
+  mapUrl,
+  mapLink,
+  title,
+  list,
+  selected,
+  onSelect,
+}: {
+  mapUrl: string;
+  mapLink: string;
+  title: string;
+  list: Campus[];
+  selected: number;
+  onSelect: (index: number) => void;
+}) {
   return (
     <div className="bg-white h-[575.78px] relative rounded-[16px] shrink-0 w-full" data-name="Background">
       <div className="flex flex-row justify-center size-full">
         <div className="content-stretch flex gap-[28px] items-start justify-center pt-[20px] px-[20px] relative size-full">
-          <Container124 />
-          <Container138 />
+          <Container124 mapUrl={mapUrl} mapLink={mapLink} title={title} />
+          <Container138 list={list} selected={selected} onSelect={onSelect} />
         </div>
       </div>
     </div>
   );
 }
 
-function Background8() {
+function Background8({
+  mapUrl,
+  mapLink,
+  title,
+  list,
+  selected,
+  onSelect,
+}: {
+  mapUrl: string;
+  mapLink: string;
+  title: string;
+  list: Campus[];
+  selected: number;
+  onSelect: (index: number) => void;
+}) {
   return (
     <div className="relative shrink-0 w-full" data-name="Background">
       <div className="content-stretch flex flex-col items-start p-[48px] relative size-full">
         <EnvelopeBgSvgClip />
-        <Background9 />
+        <Background9
+          mapUrl={mapUrl}
+          mapLink={mapLink}
+          title={title}
+          list={list}
+          selected={selected}
+          onSelect={onSelect}
+        />
       </div>
     </div>
   );
 }
 
 export default function CampusSection() {
+  const [selected, setSelected] = useState(0);
+  const campus = campuses[selected];
+
   return (
     <div className="absolute content-stretch flex flex-col items-start left-[116px] px-[96px] py-[24px] right-[116px] top-[6730.58px]" data-name="Section">
+      <style>{`
+        .campus-scroll::-webkit-scrollbar { width: 6px; }
+        .campus-scroll::-webkit-scrollbar-track { background: transparent; }
+        .campus-scroll::-webkit-scrollbar-thumb { background: #e6b3b3; border-radius: 9999px; }
+        .campus-scroll { scrollbar-width: thin; scrollbar-color: #e6b3b3 transparent; }
+      `}</style>
       <div aria-hidden className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 overflow-hidden">
           <img alt="" className="absolute h-[14.45%] left-[93.36%] max-w-none top-[85.55%] w-[6.64%]" src={imgSection1.src} />
@@ -810,7 +925,14 @@ export default function CampusSection() {
           <img alt="" className="absolute h-[14.45%] left-0 max-w-none top-0 w-[6.64%]" src={imgSection2.src} />
         </div>
       </div>
-      <Background8 />
+      <Background8
+        mapUrl={campusMapUrl(campus.address)}
+        mapLink={campusMapLink(campus.address)}
+        title={campus.name}
+        list={campuses}
+        selected={selected}
+        onSelect={setSelected}
+      />
     </div>
   );
 }
