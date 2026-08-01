@@ -13,9 +13,12 @@ import TextAlign from "@tiptap/extension-text-align";
 import { TextStyle } from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import {
+  PROMO_FRAME_ASPECT,
   defaultRegistrationSectionSettings,
   type RegistrationSectionSettings,
 } from "@/lib/registration-section-config";
+import bannerCoverMask from "@/assets/d082e0a60a126345af429a7e01c4ba8161c21e0e.png";
+import promoFallbackImage from "@/assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aac.png";
 
 type TabKey = "banners" | "registration" | "schedules" | "teaching" | "programs" | "posts" | "about";
 type ProgramMode = "classes" | "curriculum";
@@ -49,6 +52,8 @@ type HeroSlide = {
   desktopImageId: number | null;
   desktopImageUrl: string;
   desktopImageAlt: string;
+  desktopObjectPosition: string;
+  desktopZoom: number;
   mobileImageId: number | null;
   mobileImageUrl: string;
   mobileImageAlt: string;
@@ -206,8 +211,12 @@ type BannerForm = {
   subtitle: string;
   desktopImageId: number | null;
   desktopImageUrl: string;
+  desktopObjectPosition: string;
+  desktopZoom: number;
   mobileImageId: number | null;
   mobileImageUrl: string;
+  mobileObjectPosition: string;
+  mobileZoom: number;
   ctaLabel: string;
   ctaHref: string;
 };
@@ -305,8 +314,12 @@ const emptyBanner: BannerForm = {
   subtitle: "",
   desktopImageId: null,
   desktopImageUrl: "",
+  desktopObjectPosition: "50% 50%",
+  desktopZoom: 1,
   mobileImageId: null,
   mobileImageUrl: "",
+  mobileObjectPosition: "50% 50%",
+  mobileZoom: 1,
   ctaLabel: "",
   ctaHref: "",
 };
@@ -3172,6 +3185,13 @@ function MediaField({
   onUploaded,
   onDeleted,
   onStatus,
+  coverPosition,
+  coverZoom,
+  coverFrameAspect,
+  coverMaskUrl,
+  coverFrameRadius,
+  coverFallbackUrl,
+  onCoverChange,
 }: {
   label: string;
   assetId: number | null;
@@ -3180,12 +3200,20 @@ function MediaField({
   onUploaded: (asset: { id: number; url: string }) => void;
   onDeleted: () => void;
   onStatus: (message: string) => void;
+  coverPosition?: string;
+  coverZoom?: number;
+  coverFrameAspect?: number;
+  coverMaskUrl?: string;
+  coverFrameRadius?: number;
+  coverFallbackUrl?: string;
+  onCoverChange?: (value: { position: string; zoom: number }) => void;
 }) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const uploadUrl = getUploadedMediaUrl(previewUrl);
   const canDeleteUpload = Boolean(assetId && uploadUrl);
+  const editorUrl = previewUrl || coverFallbackUrl || "";
 
   async function handleFile(file: File | undefined) {
     if (!file) return;
@@ -3227,8 +3255,8 @@ function MediaField({
       <span className="text-[13px] font-bold uppercase text-[#620000]">{label}</span>
       <div className="grid gap-3 rounded-md border border-[#e1b0b0] bg-[#fffafa] p-3 sm:grid-cols-[116px_1fr]">
         <div className="flex h-[116px] w-[116px] items-center justify-center overflow-hidden rounded-md border border-[#efd0d0] bg-white">
-          {previewUrl ? (
-            <img src={previewUrl} alt={alt || label} className="h-full w-full object-contain" />
+          {editorUrl ? (
+            <img src={editorUrl} alt={alt || label} className="h-full w-full object-contain" />
           ) : (
             <ImagePlus size={34} className="text-[#b80000]" />
           )}
@@ -3257,6 +3285,17 @@ function MediaField({
           ) : null}
         </div>
       </div>
+      {coverPosition !== undefined && coverZoom !== undefined && onCoverChange && editorUrl ? (
+        <BannerCoverEditor
+          url={editorUrl}
+          position={coverPosition}
+          zoom={coverZoom}
+          frameAspect={coverFrameAspect}
+          maskUrl={coverMaskUrl}
+          frameRadius={coverFrameRadius}
+          onChange={onCoverChange}
+        />
+      ) : null}
       <MediaLibraryPicker
         open={pickerOpen}
         title={label}
@@ -3283,6 +3322,204 @@ const teacherCardPresets = [
   { label: "Mẫu 5", shape: "rounded-[28px_64px_28px_64px]", rotate: "-rotate-[0.8deg]" },
   { label: "Mẫu 6", shape: "rounded-[46px]", rotate: "rotate-[1.2deg]" },
 ];
+
+function parseCoverPosition(value: string) {
+  const match = value.trim().match(/^(\d{1,3})%\s+(\d{1,3})%$/);
+  if (!match) return { x: 50, y: 50 };
+  return { x: Number(match[1]), y: Number(match[2]) };
+}
+
+function clampNumber(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
+const BANNER_FRAME_ASPECT = 1014 / 546;
+const BANNER_MOBILE_FRAME_ASPECT = 4096 / 2731;
+const BANNER_MIN_ZOOM = 0.5;
+const BANNER_MAX_ZOOM = 3;
+
+function BannerCoverEditor({
+  url,
+  position,
+  zoom,
+  frameAspect,
+  maskUrl,
+  frameRadius,
+  onChange,
+}: {
+  url: string;
+  position: string;
+  zoom: number;
+  frameAspect?: number;
+  maskUrl?: string;
+  frameRadius?: number;
+  onChange: (value: { position: string; zoom: number }) => void;
+}) {
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [natural, setNatural] = useState<{ width: number; height: number } | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const dragRef = useRef<{ pointerId: number; startX: number; startY: number; x: number; y: number } | null>(null);
+  const positionRef = useRef(position);
+  positionRef.current = position;
+  const zoomRef = useRef(zoom);
+  zoomRef.current = zoom;
+  const frameAspectValue = frameAspect ?? BANNER_FRAME_ASPECT;
+  const frameRadiusValue = frameRadius ?? 8;
+
+  function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
+    const frame = frameRef.current;
+    if (!frame) return;
+    const { x, y } = parseCoverPosition(positionRef.current);
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragRef.current = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, x, y };
+    setDragging(true);
+  }
+
+  function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    const frame = frameRef.current;
+    if (!drag || !frame || drag.pointerId !== event.pointerId) return;
+
+    const rect = frame.getBoundingClientRect();
+    const frameWidth = rect.width;
+    const frameHeight = rect.height;
+    const boxAspect = frameWidth / frameHeight;
+    const naturalAspect =
+      natural && natural.width > 0 && natural.height > 0 ? natural.width / natural.height : boxAspect;
+    const zoomValue = zoomRef.current;
+    const ratioW =
+      zoomValue >= 1 ? Math.max(1, naturalAspect / boxAspect) : Math.min(1, naturalAspect / boxAspect);
+    const ratioH =
+      zoomValue >= 1 ? Math.max(1, boxAspect / naturalAspect) : Math.min(1, boxAspect / naturalAspect);
+
+    const slackX = frameWidth * (zoomValue * ratioW - 1);
+    const slackY = frameHeight * (zoomValue * ratioH - 1);
+    const deltaX = event.clientX - drag.startX;
+    const deltaY = event.clientY - drag.startY;
+
+    const nextX = Math.abs(slackX) > 0.5 ? clampNumber(drag.x - (deltaX / slackX) * 100, 0, 100) : drag.x;
+    const nextY = Math.abs(slackY) > 0.5 ? clampNumber(drag.y - (deltaY / slackY) * 100, 0, 100) : drag.y;
+
+    onChange({
+      position: `${Math.round(nextX)}% ${Math.round(nextY)}%`,
+      zoom: zoomRef.current,
+    });
+  }
+
+  function handlePointerUp(event: PointerEvent<HTMLDivElement>) {
+    if (dragRef.current?.pointerId === event.pointerId) {
+      dragRef.current = null;
+      setDragging(false);
+    }
+  }
+
+  const { x, y } = parseCoverPosition(position);
+  const frameAspectValueLocal = frameAspectValue;
+  const naturalAspectLocal =
+    natural && natural.width > 0 && natural.height > 0
+      ? natural.width / natural.height
+      : frameAspectValueLocal;
+  const ratioW =
+    zoom >= 1
+      ? Math.max(1, naturalAspectLocal / frameAspectValueLocal)
+      : Math.min(1, naturalAspectLocal / frameAspectValueLocal);
+  const ratioH =
+    zoom >= 1
+      ? Math.max(1, frameAspectValueLocal / naturalAspectLocal)
+      : Math.min(1, frameAspectValueLocal / naturalAspectLocal);
+
+  return (
+    <div className="grid gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[13px] font-bold uppercase text-[#620000]">Căn chỉnh vị trí ảnh</span>
+        <button
+          type="button"
+          onClick={() => onChange({ position: "50% 50%", zoom: 1 })}
+          className="inline-flex h-8 items-center rounded-md border border-[#d9baba] bg-white px-3 text-[13px] font-extrabold text-[#620000] transition-colors hover:bg-[#fff1f1]"
+        >
+          Đặt lại
+        </button>
+      </div>
+      <div
+        ref={frameRef}
+        className={`relative mx-auto touch-none select-none overflow-hidden border-2 border-dashed border-[#e1b0b0] bg-[#fff1f1] ${
+          dragging ? "cursor-grabbing" : "cursor-grab"
+        }`}
+        style={{
+          aspectRatio: `${frameAspectValue}`,
+          borderRadius: frameRadiusValue,
+          height: 230,
+          width: "auto",
+          maxWidth: "100%",
+          ...(url
+            ? {
+                backgroundImage: `url("${url}")`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: `${zoom * ratioW * 100}% ${zoom * ratioH * 100}%`,
+                backgroundPosition: `${x}% ${y}%`,
+              }
+            : {}),
+          ...(maskUrl
+            ? {
+                maskImage: `url("${maskUrl}")`,
+                WebkitMaskImage: `url("${maskUrl}")`,
+                maskSize: "100% 100%",
+                WebkitMaskSize: "100% 100%",
+                maskPosition: "0 0",
+                WebkitMaskPosition: "0 0",
+                maskRepeat: "no-repeat",
+                WebkitMaskRepeat: "no-repeat",
+              }
+            : {}),
+        }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      >
+        {url ? (
+          <img
+            src={url}
+            alt=""
+            draggable={false}
+            aria-hidden
+            className="pointer-events-none absolute h-px w-px opacity-0"
+            onLoad={(event) => {
+              const image = event.currentTarget;
+              setNatural({ width: image.naturalWidth, height: image.naturalHeight });
+            }}
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-[14px] font-semibold text-[#9a4a4a]">
+            Chọn ảnh để căn chỉnh vị trí hiển thị
+          </div>
+        )}
+        <div
+          className="pointer-events-none absolute inset-0 border border-[#b80000]/30"
+          style={{ borderRadius: frameRadiusValue }}
+        />
+      </div>
+      <div className="flex items-center gap-3">
+        <span className="text-[13px] font-bold text-[#620000]">Thu nhỏ / phóng to</span>
+        <input
+          type="range"
+          min={BANNER_MIN_ZOOM}
+          max={BANNER_MAX_ZOOM}
+          step={0.05}
+          value={zoom}
+          onChange={(event) => onChange({ position, zoom: Number(event.target.value) })}
+          className="h-2 flex-1 cursor-pointer accent-[#b80000]"
+        />
+        <span className="w-12 text-right text-[13px] font-extrabold text-[#b80000]">{zoom.toFixed(2)}x</span>
+      </div>
+      <p className="text-[12px] font-semibold leading-5 text-[#9a4a4a]">
+        Kéo ảnh trong khung để chọn vị trí hiển thị (giống ảnh bìa Facebook). Kéo thanh trượt dưới 1x để thu nhỏ
+        ảnh, từ 1x trở lên để phóng to — ảnh sẽ không bị méo trên banner. Lưu ý: thu nhỏ dưới 1x sẽ hiện khoảng
+        trống ở hai bên ảnh.
+      </p>
+    </div>
+  );
+}
 
 function TeacherCardStylePicker({
   shapeClass,
@@ -3575,8 +3812,12 @@ export default function AdminDashboard() {
         subtitle: item.subtitle ?? "",
         desktopImageId: item.desktopImageId ?? null,
         desktopImageUrl: item.desktopImageUrl ?? "",
+        desktopObjectPosition: item.desktopObjectPosition ?? "50% 50%",
+        desktopZoom: Number(item.desktopZoom) || 1,
         mobileImageId: item.mobileImageId ?? null,
         mobileImageUrl: item.mobileImageUrl ?? "",
+        mobileObjectPosition: item.mobileObjectPosition ?? "50% 50%",
+        mobileZoom: Number(item.mobileZoom) || 1,
         ctaLabel: item.ctaLabel ?? "",
         ctaHref: item.ctaHref ?? "",
       });
@@ -3706,6 +3947,10 @@ export default function AdminDashboard() {
         subtitle: bannerForm.subtitle,
         desktopImageId: bannerForm.desktopImageId,
         mobileImageId: bannerForm.mobileImageId,
+        mobileObjectPosition: bannerForm.mobileObjectPosition,
+        mobileZoom: bannerForm.mobileZoom,
+        desktopObjectPosition: bannerForm.desktopObjectPosition,
+        desktopZoom: bannerForm.desktopZoom,
         ctaLabel: bannerForm.ctaLabel,
         ctaHref: bannerForm.ctaHref,
       };
@@ -4543,6 +4788,18 @@ export default function AdminDashboard() {
                         promoDesktopImageUrl: "",
                       }))
                     }
+                    coverPosition={registrationForm.promoDesktopObjectPosition}
+                    coverZoom={registrationForm.promoDesktopZoom}
+                    coverFrameAspect={PROMO_FRAME_ASPECT}
+                    coverFrameRadius={13}
+                    coverFallbackUrl={promoFallbackImage.src}
+                    onCoverChange={(value) =>
+                      setRegistrationForm((form) => ({
+                        ...form,
+                        promoDesktopObjectPosition: value.position,
+                        promoDesktopZoom: value.zoom,
+                      }))
+                    }
                   />
                   <MediaField
                     label="Ảnh ưu đãi mobile"
@@ -4562,6 +4819,18 @@ export default function AdminDashboard() {
                         ...form,
                         promoMobileImageId: null,
                         promoMobileImageUrl: "",
+                      }))
+                    }
+                    coverPosition={registrationForm.promoMobileObjectPosition}
+                    coverZoom={registrationForm.promoMobileZoom}
+                    coverFrameAspect={PROMO_FRAME_ASPECT}
+                    coverFrameRadius={11}
+                    coverFallbackUrl={promoFallbackImage.src}
+                    onCoverChange={(value) =>
+                      setRegistrationForm((form) => ({
+                        ...form,
+                        promoMobileObjectPosition: value.position,
+                        promoMobileZoom: value.zoom,
                       }))
                     }
                   />
@@ -4703,7 +4972,25 @@ export default function AdminDashboard() {
                     onUploaded={(asset) =>
                       setBannerForm((f) => ({ ...f, desktopImageId: asset.id, desktopImageUrl: asset.url }))
                     }
-                    onDeleted={() => setBannerForm((f) => ({ ...f, desktopImageId: null, desktopImageUrl: "" }))}
+                    onDeleted={() =>
+                      setBannerForm((f) => ({
+                        ...f,
+                        desktopImageId: null,
+                        desktopImageUrl: "",
+                        desktopObjectPosition: "50% 50%",
+                        desktopZoom: 1,
+                      }))
+                    }
+                    coverPosition={bannerForm.desktopObjectPosition}
+                    coverZoom={bannerForm.desktopZoom}
+                    coverMaskUrl={bannerCoverMask.src}
+                    onCoverChange={(value) =>
+                      setBannerForm((f) => ({
+                        ...f,
+                        desktopObjectPosition: value.position,
+                        desktopZoom: value.zoom,
+                      }))
+                    }
                   />
                   <MediaField
                     label="Ảnh banner mobile"
@@ -4714,7 +5001,25 @@ export default function AdminDashboard() {
                     onUploaded={(asset) =>
                       setBannerForm((f) => ({ ...f, mobileImageId: asset.id, mobileImageUrl: asset.url }))
                     }
-                    onDeleted={() => setBannerForm((f) => ({ ...f, mobileImageId: null, mobileImageUrl: "" }))}
+                    onDeleted={() =>
+                      setBannerForm((f) => ({
+                        ...f,
+                        mobileImageId: null,
+                        mobileImageUrl: "",
+                        mobileObjectPosition: "50% 50%",
+                        mobileZoom: 1,
+                      }))
+                    }
+                    coverPosition={bannerForm.mobileObjectPosition}
+                    coverZoom={bannerForm.mobileZoom}
+                    coverFrameAspect={BANNER_MOBILE_FRAME_ASPECT}
+                    onCoverChange={(value) =>
+                      setBannerForm((f) => ({
+                        ...f,
+                        mobileObjectPosition: value.position,
+                        mobileZoom: value.zoom,
+                      }))
+                    }
                   />
                 </div>
                 <ActionButton type="submit" icon={selected ? <Edit3 size={17} /> : <Save size={17} />} disabled={saving}>

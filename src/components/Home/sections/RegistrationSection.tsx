@@ -2,8 +2,10 @@
 
 import svgPaths from "../svg-g45k1n1pz5";
 import { useEffect, useRef, useState } from "react";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import { useCountdownValues } from "@/components/Shared/useCountdownValues";
 import { useRegistrationSectionSettings } from "@/components/Shared/useRegistrationSectionSettings";
+import { PROMO_FRAME_ASPECT } from "@/lib/registration-section-config";
 import type { RegistrationSectionSettings } from "@/lib/registration-section-config";
 import imgTask73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg from "../../../assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aac.png";
 
@@ -29,28 +31,40 @@ const appointmentTimeOptions: ProgramOption[] = [
 const SECTION_ARTBOARD_WIDTH = 1304;
 const SECTION_ARTBOARD_HEIGHT = 907.69;
 
-function Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg({ promoImageUrl }: { promoImageUrl: string }) {
+type PromoImage = {
+  url: string;
+  zoom: number;
+  position: string;
+};
+
+function Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg({ promo }: { promo: PromoImage }) {
   return (
     <div className="max-w-[764.3099975585938px] relative self-stretch shrink-0 w-[764.31px]" data-name="TASK-73-WASS-Giam-50-PHI-GHI-DANH_Desktop-TV-copy-1.jpg">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={promoImageUrl} />
+        <CoverImage
+          src={promo.url}
+          alt="Ưu đãi đăng ký"
+          zoom={promo.zoom}
+          position={promo.position}
+          frameAspect={PROMO_FRAME_ASPECT}
+        />
       </div>
     </div>
   );
 }
 
-function Picture({ promoImageUrl }: { promoImageUrl: string }) {
+function Picture({ promo }: { promo: PromoImage }) {
   return (
     <div className="content-stretch flex h-[875.69px] items-start justify-center relative shrink-0" data-name="Picture">
-      <Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg promoImageUrl={promoImageUrl} />
+      <Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg promo={promo} />
     </div>
   );
 }
 
-function Container171({ promoImageUrl }: { promoImageUrl: string }) {
+function Container171({ promo }: { promo: PromoImage }) {
   return (
     <div className="content-stretch flex flex-col items-center max-w-[816.47998046875px] overflow-clip relative rounded-[48px] self-stretch shrink-0 w-[764.31px]" data-name="Container">
-      <Picture promoImageUrl={promoImageUrl} />
+      <Picture promo={promo} />
     </div>
   );
 }
@@ -1237,6 +1251,11 @@ export default function RegistrationSection() {
   const [sectionScale, setSectionScale] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const promoImageUrl = settings.promoDesktopImageUrl || imgTask73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg.src;
+  const promo: PromoImage = {
+    url: promoImageUrl,
+    zoom: Math.min(3, Math.max(0.5, Number(settings.promoDesktopZoom) || 1)),
+    position: settings.promoDesktopObjectPosition || "50% 50%",
+  };
   const countdownValues = useCountdownValues(settings);
   const minAppointmentDate = (() => {
     const today = new Date();
@@ -1348,7 +1367,7 @@ export default function RegistrationSection() {
             width: SECTION_ARTBOARD_WIDTH,
           }}
         >
-          {settings.showPromoImage ? <Container171 promoImageUrl={promoImageUrl} /> : null}
+          {settings.showPromoImage ? <Container171 promo={promo} /> : null}
           <Background13
             settings={displaySettings}
             checked={agreed}

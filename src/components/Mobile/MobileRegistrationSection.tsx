@@ -1,14 +1,18 @@
 ﻿"use client";
 
 import EnrollmentLeadForm from "@/components/Shared/EnrollmentLeadForm";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import { useCountdownValues } from "@/components/Shared/useCountdownValues";
 import { useRegistrationSectionSettings } from "@/components/Shared/useRegistrationSectionSettings";
+import { PROMO_FRAME_ASPECT } from "@/lib/registration-section-config";
 import imgPromo from "../../assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aac.png";
 
 export default function MobileRegistrationSection() {
   const settings = useRegistrationSectionSettings();
   const countdownValues = useCountdownValues(settings);
   const promoImageUrl = settings.promoMobileImageUrl || settings.promoDesktopImageUrl || imgPromo.src;
+  const promoZoom = Math.min(3, Math.max(0.5, Number(settings.promoMobileZoom) || 1));
+  const promoPosition = settings.promoMobileObjectPosition || "50% 50%";
 
   if (!settings.isActive) return null;
 
@@ -20,7 +24,15 @@ export default function MobileRegistrationSection() {
       >
         {settings.showPromoImage ? (
         <div className="relative mb-4 overflow-hidden rounded-[24px]">
-          <img src={promoImageUrl} alt="Ưu đãi đăng ký" className="block w-full h-auto" />
+          <div className="relative w-full" style={{ aspectRatio: `${PROMO_FRAME_ASPECT}` }}>
+            <CoverImage
+              src={promoImageUrl}
+              alt="Ưu đãi đăng ký"
+              zoom={promoZoom}
+              position={promoPosition}
+              frameAspect={PROMO_FRAME_ASPECT}
+            />
+          </div>
         </div>
         ) : null}
 

@@ -1,5 +1,10 @@
 import { repairMojibakeText } from "./text-encoding";
 
+export const PROMO_FRAME_ASPECT = 3033 / 3475;
+
+export const PROMO_MIN_ZOOM = 0.5;
+export const PROMO_MAX_ZOOM = 3;
+
 export type RegistrationSectionSettings = {
   isActive: boolean;
   title: string;
@@ -16,8 +21,12 @@ export type RegistrationSectionSettings = {
   backgroundColor: string;
   promoDesktopImageId: number | null;
   promoDesktopImageUrl: string;
+  promoDesktopObjectPosition: string;
+  promoDesktopZoom: number;
   promoMobileImageId: number | null;
   promoMobileImageUrl: string;
+  promoMobileObjectPosition: string;
+  promoMobileZoom: number;
 };
 
 export const defaultRegistrationSectionSettings: RegistrationSectionSettings = {
@@ -37,8 +46,12 @@ export const defaultRegistrationSectionSettings: RegistrationSectionSettings = {
   backgroundColor: "#b80000",
   promoDesktopImageId: null,
   promoDesktopImageUrl: "",
+  promoDesktopObjectPosition: "50% 50%",
+  promoDesktopZoom: 1,
   promoMobileImageId: null,
   promoMobileImageUrl: "",
+  promoMobileObjectPosition: "50% 50%",
+  promoMobileZoom: 1,
 };
 
 function optionalBoolean(value: unknown, fallback: boolean) {
@@ -93,6 +106,21 @@ function optionalColor(value: unknown, fallback: string) {
   return /^#[0-9a-fA-F]{6}$/.test(raw) ? raw.toLowerCase() : fallback;
 }
 
+function optionalCoverPosition(value: unknown, fallback: string) {
+  if (typeof value !== "string") return fallback;
+  const match = value.trim().match(/^(\d{1,3})%\s+(\d{1,3})%$/);
+  if (!match) return fallback;
+
+  const x = Math.max(0, Math.min(100, Number(match[1])));
+  const y = Math.max(0, Math.min(100, Number(match[2])));
+  return `${x}% ${y}%`;
+}
+
+function optionalZoom(value: unknown, fallback: number) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return fallback;
+  return Math.max(PROMO_MIN_ZOOM, Math.min(PROMO_MAX_ZOOM, value));
+}
+
 export function normalizeRegistrationSectionSettings(
   input: Partial<RegistrationSectionSettings> | Record<string, unknown> | null | undefined,
 ): RegistrationSectionSettings {
@@ -114,7 +142,17 @@ export function normalizeRegistrationSectionSettings(
     backgroundColor: optionalColor(source.backgroundColor, defaultRegistrationSectionSettings.backgroundColor),
     promoDesktopImageId: optionalNumber(source.promoDesktopImageId),
     promoDesktopImageUrl: optionalText(source.promoDesktopImageUrl, ""),
+    promoDesktopObjectPosition: optionalCoverPosition(
+      source.promoDesktopObjectPosition,
+      defaultRegistrationSectionSettings.promoDesktopObjectPosition,
+    ),
+    promoDesktopZoom: optionalZoom(source.promoDesktopZoom, defaultRegistrationSectionSettings.promoDesktopZoom),
     promoMobileImageId: optionalNumber(source.promoMobileImageId),
     promoMobileImageUrl: optionalText(source.promoMobileImageUrl, ""),
+    promoMobileObjectPosition: optionalCoverPosition(
+      source.promoMobileObjectPosition,
+      defaultRegistrationSectionSettings.promoMobileObjectPosition,
+    ),
+    promoMobileZoom: optionalZoom(source.promoMobileZoom, defaultRegistrationSectionSettings.promoMobileZoom),
   };
 }

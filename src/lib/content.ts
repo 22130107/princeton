@@ -85,6 +85,8 @@ export type DbHeroSlide = {
   desktopImageId: number | null;
   desktopImageUrl: string;
   desktopImageAlt: string;
+  desktopObjectPosition: string;
+  desktopZoom: number;
   mobileImageId: number | null;
   mobileImageUrl: string;
   mobileImageAlt: string;
@@ -166,6 +168,10 @@ type HeroSlideRow = RowDataPacket & {
   desktop_image_id: number | null;
   desktop_image_url: string | null;
   desktop_image_alt: string | null;
+  desktop_object_position: string | null;
+  desktop_zoom: string | number | null;
+  mobile_object_position: string | null;
+  mobile_zoom: string | number | null;
   mobile_image_id: number | null;
   mobile_image_url: string | null;
   mobile_image_alt: string | null;
@@ -300,6 +306,25 @@ function text(value: string | null | undefined) {
   return value ? repairMojibakeText(value) : "";
 }
 
+export const HERO_SLIDE_MIN_ZOOM = 0.5;
+export const HERO_SLIDE_MAX_ZOOM = 3;
+
+export function clampHeroSlideZoom(value: unknown) {
+  const zoom = Number(value);
+  if (!Number.isFinite(zoom)) return 1;
+  return Math.round(Math.max(HERO_SLIDE_MIN_ZOOM, Math.min(HERO_SLIDE_MAX_ZOOM, zoom)) * 100) / 100;
+}
+
+export function normalizeHeroSlidePosition(value: unknown) {
+  const raw = typeof value === "string" ? value.trim() : "";
+  const match = raw.match(/^(\d{1,3})%\s+(\d{1,3})%$/);
+  if (!match) return "50% 50%";
+
+  const x = Math.max(0, Math.min(100, Number(match[1])));
+  const y = Math.max(0, Math.min(100, Number(match[2])));
+  return `${x}% ${y}%`;
+}
+
 function dateToIso(value: Date | string | null) {
   if (!value) return null;
   return value instanceof Date ? value.toISOString() : value;
@@ -373,6 +398,10 @@ async function ensureHeroSlideStorageInternal() {
       subtitle TEXT NULL,
       desktop_image_id BIGINT UNSIGNED NULL,
       mobile_image_id BIGINT UNSIGNED NULL,
+      desktop_object_position VARCHAR(32) NOT NULL DEFAULT '50% 50%',
+      desktop_zoom DECIMAL(4,2) NOT NULL DEFAULT 1.00,
+      mobile_object_position VARCHAR(32) NOT NULL DEFAULT '50% 50%',
+      mobile_zoom DECIMAL(4,2) NOT NULL DEFAULT 1.00,
       cta_label VARCHAR(128) NULL,
       cta_href VARCHAR(255) NULL,
       sort_order INT NOT NULL DEFAULT 0,
@@ -388,6 +417,21 @@ async function ensureHeroSlideStorageInternal() {
       CONSTRAINT hero_slides_mobile_image_fk FOREIGN KEY (mobile_image_id) REFERENCES media_assets(id) ON DELETE SET NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
+
+  await pool
+    .execute(
+      "ALTER TABLE hero_slides ADD COLUMN desktop_object_position VARCHAR(32) NOT NULL DEFAULT '50% 50%'",
+    )
+    .catch(() => {});
+  await pool
+    .execute("ALTER TABLE hero_slides ADD COLUMN desktop_zoom DECIMAL(4,2) NOT NULL DEFAULT 1.00")
+    .catch(() => {});
+  await pool
+    .execute("ALTER TABLE hero_slides ADD COLUMN mobile_object_position VARCHAR(32) NOT NULL DEFAULT '50% 50%'")
+    .catch(() => {});
+  await pool
+    .execute("ALTER TABLE hero_slides ADD COLUMN mobile_zoom DECIMAL(4,2) NOT NULL DEFAULT 1.00")
+    .catch(() => {});
 }
 
 export async function ensureHeroSlideStorage() {
@@ -563,9 +607,13 @@ export async function getHeroSlides(): Promise<DbHeroSlide[]> {
       hs.desktop_image_id,
       desktop_media.url AS desktop_image_url,
       desktop_media.alt_text AS desktop_image_alt,
+      hs.desktop_object_position,
+      hs.desktop_zoom,
       hs.mobile_image_id,
       mobile_media.url AS mobile_image_url,
       mobile_media.alt_text AS mobile_image_alt,
+      hs.mobile_object_position,
+      hs.mobile_zoom,
       hs.cta_label,
       hs.cta_href
     FROM hero_slides hs
@@ -590,9 +638,13 @@ export async function getHeroSlides(): Promise<DbHeroSlide[]> {
         desktopImageId: row.desktop_image_id,
         desktopImageUrl,
         desktopImageAlt: text(row.desktop_image_alt) || title,
+        desktopObjectPosition: text(row.desktop_object_position) || "50% 50%",
+        desktopZoom: clampHeroSlideZoom(row.desktop_zoom),
         mobileImageId: row.mobile_image_id,
         mobileImageUrl,
         mobileImageAlt: text(row.mobile_image_alt) || title,
+        mobileObjectPosition: text(row.mobile_object_position) || "50% 50%",
+        mobileZoom: clampHeroSlideZoom(row.mobile_zoom),
         ctaLabel: text(row.cta_label),
         ctaHref: text(row.cta_href),
       };

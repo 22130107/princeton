@@ -1,11 +1,13 @@
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { ensureCategoryStorage } from "./categories";
 import {
+  clampHeroSlideZoom,
   ensureAboutStorage,
   ensureGalleryStorage,
   ensureHeroSlideStorage,
   ensureHomeSectionStorage,
   ensureTestimonialStorage,
+  normalizeHeroSlidePosition,
 } from "./content";
 import { getMysqlPool } from "./mysql";
 import {
@@ -42,6 +44,10 @@ export type CreateHeroSlideInput = {
   subtitle?: string | null;
   desktopImageId?: number | null;
   mobileImageId?: number | null;
+  desktopObjectPosition?: string | null;
+  desktopZoom?: number | null;
+  mobileObjectPosition?: string | null;
+  mobileZoom?: number | null;
   ctaLabel?: string | null;
   ctaHref?: string | null;
 };
@@ -186,6 +192,10 @@ export function normalizeHeroSlideInput(input: Partial<CreateHeroSlideInput>, re
     subtitle: optionalText(input.subtitle),
     desktopImageId,
     mobileImageId,
+    desktopObjectPosition: normalizeHeroSlidePosition(input.desktopObjectPosition),
+    desktopZoom: clampHeroSlideZoom(input.desktopZoom),
+    mobileObjectPosition: normalizeHeroSlidePosition(input.mobileObjectPosition),
+    mobileZoom: clampHeroSlideZoom(input.mobileZoom),
     ctaLabel: optionalText(input.ctaLabel),
     ctaHref: optionalText(input.ctaHref),
   };
@@ -509,9 +519,9 @@ export async function createHeroSlide(input: Partial<CreateHeroSlideInput>) {
   const sortOrder = await nextSortOrder("hero_slides");
   const [result] = await pool.execute<ResultSetHeader>(
     `INSERT INTO hero_slides (
-      title, subtitle, desktop_image_id, mobile_image_id, cta_label, cta_href, sort_order, is_active
+      title, subtitle, desktop_image_id, mobile_image_id, desktop_object_position, desktop_zoom, mobile_object_position, mobile_zoom, cta_label, cta_href, sort_order, is_active
     ) VALUES (
-      :title, :subtitle, :desktopImageId, :mobileImageId, :ctaLabel, :ctaHref, :sortOrder, TRUE
+      :title, :subtitle, :desktopImageId, :mobileImageId, :desktopObjectPosition, :desktopZoom, :mobileObjectPosition, :mobileZoom, :ctaLabel, :ctaHref, :sortOrder, TRUE
     )`,
     { ...data, sortOrder },
   );
@@ -686,6 +696,10 @@ export async function updateHeroSlide(idValue: unknown, input: Partial<UpdateHer
          subtitle = :subtitle,
          desktop_image_id = COALESCE(:desktopImageId, desktop_image_id),
          mobile_image_id = COALESCE(:mobileImageId, mobile_image_id),
+         desktop_object_position = :desktopObjectPosition,
+         desktop_zoom = :desktopZoom,
+         mobile_object_position = :mobileObjectPosition,
+         mobile_zoom = :mobileZoom,
          cta_label = :ctaLabel,
          cta_href = :ctaHref,
          is_active = TRUE

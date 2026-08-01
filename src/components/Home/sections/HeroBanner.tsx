@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import svgPaths from "../svg-g45k1n1pz5";
 import imgBanner1Vi2Png1 from "../../../assets/1cb1c415ea9c6af5c91a9167c054aa84c4507ec4.png";
 import imgBannerUuDaiViPng from "../../../assets/d082e0a60a126345af429a7e01c4ba8161c21e0e.png";
@@ -14,10 +15,17 @@ type HeroSlide = {
   subtitle: string;
   desktopImageUrl: string;
   desktopImageAlt: string;
+  desktopObjectPosition: string;
+  desktopZoom: number;
   mobileImageUrl: string;
   mobileImageAlt: string;
+  mobileObjectPosition: string;
+  mobileZoom: number;
   ctaHref: string;
 };
+
+const BANNER_FRAME_ASPECT = 1014 / 546;
+const BANNER_MOBILE_FRAME_ASPECT = 4096 / 2731;
 
 function Banner1Vi2Png() {
   return (
@@ -360,14 +368,16 @@ function DynamicSlideImage({
   dataName?: string;
 }) {
   const src = getDesktopSlideSrc(slide);
+  const zoom = Math.min(3, Math.max(0.5, Number(slide.desktopZoom) || 1));
+  const position = slide.desktopObjectPosition || "50% 50%";
   const image = (
-    <span className="absolute inset-0 block overflow-hidden">
-      <img
-        alt={slide.desktopImageAlt || slide.title}
-        className="absolute h-[123.81%] left-0 max-w-none top-[-11.9%] w-full"
-        src={src}
-      />
-    </span>
+    <CoverImage
+      src={src}
+      alt={slide.desktopImageAlt || slide.title}
+      zoom={zoom}
+      position={position}
+      frameAspect={BANNER_FRAME_ASPECT}
+    />
   );
 
   return (
@@ -514,14 +524,26 @@ function DynamicMobileContainer({ slides }: { slides: HeroSlide[] }) {
         <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${activeSlide * 100}%)` }}>
           {slides.map((slide) => {
             const src = getMobileSlideSrc(slide);
+            const zoom = Math.min(3, Math.max(0.5, Number(slide.mobileZoom) || 1));
+            const position = slide.mobileObjectPosition || "50% 50%";
             const image = (
-              <img src={src} alt={slide.mobileImageAlt || slide.title} className="h-auto w-full" />
+              <CoverImage
+                src={src}
+                alt={slide.mobileImageAlt || slide.title}
+                zoom={zoom}
+                position={position}
+                frameAspect={BANNER_MOBILE_FRAME_ASPECT}
+              />
             );
 
             return (
-              <div key={slide.id} className="flex w-full shrink-0 items-center justify-center">
+              <div
+                key={slide.id}
+                className="relative w-full shrink-0"
+                style={{ aspectRatio: `${BANNER_MOBILE_FRAME_ASPECT}` }}
+              >
                 {slide.ctaHref ? (
-                  <a href={slide.ctaHref} aria-label={slide.title || "Banner Princeton Academy"}>
+                  <a className="absolute inset-0 block" href={slide.ctaHref} aria-label={slide.title || "Banner Princeton Academy"}>
                     {image}
                   </a>
                 ) : (
