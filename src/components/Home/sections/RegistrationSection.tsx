@@ -1337,7 +1337,7 @@ export default function RegistrationSection() {
   return (
     <div
       ref={slotRef}
-      className="absolute left-[64px] right-[64px] top-[8482.35px]"
+      className="absolute left-[64px] right-[64px] top-[8022.35px]"
       style={{ height: SECTION_ARTBOARD_HEIGHT * sectionScale }}
     >
       <div

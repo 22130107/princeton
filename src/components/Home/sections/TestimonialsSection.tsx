@@ -225,7 +225,7 @@ export default function TestimonialsSection() {
   }
 
   return (
-    <div className="absolute bg-[#fffbf3] content-stretch flex flex-col gap-[86px] items-center left-0 pb-[80px] pt-[120px] right-0 top-[6207.35px]" data-name="Section">
+    <div className="absolute bg-[#fffbf3] content-stretch flex flex-col gap-[86px] items-center left-0 pb-[80px] pt-[120px] right-0 top-[5747.35px]" data-name="Section">
       <Intro />
       <Slider
         testimonials={testimonials}

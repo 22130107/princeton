@@ -6,7 +6,7 @@ import imgSection from "../../../assets/43192633e64afca0e6ae2cc7ffd3e7a96f2cd1c7
 
 function Container93() {
   return (
-    <div className="content-stretch flex flex-col items-center pb-[60px] relative shrink-0 w-[1296px]" data-name="Container">
+    <div className="content-stretch flex flex-col items-center pb-[36px] relative shrink-0 w-[1296px]" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#620000] text-[60px] text-center whitespace-nowrap">
         <p className="leading-[60px]">KHOẢNH KHẮC TRẺ TRẢI NGHIỆM</p>
       </div>
@@ -42,7 +42,7 @@ export default function GallerySection() {
   }, []);
 
   return (
-    <div className="absolute content-stretch flex flex-col items-center left-0 pb-[100px] pt-[112px] right-0 top-[5199.35px]" data-name="Section">
+    <div className="absolute content-stretch flex flex-col items-center left-0 pb-[48px] pt-[72px] right-0 top-[5199.35px]" data-name="Section">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <img alt="" className="absolute h-[105.06%] left-0 max-w-none top-0 w-full" src={imgSection.src} />
       </div>

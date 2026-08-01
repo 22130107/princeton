@@ -801,7 +801,7 @@ function Background8() {
 
 export default function CampusSection() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-[116px] px-[96px] py-[24px] right-[116px] top-[7190.58px]" data-name="Section">
+    <div className="absolute content-stretch flex flex-col items-start left-[116px] px-[96px] py-[24px] right-[116px] top-[6730.58px]" data-name="Section">
       <div aria-hidden className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 overflow-hidden">
           <img alt="" className="absolute h-[14.45%] left-[93.36%] max-w-none top-[85.55%] w-[6.64%]" src={imgSection1.src} />

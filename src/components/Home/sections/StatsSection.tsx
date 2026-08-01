@@ -94,7 +94,7 @@ export default function StatsSection() {
   }, []);
 
   return (
-    <div className="absolute content-stretch flex items-center justify-center left-0 overflow-clip py-[80px] right-0 top-[7910.35px]" data-name="Section">
+    <div className="absolute content-stretch flex items-center justify-center left-0 overflow-clip py-[80px] right-0 top-[7450.35px]" data-name="Section">
       <FacilityBgSvg />
       <FlowerImageCarousel images={images} />
     </div>
