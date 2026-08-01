@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import imgLogo from "../../assets/logo1.png";
 
 const navItems = [
@@ -16,6 +17,7 @@ const navItems = [
 
 export default function MobileHeader() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 w-full bg-[#e8f3e6] shadow-sm">
@@ -62,16 +64,27 @@ export default function MobileHeader() {
         className={`overflow-hidden transition-all duration-300 ease-in-out ${open ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"}`}
       >
         <nav className="border-t border-[#620000]/10 px-4 pb-4 pt-2 flex flex-col gap-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className="text-[#620000] text-[15px] font-semibold no-underline py-2.5 px-3 rounded-xl hover:bg-[#d4e6d1] transition-colors"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            const isActive =
+              item.href === "/dang-ky"
+                ? pathname === item.href
+                : pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className={`text-[15px] font-semibold no-underline py-2.5 px-3 rounded-xl border transition-colors hover:bg-[#d4e6d1] ${
+                  isActive
+                    ? "border-dashed border-[#b80000] bg-[#fff1f1] font-extrabold text-[#b80000]"
+                    : "border-transparent text-[#620000]"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
       </div>
     </header>

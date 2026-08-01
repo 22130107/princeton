@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import imgLogo from "../../../assets/logo1.png";
 
@@ -52,17 +53,24 @@ function RegisterButton() {
   );
 }
 
-function DesktopNav({ submenus }: { submenus: HeaderSubmenus }) {
+function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname: string }) {
   return (
     <div className="hidden items-center gap-3 md:flex" data-name="List">
       {navItems.map((item) => {
         const menuLinks = item.submenu ? submenus[item.submenu] : [];
+        const isActive = item.submenu
+          ? pathname === item.href || pathname.startsWith(`${item.href}/`)
+          : pathname === item.href;
 
         return (
           <div key={item.href} className="group relative">
             <Link
               href={item.href}
-              className="block whitespace-nowrap rounded-full border border-dashed border-transparent px-[16px] py-[7px] text-[19px] font-semibold text-[#620000] no-underline transition-colors duration-150 hover:border-[#b80000] hover:bg-[#fff1f1] hover:text-[#b80000] group-focus-within:border-[#b80000] group-focus-within:bg-[#fff1f1] group-focus-within:text-[#b80000]"
+              className={`block whitespace-nowrap rounded-full border border-dashed px-[16px] py-[7px] text-[19px] font-semibold no-underline transition-colors duration-150 hover:border-[#b80000] hover:bg-[#fff1f1] hover:text-[#b80000] group-focus-within:border-[#b80000] group-focus-within:bg-[#fff1f1] group-focus-within:text-[#b80000] ${
+                isActive
+                  ? "border-[#b80000] bg-[#fff1f1] text-[#b80000]"
+                  : "border-transparent text-[#620000]"
+              }`}
             >
               {item.label}
             </Link>
@@ -101,19 +109,30 @@ function DesktopNav({ submenus }: { submenus: HeaderSubmenus }) {
   );
 }
 
-function MobileMenu({ open }: { open: boolean }) {
+function MobileMenu({ open, pathname }: { open: boolean; pathname: string }) {
   return (
     <div className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
       <nav className="flex flex-col gap-1 border-t border-[#620000]/10 px-4 pb-4 pt-3">
-        {[...navItems, { href: "/dang-ky", label: "Đăng Ký Ngay" }].map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="rounded-xl px-4 py-2.5 text-[16px] font-semibold text-[#620000] no-underline transition-colors hover:bg-[#d4e6d1]"
-          >
-            {item.label}
-          </Link>
-        ))}
+        {[...navItems, { href: "/dang-ky", label: "Đăng Ký Ngay" }].map((item) => {
+          const isActive =
+            item.href === "/dang-ky"
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`rounded-xl border px-4 py-2.5 text-[16px] font-semibold no-underline transition-colors hover:bg-[#d4e6d1] ${
+                isActive
+                  ? "border-dashed border-[#b80000] bg-[#fff1f1] font-extrabold text-[#b80000]"
+                  : "border-transparent text-[#620000]"
+              }`}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
       </nav>
     </div>
   );
@@ -121,6 +140,7 @@ function MobileMenu({ open }: { open: boolean }) {
 
 export default function HeaderSection() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
   const [submenus, setSubmenus] = useState<HeaderSubmenus>({
     classes: [],
     curriculum: [],
@@ -176,7 +196,7 @@ export default function HeaderSection() {
     <div className="h-full pointer-events-none" data-name="HeaderSection">
       <div className="sticky top-0 z-50 flex items-center justify-between bg-[#e8f3e6] px-[116px] py-[4px] pointer-events-auto max-md:px-4">
         <Logo />
-        <DesktopNav submenus={submenus} />
+        <DesktopNav submenus={submenus} pathname={pathname} />
         <div className="flex items-center gap-3">
           <RegisterButton />
           <button
@@ -201,7 +221,7 @@ export default function HeaderSection() {
           </button>
         </div>
       </div>
-      <MobileMenu open={menuOpen} />
+      <MobileMenu open={menuOpen} pathname={pathname} />
     </div>
   );
 }

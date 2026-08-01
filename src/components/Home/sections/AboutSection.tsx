@@ -3,8 +3,8 @@ import Link from "next/link";
 import imgWebKindergartenJpg from "../../../assets/a32b9595cff2ce9d1e97a98665d30a5e87620c30.png";
 import imgWebKindergarten2Jpg from "../../../assets/becea57d21b16e69d315acb7b34ce055c670107e.png";
 import imgBackground2 from "../../../assets/c335b55122c9354d6a38878d564d64507ec073d9.png";
-import imgWebKindergartenJpg1 from "../../../assets/eca0f00994a6add059898b0052a18055c5e2de11.png";
-import imgWebKindergarten2Jpg1 from "../../../assets/7152d23b5ad0228ac40827979cdce9d4dfc3a8fb.png";
+import imgWebKindergartenJpg1 from "../../../assets/eca0f00994a6add059898b0052a18055c5e2de11.jpg";
+import imgWebKindergarten2Jpg1 from "../../../assets/1785508275307_2464196110406402971_2464196110406402971_908152b1927fedcdd7fc0a83d44529f3.jpg";
 import imgLogo from "../../../assets/logo.png";
 
 function CornerBrandLogo() {
@@ -413,7 +413,7 @@ function Container30() {
 function WebKindergarten2Jpg() {
   return (
     <div
-      className="absolute h-[416px] left-0 top-0 w-[471px]"
+      className="absolute h-[416px] left-0 top-0 w-[471px] scale-[0.92] origin-top-left"
       style={{
         maskImage: `url("${imgWebKindergarten2Jpg.src}")`,
         WebkitMaskImage: `url("${imgWebKindergarten2Jpg.src}")`,
@@ -425,7 +425,7 @@ function WebKindergarten2Jpg() {
       data-name="web_kindergarten-2.jpg"
     >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute h-full left-[-16.23%] max-w-none top-0 w-[132.47%]" src={imgWebKindergarten2Jpg1.src} />
+        <img alt="" className="absolute h-full left-[-16.23%] max-w-none top-0 w-[132.47%] object-cover" src={imgWebKindergarten2Jpg1.src} />
       </div>
     </div>
   );
@@ -481,7 +481,7 @@ function WebKindergartenJpg() {
       data-name="web_kindergarten.jpg"
     >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute h-full left-[-16.71%] max-w-none top-0 w-[133.42%]" src={imgWebKindergartenJpg1.src} />
+        <img alt="" className="absolute h-full left-[-16.71%] max-w-none top-0 w-[133.42%] object-cover" src={imgWebKindergartenJpg1.src} />
       </div>
     </div>
   );
