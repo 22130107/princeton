@@ -131,27 +131,31 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
                 className="overflow-hidden border border-[#ff1f1f] bg-[#fffefa] text-center text-[#620000] no-underline shadow-[4px_4px_0_rgba(255,31,31,0.12)]"
               >
                 <div
-                  className="relative flex min-h-[128px] items-center justify-center p-4 pt-12"
+                  className="relative h-[128px] overflow-hidden"
                   style={{ backgroundColor: item.color || "#fffefa" }}
                 >
+                  {item.imageUrl ? (
+                    <CoverImage
+                      src={item.imageUrl}
+                      alt={item.imageAlt}
+                      zoom={item.coverZoom}
+                      position={item.coverPosition}
+                      frameAspect={575.2 / 343.51}
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <img
+                        src={imgLogo.src}
+                        alt="Princeton Academy"
+                        className="h-[64px] w-auto object-contain"
+                      />
+                    </div>
+                  )}
                   <img
                     src={imgCardLogo.src}
                     alt="Princeton Academy"
                     className="absolute left-3 top-3 h-[62px] w-[62px] object-contain"
                   />
-                  {item.imageUrl ? (
-                    <div className="h-16 w-16 overflow-hidden rounded-[12px]">
-                      <CoverImage
-                        src={item.imageUrl}
-                        alt={item.imageAlt}
-                        zoom={item.coverZoom}
-                        position={item.coverPosition}
-                        frameAspect={1}
-                      />
-                    </div>
-                  ) : (
-                    <img src={imgLogo.src} alt="Princeton Academy" className="h-16 w-16 rounded-[12px] object-cover" />
-                  )}
                 </div>
                 <div className="bg-[#fffefa] p-4">
                   <h3 className="text-[20px] font-extrabold">{item.name}</h3>

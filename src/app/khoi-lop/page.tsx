@@ -97,27 +97,31 @@ export default async function KhoiLopPage() {
                 className="flex min-h-[520px] flex-col overflow-hidden border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.16)]"
               >
                 <div
-                  className="relative flex h-[225px] items-center justify-center"
+                  className="relative h-[225px] overflow-hidden"
                   style={{ backgroundColor: program.color }}
                 >
+                  {program.imageUrl ? (
+                    <CoverImage
+                      src={program.imageUrl}
+                      alt={program.imageAlt}
+                      zoom={program.coverZoom}
+                      position={program.coverPosition}
+                      frameAspect={575.2 / 343.51}
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <img
+                        src={imgLogo.src}
+                        alt="Princeton Academy"
+                        className="h-[118px] w-auto object-contain"
+                      />
+                    </div>
+                  )}
                   <img
                     src={imgCardLogo.src}
                     alt="Princeton Academy"
                     className="absolute left-4 top-4 h-[78px] w-[78px] object-contain"
                   />
-                  {program.imageUrl ? (
-                    <div className="h-[150px] w-[150px] overflow-hidden rounded-[16px]">
-                      <CoverImage
-                        src={program.imageUrl}
-                        alt={program.imageAlt}
-                        zoom={program.coverZoom}
-                        position={program.coverPosition}
-                        frameAspect={1}
-                      />
-                    </div>
-                  ) : (
-                    <img src={imgLogo.src} alt="Princeton Academy" className="h-[150px] w-[150px] rounded-[16px] object-cover" />
-                  )}
                 </div>
                 <div className="flex flex-1 flex-col p-5">
                   <p className="text-[13px] font-extrabold uppercase text-[#b80000]">
