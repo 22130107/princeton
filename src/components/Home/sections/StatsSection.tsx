@@ -1,9 +1,8 @@
-"use client";
+﻿"use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import svgPaths from "../svg-g45k1n1pz5";
-import imgFlowerMask from "../../../assets/92e5ee994003ec00eae4b6020ca15de704cd6220.png";
-import imgBackground3 from "../../../assets/bcdc4bfb11a672185bf5895542f616cb4b9244ae.png";
+import { FlowerImageCarousel, type FlowerCarouselImage } from "@/components/Shared/FlowerImageCarousel";
 
 type FacilityImage = {
   id: number;
@@ -65,169 +64,8 @@ function FacilityBgSvg() {
   );
 }
 
-function MaskGroup() {
-  return (
-    <div className="-translate-x-1/2 absolute bottom-[-2.6%] left-1/2 top-[-2.6%] w-[324px]" data-name="Mask Group">
-      <div
-        className="-translate-x-1/2 absolute aspect-[324/324] bg-white bottom-0 left-1/2 mask-alpha mask-intersect mask-no-clip mask-no-repeat mask-size-[324px_324px] top-0"
-        style={{ maskImage: `url("${imgBackground3.src}")` }}
-        data-name="Background"
-      />
-    </div>
-  );
-}
-
-function FacilityStrokeSvg() {
-  return (
-    <div className="relative shrink-0 size-[328px]" data-name="facility-stroke.svg">
-      <svg className="absolute block inset-0 size-full" fill="none" height="328" preserveAspectRatio="none" viewBox="0 0 328 328" width="328">
-        <g clipPath="url(#clip0_1_1008)" id="facility-stroke.svg">
-          <path d={svgPaths.p1e6bf430} fill="var(--fill-0, #FFFEFA)" id="Vector" stroke="var(--stroke-0, #B80000)" strokeDasharray="4 8" strokeWidth="2" />
-        </g>
-        <defs>
-          <clipPath id="clip0_1_1008">
-            <rect fill="white" height="328" width="328" />
-          </clipPath>
-        </defs>
-      </svg>
-    </div>
-  );
-}
-
-function FacilityImageCard({ image }: { image: FacilityImage }) {
-  return (
-    <div className="content-stretch flex flex-col items-start pr-[40px] relative shrink-0" data-name="Margin">
-      <div className="content-stretch flex items-center justify-center relative shrink-0" data-name="Container">
-        <MaskGroup />
-        <div className="-translate-x-1/2 absolute aspect-[328/328] bottom-[-3.25%] content-stretch flex flex-col items-center justify-center left-1/2 overflow-clip top-[-3.25%]" data-name="Image">
-          <FacilityStrokeSvg />
-        </div>
-        <div className="content-stretch flex flex-col items-start relative shrink-0" data-name="Container">
-          <div className="max-w-[308px] relative shrink-0 size-[308px]" data-name="Img:mask-group">
-            <div
-              className="absolute left-0 mask-alpha mask-intersect mask-no-clip mask-no-repeat mask-size-[308px_308px] size-[308px] top-0"
-              style={{ maskImage: `url("${imgFlowerMask.src}")` }}
-              data-name={image.title || "facility-image"}
-            >
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt={image.imageAlt || image.title} className="absolute h-full left-[-25.02%] max-w-none top-0 w-[150.04%]" src={image.imageUrl} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Container146({ images }: { images: FacilityImage[] }) {
-  const divRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
-  const totalX = useRef(-400);
-  const dragStartX = useRef(0);
-  const dragBaseX = useRef(-400);
-  const ITEM_WIDTH = 348;
-  const baseImages = useMemo(() => {
-    if (!images.length) return [];
-    const minimumItems = Math.max(5, images.length);
-    return Array.from({ length: Math.ceil(minimumItems / images.length) }, () => images)
-      .flat()
-      .slice(0, minimumItems);
-  }, [images]);
-  const repeatedImages = useMemo(() => [...baseImages, ...baseImages, ...baseImages, ...baseImages], [baseImages]);
-  const setWidth = ITEM_WIDTH * Math.max(baseImages.length, 1);
-
-  useEffect(() => {
-    if (!repeatedImages.length) return;
-
-    let lastTime = performance.now();
-    const SPEED = 40;
-    let rafId: number;
-    let isVisible = true;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      isVisible = entry.isIntersecting;
-    });
-    if (divRef.current) observer.observe(divRef.current);
-
-    function tick(time: number) {
-      if (isVisible) {
-        const dt = (time - lastTime) / 1000;
-        lastTime = time;
-        if (!isDragging.current) {
-          totalX.current -= SPEED * dt;
-          if (totalX.current < -(setWidth * 3)) {
-            totalX.current += setWidth * 3;
-          }
-        }
-        if (divRef.current) {
-          divRef.current.style.transform = `translate3d(${totalX.current}px, 0, 0)`;
-        }
-      } else {
-        lastTime = time;
-      }
-      rafId = requestAnimationFrame(tick);
-    }
-
-    rafId = requestAnimationFrame(tick);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      observer.disconnect();
-    };
-  }, [repeatedImages.length, setWidth]);
-
-  const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    isDragging.current = true;
-    dragBaseX.current = totalX.current;
-    dragStartX.current = e.clientX;
-    if (divRef.current) {
-      divRef.current.style.cursor = "grabbing";
-    }
-  }, []);
-
-  const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!isDragging.current) return;
-    totalX.current = dragBaseX.current + (e.clientX - dragStartX.current);
-  }, []);
-
-  const handlePointerUp = useCallback(() => {
-    if (isDragging.current) {
-      isDragging.current = false;
-      if (divRef.current) {
-        divRef.current.style.cursor = "grab";
-      }
-    }
-  }, []);
-
-  return (
-    <div
-      ref={divRef}
-      className="absolute flex left-0 top-[12px] cursor-grab select-none"
-      data-name="Container"
-      style={{ transform: "translate3d(-400px, 0, 0)", willChange: "transform" }}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerUp}
-    >
-      {repeatedImages.map((image, index) => (
-        <FacilityImageCard key={`${image.id}-${index}`} image={image} />
-      ))}
-    </div>
-  );
-}
-
-function Container145({ images }: { images: FacilityImage[] }) {
-  return (
-    <div className="h-[332px] overflow-clip relative shrink-0 w-[1528px]" data-name="Container">
-      <Container146 images={images} />
-    </div>
-  );
-}
-
 export default function StatsSection() {
-  const [images, setImages] = useState<FacilityImage[]>([]);
+  const [images, setImages] = useState<FlowerCarouselImage[]>([]);
 
   useEffect(() => {
     let alive = true;
@@ -236,7 +74,15 @@ export default function StatsSection() {
       .then((response) => response.json())
       .then((data) => {
         if (!alive || !Array.isArray(data.images)) return;
-        setImages(data.images.filter((image: FacilityImage) => image.imageUrl));
+        const nextImages = data.images
+          .map((item: any) => ({
+            id: item.id,
+            title: item.title || item.imageAlt || "Cơ sở vật chất",
+            imageUrl: item.imageUrl,
+            imageAlt: item.imageAlt || item.title || "Cơ sở vật chất Princeton",
+          }))
+          .filter((image: FlowerCarouselImage) => image.imageUrl);
+        if (nextImages.length) setImages(nextImages);
       })
       .catch(() => {
         if (alive) setImages([]);
@@ -250,7 +96,7 @@ export default function StatsSection() {
   return (
     <div className="absolute content-stretch flex items-center justify-center left-0 overflow-clip py-[80px] right-0 top-[7910.35px]" data-name="Section">
       <FacilityBgSvg />
-      <Container145 images={images} />
+      <FlowerImageCarousel images={images} />
     </div>
   );
 }

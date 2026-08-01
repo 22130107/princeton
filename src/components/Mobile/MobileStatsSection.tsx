@@ -2,62 +2,11 @@
 
 import { useEffect, useState } from "react";
 import svgPaths from "../Home/svg-g45k1n1pz5";
-import imgFlowerMask from "../../assets/92e5ee994003ec00eae4b6020ca15de704cd6220.png";
-
-type FacilityImage = {
-  id: number;
-  title: string;
-  imageUrl: string;
-  imageAlt: string;
-};
-
-function FlowerStroke() {
-  return (
-    <svg
-      className="absolute inset-0 size-full"
-      fill="none"
-      preserveAspectRatio="none"
-      viewBox="0 0 328 328"
-      aria-hidden
-    >
-      <path
-        d={svgPaths.p1e6bf430}
-        fill="#FFFEFA"
-        stroke="#B80000"
-        strokeDasharray="4 8"
-        strokeWidth="2"
-      />
-    </svg>
-  );
-}
-
-function FacilityFlower({ image }: { image: FacilityImage }) {
-  return (
-    <div className="relative h-[236px] w-[236px] shrink-0">
-      <FlowerStroke />
-      <div
-        className="absolute left-[10px] top-[10px] h-[216px] w-[216px] overflow-hidden bg-white"
-        style={{
-          maskImage: `url("${imgFlowerMask.src}")`,
-          WebkitMaskImage: `url("${imgFlowerMask.src}")`,
-          maskSize: "216px 216px",
-          WebkitMaskSize: "216px 216px",
-          maskRepeat: "no-repeat",
-          WebkitMaskRepeat: "no-repeat",
-        }}
-      >
-        <img
-          src={image.imageUrl}
-          alt={image.imageAlt || image.title}
-          className="h-full w-full scale-[1.35] object-cover"
-        />
-      </div>
-    </div>
-  );
-}
+import { MobileFlowerImageCarousel } from "@/components/Shared/MobileFlowerImageCarousel";
+import type { FlowerCarouselImage } from "@/components/Shared/FlowerImageCarousel";
 
 export default function MobileStatsSection() {
-  const [images, setImages] = useState<FacilityImage[]>([]);
+  const [images, setImages] = useState<FlowerCarouselImage[]>([]);
 
   useEffect(() => {
     let alive = true;
@@ -66,7 +15,15 @@ export default function MobileStatsSection() {
       .then((response) => response.json())
       .then((data) => {
         if (!alive || !Array.isArray(data.images)) return;
-        setImages(data.images.filter((image: FacilityImage) => image.imageUrl));
+        const nextImages = data.images
+          .map((item: any) => ({
+            id: item.id,
+            title: item.title || item.imageAlt || "Cơ sở vật chất",
+            imageUrl: item.imageUrl,
+            imageAlt: item.imageAlt || item.title || "Cơ sở vật chất Princeton",
+          }))
+          .filter((image: FlowerCarouselImage) => image.imageUrl);
+        if (nextImages.length) setImages(nextImages);
       })
       .catch(() => {
         if (alive) setImages([]);
@@ -77,22 +34,8 @@ export default function MobileStatsSection() {
     };
   }, []);
 
-  const baseImages = images.length
-    ? Array.from({ length: Math.ceil(Math.max(5, images.length) / images.length) }, () => images)
-        .flat()
-        .slice(0, Math.max(5, images.length))
-    : [];
-  const repeated = [...baseImages, ...baseImages, ...baseImages];
-
   return (
     <section className="relative overflow-hidden bg-[#fffefa] py-10">
-      <style>{`
-        @keyframes mobile-facility-slide {
-          from { transform: translateX(0); }
-          to { transform: translateX(-1380px); }
-        }
-      `}</style>
-
       <div className="absolute left-1/2 top-1/2 h-[300px] w-[1380px] -translate-x-1/2 -translate-y-1/2 opacity-90">
         <svg className="size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 2267.16 492" aria-hidden>
           <g opacity="0.5">
@@ -133,21 +76,7 @@ export default function MobileStatsSection() {
         </svg>
       </div>
 
-      <div className="relative h-[256px] overflow-hidden">
-        {repeated.length ? (
-          <div
-            className="absolute left-[-118px] top-2 flex gap-10"
-            style={{
-              animation: "mobile-facility-slide 30s linear infinite",
-              willChange: "transform",
-            }}
-          >
-            {repeated.map((image, index) => (
-              <FacilityFlower key={`${image.id}-${index}`} image={image} />
-            ))}
-          </div>
-        ) : null}
-      </div>
+      <MobileFlowerImageCarousel images={images} />
     </section>
   );
 }

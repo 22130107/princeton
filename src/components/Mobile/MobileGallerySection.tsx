@@ -1,7 +1,37 @@
-import imgGallery from "../../assets/150512c407c3bbd680797b719959c58b6e71354f.png";
+"use client";
+
+import { useEffect, useState } from "react";
+import { MobileFlowerImageCarousel } from "@/components/Shared/MobileFlowerImageCarousel";
+import type { FlowerCarouselImage } from "@/components/Shared/FlowerImageCarousel";
 import imgSection from "../../assets/43192633e64afca0e6ae2cc7ffd3e7a96f2cd1c7.png";
 
 export default function MobileGallerySection() {
+  const [images, setImages] = useState<FlowerCarouselImage[]>([]);
+
+  useEffect(() => {
+    let alive = true;
+
+    fetch("/api/gallery-images")
+      .then((response) => response.json())
+      .then((data) => {
+        if (!alive || !Array.isArray(data.images)) return;
+        const nextImages = data.images
+          .map((item: any) => ({
+            id: item.id,
+            title: item.title || item.imageAlt || "Khoảnh khắc Princeton",
+            imageUrl: item.imageUrl,
+            imageAlt: item.imageAlt || item.title || "Khoảnh khắc Princeton",
+          }))
+          .filter((image: FlowerCarouselImage) => image.imageUrl);
+        if (nextImages.length) setImages(nextImages);
+      })
+      .catch(() => {});
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   return (
     <section className="relative overflow-hidden bg-[#fff1f1] py-12">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -16,34 +46,8 @@ export default function MobileGallerySection() {
         Khoảnh khắc trẻ trải nghiệm
       </h2>
 
-      <style>{`
-        @keyframes mobile-gallery-marquee {
-          from { transform: translateX(0); }
-          to { transform: translateX(calc(var(--gallery-tile-w) * -1)); }
-        }
-      `}</style>
-
-      <div
-        className="relative z-[1] w-full overflow-hidden"
-        style={
-          {
-            "--gallery-h": "clamp(228px, 56vw, 300px)",
-            "--gallery-tile-w": "calc(var(--gallery-h) * 5.62)",
-          } as React.CSSProperties
-        }
-      >
-        <div
-          className="relative shrink-0"
-          style={{
-            width: "calc(var(--gallery-tile-w) * 4)",
-            height: "var(--gallery-h)",
-            backgroundImage: `url("${imgGallery.src}")`,
-            backgroundSize: "var(--gallery-tile-w) var(--gallery-h)",
-            backgroundRepeat: "repeat-x",
-            animation: "mobile-gallery-marquee 34s linear infinite",
-            willChange: "transform",
-          }}
-        />
+      <div className="relative z-[1] w-full overflow-hidden">
+        <MobileFlowerImageCarousel images={images} />
       </div>
     </section>
   );
