@@ -708,6 +708,13 @@ function CategoryPicker({
   const selectedOption = options.find((option) => option.slug === value) ?? null;
   const isEn = lang === "en";
 
+  useEffect(() => {
+    if (selectedOption) {
+      onAddValue(selectedOption.name);
+      onAddValueEn(selectedOption.nameEn);
+    }
+  }, [onAddValue, onAddValueEn, selectedOption]);
+
   return (
     <div className="grid gap-1.5">
       <span className="text-[13px] font-bold uppercase text-[#620000]">{label}</span>
