@@ -16,6 +16,8 @@ export type RegistrationSchedule = {
   email: string;
   grade: string;
   classProgramName: string;
+  campusSlug: string;
+  campusName: string;
   requestedAt: string | null;
   status: RegistrationScheduleStatus;
   sourcePage: string;
@@ -36,6 +38,8 @@ type RegistrationScheduleRow = RowDataPacket & {
   email: string | null;
   interested_grade_label: string | null;
   class_program_name: string | null;
+  campus_slug: string | null;
+  campus_name: string | null;
   requested_at: Date | string | null;
   status: RegistrationScheduleStatus;
   source_page: string | null;
@@ -63,6 +67,8 @@ function mapSchedule(row: RegistrationScheduleRow): RegistrationSchedule {
     email: row.email ?? "",
     grade: row.interested_grade_label ?? "",
     classProgramName: row.class_program_name ?? "",
+    campusSlug: row.campus_slug ?? "",
+    campusName: row.campus_name ?? "",
     requestedAt: toIso(row.requested_at),
     status: row.status,
     sourcePage: row.source_page ?? "",
@@ -96,10 +102,13 @@ export async function listRegistrationSchedules() {
       leads.interested_grade_label,
       leads.source_page,
       leads.source_device,
-      programs.name AS class_program_name
+      programs.name AS class_program_name,
+      campuses.slug AS campus_slug,
+      campuses.name AS campus_name
     FROM registration_schedules schedules
     INNER JOIN enrollment_leads leads ON leads.id = schedules.lead_id
     LEFT JOIN class_programs programs ON programs.id = leads.class_program_id
+    LEFT JOIN campuses ON campuses.id = leads.campus_id
     ORDER BY COALESCE(schedules.requested_at, schedules.created_at) DESC, schedules.id DESC`,
   );
 

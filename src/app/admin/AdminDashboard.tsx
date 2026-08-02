@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { FormEvent, type ClipboardEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { CalendarClock, CheckCircle2, Edit3, Eye, EyeOff, ImagePlus, List, ListOrdered, LogOut, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
+import { CalendarClock, CheckCircle2, Download, Edit3, Eye, EyeOff, Filter, ImagePlus, List, ListOrdered, LogOut, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
 import { Extension, Node, mergeAttributes } from "@tiptap/core";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -21,6 +21,7 @@ import bannerCoverMask from "@/assets/d082e0a60a126345af429a7e01c4ba8161c21e0e.p
 import promoFallbackImage from "@/assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aac.png";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
+import { registrationCampusOptions } from "@/lib/campuses";
 
 type TabKey = "banners" | "registration" | "schedules" | "teaching" | "programs" | "posts" | "about";
 type ProgramMode = "classes" | "curriculum";
@@ -188,6 +189,8 @@ type RegistrationSchedule = {
   email: string;
   grade: string;
   classProgramName: string;
+  campusSlug: string;
+  campusName: string;
   requestedAt: string | null;
   status: RegistrationScheduleStatus;
   sourcePage: string;
@@ -548,6 +551,14 @@ function slugify(value: string) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function escapeExcelCell(value: string | number | null | undefined) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function syncAutoSlug(currentSlug: string, previousValue: string, nextValue: string) {
@@ -3897,6 +3908,7 @@ export default function AdminDashboard() {
   const [addingCategory, setAddingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryNameEn, setNewCategoryNameEn] = useState("");
+  const [scheduleCampusFilter, setScheduleCampusFilter] = useState("all");
   const [categories, setCategories] = useState<CategoryState>(emptyCategories);
   const [registrationForm, setRegistrationForm] =
     useState<RegistrationSectionForm>(emptyRegistrationSection);
@@ -3916,10 +3928,111 @@ export default function AdminDashboard() {
   const [testimonialForm, setTestimonialForm] = useState(emptyTestimonial);
   const [scheduleForm, setScheduleForm] = useState<RegistrationScheduleForm>(emptySchedule);
 
+  const scheduleCampusOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+
+    data.schedules.forEach((schedule) => {
+      const campusSlug = schedule.campusSlug.trim();
+      if (!campusSlug) return;
+
+      counts.set(campusSlug, (counts.get(campusSlug) ?? 0) + 1);
+    });
+
+    return registrationCampusOptions.map((campus) => ({
+      value: campus.slug,
+      label: campus.name,
+      count: counts.get(campus.slug) ?? 0,
+    }));
+  }, [data.schedules]);
+
+  const filteredSchedules = useMemo(() => {
+    if (scheduleCampusFilter === "all") return data.schedules;
+
+    return data.schedules.filter((schedule) => {
+      return schedule.campusSlug.trim() === scheduleCampusFilter;
+    });
+  }, [data.schedules, scheduleCampusFilter]);
+
+  function exportFilteredSchedules() {
+    if (!filteredSchedules.length) {
+      setStatus("Không có lịch đăng ký để xuất.");
+      return;
+    }
+
+    const selectedCampus = scheduleCampusOptions.find((option) => option.value === scheduleCampusFilter);
+    const campusLabel = selectedCampus?.label ?? "Tất cả cơ sở";
+    const rows = filteredSchedules.map((schedule, index) => [
+      index + 1,
+      schedule.parentName,
+      schedule.phone,
+      schedule.email || "Chưa có email",
+      schedule.campusName || "Chưa chọn",
+      schedule.classProgramName || schedule.grade || "Chưa chọn",
+      formatDateTime(schedule.requestedAt),
+      scheduleStatusLabel(schedule.status),
+      formatDateTime(schedule.createdAt),
+      `${schedule.sourcePage || "/"} - ${schedule.sourceDevice}`,
+      schedule.emailStatus,
+      schedule.internalNote,
+    ]);
+    const headers = [
+      "STT",
+      "Phụ huynh",
+      "Số điện thoại",
+      "Email",
+      "Cơ sở",
+      "Khối lớp",
+      "Thời gian tư vấn",
+      "Trạng thái",
+      "Ngày tạo",
+      "Nguồn",
+      "Email xác nhận",
+      "Ghi chú nội bộ",
+    ];
+    const worksheetRows = [headers, ...rows]
+      .map(
+        (row) =>
+          `<tr>${row.map((cell) => `<td>${escapeExcelCell(cell)}</td>`).join("")}</tr>`,
+      )
+      .join("");
+    const html = `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    table { border-collapse: collapse; font-family: Arial, sans-serif; }
+    th, td { border: 1px solid #d9baba; padding: 8px; mso-number-format: "\\@"; }
+    th { background: #fff1f1; color: #620000; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <table>
+    <thead>
+      <tr><th colspan="${headers.length}">${escapeExcelCell(`Lịch đăng ký - ${campusLabel}`)}</th></tr>
+    </thead>
+    <tbody>${worksheetRows}</tbody>
+  </table>
+</body>
+</html>`;
+    const blob = new Blob(["\ufeff", html], { type: "application/vnd.ms-excel;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const date = new Date().toISOString().slice(0, 10);
+    const campusSlug = selectedCampus ? slugify(selectedCampus.label) : "tat-ca-co-so";
+
+    link.href = url;
+    link.download = `lich-dang-ky-${campusSlug}-${date}.xls`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    setStatus(`Đã xuất ${filteredSchedules.length} lịch đăng ký.`);
+  }
+
   const currentList = useMemo(() => {
     if (tab === "registration") return [];
     if (tab === "banners") return data.banners;
-    if (tab === "schedules") return data.schedules;
+    if (tab === "schedules") return filteredSchedules;
     if (tab === "teaching") return data.teaching;
     if (tab === "posts") return data.posts;
     if (tab === "about") {
@@ -3929,7 +4042,7 @@ export default function AdminDashboard() {
       return data.testimonials;
     }
     return programMode === "classes" ? data.classes : data.curriculum;
-  }, [aboutMode, data, programMode, tab]);
+  }, [aboutMode, data, filteredSchedules, programMode, tab]);
 
   async function loadAll() {
     setStatus("Đang tải dữ liệu...");
@@ -4837,6 +4950,42 @@ export default function AdminDashboard() {
                 </ActionButton>
               ) : null}
             </div>
+            {tab === "schedules" ? (
+              <div className="border-b border-[#f0d9d9] bg-[#fffafa] px-4 py-3">
+                <label className="grid gap-1.5">
+                  <span className="inline-flex items-center gap-2 text-[12px] font-extrabold uppercase text-[#b80000]">
+                    <Filter size={14} />
+                    Lọc theo cơ sở
+                  </span>
+                  <div className="grid gap-2">
+                    <select
+                      value={scheduleCampusFilter}
+                      onChange={(event) => {
+                        setScheduleCampusFilter(event.target.value);
+                        setSelected(null);
+                        setScheduleForm(emptySchedule);
+                      }}
+                      className="h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[14px] font-bold text-[#620000] outline-none focus:border-[#b80000]"
+                    >
+                      <option value="all">Tất cả {scheduleCampusOptions.length} cơ sở</option>
+                      {scheduleCampusOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label} - {option.count} lịch
+                        </option>
+                      ))}
+                    </select>
+                    <ActionButton
+                      icon={<Download size={17} />}
+                      tone="quiet"
+                      onClick={exportFilteredSchedules}
+                      disabled={!filteredSchedules.length}
+                    >
+                      Xuất Excel
+                    </ActionButton>
+                  </div>
+                </label>
+              </div>
+            ) : null}
             <div className="space-y-2 p-2">
               {currentList.map((item: any) => {
                 const preview = getListPreview(item, tab, programMode, aboutMode);
@@ -5106,6 +5255,12 @@ export default function AdminDashboard() {
                       <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Khối lớp</p>
                       <p className="mt-1 text-[15px] font-bold">
                         {selectedSchedule.classProgramName || selectedSchedule.grade || "Chưa chọn"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Cơ sở gần bạn</p>
+                      <p className="mt-1 text-[15px] font-bold">
+                        {selectedSchedule.campusName || "Chưa chọn"}
                       </p>
                     </div>
                     <div>

@@ -787,6 +787,15 @@ INSERT INTO campuses (slug, name, address_line, ward, city, sort_order, is_activ
   ('4-nguyen-thong', 'Co so 4 Nguyen Thong', '4 Nguyen Thong', 'P. Xuan Hoa', 'TP.HCM', 10, TRUE),
   ('35-nguyen-huu-canh', 'Co so 35 Nguyen Huu Canh', '35 Nguyen Huu Canh', 'P. Thanh My Tay', 'TP.HCM', 20, TRUE);
 
+INSERT INTO campuses (slug, name, address_line, sort_order, is_active) VALUES
+  ('hai-phong', 'Princeton Academy Hai Phong', 'No. 6, Trieu Viet Vuong, Ecopark, Tan Hung Ward, Hai Phong', 10, TRUE),
+  ('da-nang', 'Princeton Academy Da Nang', '88 Bac Son, Hoa An, Cam Le, Da Nang', 20, TRUE),
+  ('geniuscamp-linh-dam', 'Princeton Academy GeniusCamp Linh Dam', 'BT5-TT4A, Southwest Linh Dam Urban Area, Hanoi', 30, TRUE),
+  ('hung-yen', 'Princeton Academy Hung Yen', 'Nguyen Binh Street, Lac Hong Phuc Urban Area, Hung Yen', 40, TRUE),
+  ('premier-phu-my-hung', 'Princeton Academy Premier - Phu My Hung', '33 Street 16, Nam Vien Quarter, Tan Phu Ward, District 7, Ho Chi Minh City', 50, TRUE),
+  ('prince-academy-da-nang', 'Prince Academy - Princeton Academy', '45-47 Le Quy Don, Hai Chau, Da Nang', 60, TRUE),
+  ('little-house-lai-vu', 'Princeton Little House Lai Vu', 'Stall 19-20, Lai Vu market & service area, Lai Khe, Hai Phong', 70, TRUE);
+
 INSERT INTO campaigns (slug, name, offer_text, status, landing_page) VALUES
   ('uu-dai-ghi-danh', 'Uu dai ghi danh', 'Dang ky nhan uu dai tuyen sinh', 'active', '/dang-ky');
 

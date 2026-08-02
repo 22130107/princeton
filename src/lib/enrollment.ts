@@ -1,11 +1,14 @@
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { getMysqlPool } from "./mysql";
 import { sendRegistrationConfirmationEmail } from "./registration-email";
+import { findRegistrationCampusOption } from "./campuses";
 
 export type EnrollmentLeadInput = {
   parentName: string;
   phone: string;
   email: string;
+  campusId?: number | string | null;
+  campusSlug?: string | null;
   grade: string;
   agreed: boolean;
   sourcePage?: string;
@@ -25,6 +28,11 @@ type ClassProgramRow = RowDataPacket & {
 
 type CampaignRow = RowDataPacket & {
   id: number;
+};
+
+type CampusRow = RowDataPacket & {
+  id: number;
+  name: string;
 };
 
 const gradeSlugMap: Record<string, string> = {
@@ -48,6 +56,17 @@ function normalizeGradeToSlug(grade: string) {
   if (direct) return direct;
 
   return Object.keys(gradeSlugMap).find((slug) => normalized.includes(slug)) ?? null;
+}
+
+function normalizeCampusId(value: EnrollmentLeadInput["campusId"]) {
+  if (value === undefined || value === null || value === "") return null;
+
+  const id = Number(value);
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
+
+function normalizeCampusSlug(value: EnrollmentLeadInput["campusSlug"]) {
+  return value?.trim() ?? "";
 }
 
 function getRequestedAppointmentAt(date?: string | null, time?: string | null) {
@@ -80,6 +99,12 @@ export function validateEnrollmentLead(input: Partial<EnrollmentLeadInput>) {
   const phone = normalizePhone(input.phone?.trim() ?? "");
   const email = input.email?.trim() ?? "";
   const grade = input.grade?.trim() ?? "";
+  const campusId = normalizeCampusId(input.campusId);
+  const campusSlug = normalizeCampusSlug(input.campusSlug);
+
+  if (campusSlug && !findRegistrationCampusOption(campusSlug)) {
+    errors.campusSlug = "Cơ sở không hợp lệ.";
+  }
 
   if (parentName.length < 2) {
     errors.parentName = "Vui lòng nhập họ và tên.";
@@ -108,6 +133,8 @@ export function validateEnrollmentLead(input: Partial<EnrollmentLeadInput>) {
       parentName,
       phone,
       email,
+      campusId,
+      campusSlug,
       grade,
       sourcePage: input.sourcePage?.trim() || null,
       sourceDevice: input.sourceDevice ?? "unknown",
@@ -135,6 +162,72 @@ export async function createEnrollmentLead(
   const connection = await pool.getConnection();
 
   try {
+    let campusId: number | null = null;
+    let campusName = "";
+
+    if (validation.data.campusSlug) {
+      const campusOption = findRegistrationCampusOption(validation.data.campusSlug);
+
+      if (!campusOption) {
+        return {
+          ok: false as const,
+          status: 422,
+          errors: { campusSlug: "Cơ sở không hợp lệ." },
+        };
+      }
+
+      const [campusRows] = await connection.execute<CampusRow[]>(
+        "SELECT id, name FROM campuses WHERE slug = :slug LIMIT 1",
+        { slug: campusOption.slug },
+      );
+
+      if (campusRows[0]) {
+        campusId = campusRows[0].id;
+        campusName = campusRows[0].name;
+      } else {
+        const [campusResult] = await connection.execute<ResultSetHeader>(
+          `INSERT INTO campuses (
+            slug,
+            name,
+            address_line,
+            sort_order,
+            is_active
+          ) VALUES (
+            :slug,
+            :name,
+            :address,
+            :sortOrder,
+            TRUE
+          )`,
+          {
+            slug: campusOption.slug,
+            name: campusOption.name,
+            address: campusOption.address,
+            sortOrder: campusOption.sortOrder,
+          },
+        );
+
+        campusId = campusResult.insertId;
+        campusName = campusOption.name;
+      }
+    } else if (validation.data.campusId) {
+      const [campusRows] = await connection.execute<CampusRow[]>(
+        "SELECT id, name FROM campuses WHERE id = :id AND is_active = TRUE LIMIT 1",
+        { id: validation.data.campusId },
+      );
+
+      if (!campusRows[0]) {
+        return {
+          ok: false as const,
+          status: 422,
+          errors: { campusId: "Cơ sở không hợp lệ." },
+        };
+      }
+
+      campusId = campusRows[0].id;
+      campusName = campusRows[0].name;
+    }
+
     await connection.beginTransaction();
 
     const gradeSlug = normalizeGradeToSlug(validation.data.grade);
@@ -163,6 +256,7 @@ export async function createEnrollmentLead(
         email,
         class_program_id,
         interested_grade_label,
+        campus_id,
         campaign_id,
         source_page,
         source_device,
@@ -178,6 +272,7 @@ export async function createEnrollmentLead(
         :email,
         :classProgramId,
         :interestedGradeLabel,
+        :campusId,
         :campaignId,
         :sourcePage,
         :sourceDevice,
@@ -194,6 +289,7 @@ export async function createEnrollmentLead(
         email: validation.data.email,
         classProgramId,
         interestedGradeLabel: validation.data.grade,
+        campusId,
         campaignId,
         sourcePage: validation.data.sourcePage,
         sourceDevice: validation.data.sourceDevice,
@@ -262,6 +358,7 @@ export async function createEnrollmentLead(
       parentName: validation.data.parentName,
       phone: validation.data.phone,
       grade: validation.data.grade,
+      campusName,
       appointmentLabel: formatAppointmentLabel(requestedAppointmentAt),
       leadId: leadResult.insertId,
     });

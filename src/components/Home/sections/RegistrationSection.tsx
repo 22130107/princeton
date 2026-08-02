@@ -15,6 +15,11 @@ type ProgramOption = {
   label: string;
 };
 
+type CampusOption = {
+  slug: string;
+  label: string;
+};
+
 const fallbackPrograms: ProgramOption[] = [
   { slug: "penguin", label: "Penguin (2-3 TUỔI)" },
 ];
@@ -855,18 +860,21 @@ function Image11() {
 }
 
 function ComboboxMenu({
-  programs,
+  options,
   value,
   onChange,
+  ariaLabel,
+  placeholder,
 }: {
-  programs: ProgramOption[];
+  options: ProgramOption[];
   value: string;
   onChange: (value: string) => void;
+  ariaLabel: string;
+  placeholder?: string;
 }) {
-  const { t } = useLanguage();
   const selectValue = value ?? "";
   const selectedLabel =
-    programs.find((program) => program.slug === selectValue)?.label ?? programs[0]?.label ?? fallbackPrograms[0].label;
+    options.find((option) => option.slug === selectValue)?.label ?? placeholder ?? options[0]?.label ?? "";
 
   return (
     <div className="content-stretch flex flex-col h-[50px] items-start justify-center relative rounded-bl-[4px] rounded-br-[4px] shrink-0 w-full" data-name="Combobox menu">
@@ -874,14 +882,15 @@ function ComboboxMenu({
       <Textbox label={selectedLabel} />
       <Image11 />
       <select
-        aria-label={t("form.grade")}
+        aria-label={ariaLabel}
         value={selectValue}
         onChange={(event) => onChange(event.target.value)}
         className="absolute inset-0 z-[2] cursor-pointer opacity-0"
       >
-        {programs.map((program) => (
-          <option key={program.slug} value={program.slug}>
-            {program.label}
+        {placeholder ? <option value="">{placeholder}</option> : null}
+        {options.map((option) => (
+          <option key={option.slug} value={option.slug}>
+            {option.label}
           </option>
         ))}
       </select>
@@ -890,37 +899,57 @@ function ComboboxMenu({
 }
 
 function Container188({
-  programs,
+  options,
   value,
   onChange,
+  ariaLabel,
+  placeholder,
 }: {
-  programs: ProgramOption[];
+  options: ProgramOption[];
   value: string;
   onChange: (value: string) => void;
+  ariaLabel: string;
+  placeholder?: string;
 }) {
   return (
     <div className="flex-[1_0_0] min-w-px relative" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start relative size-full">
-        <ComboboxMenu programs={programs} value={value} onChange={onChange} />
+        <ComboboxMenu
+          options={options}
+          value={value}
+          onChange={onChange}
+          ariaLabel={ariaLabel}
+          placeholder={placeholder}
+        />
       </div>
     </div>
   );
 }
 
 function ListboxMenu({
-  programs,
+  options,
   value,
   onChange,
+  ariaLabel,
+  placeholder,
 }: {
-  programs: ProgramOption[];
+  options: ProgramOption[];
   value: string;
   onChange: (value: string) => void;
+  ariaLabel: string;
+  placeholder?: string;
 }) {
   return (
     <div className="bg-white min-h-[38px] relative shrink-0 w-full" data-name="Listbox menu">
       <div className="flex flex-row items-center justify-center min-h-[inherit] overflow-clip rounded-[inherit] size-full">
         <div className="content-center flex flex-wrap items-center justify-center min-h-[inherit] pb-px pt-[4px] px-[6.8px] relative size-full">
-          <Container188 programs={programs} value={value} onChange={onChange} />
+          <Container188
+            options={options}
+            value={value}
+            onChange={onChange}
+            ariaLabel={ariaLabel}
+            placeholder={placeholder}
+          />
         </div>
       </div>
       <div aria-hidden className="absolute border border-[rgba(0,0,0,0)] border-solid inset-0 pointer-events-none" />
@@ -1006,6 +1035,9 @@ function Container184({
   onPhoneChange,
   email,
   onEmailChange,
+  campuses,
+  campusSlug,
+  onCampusChange,
   programs,
   grade,
   onGradeChange,
@@ -1024,6 +1056,9 @@ function Container184({
   onPhoneChange: (value: string) => void;
   email: string;
   onEmailChange: (value: string) => void;
+  campuses: CampusOption[];
+  campusSlug: string;
+  onCampusChange: (value: string) => void;
   programs: ProgramOption[];
   grade: string;
   onGradeChange: (value: string) => void;
@@ -1033,12 +1068,26 @@ function Container184({
   appointmentTime: string;
   onAppointmentTimeChange: (value: string) => void;
 }) {
+  const { t } = useLanguage();
+
   return (
     <div className="content-stretch flex flex-col gap-[12.6px] items-start relative shrink-0 w-full" data-name="Container">
       <Container185 value={name} onChange={onNameChange} />
       <Container186 value={phone} onChange={onPhoneChange} />
       <Container187 value={email} onChange={onEmailChange} />
-      <ListboxMenu programs={programs} value={grade} onChange={onGradeChange} />
+      <ListboxMenu
+        options={campuses}
+        value={campusSlug}
+        onChange={onCampusChange}
+        ariaLabel={t("form.campus")}
+        placeholder={t("form.campus")}
+      />
+      <ListboxMenu
+        options={programs}
+        value={grade}
+        onChange={onGradeChange}
+        ariaLabel={t("form.grade")}
+      />
       <ListItem consentText={consentText} checked={checked} onToggle={onToggle} />
     </div>
   );
@@ -1059,6 +1108,9 @@ function Form({
   onPhoneChange,
   email,
   onEmailChange,
+  campuses,
+  campusSlug,
+  onCampusChange,
   programs,
   grade,
   onGradeChange,
@@ -1077,6 +1129,9 @@ function Form({
   onPhoneChange: (value: string) => void;
   email: string;
   onEmailChange: (value: string) => void;
+  campuses: CampusOption[];
+  campusSlug: string;
+  onCampusChange: (value: string) => void;
   programs: ProgramOption[];
   grade: string;
   onGradeChange: (value: string) => void;
@@ -1098,6 +1153,9 @@ function Form({
         onPhoneChange={onPhoneChange}
         email={email}
         onEmailChange={onEmailChange}
+        campuses={campuses}
+        campusSlug={campusSlug}
+        onCampusChange={onCampusChange}
         programs={programs}
         grade={grade}
         onGradeChange={onGradeChange}
@@ -1121,6 +1179,9 @@ function Container173({
   onPhoneChange,
   email,
   onEmailChange,
+  campuses,
+  campusSlug,
+  onCampusChange,
   programs,
   grade,
   onGradeChange,
@@ -1139,6 +1200,9 @@ function Container173({
   onPhoneChange: (value: string) => void;
   email: string;
   onEmailChange: (value: string) => void;
+  campuses: CampusOption[];
+  campusSlug: string;
+  onCampusChange: (value: string) => void;
   programs: ProgramOption[];
   grade: string;
   onGradeChange: (value: string) => void;
@@ -1163,6 +1227,9 @@ function Container173({
           onPhoneChange={onPhoneChange}
           email={email}
           onEmailChange={onEmailChange}
+          campuses={campuses}
+          campusSlug={campusSlug}
+          onCampusChange={onCampusChange}
           programs={programs}
           grade={grade}
           onGradeChange={onGradeChange}
@@ -1189,6 +1256,9 @@ function Background13({
   onPhoneChange,
   email,
   onEmailChange,
+  campuses,
+  campusSlug,
+  onCampusChange,
   programs,
   grade,
   onGradeChange,
@@ -1209,6 +1279,9 @@ function Background13({
   onPhoneChange: (value: string) => void;
   email: string;
   onEmailChange: (value: string) => void;
+  campuses: CampusOption[];
+  campusSlug: string;
+  onCampusChange: (value: string) => void;
   programs: ProgramOption[];
   grade: string;
   onGradeChange: (value: string) => void;
@@ -1238,6 +1311,9 @@ function Background13({
         onPhoneChange={onPhoneChange}
         email={email}
         onEmailChange={onEmailChange}
+        campuses={campuses}
+        campusSlug={campusSlug}
+        onCampusChange={onCampusChange}
         programs={programs}
         grade={grade}
         onGradeChange={onGradeChange}
@@ -1258,6 +1334,8 @@ export default function RegistrationSection() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [campuses, setCampuses] = useState<CampusOption[]>([]);
+  const [campusSlug, setCampusSlug] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [programs, setPrograms] = useState<ProgramOption[]>(fallbackPrograms);
   const [grade, setGrade] = useState(fallbackPrograms[0].slug);
@@ -1300,6 +1378,7 @@ export default function RegistrationSection() {
           parentName: name,
           phone,
           email,
+          campusSlug,
           grade,
           appointmentDate,
           appointmentTime,
@@ -1314,6 +1393,7 @@ export default function RegistrationSection() {
       setName("");
       setPhone("");
       setEmail("");
+      setCampusSlug("");
       setAppointmentDate("");
       setAppointmentTime("");
       setAgreed(false);
@@ -1352,6 +1432,22 @@ export default function RegistrationSection() {
         if (!nextPrograms.length) return;
         setPrograms(nextPrograms);
         setGrade((current) => (nextPrograms.some((program: ProgramOption) => program.slug === current) ? current : nextPrograms[0].slug));
+      })
+      .catch(() => undefined);
+
+    fetch("/api/campuses")
+      .then((response) => response.json())
+      .then((data) => {
+        if (!mounted || !Array.isArray(data.campuses)) return;
+
+        const nextCampuses = data.campuses
+          .map((campus: any) => ({
+            slug: String(campus.slug || ""),
+            label: String(campus.label || campus.name || ""),
+          }))
+          .filter((campus: CampusOption) => campus.slug && campus.label.trim());
+
+        setCampuses(nextCampuses);
       })
       .catch(() => undefined);
 
@@ -1398,6 +1494,9 @@ export default function RegistrationSection() {
             onPhoneChange={setPhone}
             email={email}
             onEmailChange={setEmail}
+            campuses={campuses}
+            campusSlug={campusSlug}
+            onCampusChange={setCampusSlug}
             programs={programs}
             grade={grade}
             onGradeChange={setGrade}

@@ -10,6 +10,13 @@ type ProgramOption = {
   label: string;
 };
 
+type CampusOption = {
+  slug: string;
+  name: string;
+  address: string;
+  label: string;
+};
+
 type EnrollmentLeadFormProps = {
   variant?: "desktop" | "mobile";
   submitLabel?: string;
@@ -38,9 +45,11 @@ export default function EnrollmentLeadForm({
   const effectiveSubmitLabel = submitLabel ?? t("register.cta");
   const effectiveConsentText = consentText ?? t("form.consentLong");
   const [programs, setPrograms] = useState<ProgramOption[]>([]);
+  const [campuses, setCampuses] = useState<CampusOption[]>([]);
   const [parentName, setParentName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [campusSlug, setCampusSlug] = useState("");
   const [grade, setGrade] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -66,6 +75,14 @@ export default function EnrollmentLeadForm({
           message: t("form.loadError"),
         });
       });
+
+    fetch("/api/campuses")
+      .then((response) => response.json())
+      .then((data) => {
+        if (!mounted || !Array.isArray(data.campuses)) return;
+        setCampuses(data.campuses);
+      })
+      .catch(() => undefined);
 
     return () => {
       mounted = false;
@@ -103,6 +120,7 @@ export default function EnrollmentLeadForm({
           parentName,
           phone,
           email,
+          campusSlug,
           grade,
           agreed,
           sourcePage: window.location.pathname,
@@ -124,6 +142,7 @@ export default function EnrollmentLeadForm({
       setParentName("");
       setPhone("");
       setEmail("");
+      setCampusSlug("");
       setAgreed(false);
       setSubmitState({
         status: "success",
@@ -206,6 +225,37 @@ export default function EnrollmentLeadForm({
         />
         {fieldErrors.email ? (
           <p className="mt-1 text-[12px] font-semibold text-red-600">{fieldErrors.email}</p>
+        ) : null}
+      </div>
+
+      <div>
+        <label className={labelClass}>{t("form.campus")}</label>
+        <div className="relative">
+          <select
+            value={campusSlug}
+            onChange={(event) => setCampusSlug(event.target.value)}
+            className={`${fieldClass} appearance-none pr-9`}
+          >
+            <option value="">{t("form.campus")}</option>
+            {campuses.map((campus) => (
+              <option key={campus.slug} value={campus.slug}>
+                {campus.label}
+              </option>
+            ))}
+          </select>
+          <svg
+            aria-hidden
+            className="pointer-events-none absolute right-3 top-1/2 h-2 w-3 -translate-y-1/2"
+            viewBox="0 0 16 11"
+            fill="none"
+          >
+            <path d="M1 1L8 9L15 1" stroke="#620000" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </div>
+        {fieldErrors.campusSlug || fieldErrors.campusId ? (
+          <p className="mt-1 text-[12px] font-semibold text-red-600">
+            {fieldErrors.campusSlug || fieldErrors.campusId}
+          </p>
         ) : null}
       </div>
 

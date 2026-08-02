@@ -5,6 +5,7 @@ export type RegistrationEmailInput = {
   parentName: string;
   phone: string;
   grade: string;
+  campusName?: string;
   appointmentLabel: string;
   leadId: number;
 };
@@ -46,6 +47,7 @@ function getCustomerConfirmationEmail(input: RegistrationEmailInput): EmailMessa
     `Mã đăng ký: #${input.leadId}`,
     `Số điện thoại: ${input.phone}`,
     `Khối lớp quan tâm: ${input.grade}`,
+    ...(input.campusName ? [`Cơ sở gần bạn: ${input.campusName}`] : []),
     `Lịch tư vấn: ${input.appointmentLabel}`,
     "",
     "Nhà trường sẽ liên hệ xác nhận trong thời gian sớm nhất.",
@@ -65,6 +67,7 @@ function getCustomerConfirmationEmail(input: RegistrationEmailInput): EmailMessa
           <li><strong>Mã đăng ký:</strong> #${input.leadId}</li>
           <li><strong>Số điện thoại:</strong> ${htmlEscape(input.phone)}</li>
           <li><strong>Khối lớp quan tâm:</strong> ${htmlEscape(input.grade)}</li>
+          ${input.campusName ? `<li><strong>Cơ sở gần bạn:</strong> ${htmlEscape(input.campusName)}</li>` : ""}
           <li><strong>Lịch tư vấn:</strong> ${htmlEscape(input.appointmentLabel)}</li>
         </ul>
         <p>Nhà trường sẽ liên hệ xác nhận trong thời gian sớm nhất.</p>
@@ -83,6 +86,7 @@ function getOwnerNotificationEmail(input: RegistrationEmailInput, ownerEmail: st
     `Số điện thoại: ${input.phone}`,
     `Email phụ huynh: ${input.to}`,
     `Khối lớp quan tâm: ${input.grade}`,
+    ...(input.campusName ? [`Cơ sở gần bạn: ${input.campusName}`] : []),
     `Lịch tư vấn: ${input.appointmentLabel}`,
     "",
     "Vui lòng kiểm tra mục Lịch đăng ký trong trang quản trị.",
@@ -102,6 +106,7 @@ function getOwnerNotificationEmail(input: RegistrationEmailInput, ownerEmail: st
           <li><strong>Số điện thoại:</strong> ${htmlEscape(input.phone)}</li>
           <li><strong>Email phụ huynh:</strong> ${htmlEscape(input.to)}</li>
           <li><strong>Khối lớp quan tâm:</strong> ${htmlEscape(input.grade)}</li>
+          ${input.campusName ? `<li><strong>Cơ sở gần bạn:</strong> ${htmlEscape(input.campusName)}</li>` : ""}
           <li><strong>Lịch tư vấn:</strong> ${htmlEscape(input.appointmentLabel)}</li>
         </ul>
         <p>Vui lòng kiểm tra mục <strong>Lịch đăng ký</strong> trong trang quản trị.</p>
