@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
+import LanguageFlagIcon from "@/components/Shared/LanguageFlagIcon";
 import type { Lang } from "@/lib/i18n";
 import imgLogo from "../../../assets/logo1.png";
 
@@ -63,7 +64,10 @@ function LangToggle({ lang, onToggle }: { lang: Lang; onToggle: () => void }) {
       className="shrink-0 rounded-full border-2 border-[#8d0000] bg-white px-3 py-[6px] text-[15px] font-extrabold text-[#620000] no-underline shadow-[0_2px_0_#700000] transition-colors hover:bg-[#fff1f1]"
       aria-label="Switch language"
     >
-      {lang === "vi" ? "EN" : "VI"}
+      <span className="flex items-center gap-2">
+        <LanguageFlagIcon lang={lang} />
+        <span>{lang === "vi" ? "VN" : "EN"}</span>
+      </span>
     </button>
   );
 }

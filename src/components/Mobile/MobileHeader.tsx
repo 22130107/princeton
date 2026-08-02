@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
+import LanguageFlagIcon from "@/components/Shared/LanguageFlagIcon";
 import type { Lang } from "@/lib/i18n";
 import imgLogo from "../../assets/logo1.png";
 
@@ -37,7 +38,10 @@ export default function MobileHeader() {
             className="rounded-full border-2 border-[#8d0000] bg-white px-3 py-1 text-[13px] font-extrabold text-[#620000] no-underline shadow-[0_2px_0_#700000]"
             aria-label="Switch language"
           >
-            {lang === "vi" ? "EN" : "VI"}
+            <span className="flex items-center gap-1.5">
+              <LanguageFlagIcon lang={lang} />
+              <span>{lang === "vi" ? "VN" : "EN"}</span>
+            </span>
           </button>
           <Link
             href="/dang-ky"
