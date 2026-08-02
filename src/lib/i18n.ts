@@ -199,6 +199,7 @@ export const dictionaries: Record<Lang, TDict> = {
     "countdown.minutes": "Phút",
     "countdown.seconds": "Giây",
     "register.cta": "Đăng ký ngay",
+    "register.promoTitle": "ĐĂNG KÝ NHẬN ƯU ĐÃI NGAY",
     "register.promoAlt": "Ưu đãi đăng ký",
   },
   en: {
@@ -386,7 +387,8 @@ export const dictionaries: Record<Lang, TDict> = {
     "countdown.hours": "Hours",
     "countdown.minutes": "Minutes",
     "countdown.seconds": "Seconds",
-    "register.cta": "Register now",
+    "register.cta": "Register Now",
+    "register.promoTitle": "MAKE THE MOST OF THE OFFER NOW",
     "register.promoAlt": "Registration promotion",
   },
 };

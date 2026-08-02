@@ -106,7 +106,7 @@ export default async function TeachingMethodDetailPage({
             </div>
             <div className="mx-auto max-w-[880px] text-center">
               <p className="text-[14px] font-extrabold uppercase text-[#b80000]">
-                {method.category}
+                {lang === "en" ? method.categoryEn : method.category}
               </p>
               <h1 className="mt-4 text-[34px] font-extrabold leading-tight md:text-[56px]">
                 {title}
@@ -161,7 +161,7 @@ export default async function TeachingMethodDetailPage({
                   </div>
                   <div className="bg-[#fffefa] p-5">
                     <p className="text-[12px] font-extrabold uppercase text-[#b80000]">
-                      {item.category}
+                      {isEn && item.categoryEn ? item.categoryEn : item.category}
                     </p>
                     <h3 className="mt-3 text-[20px] font-extrabold leading-tight">
                       {isEn && item.titleEn ? item.titleEn : item.title}

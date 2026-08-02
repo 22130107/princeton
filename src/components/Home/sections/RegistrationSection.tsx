@@ -1279,6 +1279,8 @@ export default function RegistrationSection() {
   })();
   const displaySettings = {
     ...settings,
+    title: lang === "en" ? t("register.promoTitle") : settings.title,
+    submitLabel: lang === "en" ? t("register.cta") : settings.submitLabel,
     consentText: lang === "en" ? t("form.consentLong") : settings.consentText,
     countdownDays: countdownValues.days,
     countdownHours: countdownValues.hours,

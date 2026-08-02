@@ -42,7 +42,7 @@ export default function MobileRegistrationSection() {
           <div className="relative mx-auto mb-4 flex min-h-[70px] max-w-[390px] items-center justify-center rounded-[999px] bg-[#b80000] px-8 py-3 text-center">
             <div className="absolute left-4 top-1/2 size-2.5 -translate-y-1/2 rounded-full bg-[#ffc300]" />
             <h3 className="text-[19px] font-extrabold uppercase leading-[24px] text-white">
-              {settings.title}
+              {lang === "en" ? t("register.promoTitle") : settings.title}
             </h3>
             <div className="absolute right-4 top-1/2 size-2.5 -translate-y-1/2 rounded-full bg-[#ffc300]" />
           </div>
@@ -70,7 +70,7 @@ export default function MobileRegistrationSection() {
           {settings.showForm ? (
           <EnrollmentLeadForm
             variant="mobile"
-            submitLabel={settings.submitLabel}
+            submitLabel={lang === "en" ? t("register.cta") : settings.submitLabel}
             consentText={lang === "en" ? t("form.consentLong") : settings.consentText}
           />
           ) : null}

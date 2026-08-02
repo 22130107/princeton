@@ -7,6 +7,7 @@ export type CategoryOption = {
   id: number;
   slug: string;
   name: string;
+  nameEn: string;
   scope: CategoryScope;
 };
 
@@ -15,6 +16,7 @@ type ColumnRow = RowDataPacket & { column_exists: number };
 type ExistingCategoryRow = RowDataPacket & {
   scope: Exclude<CategoryScope, "posts">;
   name: string;
+  name_en: string | null;
 };
 type StoredCategoryRow = RowDataPacket & {
   id: number;
@@ -25,6 +27,7 @@ type ExistingOptionRow = RowDataPacket & {
   scope?: CategoryScope;
   slug: string;
   name: string;
+  name_en: string | null;
 };
 
 const categoryScopes: CategoryScope[] = [
@@ -85,12 +88,29 @@ export async function ensureCategoryStorage() {
       scope VARCHAR(64) NOT NULL,
       slug VARCHAR(255) NOT NULL,
       name VARCHAR(255) NOT NULL,
+      name_en VARCHAR(255) NULL,
       sort_order INT NOT NULL DEFAULT 0,
       is_active BOOLEAN NOT NULL DEFAULT TRUE,
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       PRIMARY KEY (id),
       UNIQUE KEY content_categories_scope_slug_unique (scope, slug)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await pool.execute(`
+    CREATE TABLE IF NOT EXISTS post_categories (
+      id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+      slug VARCHAR(255) NOT NULL,
+      name VARCHAR(255) NOT NULL,
+      name_en VARCHAR(255) NULL,
+      description TEXT NULL,
+      sort_order INT NOT NULL DEFAULT 0,
+      is_active BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY post_categories_slug_unique (slug)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
 
@@ -105,20 +125,63 @@ export async function ensureCategoryStorage() {
   if (!rows[0]?.column_exists) {
     await pool.execute("ALTER TABLE curriculum_tracks ADD COLUMN category VARCHAR(255) NULL AFTER title");
   }
+
+  const entityTables: Array<{ table: string; column: string; after: string }> = [
+    { table: "curriculum_tracks", column: "category_en", after: "category" },
+    { table: "teaching_methods", column: "category_en", after: "category" },
+    { table: "class_programs", column: "category_en", after: "category" },
+  ];
+
+  for (const { table, column, after } of entityTables) {
+    const [columnRows] = await pool.execute<ColumnRow[]>(
+      `SELECT COUNT(*) AS column_exists
+       FROM information_schema.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE()
+         AND TABLE_NAME = :table
+         AND COLUMN_NAME = :column`,
+      { table, column },
+    );
+    if (!columnRows[0]?.column_exists) {
+      await pool.execute(`ALTER TABLE ${table} ADD COLUMN ${column} VARCHAR(255) NULL AFTER ${after}`);
+    }
+  }
+}
+
+function ensureCategoryLanguageColumns(table: "content_categories" | "post_categories") {
+  const pool = getMysqlPool();
+
+  return Promise.all(
+    ["name", "name_en"].map((column) =>
+      pool
+        .execute<ColumnRow[]>(
+          `SELECT COUNT(*) AS column_exists
+           FROM information_schema.COLUMNS
+           WHERE TABLE_SCHEMA = DATABASE()
+             AND TABLE_NAME = :table
+             AND COLUMN_NAME = :column`,
+          { table, column },
+        )
+        .then(([rows]) => {
+          if (!rows[0]?.column_exists) {
+            return pool.execute(`ALTER TABLE ${table} ADD COLUMN ${column} VARCHAR(255) NULL`);
+          }
+        }),
+    ),
+  );
 }
 
 async function seedContentCategories() {
   const pool = getMysqlPool();
   const [existingRows] = await pool.execute<ExistingCategoryRow[]>(`
-    SELECT 'class_programs' AS scope, TRIM(category) AS name
+    SELECT 'class_programs' AS scope, TRIM(category) AS name, TRIM(category_en) AS name_en
     FROM class_programs
     WHERE category IS NOT NULL AND TRIM(category) <> ''
     UNION
-    SELECT 'teaching_methods' AS scope, TRIM(category) AS name
+    SELECT 'teaching_methods' AS scope, TRIM(category) AS name, TRIM(category_en) AS name_en
     FROM teaching_methods
     WHERE category IS NOT NULL AND TRIM(category) <> ''
     UNION
-    SELECT 'curriculum_tracks' AS scope, TRIM(category) AS name
+    SELECT 'curriculum_tracks' AS scope, TRIM(category) AS name, TRIM(category_en) AS name_en
     FROM curriculum_tracks
     WHERE category IS NOT NULL AND TRIM(category) <> ''
   `);
@@ -128,17 +191,17 @@ async function seedContentCategories() {
     if (!slug) continue;
 
     await pool.execute(
-      `INSERT INTO content_categories (scope, slug, name, sort_order)
-       VALUES (:scope, :slug, :name, 10)
-       ON DUPLICATE KEY UPDATE name = VALUES(name), is_active = TRUE`,
-      { scope: row.scope, slug, name: row.name },
+      `INSERT INTO content_categories (scope, slug, name, name_en, sort_order)
+       VALUES (:scope, :slug, :name, :nameEn, 10)
+       ON DUPLICATE KEY UPDATE name = VALUES(name), name_en = COALESCE(VALUES(name_en), name_en), is_active = TRUE`,
+      { scope: row.scope, slug, name: row.name, nameEn: row.name_en || null },
     );
   }
 
   await pool.execute(`
-    INSERT IGNORE INTO content_categories (scope, slug, name, sort_order) VALUES
-      ('curriculum_tracks', 'tieu-chuan', 'Tiêu chuẩn', 10),
-      ('curriculum_tracks', 'nang-cao', 'Nâng cao', 20)
+    INSERT IGNORE INTO content_categories (scope, slug, name, name_en, sort_order) VALUES
+      ('curriculum_tracks', 'tieu-chuan', 'Tiêu chuẩn', 'Standard', 10),
+      ('curriculum_tracks', 'nang-cao', 'Nâng cao', 'Advanced', 20)
   `);
 
   const [storedRows] = await pool.execute<StoredCategoryRow[]>(
@@ -168,30 +231,43 @@ export async function getCategoryOptions() {
 
   const pool = getMysqlPool();
   const [contentRows] = await pool.execute<CategoryRow[]>(
-    `SELECT id, scope, slug, name
+    `SELECT id, scope, slug, name, name_en
      FROM content_categories
      WHERE is_active = TRUE
      ORDER BY scope ASC, sort_order ASC, name ASC`,
   );
 
   const [postRows] = await pool.execute<CategoryRow[]>(
-    `SELECT id, 'posts' AS scope, slug, name
+    `SELECT id, 'posts' AS scope, slug, name, name_en
      FROM post_categories
      WHERE is_active = TRUE
      ORDER BY sort_order ASC, name ASC`,
   );
 
+  const mapRow = (row: CategoryRow): CategoryOption => ({
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    nameEn: text(row.name_en) || row.name,
+    scope: row.scope,
+  });
+
   return {
-    teachingMethods: contentRows.filter((row) => row.scope === "teaching_methods"),
-    classPrograms: contentRows.filter((row) => row.scope === "class_programs"),
-    curriculumTracks: contentRows.filter((row) => row.scope === "curriculum_tracks"),
-    posts: postRows,
+    teachingMethods: contentRows.filter((row) => row.scope === "teaching_methods").map(mapRow),
+    classPrograms: contentRows.filter((row) => row.scope === "class_programs").map(mapRow),
+    curriculumTracks: contentRows.filter((row) => row.scope === "curriculum_tracks").map(mapRow),
+    posts: postRows.map(mapRow),
   };
 }
 
-export async function createCategory(input: { scope?: unknown; name?: unknown }) {
+function text(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+export async function createCategory(input: { scope?: unknown; name?: unknown; nameEn?: unknown }) {
   const scope = assertScope(input.scope);
   const name = requiredCategoryName(input.name);
+  const nameEn = typeof input.nameEn === "string" ? input.nameEn.trim() : "";
   const slug = slugify(name);
 
   if (!slug) {
@@ -199,36 +275,42 @@ export async function createCategory(input: { scope?: unknown; name?: unknown })
   }
 
   await ensureCategoryStorage();
+  await ensureCategoryLanguageColumns(contentTableForScope(scope));
   const pool = getMysqlPool();
 
   if (scope === "posts") {
     const [result] = await pool.execute<ResultSetHeader>(
-      `INSERT INTO post_categories (slug, name, sort_order, is_active)
-       VALUES (:slug, :name, 0, TRUE)
-       ON DUPLICATE KEY UPDATE name = VALUES(name), is_active = TRUE`,
-      { slug, name },
+      `INSERT INTO post_categories (slug, name, name_en, sort_order, is_active)
+       VALUES (:slug, :name, :nameEn, 0, TRUE)
+       ON DUPLICATE KEY UPDATE name = VALUES(name), name_en = VALUES(name_en), is_active = TRUE`,
+      { slug, name, nameEn: nameEn || null },
     );
 
-    return { id: result.insertId, slug, name, scope };
+    return { id: result.insertId, slug, name, nameEn: nameEn || name, scope };
   }
 
   const [result] = await pool.execute<ResultSetHeader>(
-    `INSERT INTO content_categories (scope, slug, name, sort_order, is_active)
-     VALUES (:scope, :slug, :name, 0, TRUE)
-     ON DUPLICATE KEY UPDATE name = VALUES(name), is_active = TRUE`,
-    { scope, slug, name },
+    `INSERT INTO content_categories (scope, slug, name, name_en, sort_order, is_active)
+     VALUES (:scope, :slug, :name, :nameEn, 0, TRUE)
+     ON DUPLICATE KEY UPDATE name = VALUES(name), name_en = VALUES(name_en), is_active = TRUE`,
+    { scope, slug, name, nameEn: nameEn || null },
   );
 
-  return { id: result.insertId, slug, name, scope };
+  return { id: result.insertId, slug, name, nameEn: nameEn || name, scope };
+}
+
+function contentTableForScope(scope: CategoryScope): "content_categories" | "post_categories" {
+  return scope === "posts" ? "post_categories" : "content_categories";
 }
 
 export async function updateCategory(
   idValue: unknown,
-  input: { scope?: unknown; name?: unknown },
+  input: { scope?: unknown; name?: unknown; nameEn?: unknown },
 ) {
   const id = positiveId(idValue);
   const scope = assertScope(input.scope);
   const name = requiredCategoryName(input.name);
+  const nameEn = typeof input.nameEn === "string" ? input.nameEn.trim() : "";
   const slug = slugify(name);
 
   if (!slug) {
@@ -236,53 +318,40 @@ export async function updateCategory(
   }
 
   await ensureCategoryStorage();
+  await ensureCategoryLanguageColumns(contentTableForScope(scope));
   const pool = getMysqlPool();
   const connection = await pool.getConnection();
 
   try {
     await connection.beginTransaction();
 
-    if (scope === "posts") {
-      const [rows] = await connection.execute<ExistingOptionRow[]>(
-        "SELECT id, slug, name FROM post_categories WHERE id = :id LIMIT 1",
-        { id },
-      );
-      if (!rows[0]) throw new Error("Không tìm thấy danh mục.");
-
-      await connection.execute(
-        `UPDATE post_categories
-         SET slug = :slug, name = :name, is_active = TRUE
-         WHERE id = :id`,
-        { id, slug, name },
-      );
-
-      await connection.commit();
-      return { id, slug, name, scope };
-    }
-
     const [rows] = await connection.execute<ExistingOptionRow[]>(
-      "SELECT id, scope, slug, name FROM content_categories WHERE id = :id AND scope = :scope LIMIT 1",
+      `SELECT id, slug, name, name_en
+       FROM ${contentTableForScope(scope)}
+       WHERE id = :id ${scope === "posts" ? "" : "AND scope = :scope"} LIMIT 1`,
       { id, scope },
     );
     const current = rows[0];
     if (!current) throw new Error("Không tìm thấy danh mục.");
 
     await connection.execute(
-      `UPDATE content_categories
-       SET slug = :slug, name = :name, is_active = TRUE
-       WHERE id = :id AND scope = :scope`,
-      { id, scope, slug, name },
+      `UPDATE ${contentTableForScope(scope)}
+       SET slug = :slug, name = :name, name_en = :nameEn, is_active = TRUE
+       WHERE id = :id ${scope === "posts" ? "" : "AND scope = :scope"}`,
+      { id, scope, slug, name, nameEn: nameEn || null },
     );
 
-    await connection.execute(
-      `UPDATE ${tableForScope(scope)}
-       SET category = :name
-       WHERE category = :oldName`,
-      { name, oldName: current.name },
-    );
+    if (scope !== "posts") {
+      await connection.execute(
+        `UPDATE ${tableForScope(scope)}
+         SET category = :name, category_en = :nameEn
+         WHERE category = :oldName`,
+        { name, nameEn: nameEn || name, oldName: current.name },
+      );
+    }
 
     await connection.commit();
-    return { id, slug, name, scope };
+    return { id, slug, name, nameEn: nameEn || name, scope };
   } catch (error) {
     await connection.rollback();
     throw error;
@@ -322,7 +391,7 @@ export async function archiveCategory(idValue: unknown, input: { scope?: unknown
     if (current) {
       await connection.execute(
         `UPDATE ${tableForScope(scope)}
-         SET category = NULL
+         SET category = NULL, category_en = NULL
          WHERE category = :name`,
         { name: current.name },
       );

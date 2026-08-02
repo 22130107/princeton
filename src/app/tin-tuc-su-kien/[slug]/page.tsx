@@ -90,7 +90,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
             />
             <div className="mt-6 w-full px-5 py-3 md:px-9 md:py-5">
               <p className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[#b80000] md:text-[15px]">
-                {post.category}
+                {isEn && post.categoryEn ? post.categoryEn : post.category}
               </p>
               <h1 className="mt-3 text-[30px] font-extrabold leading-tight text-[#b80000] md:text-[52px]">
                 {title}
@@ -155,7 +155,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                 </div>
                 <div className="p-5">
                   <p className="text-[12px] font-extrabold uppercase text-[#b80000]">
-                    {item.category}
+                    {isEn && item.categoryEn ? item.categoryEn : item.category}
                   </p>
                   <h3 className="mt-3 text-[20px] font-extrabold leading-tight">
                     {isEn && item.titleEn ? item.titleEn : item.title}

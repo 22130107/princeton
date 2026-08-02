@@ -93,7 +93,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
             />
             <div className="mt-6 w-full px-5 py-3 md:px-9 md:py-5">
               <p className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[#b80000] md:text-[15px]">
-                {program.category}
+                {isEn && program.categoryEn ? program.categoryEn : program.category}
               </p>
               <h1 className="mt-3 text-[34px] font-extrabold uppercase leading-tight text-[#b80000] md:text-[58px]">
                 {isEn && program.nameEn ? program.nameEn : program.name}

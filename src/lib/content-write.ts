@@ -24,6 +24,7 @@ export type CreateClassProgramInput = {
   ageMin?: number | null;
   ageMax?: number | null;
   category?: string | null;
+  categoryEn?: string | null;
   excerpt?: string | null;
   excerptEn?: string | null;
   description?: string | null;
@@ -41,6 +42,7 @@ export type CreateCurriculumTrackInput = {
   title: string;
   titleEn?: string | null;
   category?: string | null;
+  categoryEn?: string | null;
   description?: string | null;
   descriptionEn?: string | null;
   imageId?: number | null;
@@ -69,6 +71,7 @@ export type CreateTeachingMethodInput = {
   title: string;
   titleEn?: string | null;
   category?: string | null;
+  categoryEn?: string | null;
   description?: string | null;
   descriptionEn?: string | null;
   excerpt?: string | null;
@@ -186,6 +189,7 @@ export function normalizeClassProgramInput(input: Partial<CreateClassProgramInpu
     ageMin: optionalNumber(input.ageMin),
     ageMax: optionalNumber(input.ageMax),
     category: optionalText(input.category),
+    categoryEn: optionalText(input.categoryEn),
     excerpt: optionalText(input.excerpt),
     excerptEn: optionalText(input.excerptEn),
     description: optionalText(input.description),
@@ -205,6 +209,7 @@ export function normalizeCurriculumTrackInput(input: Partial<CreateCurriculumTra
     title: requiredText(input.title, "title"),
     titleEn: optionalText(input.titleEn),
     category: optionalText(input.category),
+    categoryEn: optionalText(input.categoryEn),
     description: optionalText(input.description),
     descriptionEn: optionalText(input.descriptionEn),
     imageId: optionalNumber(input.imageId),
@@ -244,6 +249,7 @@ export function normalizeTeachingMethodInput(input: Partial<CreateTeachingMethod
     title: requiredText(input.title, "title"),
     titleEn: optionalText(input.titleEn),
     category: optionalText(input.category),
+    categoryEn: optionalText(input.categoryEn),
     description: optionalText(input.description),
     descriptionEn: optionalText(input.descriptionEn),
     excerpt: optionalText(input.excerpt),
@@ -367,10 +373,10 @@ export async function createClassProgram(input: Partial<CreateClassProgramInput>
 
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO class_programs (
-        slug, name, name_en, age_min, age_max, age_label, age_label_en, category, excerpt, excerpt_en, description, description_en,
+        slug, name, name_en, age_min, age_max, age_label, age_label_en, category, category_en, excerpt, excerpt_en, description, description_en,
         image_id, cover_position, cover_zoom, color_hex, sort_order, is_active
       ) VALUES (
-        :slug, :name, :nameEn, :ageMin, :ageMax, :ageLabel, :ageLabelEn, :category, :excerpt, :excerptEn, :description, :descriptionEn,
+        :slug, :name, :nameEn, :ageMin, :ageMax, :ageLabel, :ageLabelEn, :category, :categoryEn, :excerpt, :excerptEn, :description, :descriptionEn,
         :imageId, :coverPosition, :coverZoom, :colorHex, :sortOrder, TRUE
       )`,
       { ...data, sortOrder },
@@ -424,9 +430,9 @@ export async function createCurriculumTrack(input: Partial<CreateCurriculumTrack
 
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO curriculum_tracks (
-        slug, title, title_en, category, description, description_en, image_id, cover_position, cover_zoom, logo_media_id, sort_order, is_active
+        slug, title, title_en, category, category_en, description, description_en, image_id, cover_position, cover_zoom, logo_media_id, sort_order, is_active
       ) VALUES (
-        :slug, :title, :titleEn, :category, :description, :descriptionEn, :imageId, :coverPosition, :coverZoom, :logoMediaId, :sortOrder, TRUE
+        :slug, :title, :titleEn, :category, :categoryEn, :description, :descriptionEn, :imageId, :coverPosition, :coverZoom, :logoMediaId, :sortOrder, TRUE
       )`,
       { ...data, sortOrder },
     );
@@ -476,9 +482,9 @@ export async function createTeachingMethod(input: Partial<CreateTeachingMethodIn
 
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO teaching_methods (
-        slug, title, title_en, category, description, description_en, excerpt, excerpt_en, image_id, cover_position, cover_zoom, background_hex, sort_order, status
+        slug, title, title_en, category, category_en, description, description_en, excerpt, excerpt_en, image_id, cover_position, cover_zoom, background_hex, sort_order, status
       ) VALUES (
-        :slug, :title, :titleEn, :category, :description, :descriptionEn, :excerpt, :excerptEn, :imageId, :coverPosition, :coverZoom, :backgroundHex, :sortOrder, 'published'
+        :slug, :title, :titleEn, :category, :categoryEn, :description, :descriptionEn, :excerpt, :excerptEn, :imageId, :coverPosition, :coverZoom, :backgroundHex, :sortOrder, 'published'
       )`,
       { ...data, sortOrder },
     );
@@ -705,6 +711,7 @@ export async function updateClassProgram(idValue: unknown, input: Partial<Update
            age_label = :ageLabel,
            age_label_en = :ageLabelEn,
            category = :category,
+           category_en = :categoryEn,
            excerpt = :excerpt,
            excerpt_en = :excerptEn,
            description = :description,
@@ -778,14 +785,15 @@ export async function updateCurriculumTrack(idValue: unknown, input: Partial<Upd
       `UPDATE curriculum_tracks
        SET slug = :slug,
            title = :title,
-           title_en = :titleEn,
-           category = :category,
-           description = :description,
-           description_en = :descriptionEn,
-           image_id = COALESCE(:imageId, image_id),
-           cover_position = :coverPosition,
-           cover_zoom = :coverZoom,
-           logo_media_id = COALESCE(:logoMediaId, logo_media_id),
+title_en = :titleEn,
+            category = :category,
+            category_en = :categoryEn,
+            description = :description,
+            description_en = :descriptionEn,
+            image_id = COALESCE(:imageId, image_id),
+            cover_position = :coverPosition,
+            cover_zoom = :coverZoom,
+            logo_media_id = COALESCE(:logoMediaId, logo_media_id),
            is_active = TRUE
        WHERE id = :id`,
       { ...data, id },
@@ -900,16 +908,17 @@ export async function updateTeachingMethod(idValue: unknown, input: Partial<Upda
       `UPDATE teaching_methods
        SET slug = :slug,
            title = :title,
-           title_en = :titleEn,
-           category = :category,
-           description = :description,
-           description_en = :descriptionEn,
-           excerpt = :excerpt,
-           excerpt_en = :excerptEn,
-           image_id = COALESCE(:imageId, image_id),
-           cover_position = :coverPosition,
-           cover_zoom = :coverZoom,
-           background_hex = :backgroundHex,
+title_en = :titleEn,
+            category = :category,
+            category_en = :categoryEn,
+            description = :description,
+            description_en = :descriptionEn,
+            excerpt = :excerpt,
+            excerpt_en = :excerptEn,
+            image_id = COALESCE(:imageId, image_id),
+            cover_position = :coverPosition,
+            cover_zoom = :coverZoom,
+            background_hex = :backgroundHex,
            status = 'published'
        WHERE id = :id`,
       { ...data, id },

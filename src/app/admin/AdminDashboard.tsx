@@ -30,6 +30,7 @@ type CategoryOption = {
   id: number;
   slug: string;
   name: string;
+  nameEn: string;
   scope: CategoryScope;
 };
 
@@ -70,6 +71,7 @@ type ClassProgram = {
   age: string;
   ageEn: string;
   category: string;
+  categoryEn: string;
   excerpt: string;
   excerptEn: string;
   description: string;
@@ -87,6 +89,7 @@ type CurriculumTrack = {
   title: string;
   titleEn: string;
   category: string;
+  categoryEn: string;
   description: string;
   descriptionEn: string;
   imageId: number | null;
@@ -102,6 +105,7 @@ type TeachingMethod = {
   slug: string;
   title: string;
   category: string;
+  categoryEn: string;
   description: string;
   excerpt: string;
   titleEn: string;
@@ -218,6 +222,7 @@ type ClassForm = {
   ageLabel: string;
   ageLabelEn: string;
   category: string;
+  categoryEn: string;
   excerpt: string;
   excerptEn: string;
   description: string;
@@ -251,6 +256,7 @@ type CurriculumForm = {
   title: string;
   titleEn: string;
   category: string;
+  categoryEn: string;
   description: string;
   descriptionEn: string;
   imageId: number | null;
@@ -266,6 +272,7 @@ type TeachingForm = {
   title: string;
   titleEn: string;
   category: string;
+  categoryEn: string;
   description: string;
   descriptionEn: string;
   excerpt: string;
@@ -346,6 +353,7 @@ const emptyClass: ClassForm = {
   ageLabel: "",
   ageLabelEn: "",
   category: "",
+  categoryEn: "",
   excerpt: "",
   excerptEn: "",
   description: "",
@@ -379,6 +387,7 @@ const emptyCurriculum: CurriculumForm = {
   title: "",
   titleEn: "",
   category: "",
+  categoryEn: "",
   description: "",
   descriptionEn: "",
   imageId: null,
@@ -401,6 +410,7 @@ const emptyTeaching: TeachingForm = {
   title: "",
   titleEn: "",
   category: "",
+  categoryEn: "",
   description: "",
   descriptionEn: "",
   excerpt: "",
@@ -671,43 +681,51 @@ function CategoryPicker({
   value,
   options,
   addValue,
+  addValueEn,
   onChange,
   onAddValue,
+  onAddValueEn,
   onAdd,
   onUpdate,
   onDelete,
   disabled,
+  lang = "vi",
 }: {
   label: string;
   value: string;
   options: CategoryOption[];
   addValue: string;
+  addValueEn: string;
   onChange: (option: CategoryOption | null) => void;
   onAddValue: (value: string) => void;
+  onAddValueEn: (value: string) => void;
   onAdd: () => void;
   onUpdate: () => void;
   onDelete: () => void;
   disabled?: boolean;
+  lang?: "vi" | "en";
 }) {
   const selectedOption = options.find((option) => option.slug === value) ?? null;
+  const isEn = lang === "en";
 
   return (
     <div className="grid gap-1.5">
       <span className="text-[13px] font-bold uppercase text-[#620000]">{label}</span>
-      <div className="grid gap-2 sm:grid-cols-[1fr_220px_auto_auto_auto]">
+      <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto_auto]">
         <select
           value={value ?? ""}
           onChange={(event) => {
             const selected = options.find((option) => option.slug === event.target.value) ?? null;
             onChange(selected);
             onAddValue(selected?.name ?? "");
+            onAddValueEn(selected?.nameEn ?? "");
           }}
           className="h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[15px] text-[#620000] outline-none focus:border-[#b80000]"
         >
-          <option value="">Chọn danh mục</option>
+          <option value="">{isEn ? "Select category" : "Chọn danh mục"}</option>
           {options.map((option) => (
             <option key={`${option.scope}-${option.slug}`} value={option.slug}>
-              {option.name}
+              {isEn ? option.nameEn || option.name : option.name}
             </option>
           ))}
         </select>
@@ -715,7 +733,14 @@ function CategoryPicker({
           type="text"
           value={addValue ?? ""}
           onChange={(event) => onAddValue(event.target.value)}
-          placeholder="Thêm danh mục"
+          placeholder={isEn ? "Name (VI)" : "Thêm danh mục"}
+          className="h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[15px] text-[#620000] outline-none focus:border-[#b80000]"
+        />
+        <input
+          type="text"
+          value={addValueEn ?? ""}
+          onChange={(event) => onAddValueEn(event.target.value)}
+          placeholder={isEn ? "Name (EN)" : "Tên tiếng Anh"}
           className="h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[15px] text-[#620000] outline-none focus:border-[#b80000]"
         />
         <button
@@ -724,7 +749,7 @@ function CategoryPicker({
           disabled={disabled}
           className="inline-flex h-11 items-center justify-center rounded-md border border-[#d9baba] bg-white px-4 text-[15px] font-extrabold text-[#620000] transition-colors hover:bg-[#fff1f1] disabled:cursor-wait disabled:opacity-60"
         >
-          {disabled ? "Đang thêm" : "Thêm"}
+          {disabled ? (isEn ? "Adding" : "Đang thêm") : isEn ? "Add" : "Thêm"}
         </button>
         <button
           type="button"
@@ -732,7 +757,7 @@ function CategoryPicker({
           disabled={disabled || !selectedOption}
           className="inline-flex h-11 items-center justify-center rounded-md border border-[#d9baba] bg-white px-4 text-[15px] font-extrabold text-[#620000] transition-colors hover:bg-[#fff1f1] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Sửa
+          {isEn ? "Edit" : "Sửa"}
         </button>
         <button
           type="button"
@@ -740,7 +765,7 @@ function CategoryPicker({
           disabled={disabled || !selectedOption}
           className="inline-flex h-11 items-center justify-center rounded-md border border-[#b80000] bg-white px-4 text-[15px] font-extrabold text-[#b80000] transition-colors hover:bg-[#fff1f1] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Xoá
+          {isEn ? "Delete" : "Xoá"}
         </button>
       </div>
     </div>
@@ -3845,6 +3870,7 @@ export default function AdminDashboard() {
   const [saving, setSaving] = useState(false);
   const [addingCategory, setAddingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryNameEn, setNewCategoryNameEn] = useState("");
   const [categories, setCategories] = useState<CategoryState>(emptyCategories);
   const [registrationForm, setRegistrationForm] =
     useState<RegistrationSectionForm>(emptyRegistrationSection);
@@ -3969,6 +3995,7 @@ export default function AdminDashboard() {
         title: item.title ?? "",
         titleEn: item.titleEn ?? "",
         category: item.category ?? "",
+        categoryEn: item.categoryEn ?? "",
         description: item.description ?? "",
         descriptionEn: item.descriptionEn ?? "",
         excerpt: item.excerpt ?? "",
@@ -4062,6 +4089,7 @@ export default function AdminDashboard() {
         ageLabel: item.age ?? "",
         ageLabelEn: item.ageEn ?? "",
         category: item.category ?? "",
+        categoryEn: item.categoryEn ?? "",
         excerpt: item.excerpt ?? "",
         excerptEn: item.excerptEn ?? "",
         description: item.description ?? "",
@@ -4082,6 +4110,7 @@ export default function AdminDashboard() {
       title: item.title ?? "",
       titleEn: item.titleEn ?? "",
       category: item.category ?? "",
+      categoryEn: item.categoryEn ?? "",
       description: item.description ?? "",
       descriptionEn: item.descriptionEn ?? "",
       imageId: item.imageId ?? null,
@@ -4133,6 +4162,7 @@ export default function AdminDashboard() {
         title: teachingForm.title,
         titleEn: teachingForm.titleEn,
         category: teachingForm.category,
+        categoryEn: teachingForm.categoryEn,
         description: teachingForm.description,
         descriptionEn: teachingForm.descriptionEn,
         excerpt: teachingForm.excerpt,
@@ -4170,6 +4200,7 @@ export default function AdminDashboard() {
         ageLabel: classForm.ageLabel,
         ageLabelEn: classForm.ageLabelEn,
         category: classForm.category,
+        categoryEn: classForm.categoryEn,
         excerpt: classForm.excerpt,
         excerptEn: classForm.excerptEn,
         description: classForm.description,
@@ -4205,6 +4236,7 @@ export default function AdminDashboard() {
         title: curriculumForm.title,
         titleEn: curriculumForm.titleEn,
         category: curriculumForm.category,
+        categoryEn: curriculumForm.categoryEn,
         description: curriculumForm.description,
         descriptionEn: curriculumForm.descriptionEn,
         imageId: curriculumForm.imageId,
@@ -4491,7 +4523,11 @@ export default function AdminDashboard() {
         options: categories.teachingMethods,
         value: slugify(teachingForm.category),
         onChange: (option: CategoryOption | null) =>
-          setTeachingForm((form) => ({ ...form, category: option?.name ?? "" })),
+          setTeachingForm((form) => ({
+            ...form,
+            category: option?.name ?? "",
+            categoryEn: option?.nameEn ?? "",
+          })),
       };
     }
 
@@ -4515,7 +4551,11 @@ export default function AdminDashboard() {
         options: categories.classPrograms,
         value: slugify(classForm.category),
         onChange: (option: CategoryOption | null) =>
-          setClassForm((form) => ({ ...form, category: option?.name ?? "" })),
+          setClassForm((form) => ({
+            ...form,
+            category: option?.name ?? "",
+            categoryEn: option?.nameEn ?? "",
+          })),
       };
     }
 
@@ -4524,7 +4564,11 @@ export default function AdminDashboard() {
       options: categories.curriculumTracks,
       value: slugify(curriculumForm.category),
       onChange: (option: CategoryOption | null) =>
-        setCurriculumForm((form) => ({ ...form, category: option?.name ?? "" })),
+        setCurriculumForm((form) => ({
+          ...form,
+          category: option?.name ?? "",
+          categoryEn: option?.nameEn ?? "",
+        })),
     };
   }, [categories, classForm.category, curriculumForm.category, postForm.categorySlug, programMode, tab, teachingForm.category]);
 
@@ -4547,10 +4591,12 @@ export default function AdminDashboard() {
         body: JSON.stringify({
           scope: activeCategory.scope,
           name: newCategoryName,
+          nameEn: newCategoryNameEn,
         }),
       });
 
       setNewCategoryName("");
+      setNewCategoryNameEn("");
       await loadAll();
       activeCategory.onChange(result.category);
       setStatus("Đã thêm danh mục.");
@@ -4583,6 +4629,7 @@ export default function AdminDashboard() {
           body: JSON.stringify({
             scope: activeCategory.scope,
             name: newCategoryName,
+            nameEn: newCategoryNameEn,
           }),
         },
       );
@@ -4590,6 +4637,7 @@ export default function AdminDashboard() {
       await loadAll();
       activeCategory.onChange(result.category);
       setNewCategoryName(result.category.name);
+      setNewCategoryNameEn(result.category.nameEn);
       setStatus("Đã cập nhật danh mục.");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Không thể cập nhật danh mục.");
@@ -4914,18 +4962,6 @@ export default function AdminDashboard() {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <Field
-                    label="Tiêu đề"
-                    value={registrationForm.title}
-                    placeholder="ĐĂNG KÝ NHẬN ƯU ĐÃI NGAY"
-                    onChange={(value) => setRegistrationForm((form) => ({ ...form, title: value }))}
-                  />
-                  <Field
-                    label="Nhãn nút gửi"
-                    value={registrationForm.submitLabel}
-                    placeholder="Đăng ký ngay"
-                    onChange={(value) => setRegistrationForm((form) => ({ ...form, submitLabel: value }))}
-                  />
-                  <Field
                     label="Màu nền"
                     type="color"
                     value={registrationForm.backgroundColor}
@@ -4938,13 +4974,6 @@ export default function AdminDashboard() {
                   type="datetime-local"
                   value={registrationForm.countdownTargetAt}
                   onChange={(value) => setRegistrationForm((form) => ({ ...form, countdownTargetAt: value }))}
-                />
-
-                <TextArea
-                  label="Nội dung xác nhận"
-                  rows={5}
-                  value={registrationForm.consentText}
-                  onChange={(value) => setRegistrationForm((form) => ({ ...form, consentText: value }))}
                 />
 
                 <div className="grid gap-4 md:grid-cols-2">
@@ -5219,12 +5248,15 @@ export default function AdminDashboard() {
                   </div>
                 ) : null}
                 <CategoryPicker
-                  label="Danh mục"
+                  label={teachingLang === "en" ? "Category" : "Danh mục"}
+                  lang={teachingLang}
                   value={activeCategory.value}
                   options={activeCategory.options}
                   addValue={newCategoryName}
+                  addValueEn={newCategoryNameEn}
                   onChange={activeCategory.onChange}
                   onAddValue={setNewCategoryName}
+                  onAddValueEn={setNewCategoryNameEn}
                   onAdd={addCurrentCategory}
                   onUpdate={updateCurrentCategory}
                   onDelete={deleteCurrentCategory}
@@ -5294,12 +5326,15 @@ export default function AdminDashboard() {
                 )}
                 <Field label="Màu card" type="color" value={classForm.colorHex} onChange={(value) => setClassForm((f) => ({ ...f, colorHex: value }))} />
                 <CategoryPicker
-                  label="Danh mục"
+                  label={classLang === "en" ? "Category" : "Danh mục"}
+                  lang={classLang}
                   value={activeCategory.value}
                   options={activeCategory.options}
                   addValue={newCategoryName}
+                  addValueEn={newCategoryNameEn}
                   onChange={activeCategory.onChange}
                   onAddValue={setNewCategoryName}
+                  onAddValueEn={setNewCategoryNameEn}
                   onAdd={addCurrentCategory}
                   onUpdate={updateCurrentCategory}
                   onDelete={deleteCurrentCategory}
@@ -5371,12 +5406,15 @@ export default function AdminDashboard() {
                   </div>
                 ) : null}
                 <CategoryPicker
-                  label="Danh mục"
+                  label={curriculumLang === "en" ? "Category" : "Danh mục"}
+                  lang={curriculumLang}
                   value={activeCategory.value}
                   options={activeCategory.options}
                   addValue={newCategoryName}
+                  addValueEn={newCategoryNameEn}
                   onChange={activeCategory.onChange}
                   onAddValue={setNewCategoryName}
+                  onAddValueEn={setNewCategoryNameEn}
                   onAdd={addCurrentCategory}
                   onUpdate={updateCurrentCategory}
                   onDelete={deleteCurrentCategory}
@@ -5449,12 +5487,15 @@ export default function AdminDashboard() {
                   </div>
                 ) : null}
                 <CategoryPicker
-                  label="Danh mục"
+                  label={postLang === "en" ? "Category" : "Danh mục"}
+                  lang={postLang}
                   value={activeCategory.value}
                   options={activeCategory.options}
                   addValue={newCategoryName}
+                  addValueEn={newCategoryNameEn}
                   onChange={activeCategory.onChange}
                   onAddValue={setNewCategoryName}
+                  onAddValueEn={setNewCategoryNameEn}
                   onAdd={addCurrentCategory}
                   onUpdate={updateCurrentCategory}
                   onDelete={deleteCurrentCategory}

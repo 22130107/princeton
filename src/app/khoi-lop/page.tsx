@@ -129,7 +129,7 @@ export default async function KhoiLopPage() {
                 </div>
                 <div className="flex flex-1 flex-col p-5">
                   <p className="text-[13px] font-extrabold uppercase text-[#b80000]">
-                    {program.category}
+                    {isEn && program.categoryEn ? program.categoryEn : program.category}
                   </p>
                   <h2 className="mt-3 text-[28px] font-extrabold leading-tight">
                     {isEn && program.nameEn ? program.nameEn : program.name}

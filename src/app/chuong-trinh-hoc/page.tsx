@@ -90,7 +90,7 @@ export default async function ChuongTrinhHocPage() {
                 </div>
                 <div className="flex flex-1 flex-col p-5">
                   <p className="text-[13px] font-extrabold uppercase text-[#b80000]">
-                    {track.category}
+                    {isEn && track.categoryEn ? track.categoryEn : track.category}
                   </p>
                   <h2 className="mt-3 text-[23px] font-extrabold leading-tight md:text-[25px]">
                     {isEn && track.titleEn ? track.titleEn : track.title}

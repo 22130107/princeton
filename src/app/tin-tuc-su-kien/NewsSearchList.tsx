@@ -18,6 +18,7 @@ export type NewsSearchPost = {
   coverPosition: string;
   coverZoom: number;
   category: string;
+  categoryEn: string;
   title: string;
   excerpt: string;
   titleEn: string;
@@ -253,7 +254,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
               </div>
               <div className="flex flex-1 flex-col p-5">
                 <p className="text-[13px] font-extrabold uppercase text-[#b80000]">
-                  {post.category}
+                  {lang === "en" ? post.categoryEn || post.category : post.category}
                 </p>
                 <h2 className="mt-3 text-[23px] font-extrabold leading-tight md:text-[25px]">
                   {lang === "en" && post.titleEn ? post.titleEn : post.title}

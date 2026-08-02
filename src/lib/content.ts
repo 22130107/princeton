@@ -27,6 +27,7 @@ export type DbClassProgram = {
   age: string;
   ageEn: string;
   category: string;
+  categoryEn: string;
   excerpt: string;
   excerptEn: string;
   description: string;
@@ -50,6 +51,7 @@ export type DbTeachingMethod = {
   coverPosition: string;
   coverZoom: number;
   category: string;
+  categoryEn: string;
   title: string;
   description: string;
   excerpt: string;
@@ -72,6 +74,7 @@ export type DbNewsPost = {
   coverZoom: number;
   categorySlug: string;
   category: string;
+  categoryEn: string;
   title: string;
   excerpt: string;
   titleEn: string;
@@ -87,6 +90,7 @@ export type DbCurriculumTrack = {
   title: string;
   titleEn: string;
   category: string;
+  categoryEn: string;
   description: string;
   descriptionEn: string;
   imageId: number | null;
@@ -180,6 +184,7 @@ type ProgramRow = RowDataPacket & {
   age_label: string;
   age_label_en: string | null;
   category: string | null;
+  category_en: string | null;
   excerpt: string | null;
   excerpt_en: string | null;
   description: string | null;
@@ -229,6 +234,7 @@ type TeachingMethodRow = RowDataPacket & {
   title: string;
   title_en: string | null;
   category: string | null;
+  category_en: string | null;
   description: string | null;
   description_en: string | null;
   excerpt: string | null;
@@ -261,6 +267,7 @@ type PostRow = RowDataPacket & {
   cover_zoom: number | null;
   category_slug: string | null;
   category: string | null;
+  category_en: string | null;
   image_url: string | null;
   image_alt: string | null;
   published_at: Date | string | null;
@@ -272,6 +279,7 @@ type CurriculumRow = RowDataPacket & {
   title: string;
   title_en: string | null;
   category: string | null;
+  category_en: string | null;
   description: string | null;
   description_en: string | null;
   image_id: number | null;
@@ -761,6 +769,7 @@ export async function getClassPrograms(): Promise<DbClassProgram[]> {
       cp.age_label,
       cp.age_label_en,
       cp.category,
+      cp.category_en,
       cp.excerpt,
       cp.excerpt_en,
       cp.description,
@@ -806,6 +815,7 @@ export async function getClassPrograms(): Promise<DbClassProgram[]> {
     age: row.age_label,
     ageEn: text(row.age_label_en),
     category: text(row.category),
+    categoryEn: text(row.category_en) || text(row.category),
     excerpt: text(row.excerpt),
     excerptEn: text(row.excerpt_en),
     description: text(row.description),
@@ -835,6 +845,7 @@ export async function getTeachingMethods(): Promise<DbTeachingMethod[]> {
       tm.title,
       tm.title_en,
       tm.category,
+      tm.category_en,
       tm.description,
       tm.description_en,
       tm.excerpt,
@@ -873,6 +884,7 @@ export async function getTeachingMethods(): Promise<DbTeachingMethod[]> {
     coverPosition: text(row.cover_position) || "50% 50%",
     coverZoom: clampCoverZoom(row.cover_zoom),
     category: text(row.category),
+    categoryEn: text(row.category_en) || text(row.category),
     title: row.title,
     titleEn: text(row.title_en),
     description: text(row.description),
@@ -906,6 +918,7 @@ export async function getNewsPosts(): Promise<DbNewsPost[]> {
       p.cover_zoom,
       pc.slug AS category_slug,
       pc.name AS category,
+      pc.name_en AS category_en,
       ma.url AS image_url,
       ma.alt_text AS image_alt,
       p.published_at
@@ -940,6 +953,7 @@ export async function getNewsPosts(): Promise<DbNewsPost[]> {
     coverZoom: clampCoverZoom(row.cover_zoom),
     categorySlug: text(row.category_slug),
     category: text(row.category),
+    categoryEn: text(row.category_en) || text(row.category),
     title: row.title,
     excerpt: text(row.excerpt),
     titleEn: text(row.title_en),
@@ -965,6 +979,7 @@ export async function getCurriculumTracks(): Promise<DbCurriculumTrack[]> {
       ct.title,
       ct.title_en,
       ct.category,
+      ct.category_en,
       ct.description,
       ct.description_en,
       ct.image_id,
@@ -1001,6 +1016,7 @@ export async function getCurriculumTracks(): Promise<DbCurriculumTrack[]> {
     title: row.title,
     titleEn: text(row.title_en),
     category: text(row.category),
+    categoryEn: text(row.category_en) || text(row.category),
     description: text(row.description),
     descriptionEn: text(row.description_en),
     imageId: row.image_id,
