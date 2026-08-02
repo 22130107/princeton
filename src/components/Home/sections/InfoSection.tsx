@@ -28,7 +28,26 @@ type HomeClassProgram = {
   coverPosition: string;
   coverZoom: number;
   color: string;
+  displayName?: string;
+  displayAge?: string;
 };
+
+function getClassProgramLabels(slug: string) {
+  switch (slug) {
+    case "penguin":
+      return { nameEn: "Penguin", ageEn: "2 - 3 years old" };
+    case "wombat":
+      return { nameEn: "Wombat", ageEn: "3 - 4 years old" };
+    case "koala":
+      return { nameEn: "Koala", ageEn: "4 - 5 years old" };
+    case "kangaroo":
+      return { nameEn: "Kangaroo", ageEn: "5 - 6 years old" };
+    case "preschool":
+      return { nameEn: "Preschool", ageEn: "5 - 6 years old" };
+    default:
+      return { nameEn: "", ageEn: "" };
+  }
+}
 
 const classCardStyles = [
   { background: imgBackground4.src, border: "#92d0db", imageWidth: "w-[122.76px]", imageWidthPx: 122.76 },
@@ -39,12 +58,13 @@ const classCardStyles = [
 ];
 
 function Container201() {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
+  const title = lang === "en" ? "OUR CLASS SYSTEM" : t("home.info.title");
   return (
     <div className="relative shrink-0 w-full" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center relative size-full">
         <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#620000] text-[60px] text-center whitespace-nowrap">
-          <p className="leading-[60px]">{t("home.info.title")}</p>
+          <p className="leading-[60px]">{title}</p>
         </div>
       </div>
     </div>
@@ -335,8 +355,9 @@ function ClassProgramCard({ program, index }: { program: HomeClassProgram; index
   const style = classCardStyles[index % classCardStyles.length];
   const { lang } = useLanguage();
   const isEn = lang === "en";
-  const name = isEn ? program.nameEn || program.name : program.name;
-  const age = isEn ? program.ageEn || program.age : program.age;
+  const labels = getClassProgramLabels(program.slug);
+  const name = isEn ? labels.nameEn || program.nameEn || program.name : program.name;
+  const age = isEn ? labels.ageEn || program.ageEn || program.age : program.age;
 
   return (
     <Link
@@ -366,13 +387,13 @@ function ClassProgramCard({ program, index }: { program: HomeClassProgram; index
           </div>
           <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
             <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#620000] text-[26px] text-center whitespace-nowrap">
-              <p className="leading-[26px]">{program.name}</p>
+              <p className="leading-[26px]">{program.displayName || program.name}</p>
             </div>
           </div>
           <div className="bg-white content-stretch flex items-start justify-center pb-[7.6px] pt-[9.6px] px-[21.6px] relative rounded-[30px] shrink-0" data-name="Background+Border">
             <div aria-hidden className="absolute border border-solid inset-0 pointer-events-none rounded-[30px]" style={{ borderColor: style.border }} />
             <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[20px] text-center whitespace-nowrap">
-              <p className="leading-[26px]">{program.age}</p>
+              <p className="leading-[26px]">{program.displayAge || program.age}</p>
             </div>
           </div>
         </div>
@@ -430,6 +451,8 @@ function Container200({ programs }: { programs: HomeClassProgram[] }) {
 
 export default function InfoSection() {
   const [programs, setPrograms] = useState<HomeClassProgram[]>([]);
+  const { lang } = useLanguage();
+  const isEn = lang === "en";
 
   useEffect(() => {
     let alive = true;
@@ -469,7 +492,16 @@ setPrograms(
       <div className="absolute bg-[#b80000] inset-[5%_0_0_2%] rounded-[30px]" data-name="Background+Border">
         <div aria-hidden className="absolute border-4 border-[#3c0000] border-solid inset-0 pointer-events-none rounded-[30px]" />
       </div>
-      <Container200 programs={programs} />
+      <Container200
+        programs={programs.map((program) => {
+          const labels = getClassProgramLabels(program.slug);
+          return {
+            ...program,
+            displayName: isEn ? labels.nameEn || program.nameEn || program.name : program.name,
+            displayAge: isEn ? labels.ageEn || program.ageEn || program.age : program.age,
+          };
+        })}
+      />
     </div>
   );
 }

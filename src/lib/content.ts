@@ -370,6 +370,69 @@ function text(value: string | null | undefined) {
   return value ? repairMojibakeText(value) : "";
 }
 
+function resolveClassProgramFallback(slug: string) {
+  switch (slug) {
+    case "penguin":
+      return {
+        nameEn: "Penguin",
+        ageEn: "2 - 3 years old",
+        categoryEn: "Preschool",
+        excerptEn:
+          "The first stage helps children get used to classroom routines, build basic self-care habits and feel safe at school each day.",
+        descriptionEn:
+          "Penguin is the first class in the preschool journey, focusing on emotional care, daily routines and connections with teachers and friends.",
+      };
+    case "wombat":
+      return {
+        nameEn: "Wombat",
+        ageEn: "3 - 4 years old",
+        categoryEn: "Preschool",
+        excerptEn:
+          "Children are encouraged to explore through play, movement, music and small-group activities to grow independence and connection.",
+        descriptionEn:
+          "Wombat expands learning through playful experiences and hands-on activities close to daily life.",
+      };
+    case "koala":
+      return {
+        nameEn: "Koala",
+        ageEn: "4 - 5 years old",
+        categoryEn: "Preschool",
+        excerptEn:
+          "The program focuses on language growth, logical thinking, collaboration and expressing ideas through small projects.",
+        descriptionEn:
+          "Koala helps children confidently ask questions, share thoughts and join purposeful group activities.",
+      };
+    case "kangaroo":
+      return {
+        nameEn: "Kangaroo",
+        ageEn: "5 - 6 years old",
+        categoryEn: "Pre-primary",
+        excerptEn:
+          "Children are prepared for primary school through early literacy, thinking skills, self-management and study habits.",
+        descriptionEn:
+          "Kangaroo focuses on school readiness, concentration and initiative in learning tasks.",
+      };
+    case "preschool":
+      return {
+        nameEn: "Preschool",
+        ageEn: "5 - 6 years old",
+        categoryEn: "Pre-primary",
+        excerptEn:
+          "Preschool builds confidence, bilingual communication, independence and adaptability for the next learning stage.",
+        descriptionEn:
+          "Preschool is the final preschool class, helping children build structured learning habits and stronger self-management.",
+      };
+    default:
+      return {
+        nameEn: "",
+        ageEn: "",
+        categoryEn: "",
+        excerptEn: "",
+        descriptionEn: "",
+      };
+  }
+}
+
 export const HERO_SLIDE_MIN_ZOOM = 0.5;
 export const HERO_SLIDE_MAX_ZOOM = 3;
 
@@ -824,28 +887,32 @@ export async function getClassPrograms(): Promise<DbClassProgram[]> {
     target.set(row.class_program_id, current);
   });
 
-  return rows.map((row) => ({
-    id: row.id,
-    slug: row.slug,
-    name: row.name,
-    nameEn: text(row.name_en),
-    age: row.age_label,
-    ageEn: text(row.age_label_en),
-    category: text(row.category),
-    categoryEn: text(row.category_en) || text(row.category),
-    excerpt: text(row.excerpt),
-    excerptEn: text(row.excerpt_en),
-    description: text(row.description),
-    descriptionEn: text(row.description_en),
-    imageId: row.image_id,
-    imageUrl: text(row.image_url),
-    imageAlt: text(row.image_alt) || row.name,
-    coverPosition: text(row.cover_position) || "50% 50%",
-    coverZoom: clampCoverZoom(row.cover_zoom),
-    color: text(row.color_hex) || "#fffefa",
-    schedule: scheduleByProgram.get(row.id) ?? [],
-    scheduleEn: scheduleEnByProgram.get(row.id) ?? [],
-  }));
+  return rows.map((row) => {
+    const fallback = resolveClassProgramFallback(row.slug);
+
+    return {
+      id: row.id,
+      slug: row.slug,
+      name: row.name,
+      nameEn: text(row.name_en) || fallback.nameEn,
+      age: row.age_label,
+      ageEn: text(row.age_label_en) || fallback.ageEn,
+      category: text(row.category),
+      categoryEn: text(row.category_en) || fallback.categoryEn || text(row.category),
+      excerpt: text(row.excerpt),
+      excerptEn: text(row.excerpt_en) || fallback.excerptEn,
+      description: text(row.description),
+      descriptionEn: text(row.description_en) || fallback.descriptionEn,
+      imageId: row.image_id,
+      imageUrl: text(row.image_url),
+      imageAlt: text(row.image_alt) || row.name,
+      coverPosition: text(row.cover_position) || "50% 50%",
+      coverZoom: clampCoverZoom(row.cover_zoom),
+      color: text(row.color_hex) || "#fffefa",
+      schedule: scheduleByProgram.get(row.id) ?? [],
+      scheduleEn: scheduleEnByProgram.get(row.id) ?? [],
+    };
+  });
 }
 
 export async function getClassProgram(slug: string) {
