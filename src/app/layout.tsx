@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/styles/index.css";
+import FloatingActions from "@/components/Home/sections/FloatingActions";
 
 export const metadata: Metadata = {
   title: "Trường Mầm non Princeton",
@@ -28,7 +29,10 @@ export default function RootLayout({
         />
         <style>{`html { font-family: "Baloo Paaji 2", Arial, Helvetica, sans-serif; } body { margin: 0; } #root { height: 100%; }`}</style>
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <FloatingActions />
+      </body>
     </html>
   );
 }

@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import HomePage from "@/components/Home/index";
-import FloatingActions from "@/components/Home/sections/FloatingActions";
 import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHomePage from "@/components/Mobile/MobileHomePage";
 import SiteFooter from "@/components/Shared/SiteFooter";
@@ -39,7 +38,6 @@ export default function Home() {
     return (
       <>
         <MobileHomePage />
-        <FloatingActions />
       </>
     );
   }
@@ -70,7 +68,6 @@ export default function Home() {
         </div>
       </div>
       <SiteFooter />
-      <FloatingActions />
     </div>
   );
 }
