@@ -5,7 +5,7 @@ import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getClassPrograms } from "@/lib/content";
-import { getServerT } from "@/lib/i18n-server";
+import { getServerT, getServerLang } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
@@ -55,6 +55,8 @@ function FloatingStickers() {
 
 export default async function KhoiLopPage() {
   const t = await getServerT();
+  const lang = await getServerLang();
+  const isEn = lang === "en";
   const classPrograms = await getClassPrograms();
 
   return (
@@ -130,13 +132,13 @@ export default async function KhoiLopPage() {
                     {program.category}
                   </p>
                   <h2 className="mt-3 text-[28px] font-extrabold leading-tight">
-                    {program.name}
+                    {isEn && program.nameEn ? program.nameEn : program.name}
                   </h2>
                   <p className="mt-2 inline-flex w-fit rounded-full border border-[#b80000] bg-white px-4 py-2 text-[16px] font-bold text-[#620000]">
-                    {program.age}
+                    {isEn && program.ageEn ? program.ageEn : program.age}
                   </p>
                   <p className="mt-3 line-clamp-3 text-[16px] font-medium leading-7">
-                    {program.excerpt}
+                    {isEn && program.excerptEn ? program.excerptEn : program.excerpt}
                   </p>
                   <Link
                     href={`/khoi-lop/${program.slug}`}

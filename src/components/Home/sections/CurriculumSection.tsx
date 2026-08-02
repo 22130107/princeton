@@ -12,6 +12,8 @@ type CurriculumTrack = {
   title: string;
   category: string;
   description: string;
+  titleEn?: string;
+  descriptionEn?: string;
   imageUrl: string;
   imageAlt: string;
   coverPosition: string;
@@ -77,6 +79,7 @@ function TrackTab({
   active: boolean;
   onClick: () => void;
 }) {
+  const { lang } = useLanguage();
   return (
     <button
       type="button"
@@ -95,7 +98,7 @@ function TrackTab({
               active ? "text-white" : "text-[#b80000]"
             }`}
           >
-            <p className="leading-[45px]">{track.title}</p>
+            <p className="leading-[45px]">{lang === "en" && track.titleEn ? track.titleEn : track.title}</p>
           </div>
         </div>
       </div>
@@ -130,6 +133,8 @@ function TrackTabs({
 }
 
 function TrackContent({ track }: { track: CurriculumTrack }) {
+  const { lang } = useLanguage();
+  const description = lang === "en" && track.descriptionEn ? track.descriptionEn : track.description;
   return (
     <div className="bg-white relative rounded-bl-[28px] rounded-br-[28px] shrink-0 w-full z-[1]" data-name="Background+Border">
       <div
@@ -146,7 +151,7 @@ function TrackContent({ track }: { track: CurriculumTrack }) {
             <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px pb-[16px] relative" data-name="Container">
               <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
                 <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[22px] w-full">
-                  <p className="leading-[33px]">{track.description}</p>
+                  <p className="leading-[33px]">{description}</p>
                 </div>
               </div>
             </div>

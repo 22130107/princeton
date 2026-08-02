@@ -5,7 +5,7 @@ import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getCurriculumTracks } from "@/lib/content";
-import { getServerT } from "@/lib/i18n-server";
+import { getServerLang, getServerT } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
@@ -25,6 +25,8 @@ export const dynamic = "force-dynamic";
 
 export default async function ChuongTrinhHocPage() {
   const t = await getServerT();
+  const lang = await getServerLang();
+  const isEn = lang === "en";
   const tracks = await getCurriculumTracks();
 
   return (
@@ -91,10 +93,10 @@ export default async function ChuongTrinhHocPage() {
                     {track.category}
                   </p>
                   <h2 className="mt-3 text-[23px] font-extrabold leading-tight md:text-[25px]">
-                    {track.title}
+                    {isEn && track.titleEn ? track.titleEn : track.title}
                   </h2>
                   <p className="mt-3 line-clamp-3 text-[16px] font-medium leading-7">
-                    {track.description}
+                    {isEn && track.descriptionEn ? track.descriptionEn : track.description}
                   </p>
                   <Link
                     href={`/chuong-trinh-hoc/${track.slug}`}

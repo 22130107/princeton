@@ -23,10 +23,14 @@ export type DbClassProgram = {
   id: number;
   slug: string;
   name: string;
+  nameEn: string;
   age: string;
+  ageEn: string;
   category: string;
   excerpt: string;
+  excerptEn: string;
   description: string;
+  descriptionEn: string;
   imageId: number | null;
   imageUrl: string;
   imageAlt: string;
@@ -34,6 +38,7 @@ export type DbClassProgram = {
   coverZoom: number;
   color: string;
   schedule: string[];
+  scheduleEn: string[];
 };
 
 export type DbTeachingMethod = {
@@ -48,8 +53,12 @@ export type DbTeachingMethod = {
   title: string;
   description: string;
   excerpt: string;
+  titleEn: string;
+  descriptionEn: string;
+  excerptEn: string;
   background: string;
   content: string[];
+  contentEn: string[];
 };
 
 export type DbNewsPost = {
@@ -65,7 +74,10 @@ export type DbNewsPost = {
   category: string;
   title: string;
   excerpt: string;
+  titleEn: string;
+  excerptEn: string;
   content: string[];
+  contentEn: string[];
   publishedAt: string | null;
 };
 
@@ -73,8 +85,10 @@ export type DbCurriculumTrack = {
   id: number;
   slug: string;
   title: string;
+  titleEn: string;
   category: string;
   description: string;
+  descriptionEn: string;
   imageId: number | null;
   imageUrl: string;
   imageAlt: string;
@@ -84,6 +98,7 @@ export type DbCurriculumTrack = {
   logoUrl: string;
   logoAlt: string;
   content: string[];
+  contentEn: string[];
 };
 
 export type DbHeroSlide = {
@@ -161,10 +176,14 @@ type ProgramRow = RowDataPacket & {
   id: number;
   slug: string;
   name: string;
+  name_en: string | null;
   age_label: string;
+  age_label_en: string | null;
   category: string | null;
   excerpt: string | null;
+  excerpt_en: string | null;
   description: string | null;
+  description_en: string | null;
   image_id: number | null;
   image_url: string | null;
   image_alt: string | null;
@@ -201,15 +220,19 @@ type HomeSectionRow = RowDataPacket & {
 type ScheduleRow = RowDataPacket & {
   class_program_id: number;
   description: string;
+  lang?: string | null;
 };
 
 type TeachingMethodRow = RowDataPacket & {
   id: number;
   slug: string;
   title: string;
+  title_en: string | null;
   category: string | null;
   description: string | null;
+  description_en: string | null;
   excerpt: string | null;
+  excerpt_en: string | null;
   image_id: number | null;
   image_url: string | null;
   image_alt: string | null;
@@ -222,6 +245,7 @@ type BlockRow = RowDataPacket & {
   owner_id: number;
   block_type: string;
   content: unknown;
+  lang?: string | null;
 };
 
 type PostRow = RowDataPacket & {
@@ -229,6 +253,8 @@ type PostRow = RowDataPacket & {
   slug: string;
   title: string;
   excerpt: string | null;
+  title_en: string | null;
+  excerpt_en: string | null;
   post_type: "news" | "event" | "activity";
   cover_image_id: number | null;
   cover_position: string | null;
@@ -244,8 +270,10 @@ type CurriculumRow = RowDataPacket & {
   id: number;
   slug: string;
   title: string;
+  title_en: string | null;
   category: string | null;
   description: string | null;
+  description_en: string | null;
   image_id: number | null;
   image_url: string | null;
   image_alt: string | null;
@@ -396,6 +424,22 @@ function groupBlocks(rows: BlockRow[]) {
     const current = grouped.get(row.owner_id) ?? [];
     current.push(value);
     grouped.set(row.owner_id, current);
+  });
+
+  return grouped;
+}
+
+function groupBlocksByLang(rows: BlockRow[]) {
+  const grouped = { vi: new Map<number, string[]>(), en: new Map<number, string[]>() };
+
+  rows.forEach((row) => {
+    const value = blockToText(row.content);
+    if (!value) return;
+
+    const lang = row.lang === "en" ? "en" : "vi";
+    const current = grouped[lang].get(row.owner_id) ?? [];
+    current.push(value);
+    grouped[lang].set(row.owner_id, current);
   });
 
   return grouped;
@@ -713,10 +757,14 @@ export async function getClassPrograms(): Promise<DbClassProgram[]> {
       cp.id,
       cp.slug,
       cp.name,
+      cp.name_en,
       cp.age_label,
+      cp.age_label_en,
       cp.category,
       cp.excerpt,
+      cp.excerpt_en,
       cp.description,
+      cp.description_en,
       cp.color_hex,
       cp.image_id,
       cp.cover_position,
@@ -734,7 +782,7 @@ export async function getClassPrograms(): Promise<DbClassProgram[]> {
   const ids = rows.map((row) => row.id);
   const placeholders = ids.map(() => "?").join(",");
   const [scheduleRows] = await pool.execute<ScheduleRow[]>(
-    `SELECT class_program_id, description
+    `SELECT class_program_id, description, lang
      FROM class_program_schedule_items
      WHERE class_program_id IN (${placeholders})
      ORDER BY class_program_id ASC, sort_order ASC, id ASC`,
@@ -742,20 +790,26 @@ export async function getClassPrograms(): Promise<DbClassProgram[]> {
   );
 
   const scheduleByProgram = new Map<number, string[]>();
+  const scheduleEnByProgram = new Map<number, string[]>();
   scheduleRows.forEach((row) => {
-    const current = scheduleByProgram.get(row.class_program_id) ?? [];
+    const target = row.lang === "en" ? scheduleEnByProgram : scheduleByProgram;
+    const current = target.get(row.class_program_id) ?? [];
     current.push(row.description);
-    scheduleByProgram.set(row.class_program_id, current);
+    target.set(row.class_program_id, current);
   });
 
   return rows.map((row) => ({
     id: row.id,
     slug: row.slug,
     name: row.name,
+    nameEn: text(row.name_en),
     age: row.age_label,
+    ageEn: text(row.age_label_en),
     category: text(row.category),
     excerpt: text(row.excerpt),
+    excerptEn: text(row.excerpt_en),
     description: text(row.description),
+    descriptionEn: text(row.description_en),
     imageId: row.image_id,
     imageUrl: text(row.image_url),
     imageAlt: text(row.image_alt) || row.name,
@@ -763,6 +817,7 @@ export async function getClassPrograms(): Promise<DbClassProgram[]> {
     coverZoom: clampCoverZoom(row.cover_zoom),
     color: text(row.color_hex) || "#fffefa",
     schedule: scheduleByProgram.get(row.id) ?? [],
+    scheduleEn: scheduleEnByProgram.get(row.id) ?? [],
   }));
 }
 
@@ -778,9 +833,12 @@ export async function getTeachingMethods(): Promise<DbTeachingMethod[]> {
       tm.id,
       tm.slug,
       tm.title,
+      tm.title_en,
       tm.category,
       tm.description,
+      tm.description_en,
       tm.excerpt,
+      tm.excerpt_en,
       tm.background_hex,
       tm.image_id,
       tm.cover_position,
@@ -798,13 +856,13 @@ export async function getTeachingMethods(): Promise<DbTeachingMethod[]> {
   const ids = rows.map((row) => row.id);
   const placeholders = ids.map(() => "?").join(",");
   const [blockRows] = await pool.execute<BlockRow[]>(
-    `SELECT teaching_method_id AS owner_id, block_type, content
+    `SELECT teaching_method_id AS owner_id, block_type, content, lang
      FROM teaching_method_content_blocks
      WHERE teaching_method_id IN (${placeholders})
      ORDER BY teaching_method_id ASC, sort_order ASC, id ASC`,
     ids,
   );
-  const blocks = groupBlocks(blockRows);
+  const blocks = groupBlocksByLang(blockRows);
 
   return rows.map((row) => ({
     id: row.id,
@@ -816,10 +874,14 @@ export async function getTeachingMethods(): Promise<DbTeachingMethod[]> {
     coverZoom: clampCoverZoom(row.cover_zoom),
     category: text(row.category),
     title: row.title,
+    titleEn: text(row.title_en),
     description: text(row.description),
+    descriptionEn: text(row.description_en),
     excerpt: text(row.excerpt) || text(row.description),
+    excerptEn: text(row.excerpt_en) || text(row.description_en),
     background: text(row.background_hex) || "#fffefa",
-    content: blocks.get(row.id) ?? [],
+    content: blocks.vi.get(row.id) ?? [],
+    contentEn: blocks.en.get(row.id) ?? [],
   }));
 }
 
@@ -836,6 +898,8 @@ export async function getNewsPosts(): Promise<DbNewsPost[]> {
       p.slug,
       p.title,
       p.excerpt,
+      p.title_en,
+      p.excerpt_en,
       p.post_type,
       p.cover_image_id,
       p.cover_position,
@@ -857,13 +921,13 @@ export async function getNewsPosts(): Promise<DbNewsPost[]> {
   const ids = rows.map((row) => row.id);
   const placeholders = ids.map(() => "?").join(",");
   const [blockRows] = await pool.execute<BlockRow[]>(
-    `SELECT post_id AS owner_id, block_type, content
+    `SELECT post_id AS owner_id, block_type, content, lang
      FROM post_content_blocks
      WHERE post_id IN (${placeholders})
      ORDER BY post_id ASC, sort_order ASC, id ASC`,
     ids,
   );
-  const blocks = groupBlocks(blockRows);
+  const blocks = groupBlocksByLang(blockRows);
 
   return rows.map((row) => ({
     id: row.id,
@@ -878,7 +942,10 @@ export async function getNewsPosts(): Promise<DbNewsPost[]> {
     category: text(row.category),
     title: row.title,
     excerpt: text(row.excerpt),
-    content: blocks.get(row.id) ?? [],
+    titleEn: text(row.title_en),
+    excerptEn: text(row.excerpt_en),
+    content: blocks.vi.get(row.id) ?? [],
+    contentEn: blocks.en.get(row.id) ?? [],
     publishedAt: dateToIso(row.published_at),
   }));
 }
@@ -896,8 +963,10 @@ export async function getCurriculumTracks(): Promise<DbCurriculumTrack[]> {
       ct.id,
       ct.slug,
       ct.title,
+      ct.title_en,
       ct.category,
       ct.description,
+      ct.description_en,
       ct.image_id,
       ct.cover_position,
       ct.cover_zoom,
@@ -918,20 +987,22 @@ export async function getCurriculumTracks(): Promise<DbCurriculumTrack[]> {
   const ids = rows.map((row) => row.id);
   const placeholders = ids.map(() => "?").join(",");
   const [blockRows] = await pool.execute<BlockRow[]>(
-    `SELECT curriculum_track_id AS owner_id, block_type, content
+    `SELECT curriculum_track_id AS owner_id, block_type, content, lang
      FROM curriculum_blocks
      WHERE curriculum_track_id IN (${placeholders})
      ORDER BY curriculum_track_id ASC, sort_order ASC, id ASC`,
     ids,
   );
-  const blocks = groupBlocks(blockRows);
+  const blocks = groupBlocksByLang(blockRows);
 
   return rows.map((row) => ({
     id: row.id,
     slug: row.slug,
     title: row.title,
+    titleEn: text(row.title_en),
     category: text(row.category),
     description: text(row.description),
+    descriptionEn: text(row.description_en),
     imageId: row.image_id,
     imageUrl: text(row.image_url),
     imageAlt: text(row.image_alt) || row.title,
@@ -940,7 +1011,8 @@ export async function getCurriculumTracks(): Promise<DbCurriculumTrack[]> {
     logoMediaId: row.logo_media_id,
     logoUrl: text(row.logo_url),
     logoAlt: text(row.logo_alt) || "Princeton Academy",
-    content: blocks.get(row.id) ?? [],
+    content: blocks.vi.get(row.id) ?? [],
+    contentEn: blocks.en.get(row.id) ?? [],
   }));
 }
 

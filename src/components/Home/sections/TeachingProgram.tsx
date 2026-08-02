@@ -14,6 +14,8 @@ type HomeTeachingMethod = {
   id: number;
   title: string;
   description: string;
+  titleEn?: string;
+  descriptionEn?: string;
   imageUrl: string;
   imageAlt: string;
   coverPosition: string;
@@ -378,6 +380,10 @@ function Border5() {
 }
 
 function TeachingMethodCard({ method, index }: { method: HomeTeachingMethod; index: number }) {
+  const { lang } = useLanguage();
+  const isEn = lang === "en";
+  const title = isEn && method.titleEn ? method.titleEn : method.title;
+  const description = isEn && method.descriptionEn ? method.descriptionEn : method.description;
   const gridClass = cardGridClasses[index] ?? "";
 
   return (
@@ -404,12 +410,12 @@ function TeachingMethodCard({ method, index }: { method: HomeTeachingMethod; ind
             <div className="content-stretch flex flex-[1_0_0] flex-col gap-[8px] items-start min-w-px relative" data-name="Container">
               <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
                 <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#620000] w-full">
-                  <p className="leading-[28px]">{method.title}</p>
+                  <p className="leading-[28px]">{title}</p>
                 </div>
               </div>
               <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
                 <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[18px] text-[#620000] w-full">
-                  <p className="leading-[26px]">{method.description}</p>
+                  <p className="leading-[26px]">{description}</p>
                 </div>
               </div>
             </div>

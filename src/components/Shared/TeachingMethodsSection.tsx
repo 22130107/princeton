@@ -9,7 +9,10 @@ import imgZigzagTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png"
 import imgZigzagBottom from "@/assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
 
 function TeachingMethodCard({ method }: { method: DbTeachingMethod }) {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
+  const isEn = lang === "en";
+  const title = isEn && method.titleEn ? method.titleEn : method.title;
+  const description = isEn && method.descriptionEn ? method.descriptionEn : method.description;
   return (
     <Link
       href={`/phuong-phap-giang-day/${method.slug}`}
@@ -29,10 +32,10 @@ function TeachingMethodCard({ method }: { method: DbTeachingMethod }) {
         </div>
         <div className="min-w-0 flex-1 text-center sm:text-left">
           <h3 className="text-[24px] font-extrabold leading-[1.14] text-[#620000] md:text-[30px]">
-            {method.title}
+            {title}
           </h3>
           <p className="mt-4 text-[17px] font-medium leading-[1.48] text-[#620000] md:text-[21px] md:leading-[32px]">
-            {method.description}
+            {description}
           </p>
           <span className="mt-5 inline-flex rounded-full bg-[#b80000] px-5 py-3 text-[13px] font-extrabold uppercase text-white shadow-[0_4px_0_#800000] transition-transform duration-200 group-hover:translate-x-1">
             {t("curriculum.viewDetail")}

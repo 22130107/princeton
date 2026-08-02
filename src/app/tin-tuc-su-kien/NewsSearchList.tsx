@@ -20,7 +20,10 @@ export type NewsSearchPost = {
   category: string;
   title: string;
   excerpt: string;
+  titleEn: string;
+  excerptEn: string;
   content: string[];
+  contentEn: string[];
 };
 
 type PostsResponse = {
@@ -40,7 +43,7 @@ function getInitialPagePosts(posts: NewsSearchPost[]) {
 }
 
 export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -253,10 +256,10 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
                   {post.category}
                 </p>
                 <h2 className="mt-3 text-[23px] font-extrabold leading-tight md:text-[25px]">
-                  {post.title}
+                  {lang === "en" && post.titleEn ? post.titleEn : post.title}
                 </h2>
                 <p className="mt-3 line-clamp-3 text-[16px] font-medium leading-7">
-                  {post.excerpt}
+                  {lang === "en" && post.excerptEn ? post.excerptEn : post.excerpt}
                 </p>
                 <Link
                   href={`/tin-tuc-su-kien/${post.slug}`}

@@ -7,7 +7,7 @@ import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getClassProgram, getClassPrograms } from "@/lib/content";
-import { getServerT } from "@/lib/i18n-server";
+import { getServerT, getServerLang } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
@@ -31,12 +31,17 @@ export async function generateMetadata({
     };
   }
 
+  const lang = await getServerLang();
+  const isEn = lang === "en";
+  const displayName = isEn && program.nameEn ? program.nameEn : program.name;
+  const displayAge = isEn && program.ageEn ? program.ageEn : program.age;
+
   return {
-    title: `${program.name} ${program.age} | Trường Mầm non Princeton`,
-    description: program.excerpt,
+    title: `${displayName} ${displayAge} | Trường Mầm non Princeton`,
+    description: isEn && program.excerptEn ? program.excerptEn : program.excerpt,
     openGraph: {
-      title: `${program.name} ${program.age}`,
-      description: program.excerpt,
+      title: `${displayName} ${displayAge}`,
+      description: isEn && program.excerptEn ? program.excerptEn : program.excerpt,
     },
   };
 }
@@ -44,13 +49,21 @@ export async function generateMetadata({
 export default async function ClassDetailPage({ params }: ClassDetailPageProps) {
   const { slug } = await params;
   const t = await getServerT();
+  const lang = await getServerLang();
+  const isEn = lang === "en";
   const program = await getClassProgram(slug);
 
   if (!program) notFound();
 
   const classPrograms = await getClassPrograms();
   const relatedPrograms = classPrograms.filter((item) => item.slug !== program.slug);
-  const scheduleItems = program.schedule.map((item) => item.trim()).filter(Boolean);
+  const normalizedSchedule = (isEn ? program.scheduleEn : program.schedule)
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const scheduleItems =
+    normalizedSchedule.length > 0
+      ? normalizedSchedule
+      : program.schedule.map((item) => item.trim()).filter(Boolean);
 
   return (
     <main className="min-h-screen bg-[#fffefa] pt-[80px] text-[#620000] md:pt-[99px]">
@@ -83,22 +96,22 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
                 {program.category}
               </p>
               <h1 className="mt-3 text-[34px] font-extrabold uppercase leading-tight text-[#b80000] md:text-[58px]">
-                {program.name}
+                {isEn && program.nameEn ? program.nameEn : program.name}
               </h1>
               <p className="mt-3 text-[22px] font-bold text-[#b80000] md:text-[28px]">
-                {program.age}
+                {isEn && program.ageEn ? program.ageEn : program.age}
               </p>
             </div>
           </header>
 
           <div className="px-2 py-7 md:px-6 md:py-9">
               <p className="text-[18px] font-bold leading-8 text-[#620000] md:text-[22px] md:leading-9">
-                {program.excerpt}
+                {isEn && program.excerptEn ? program.excerptEn : program.excerpt}
               </p>
 
-              {program.description ? (
+              {(isEn && program.descriptionEn ? program.descriptionEn : program.description) ? (
                 <div className="mt-8 text-[17px] font-medium leading-8 text-[#620000] md:text-[19px] md:leading-9">
-                  <RichContent blocks={[program.description]} />
+                  <RichContent blocks={[isEn && program.descriptionEn ? program.descriptionEn : program.description]} />
                 </div>
               ) : null}
 
@@ -160,8 +173,12 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
                   />
                 </div>
                 <div className="bg-[#fffefa] p-4">
-                  <h3 className="text-[20px] font-extrabold">{item.name}</h3>
-                  <p className="mt-1 text-[15px] font-bold">{item.age}</p>
+                  <h3 className="text-[20px] font-extrabold">
+                    {isEn && item.nameEn ? item.nameEn : item.name}
+                  </h3>
+                  <p className="mt-1 text-[15px] font-bold">
+                    {isEn && item.ageEn ? item.ageEn : item.age}
+                  </p>
                 </div>
               </Link>
             ))}

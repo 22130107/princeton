@@ -66,27 +66,35 @@ type ClassProgram = {
   id: number;
   slug: string;
   name: string;
+  nameEn: string;
   age: string;
+  ageEn: string;
   category: string;
   excerpt: string;
+  excerptEn: string;
   description: string;
+  descriptionEn: string;
   imageId: number | null;
   imageUrl: string;
   color: string;
   schedule: string[];
+  scheduleEn: string[];
 };
 
 type CurriculumTrack = {
   id: number;
   slug: string;
   title: string;
+  titleEn: string;
   category: string;
   description: string;
+  descriptionEn: string;
   imageId: number | null;
   imageUrl: string;
   logoMediaId: number | null;
   logoUrl: string;
   content: string[];
+  contentEn: string[];
 };
 
 type TeachingMethod = {
@@ -96,10 +104,14 @@ type TeachingMethod = {
   category: string;
   description: string;
   excerpt: string;
+  titleEn: string;
+  descriptionEn: string;
+  excerptEn: string;
   imageId: number | null;
   imageUrl: string;
   background: string;
   content: string[];
+  contentEn: string[];
 };
 
 type Post = {
@@ -107,12 +119,15 @@ type Post = {
   slug: string;
   title: string;
   excerpt: string;
+  titleEn: string;
+  excerptEn: string;
   categorySlug: string;
   category: string;
   postType?: "news" | "event" | "activity";
   coverImageId: number | null;
   imageUrl: string;
   content: string[];
+  contentEn: string[];
 };
 
 type FacilityImage = {
@@ -199,16 +214,21 @@ type CategoryState = {
 type ClassForm = {
   slug: string;
   name: string;
+  nameEn: string;
   ageLabel: string;
+  ageLabelEn: string;
   category: string;
   excerpt: string;
+  excerptEn: string;
   description: string;
+  descriptionEn: string;
   imageId: number | null;
   imageUrl: string;
   coverPosition: string;
   coverZoom: number;
   colorHex: string;
   scheduleText: string;
+  scheduleTextEn: string;
 };
 
 type BannerForm = {
@@ -229,27 +249,34 @@ type BannerForm = {
 type CurriculumForm = {
   slug: string;
   title: string;
+  titleEn: string;
   category: string;
   description: string;
+  descriptionEn: string;
   imageId: number | null;
   imageUrl: string;
   coverPosition: string;
   coverZoom: number;
   contentText: string;
+  contentTextEn: string;
 };
 
 type TeachingForm = {
   slug: string;
   title: string;
+  titleEn: string;
   category: string;
   description: string;
+  descriptionEn: string;
   excerpt: string;
+  excerptEn: string;
   imageId: number | null;
   imageUrl: string;
   coverPosition: string;
   coverZoom: number;
   backgroundHex: string;
   contentText: string;
+  contentTextEn: string;
 };
 
 type PostType = "news" | "event" | "activity";
@@ -258,6 +285,8 @@ type PostForm = {
   slug: string;
   title: string;
   excerpt: string;
+  titleEn: string;
+  excerptEn: string;
   categorySlug: string;
   categoryName: string;
   coverImageId: number | null;
@@ -267,6 +296,7 @@ type PostForm = {
   postType: PostType;
   status: "published";
   contentText: string;
+  contentTextEn: string;
 };
 
 type FacilityForm = {
@@ -312,16 +342,21 @@ type RegistrationSectionForm = RegistrationSectionSettings;
 const emptyClass: ClassForm = {
   slug: "",
   name: "",
+  nameEn: "",
   ageLabel: "",
+  ageLabelEn: "",
   category: "",
   excerpt: "",
+  excerptEn: "",
   description: "",
+  descriptionEn: "",
   imageId: null,
   imageUrl: "",
   coverPosition: "50% 50%",
   coverZoom: 1,
   colorHex: "#fffefa",
   scheduleText: "",
+  scheduleTextEn: "",
 };
 
 const emptyBanner: BannerForm = {
@@ -342,13 +377,16 @@ const emptyBanner: BannerForm = {
 const emptyCurriculum: CurriculumForm = {
   slug: "",
   title: "",
+  titleEn: "",
   category: "",
   description: "",
+  descriptionEn: "",
   imageId: null,
   imageUrl: "",
   coverPosition: "50% 50%",
   coverZoom: 1,
   contentText: "",
+  contentTextEn: "",
 };
 
 const emptyCategories: CategoryState = {
@@ -361,21 +399,27 @@ const emptyCategories: CategoryState = {
 const emptyTeaching: TeachingForm = {
   slug: "",
   title: "",
+  titleEn: "",
   category: "",
   description: "",
+  descriptionEn: "",
   excerpt: "",
+  excerptEn: "",
   imageId: null,
   imageUrl: "",
   coverPosition: "50% 50%",
   coverZoom: 1,
   backgroundHex: "#fffefa",
   contentText: "",
+  contentTextEn: "",
 };
 
 const emptyPost: PostForm = {
   slug: "",
   title: "",
   excerpt: "",
+  titleEn: "",
+  excerptEn: "",
   categorySlug: "",
   categoryName: "",
   coverImageId: null,
@@ -385,6 +429,7 @@ const emptyPost: PostForm = {
   postType: "news",
   status: "published",
   contentText: "",
+  contentTextEn: "",
 };
 
 const emptyFacility: FacilityForm = {
@@ -3643,6 +3688,47 @@ function TeacherCardPreview({
   );
 }
 
+function LangTabs({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: "vi" | "en";
+  onChange: (value: "vi" | "en") => void;
+}) {
+  return (
+    <div className="grid gap-2">
+      <span className="text-[13px] font-bold uppercase text-[#620000]">{label}</span>
+      <div
+        role="tablist"
+        aria-label={label}
+        className="inline-flex w-fit rounded-md border border-[#e1b0b0] bg-white p-1"
+      >
+        {([
+          { value: "vi", label: "Tiếng Việt" },
+          { value: "en", label: "English" },
+        ] as const).map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            role="tab"
+            aria-selected={value === option.value}
+            onClick={() => onChange(option.value)}
+            className={`h-9 rounded px-4 text-[14px] font-extrabold transition-colors ${
+              value === option.value
+                ? "bg-[#b80000] text-white"
+                : "text-[#620000] hover:bg-[#fff1f1]"
+            }`}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ActionButton({
   children,
   icon,
@@ -3765,9 +3851,13 @@ export default function AdminDashboard() {
 
   const [bannerForm, setBannerForm] = useState(emptyBanner);
   const [classForm, setClassForm] = useState(emptyClass);
+  const [classLang, setClassLang] = useState<"vi" | "en">("vi");
   const [curriculumForm, setCurriculumForm] = useState(emptyCurriculum);
+  const [curriculumLang, setCurriculumLang] = useState<"vi" | "en">("vi");
   const [teachingForm, setTeachingForm] = useState(emptyTeaching);
+  const [teachingLang, setTeachingLang] = useState<"vi" | "en">("vi");
   const [postForm, setPostForm] = useState(emptyPost);
+  const [postLang, setPostLang] = useState<"vi" | "en">("vi");
   const [facilityForm, setFacilityForm] = useState(emptyFacility);
   const [galleryForm, setGalleryForm] = useState(emptyGallery);
   const [teacherForm, setTeacherForm] = useState(emptyTeacher);
@@ -3877,15 +3967,19 @@ export default function AdminDashboard() {
       setTeachingForm({
         slug: item.slug ?? "",
         title: item.title ?? "",
+        titleEn: item.titleEn ?? "",
         category: item.category ?? "",
         description: item.description ?? "",
+        descriptionEn: item.descriptionEn ?? "",
         excerpt: item.excerpt ?? "",
+        excerptEn: item.excerptEn ?? "",
         imageId: item.imageId ?? null,
         imageUrl: item.imageUrl ?? "",
         coverPosition: item.coverPosition ?? "50% 50%",
         coverZoom: item.coverZoom ?? 1,
         backgroundHex: item.background ?? "#fffefa",
         contentText: (item.content ?? []).join("\n"),
+        contentTextEn: (item.contentEn ?? []).join("\n"),
       });
       return;
     }
@@ -3895,6 +3989,8 @@ export default function AdminDashboard() {
         slug: item.slug ?? "",
         title: item.title ?? "",
         excerpt: item.excerpt ?? "",
+        titleEn: item.titleEn ?? "",
+        excerptEn: item.excerptEn ?? "",
         categorySlug: item.categorySlug ?? slugify(item.category ?? ""),
         categoryName: item.category ?? "",
         coverImageId: item.coverImageId ?? null,
@@ -3904,6 +4000,7 @@ export default function AdminDashboard() {
         postType: item.postType ?? "news",
         status: "published",
         contentText: (item.content ?? []).join("\n"),
+        contentTextEn: (item.contentEn ?? []).join("\n"),
       });
       return;
     }
@@ -3961,16 +4058,21 @@ export default function AdminDashboard() {
       setClassForm({
         slug: item.slug ?? "",
         name: item.name ?? "",
+        nameEn: item.nameEn ?? "",
         ageLabel: item.age ?? "",
+        ageLabelEn: item.ageEn ?? "",
         category: item.category ?? "",
         excerpt: item.excerpt ?? "",
+        excerptEn: item.excerptEn ?? "",
         description: item.description ?? "",
+        descriptionEn: item.descriptionEn ?? "",
         imageId: item.imageId ?? null,
         imageUrl: item.imageUrl ?? "",
         coverPosition: item.coverPosition ?? "50% 50%",
         coverZoom: item.coverZoom ?? 1,
         colorHex: item.color ?? "#fffefa",
         scheduleText: scheduleItemsToText(item.schedule ?? []),
+        scheduleTextEn: scheduleItemsToText(item.scheduleEn ?? []),
       });
       return;
     }
@@ -3978,13 +4080,16 @@ export default function AdminDashboard() {
     setCurriculumForm({
       slug: item.slug ?? "",
       title: item.title ?? "",
+      titleEn: item.titleEn ?? "",
       category: item.category ?? "",
       description: item.description ?? "",
+      descriptionEn: item.descriptionEn ?? "",
       imageId: item.imageId ?? null,
       imageUrl: item.imageUrl ?? "",
       coverPosition: item.coverPosition ?? "50% 50%",
       coverZoom: item.coverZoom ?? 1,
       contentText: (item.content ?? []).join("\n"),
+      contentTextEn: (item.contentEn ?? []).join("\n"),
     });
   }
 
@@ -4026,14 +4131,18 @@ export default function AdminDashboard() {
       const body = {
         slug: teachingForm.slug,
         title: teachingForm.title,
+        titleEn: teachingForm.titleEn,
         category: teachingForm.category,
         description: teachingForm.description,
+        descriptionEn: teachingForm.descriptionEn,
         excerpt: teachingForm.excerpt,
+        excerptEn: teachingForm.excerptEn,
         imageId: teachingForm.imageId,
         coverPosition: teachingForm.coverPosition,
         coverZoom: teachingForm.coverZoom,
         backgroundHex: teachingForm.backgroundHex,
         content: richBlocks(teachingForm.contentText),
+        contentEn: richBlocks(teachingForm.contentTextEn),
       };
       await requestJson(selected ? `/api/teaching-methods/${selected}` : "/api/teaching-methods", {
         method: selected ? "PUT" : "POST",
@@ -4057,15 +4166,20 @@ export default function AdminDashboard() {
       const body = {
         slug: classForm.slug,
         name: classForm.name,
+        nameEn: classForm.nameEn,
         ageLabel: classForm.ageLabel,
+        ageLabelEn: classForm.ageLabelEn,
         category: classForm.category,
         excerpt: classForm.excerpt,
+        excerptEn: classForm.excerptEn,
         description: classForm.description,
+        descriptionEn: classForm.descriptionEn,
         colorHex: classForm.colorHex,
         imageId: classForm.imageId,
         coverPosition: classForm.coverPosition,
         coverZoom: classForm.coverZoom,
         schedule: scheduleTextToItems(classForm.scheduleText),
+        scheduleEn: scheduleTextToItems(classForm.scheduleTextEn),
       };
       await requestJson(selected ? `/api/class-programs/${selected}` : "/api/class-programs", {
         method: selected ? "PUT" : "POST",
@@ -4089,12 +4203,15 @@ export default function AdminDashboard() {
       const body = {
         slug: curriculumForm.slug,
         title: curriculumForm.title,
+        titleEn: curriculumForm.titleEn,
         category: curriculumForm.category,
         description: curriculumForm.description,
+        descriptionEn: curriculumForm.descriptionEn,
         imageId: curriculumForm.imageId,
         coverPosition: curriculumForm.coverPosition,
         coverZoom: curriculumForm.coverZoom,
         content: richBlocks(curriculumForm.contentText),
+        contentEn: richBlocks(curriculumForm.contentTextEn),
       };
       await requestJson(selected ? `/api/curriculum-tracks/${selected}` : "/api/curriculum-tracks", {
         method: selected ? "PUT" : "POST",
@@ -4119,6 +4236,8 @@ export default function AdminDashboard() {
         slug: postForm.slug,
         title: postForm.title,
         excerpt: postForm.excerpt,
+        titleEn: postForm.titleEn,
+        excerptEn: postForm.excerptEn,
         categorySlug: postForm.categorySlug,
         categoryName: postForm.categoryName,
         coverImageId: postForm.coverImageId,
@@ -4127,6 +4246,7 @@ export default function AdminDashboard() {
         postType: postForm.postType,
         status: postForm.status,
         content: richBlocks(postForm.contentText),
+        contentEn: richBlocks(postForm.contentTextEn),
       };
       await requestJson(selected ? `/api/posts/${selected}` : "/api/posts", {
         method: selected ? "PUT" : "POST",
@@ -5090,11 +5210,14 @@ export default function AdminDashboard() {
 
             {tab === "teaching" ? (
               <form className="grid gap-4" onSubmit={saveTeaching}>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="Tiêu đề" value={teachingForm.title} onChange={(value) => setTeachingForm((f) => ({ ...f, title: value, slug: syncAutoSlug(f.slug, f.title, value) }))} />
-                  <Field label="Slug" value={teachingForm.slug} onChange={(value) => setTeachingForm((f) => ({ ...f, slug: value }))} />
-                  <Field label="Màu nền" type="color" value={teachingForm.backgroundHex} onChange={(value) => setTeachingForm((f) => ({ ...f, backgroundHex: value }))} />
-                </div>
+                <LangTabs label="Ngôn ngữ nội dung" value={teachingLang} onChange={setTeachingLang} />
+                {teachingLang === "vi" ? (
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <Field label="Tiêu đề (Tiếng Việt)" value={teachingForm.title} onChange={(value) => setTeachingForm((f) => ({ ...f, title: value, slug: syncAutoSlug(f.slug, f.title, value) }))} />
+                    <Field label="Slug" value={teachingForm.slug} onChange={(value) => setTeachingForm((f) => ({ ...f, slug: value }))} />
+                    <Field label="Màu nền" type="color" value={teachingForm.backgroundHex} onChange={(value) => setTeachingForm((f) => ({ ...f, backgroundHex: value }))} />
+                  </div>
+                ) : null}
                 <CategoryPicker
                   label="Danh mục"
                   value={activeCategory.value}
@@ -5124,14 +5247,30 @@ export default function AdminDashboard() {
                     setTeachingForm((f) => ({ ...f, coverPosition: value.position, coverZoom: value.zoom }))
                   }
                 />
-                <TextArea label="Mô tả card" value={teachingForm.description} onChange={(value) => setTeachingForm((f) => ({ ...f, description: value }))} />
-                <TextArea label="Tóm tắt chi tiết" value={teachingForm.excerpt} onChange={(value) => setTeachingForm((f) => ({ ...f, excerpt: value }))} />
-                <TiptapRichTextEditor
-                  label="Nội dung chi tiết"
-                  value={teachingForm.contentText}
-                  onChange={(value) => setTeachingForm((f) => ({ ...f, contentText: value }))}
-                  onStatus={setStatus}
-                />
+                {teachingLang === "vi" ? (
+                  <div className="grid gap-4">
+                    <TextArea label="Mô tả card (Tiếng Việt)" value={teachingForm.description} onChange={(value) => setTeachingForm((f) => ({ ...f, description: value }))} />
+                    <TextArea label="Tóm tắt chi tiết (Tiếng Việt)" value={teachingForm.excerpt} onChange={(value) => setTeachingForm((f) => ({ ...f, excerpt: value }))} />
+                    <TiptapRichTextEditor
+                      label="Nội dung chi tiết (Tiếng Việt)"
+                      value={teachingForm.contentText}
+                      onChange={(value) => setTeachingForm((f) => ({ ...f, contentText: value }))}
+                      onStatus={setStatus}
+                    />
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    <Field label="Tiêu đề (English)" value={teachingForm.titleEn} onChange={(value) => setTeachingForm((f) => ({ ...f, titleEn: value }))} />
+                    <TextArea label="Mô tả card (English)" value={teachingForm.descriptionEn} onChange={(value) => setTeachingForm((f) => ({ ...f, descriptionEn: value }))} />
+                    <TextArea label="Tóm tắt chi tiết (English)" value={teachingForm.excerptEn} onChange={(value) => setTeachingForm((f) => ({ ...f, excerptEn: value }))} />
+                    <TiptapRichTextEditor
+                      label="Nội dung chi tiết (English)"
+                      value={teachingForm.contentTextEn}
+                      onChange={(value) => setTeachingForm((f) => ({ ...f, contentTextEn: value }))}
+                      onStatus={setStatus}
+                    />
+                  </div>
+                )}
                 <ActionButton type="submit" icon={selected ? <Edit3 size={17} /> : <Save size={17} />} disabled={saving}>
                   Lưu
                 </ActionButton>
@@ -5140,12 +5279,20 @@ export default function AdminDashboard() {
 
             {tab === "programs" && programMode === "classes" ? (
               <form className="grid gap-4" onSubmit={saveClass}>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="Tên lớp" value={classForm.name} onChange={(value) => setClassForm((f) => ({ ...f, name: value, slug: syncAutoSlug(f.slug, f.name, value) }))} />
-                  <Field label="Slug" value={classForm.slug} onChange={(value) => setClassForm((f) => ({ ...f, slug: value }))} />
-                  <Field label="Độ tuổi hiển thị" value={classForm.ageLabel} placeholder="2 - 3 tuổi" onChange={(value) => setClassForm((f) => ({ ...f, ageLabel: value }))} />
-                  <Field label="Màu card" type="color" value={classForm.colorHex} onChange={(value) => setClassForm((f) => ({ ...f, colorHex: value }))} />
-                </div>
+                <LangTabs label="Ngôn ngữ nội dung" value={classLang} onChange={setClassLang} />
+                {classLang === "vi" ? (
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <Field label="Tên lớp (Tiếng Việt)" value={classForm.name} onChange={(value) => setClassForm((f) => ({ ...f, name: value, slug: syncAutoSlug(f.slug, f.name, value) }))} />
+                    <Field label="Slug" value={classForm.slug} onChange={(value) => setClassForm((f) => ({ ...f, slug: value }))} />
+                    <Field label="Độ tuổi hiển thị (Tiếng Việt)" value={classForm.ageLabel} placeholder="2 - 3 tuổi" onChange={(value) => setClassForm((f) => ({ ...f, ageLabel: value }))} />
+                  </div>
+                ) : (
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <Field label="Tên lớp (English)" value={classForm.nameEn} onChange={(value) => setClassForm((f) => ({ ...f, nameEn: value }))} />
+                    <Field label="Độ tuổi hiển thị (English)" value={classForm.ageLabelEn} placeholder="2 - 3 years old" onChange={(value) => setClassForm((f) => ({ ...f, ageLabelEn: value }))} />
+                  </div>
+                )}
+                <Field label="Màu card" type="color" value={classForm.colorHex} onChange={(value) => setClassForm((f) => ({ ...f, colorHex: value }))} />
                 <CategoryPicker
                   label="Danh mục"
                   value={activeCategory.value}
@@ -5175,19 +5322,39 @@ export default function AdminDashboard() {
                     setClassForm((f) => ({ ...f, coverPosition: value.position, coverZoom: value.zoom }))
                   }
                 />
-                <TextArea label="Mô tả ngắn" value={classForm.excerpt} onChange={(value) => setClassForm((f) => ({ ...f, excerpt: value }))} />
-                <TiptapRichTextEditor
-                  label="Mô tả chi tiết"
-                  value={classForm.description}
-                  onChange={(value) => setClassForm((f) => ({ ...f, description: value }))}
-                  onStatus={setStatus}
-                />
-                <ScheduleActivitiesEditor
-                  label="Lịch học"
-                  value={classForm.scheduleText}
-                  onChange={(value) => setClassForm((f) => ({ ...f, scheduleText: value }))}
-                  onStatus={setStatus}
-                />
+                {classLang === "vi" ? (
+                  <div className="grid gap-4">
+                    <TextArea label="Mô tả ngắn (Tiếng Việt)" value={classForm.excerpt} onChange={(value) => setClassForm((f) => ({ ...f, excerpt: value }))} />
+                    <TiptapRichTextEditor
+                      label="Mô tả chi tiết (Tiếng Việt)"
+                      value={classForm.description}
+                      onChange={(value) => setClassForm((f) => ({ ...f, description: value }))}
+                      onStatus={setStatus}
+                    />
+                    <ScheduleActivitiesEditor
+                      label="Lịch học (Tiếng Việt)"
+                      value={classForm.scheduleText}
+                      onChange={(value) => setClassForm((f) => ({ ...f, scheduleText: value }))}
+                      onStatus={setStatus}
+                    />
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    <TextArea label="Mô tả ngắn (English)" value={classForm.excerptEn} onChange={(value) => setClassForm((f) => ({ ...f, excerptEn: value }))} />
+                    <TiptapRichTextEditor
+                      label="Mô tả chi tiết (English)"
+                      value={classForm.descriptionEn}
+                      onChange={(value) => setClassForm((f) => ({ ...f, descriptionEn: value }))}
+                      onStatus={setStatus}
+                    />
+                    <ScheduleActivitiesEditor
+                      label="Lịch học (English)"
+                      value={classForm.scheduleTextEn}
+                      onChange={(value) => setClassForm((f) => ({ ...f, scheduleTextEn: value }))}
+                      onStatus={setStatus}
+                    />
+                  </div>
+                )}
                 <ActionButton type="submit" icon={selected ? <Edit3 size={17} /> : <Save size={17} />} disabled={saving}>
                   Lưu
                 </ActionButton>
@@ -5196,10 +5363,13 @@ export default function AdminDashboard() {
 
             {tab === "programs" && programMode === "curriculum" ? (
               <form className="grid gap-4" onSubmit={saveCurriculum}>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="Tiêu đề" value={curriculumForm.title} onChange={(value) => setCurriculumForm((f) => ({ ...f, title: value, slug: syncAutoSlug(f.slug, f.title, value) }))} />
-                  <Field label="Slug" value={curriculumForm.slug} onChange={(value) => setCurriculumForm((f) => ({ ...f, slug: value }))} />
-                </div>
+                <LangTabs label="Ngôn ngữ nội dung" value={curriculumLang} onChange={setCurriculumLang} />
+                {curriculumLang === "vi" ? (
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <Field label="Tiêu đề (Tiếng Việt)" value={curriculumForm.title} onChange={(value) => setCurriculumForm((f) => ({ ...f, title: value, slug: syncAutoSlug(f.slug, f.title, value) }))} />
+                    <Field label="Slug" value={curriculumForm.slug} onChange={(value) => setCurriculumForm((f) => ({ ...f, slug: value }))} />
+                  </div>
+                ) : null}
                 <CategoryPicker
                   label="Danh mục"
                   value={activeCategory.value}
@@ -5229,13 +5399,28 @@ export default function AdminDashboard() {
                     setCurriculumForm((f) => ({ ...f, coverPosition: value.position, coverZoom: value.zoom }))
                   }
                 />
-                <TextArea label="Mô tả" value={curriculumForm.description} onChange={(value) => setCurriculumForm((f) => ({ ...f, description: value }))} />
-                <TiptapRichTextEditor
-                  label="Nội dung chương trình"
-                  value={curriculumForm.contentText}
-                  onChange={(value) => setCurriculumForm((f) => ({ ...f, contentText: value }))}
-                  onStatus={setStatus}
-                />
+                {curriculumLang === "vi" ? (
+                  <div className="grid gap-4">
+                    <TextArea label="Mô tả (Tiếng Việt)" value={curriculumForm.description} onChange={(value) => setCurriculumForm((f) => ({ ...f, description: value }))} />
+                    <TiptapRichTextEditor
+                      label="Nội dung chương trình (Tiếng Việt)"
+                      value={curriculumForm.contentText}
+                      onChange={(value) => setCurriculumForm((f) => ({ ...f, contentText: value }))}
+                      onStatus={setStatus}
+                    />
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    <Field label="Tiêu đề (English)" value={curriculumForm.titleEn} onChange={(value) => setCurriculumForm((f) => ({ ...f, titleEn: value }))} />
+                    <TextArea label="Mô tả (English)" value={curriculumForm.descriptionEn} onChange={(value) => setCurriculumForm((f) => ({ ...f, descriptionEn: value }))} />
+                    <TiptapRichTextEditor
+                      label="Nội dung chương trình (English)"
+                      value={curriculumForm.contentTextEn}
+                      onChange={(value) => setCurriculumForm((f) => ({ ...f, contentTextEn: value }))}
+                      onStatus={setStatus}
+                    />
+                  </div>
+                )}
                 <ActionButton type="submit" icon={selected ? <Edit3 size={17} /> : <Save size={17} />} disabled={saving}>
                   Lưu
                 </ActionButton>
@@ -5244,22 +5429,25 @@ export default function AdminDashboard() {
 
             {tab === "posts" ? (
               <form className="grid gap-4" onSubmit={savePost}>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="Tiêu đề" value={postForm.title} onChange={(value) => setPostForm((f) => ({ ...f, title: value, slug: syncAutoSlug(f.slug, f.title, value) }))} />
-                  <Field label="Slug" value={postForm.slug} onChange={(value) => setPostForm((f) => ({ ...f, slug: value }))} />
-                  <label className="grid gap-1.5">
-                    <span className="text-[13px] font-bold uppercase text-[#620000]">Loại bài</span>
-                    <select
-                      value={postForm.postType}
-                      onChange={(event) => setPostForm((f) => ({ ...f, postType: event.target.value as PostType }))}
-                      className="h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[15px] text-[#620000] outline-none focus:border-[#b80000]"
-                    >
-                      <option value="news">Tin tức</option>
-                      <option value="event">Sự kiện</option>
-                      <option value="activity">Hoạt động</option>
-                    </select>
-                  </label>
-                </div>
+                <LangTabs label="Ngôn ngữ nội dung" value={postLang} onChange={setPostLang} />
+                {postLang === "vi" ? (
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <Field label="Tiêu đề (Tiếng Việt)" value={postForm.title} onChange={(value) => setPostForm((f) => ({ ...f, title: value, slug: syncAutoSlug(f.slug, f.title, value) }))} />
+                    <Field label="Slug" value={postForm.slug} onChange={(value) => setPostForm((f) => ({ ...f, slug: value }))} />
+                    <label className="grid gap-1.5">
+                      <span className="text-[13px] font-bold uppercase text-[#620000]">Loại bài</span>
+                      <select
+                        value={postForm.postType}
+                        onChange={(event) => setPostForm((f) => ({ ...f, postType: event.target.value as PostType }))}
+                        className="h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[15px] text-[#620000] outline-none focus:border-[#b80000]"
+                      >
+                        <option value="news">Tin tức</option>
+                        <option value="event">Sự kiện</option>
+                        <option value="activity">Hoạt động</option>
+                      </select>
+                    </label>
+                  </div>
+                ) : null}
                 <CategoryPicker
                   label="Danh mục"
                   value={activeCategory.value}
@@ -5289,13 +5477,28 @@ export default function AdminDashboard() {
                     setPostForm((f) => ({ ...f, coverPosition: value.position, coverZoom: value.zoom }))
                   }
                 />
-                <TextArea label="Tóm tắt" value={postForm.excerpt} onChange={(value) => setPostForm((f) => ({ ...f, excerpt: value }))} />
-                <TiptapRichTextEditor
-                  label="Nội dung tin tức/sự kiện"
-                  value={postForm.contentText}
-                  onChange={(value) => setPostForm((f) => ({ ...f, contentText: value }))}
-                  onStatus={setStatus}
-                />
+                {postLang === "vi" ? (
+                  <div className="grid gap-4">
+                    <TextArea label="Tóm tắt (Tiếng Việt)" value={postForm.excerpt} onChange={(value) => setPostForm((f) => ({ ...f, excerpt: value }))} />
+                    <TiptapRichTextEditor
+                      label="Nội dung tin tức/sự kiện (Tiếng Việt)"
+                      value={postForm.contentText}
+                      onChange={(value) => setPostForm((f) => ({ ...f, contentText: value }))}
+                      onStatus={setStatus}
+                    />
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    <Field label="Tiêu đề (English)" value={postForm.titleEn} onChange={(value) => setPostForm((f) => ({ ...f, titleEn: value }))} />
+                    <TextArea label="Tóm tắt (English)" value={postForm.excerptEn} onChange={(value) => setPostForm((f) => ({ ...f, excerptEn: value }))} />
+                    <TiptapRichTextEditor
+                      label="Nội dung (English)"
+                      value={postForm.contentTextEn}
+                      onChange={(value) => setPostForm((f) => ({ ...f, contentTextEn: value }))}
+                      onStatus={setStatus}
+                    />
+                  </div>
+                )}
                 <ActionButton type="submit" icon={selected ? <Edit3 size={17} /> : <Save size={17} />} disabled={saving}>
                   Lưu
                 </ActionButton>

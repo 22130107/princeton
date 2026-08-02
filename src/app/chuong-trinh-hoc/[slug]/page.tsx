@@ -7,7 +7,7 @@ import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getCurriculumTracks } from "@/lib/content";
-import { getServerT } from "@/lib/i18n-server";
+import { getServerLang, getServerT } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
@@ -32,6 +32,7 @@ export async function generateMetadata({
 }: CurriculumDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
   const { track } = await getTrack(slug);
+  const lang = await getServerLang();
 
   if (!track) {
     return {
@@ -39,12 +40,16 @@ export async function generateMetadata({
     };
   }
 
+  const isEn = lang === "en";
+  const title = isEn && track.titleEn ? track.titleEn : track.title;
+  const description = isEn && track.descriptionEn ? track.descriptionEn : track.description;
+
   return {
-    title: `${track.title} | Trường Mầm non Princeton`,
-    description: track.description,
+    title: `${title} | Trường Mầm non Princeton`,
+    description,
     openGraph: {
-      title: track.title,
-      description: track.description,
+      title,
+      description,
     },
   };
 }
@@ -52,9 +57,15 @@ export async function generateMetadata({
 export default async function CurriculumDetailPage({ params }: CurriculumDetailPageProps) {
   const { slug } = await params;
   const t = await getServerT();
+  const lang = await getServerLang();
   const { track, tracks } = await getTrack(slug);
 
   if (!track) notFound();
+
+  const isEn = lang === "en";
+  const title = isEn && track.titleEn ? track.titleEn : track.title;
+  const description = isEn && track.descriptionEn ? track.descriptionEn : track.description;
+  const content = isEn && track.contentEn.length ? track.contentEn : track.content;
 
   const relatedTracks = tracks.filter((item) => item.slug !== track.slug);
 
@@ -89,7 +100,7 @@ export default async function CurriculumDetailPage({ params }: CurriculumDetailP
                 {track.category}
               </p>
               <h1 className="mt-3 text-[30px] font-extrabold leading-tight text-[#b80000] md:text-[52px]">
-                {track.title}
+                {title}
               </h1>
             </div>
           </div>
@@ -97,11 +108,11 @@ export default async function CurriculumDetailPage({ params }: CurriculumDetailP
           <div className="mx-auto mt-8 max-w-[1040px] md:mt-10">
             <div className="px-2 py-7 md:px-6 md:py-9">
               <p className="text-[18px] font-bold leading-8 text-[#620000] md:text-[22px] md:leading-9">
-                {track.description}
+                {description}
               </p>
 
               <div className="mt-8 text-[17px] font-medium leading-8 md:text-[19px] md:leading-9">
-                <RichContent blocks={track.content.length ? track.content : [track.description]} />
+                <RichContent blocks={content.length ? content : [description]} />
               </div>
             </div>
           </div>
@@ -148,7 +159,7 @@ export default async function CurriculumDetailPage({ params }: CurriculumDetailP
                       {item.category}
                     </p>
                     <h3 className="mt-3 text-[20px] font-extrabold leading-tight">
-                      {item.title}
+                      {isEn && item.titleEn ? item.titleEn : item.title}
                     </h3>
                   </div>
                 </Link>

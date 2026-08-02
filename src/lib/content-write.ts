@@ -18,29 +18,37 @@ import {
 export type CreateClassProgramInput = {
   slug: string;
   name: string;
+  nameEn?: string | null;
   ageLabel: string;
+  ageLabelEn?: string | null;
   ageMin?: number | null;
   ageMax?: number | null;
   category?: string | null;
   excerpt?: string | null;
+  excerptEn?: string | null;
   description?: string | null;
+  descriptionEn?: string | null;
   colorHex?: string | null;
   imageId?: number | null;
   coverPosition?: string | null;
   coverZoom?: number | null;
   schedule?: string[];
+  scheduleEn?: string[];
 };
 
 export type CreateCurriculumTrackInput = {
   slug: string;
   title: string;
+  titleEn?: string | null;
   category?: string | null;
   description?: string | null;
+  descriptionEn?: string | null;
   imageId?: number | null;
   coverPosition?: string | null;
   coverZoom?: number | null;
   logoMediaId?: number | null;
   content?: string[];
+  contentEn?: string[];
 };
 
 export type CreateHeroSlideInput = {
@@ -59,20 +67,26 @@ export type CreateHeroSlideInput = {
 export type CreateTeachingMethodInput = {
   slug: string;
   title: string;
+  titleEn?: string | null;
   category?: string | null;
   description?: string | null;
+  descriptionEn?: string | null;
   excerpt?: string | null;
+  excerptEn?: string | null;
   imageId?: number | null;
   coverPosition?: string | null;
   coverZoom?: number | null;
   backgroundHex?: string | null;
   content?: string[];
+  contentEn?: string[];
 };
 
 export type CreatePostInput = {
   slug: string;
   title: string;
   excerpt?: string | null;
+  titleEn?: string | null;
+  excerptEn?: string | null;
   categorySlug?: string | null;
   categoryName?: string | null;
   coverImageId?: number | null;
@@ -84,6 +98,7 @@ export type CreatePostInput = {
   eventEndsAt?: string | null;
   eventLocation?: string | null;
   content?: string[];
+  contentEn?: string[];
 };
 
 export type CreateFacilityImageInput = {
@@ -165,17 +180,22 @@ export function normalizeClassProgramInput(input: Partial<CreateClassProgramInpu
   return {
     slug: requiredText(input.slug, "slug"),
     name: requiredText(input.name, "name"),
+    nameEn: optionalText(input.nameEn),
     ageLabel: requiredText(input.ageLabel, "ageLabel"),
+    ageLabelEn: optionalText(input.ageLabelEn),
     ageMin: optionalNumber(input.ageMin),
     ageMax: optionalNumber(input.ageMax),
     category: optionalText(input.category),
     excerpt: optionalText(input.excerpt),
+    excerptEn: optionalText(input.excerptEn),
     description: optionalText(input.description),
+    descriptionEn: optionalText(input.descriptionEn),
     colorHex: optionalText(input.colorHex),
     imageId: optionalNumber(input.imageId),
     coverPosition: normalizeCoverPosition(input.coverPosition),
     coverZoom: normalizeCoverZoom(input.coverZoom),
     schedule: contentBlocks(input.schedule),
+    scheduleEn: contentBlocks(input.scheduleEn),
   };
 }
 
@@ -183,13 +203,16 @@ export function normalizeCurriculumTrackInput(input: Partial<CreateCurriculumTra
   return {
     slug: requiredText(input.slug, "slug"),
     title: requiredText(input.title, "title"),
+    titleEn: optionalText(input.titleEn),
     category: optionalText(input.category),
     description: optionalText(input.description),
+    descriptionEn: optionalText(input.descriptionEn),
     imageId: optionalNumber(input.imageId),
     coverPosition: normalizeCoverPosition(input.coverPosition),
     coverZoom: normalizeCoverZoom(input.coverZoom),
     logoMediaId: optionalNumber(input.logoMediaId),
     content: contentBlocks(input.content),
+    contentEn: contentBlocks(input.contentEn),
   };
 }
 
@@ -219,14 +242,18 @@ export function normalizeTeachingMethodInput(input: Partial<CreateTeachingMethod
   return {
     slug: requiredText(input.slug, "slug"),
     title: requiredText(input.title, "title"),
+    titleEn: optionalText(input.titleEn),
     category: optionalText(input.category),
     description: optionalText(input.description),
+    descriptionEn: optionalText(input.descriptionEn),
     excerpt: optionalText(input.excerpt),
+    excerptEn: optionalText(input.excerptEn),
     imageId: optionalNumber(input.imageId),
     coverPosition: normalizeCoverPosition(input.coverPosition),
     coverZoom: normalizeCoverZoom(input.coverZoom),
     backgroundHex: optionalText(input.backgroundHex),
     content: contentBlocks(input.content),
+    contentEn: contentBlocks(input.contentEn),
   };
 }
 
@@ -239,6 +266,8 @@ export function normalizePostInput(input: Partial<CreatePostInput>) {
     slug: requiredText(input.slug, "slug"),
     title: requiredText(input.title, "title"),
     excerpt: optionalText(input.excerpt),
+    titleEn: optionalText(input.titleEn),
+    excerptEn: optionalText(input.excerptEn),
     categorySlug: optionalText(input.categorySlug),
     categoryName: optionalText(input.categoryName),
     coverImageId: optionalNumber(input.coverImageId),
@@ -250,6 +279,7 @@ export function normalizePostInput(input: Partial<CreatePostInput>) {
     eventEndsAt: optionalText(input.eventEndsAt),
     eventLocation: optionalText(input.eventLocation),
     content: contentBlocks(input.content),
+    contentEn: contentBlocks(input.contentEn),
   };
 }
 
@@ -337,10 +367,10 @@ export async function createClassProgram(input: Partial<CreateClassProgramInput>
 
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO class_programs (
-        slug, name, age_min, age_max, age_label, category, excerpt, description,
+        slug, name, name_en, age_min, age_max, age_label, age_label_en, category, excerpt, excerpt_en, description, description_en,
         image_id, cover_position, cover_zoom, color_hex, sort_order, is_active
       ) VALUES (
-        :slug, :name, :ageMin, :ageMax, :ageLabel, :category, :excerpt, :description,
+        :slug, :name, :nameEn, :ageMin, :ageMax, :ageLabel, :ageLabelEn, :category, :excerpt, :excerptEn, :description, :descriptionEn,
         :imageId, :coverPosition, :coverZoom, :colorHex, :sortOrder, TRUE
       )`,
       { ...data, sortOrder },
@@ -348,11 +378,24 @@ export async function createClassProgram(input: Partial<CreateClassProgramInput>
 
     for (const [index, item] of data.schedule.entries()) {
       await connection.execute(
-        `INSERT INTO class_program_schedule_items (class_program_id, title, description, sort_order)
-         VALUES (:programId, :title, :description, :sortOrder)`,
+        `INSERT INTO class_program_schedule_items (class_program_id, title, description, sort_order, lang)
+         VALUES (:programId, :title, :description, :sortOrder, 'vi')`,
         {
           programId: result.insertId,
           title: `Hoạt động ${index + 1}`,
+          description: item,
+          sortOrder: (index + 1) * 10,
+        },
+      );
+    }
+
+    for (const [index, item] of data.scheduleEn.entries()) {
+      await connection.execute(
+        `INSERT INTO class_program_schedule_items (class_program_id, title, description, sort_order, lang)
+         VALUES (:programId, :title, :description, :sortOrder, 'en')`,
+        {
+          programId: result.insertId,
+          title: `Activity ${index + 1}`,
           description: item,
           sortOrder: (index + 1) * 10,
         },
@@ -381,17 +424,29 @@ export async function createCurriculumTrack(input: Partial<CreateCurriculumTrack
 
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO curriculum_tracks (
-        slug, title, category, description, image_id, cover_position, cover_zoom, logo_media_id, sort_order, is_active
+        slug, title, title_en, category, description, description_en, image_id, cover_position, cover_zoom, logo_media_id, sort_order, is_active
       ) VALUES (
-        :slug, :title, :category, :description, :imageId, :coverPosition, :coverZoom, :logoMediaId, :sortOrder, TRUE
+        :slug, :title, :titleEn, :category, :description, :descriptionEn, :imageId, :coverPosition, :coverZoom, :logoMediaId, :sortOrder, TRUE
       )`,
       { ...data, sortOrder },
     );
 
     for (const [index, item] of data.content.entries()) {
       await connection.execute(
-        `INSERT INTO curriculum_blocks (curriculum_track_id, block_type, content, sort_order)
-         VALUES (:trackId, 'paragraph', :content, :sortOrder)`,
+        `INSERT INTO curriculum_blocks (curriculum_track_id, block_type, content, sort_order, lang)
+         VALUES (:trackId, 'paragraph', :content, :sortOrder, 'vi')`,
+        {
+          trackId: result.insertId,
+          content: JSON.stringify({ text: item }),
+          sortOrder: (index + 1) * 10,
+        },
+      );
+    }
+
+    for (const [index, item] of data.contentEn.entries()) {
+      await connection.execute(
+        `INSERT INTO curriculum_blocks (curriculum_track_id, block_type, content, sort_order, lang)
+         VALUES (:trackId, 'paragraph', :content, :sortOrder, 'en')`,
         {
           trackId: result.insertId,
           content: JSON.stringify({ text: item }),
@@ -421,17 +476,29 @@ export async function createTeachingMethod(input: Partial<CreateTeachingMethodIn
 
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO teaching_methods (
-        slug, title, category, description, excerpt, image_id, cover_position, cover_zoom, background_hex, sort_order, status
+        slug, title, title_en, category, description, description_en, excerpt, excerpt_en, image_id, cover_position, cover_zoom, background_hex, sort_order, status
       ) VALUES (
-        :slug, :title, :category, :description, :excerpt, :imageId, :coverPosition, :coverZoom, :backgroundHex, :sortOrder, 'published'
+        :slug, :title, :titleEn, :category, :description, :descriptionEn, :excerpt, :excerptEn, :imageId, :coverPosition, :coverZoom, :backgroundHex, :sortOrder, 'published'
       )`,
       { ...data, sortOrder },
     );
 
     for (const [index, item] of data.content.entries()) {
       await connection.execute(
-        `INSERT INTO teaching_method_content_blocks (teaching_method_id, block_type, content, sort_order)
-         VALUES (:methodId, 'paragraph', :content, :sortOrder)`,
+        `INSERT INTO teaching_method_content_blocks (teaching_method_id, block_type, content, sort_order, lang)
+         VALUES (:methodId, 'paragraph', :content, :sortOrder, 'vi')`,
+        {
+          methodId: result.insertId,
+          content: JSON.stringify({ text: item }),
+          sortOrder: (index + 1) * 10,
+        },
+      );
+    }
+
+    for (const [index, item] of data.contentEn.entries()) {
+      await connection.execute(
+        `INSERT INTO teaching_method_content_blocks (teaching_method_id, block_type, content, sort_order, lang)
+         VALUES (:methodId, 'paragraph', :content, :sortOrder, 'en')`,
         {
           methodId: result.insertId,
           content: JSON.stringify({ text: item }),
@@ -479,10 +546,10 @@ export async function createPost(input: Partial<CreatePostInput>) {
 
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO posts (
-        slug, title, excerpt, category_id, cover_image_id, cover_position, cover_zoom, post_type, status,
+        slug, title, excerpt, title_en, excerpt_en, category_id, cover_image_id, cover_position, cover_zoom, post_type, status,
         published_at, event_starts_at, event_ends_at, event_location
       ) VALUES (
-        :slug, :title, :excerpt, :categoryId, :coverImageId, :coverPosition, :coverZoom, :postType, :status,
+        :slug, :title, :excerpt, :titleEn, :excerptEn, :categoryId, :coverImageId, :coverPosition, :coverZoom, :postType, :status,
         IF(:status = 'published', NOW(), NULL), :eventStartsAt, :eventEndsAt, :eventLocation
       )`,
       { ...data, categoryId },
@@ -490,8 +557,20 @@ export async function createPost(input: Partial<CreatePostInput>) {
 
     for (const [index, item] of data.content.entries()) {
       await connection.execute(
-        `INSERT INTO post_content_blocks (post_id, block_type, content, sort_order)
-         VALUES (:postId, 'paragraph', :content, :sortOrder)`,
+        `INSERT INTO post_content_blocks (post_id, block_type, content, sort_order, lang)
+         VALUES (:postId, 'paragraph', :content, :sortOrder, 'vi')`,
+        {
+          postId: result.insertId,
+          content: JSON.stringify({ text: item }),
+          sortOrder: (index + 1) * 10,
+        },
+      );
+    }
+
+    for (const [index, item] of data.contentEn.entries()) {
+      await connection.execute(
+        `INSERT INTO post_content_blocks (post_id, block_type, content, sort_order, lang)
+         VALUES (:postId, 'paragraph', :content, :sortOrder, 'en')`,
         {
           postId: result.insertId,
           content: JSON.stringify({ text: item }),
@@ -620,12 +699,16 @@ export async function updateClassProgram(idValue: unknown, input: Partial<Update
       `UPDATE class_programs
        SET slug = :slug,
            name = :name,
+           name_en = :nameEn,
            age_min = :ageMin,
            age_max = :ageMax,
            age_label = :ageLabel,
+           age_label_en = :ageLabelEn,
            category = :category,
            excerpt = :excerpt,
+           excerpt_en = :excerptEn,
            description = :description,
+           description_en = :descriptionEn,
            image_id = COALESCE(:imageId, image_id),
            cover_position = :coverPosition,
            cover_zoom = :coverZoom,
@@ -642,11 +725,24 @@ export async function updateClassProgram(idValue: unknown, input: Partial<Update
 
     for (const [index, item] of data.schedule.entries()) {
       await connection.execute(
-        `INSERT INTO class_program_schedule_items (class_program_id, title, description, sort_order)
-         VALUES (:programId, :title, :description, :sortOrder)`,
+        `INSERT INTO class_program_schedule_items (class_program_id, title, description, sort_order, lang)
+         VALUES (:programId, :title, :description, :sortOrder, 'vi')`,
         {
           programId: id,
           title: `Hoạt động ${index + 1}`,
+          description: item,
+          sortOrder: (index + 1) * 10,
+        },
+      );
+    }
+
+    for (const [index, item] of data.scheduleEn.entries()) {
+      await connection.execute(
+        `INSERT INTO class_program_schedule_items (class_program_id, title, description, sort_order, lang)
+         VALUES (:programId, :title, :description, :sortOrder, 'en')`,
+        {
+          programId: id,
+          title: `Activity ${index + 1}`,
           description: item,
           sortOrder: (index + 1) * 10,
         },
@@ -682,8 +778,10 @@ export async function updateCurriculumTrack(idValue: unknown, input: Partial<Upd
       `UPDATE curriculum_tracks
        SET slug = :slug,
            title = :title,
+           title_en = :titleEn,
            category = :category,
            description = :description,
+           description_en = :descriptionEn,
            image_id = COALESCE(:imageId, image_id),
            cover_position = :coverPosition,
            cover_zoom = :coverZoom,
@@ -697,8 +795,20 @@ export async function updateCurriculumTrack(idValue: unknown, input: Partial<Upd
 
     for (const [index, item] of data.content.entries()) {
       await connection.execute(
-        `INSERT INTO curriculum_blocks (curriculum_track_id, block_type, content, sort_order)
-         VALUES (:trackId, 'paragraph', :content, :sortOrder)`,
+        `INSERT INTO curriculum_blocks (curriculum_track_id, block_type, content, sort_order, lang)
+         VALUES (:trackId, 'paragraph', :content, :sortOrder, 'vi')`,
+        {
+          trackId: id,
+          content: JSON.stringify({ text: item }),
+          sortOrder: (index + 1) * 10,
+        },
+      );
+    }
+
+    for (const [index, item] of data.contentEn.entries()) {
+      await connection.execute(
+        `INSERT INTO curriculum_blocks (curriculum_track_id, block_type, content, sort_order, lang)
+         VALUES (:trackId, 'paragraph', :content, :sortOrder, 'en')`,
         {
           trackId: id,
           content: JSON.stringify({ text: item }),
@@ -790,9 +900,12 @@ export async function updateTeachingMethod(idValue: unknown, input: Partial<Upda
       `UPDATE teaching_methods
        SET slug = :slug,
            title = :title,
+           title_en = :titleEn,
            category = :category,
            description = :description,
+           description_en = :descriptionEn,
            excerpt = :excerpt,
+           excerpt_en = :excerptEn,
            image_id = COALESCE(:imageId, image_id),
            cover_position = :coverPosition,
            cover_zoom = :coverZoom,
@@ -806,8 +919,20 @@ export async function updateTeachingMethod(idValue: unknown, input: Partial<Upda
 
     for (const [index, item] of data.content.entries()) {
       await connection.execute(
-        `INSERT INTO teaching_method_content_blocks (teaching_method_id, block_type, content, sort_order)
-         VALUES (:methodId, 'paragraph', :content, :sortOrder)`,
+        `INSERT INTO teaching_method_content_blocks (teaching_method_id, block_type, content, sort_order, lang)
+         VALUES (:methodId, 'paragraph', :content, :sortOrder, 'vi')`,
+        {
+          methodId: id,
+          content: JSON.stringify({ text: item }),
+          sortOrder: (index + 1) * 10,
+        },
+      );
+    }
+
+    for (const [index, item] of data.contentEn.entries()) {
+      await connection.execute(
+        `INSERT INTO teaching_method_content_blocks (teaching_method_id, block_type, content, sort_order, lang)
+         VALUES (:methodId, 'paragraph', :content, :sortOrder, 'en')`,
         {
           methodId: id,
           content: JSON.stringify({ text: item }),
@@ -864,6 +989,8 @@ export async function updatePost(idValue: unknown, input: Partial<UpdatePostInpu
        SET slug = :slug,
            title = :title,
            excerpt = :excerpt,
+           title_en = :titleEn,
+           excerpt_en = :excerptEn,
            category_id = :categoryId,
        cover_image_id = COALESCE(:coverImageId, cover_image_id),
        cover_position = :coverPosition,
@@ -882,8 +1009,20 @@ export async function updatePost(idValue: unknown, input: Partial<UpdatePostInpu
 
     for (const [index, item] of data.content.entries()) {
       await connection.execute(
-        `INSERT INTO post_content_blocks (post_id, block_type, content, sort_order)
-         VALUES (:postId, 'paragraph', :content, :sortOrder)`,
+        `INSERT INTO post_content_blocks (post_id, block_type, content, sort_order, lang)
+         VALUES (:postId, 'paragraph', :content, :sortOrder, 'vi')`,
+        {
+          postId: id,
+          content: JSON.stringify({ text: item }),
+          sortOrder: (index + 1) * 10,
+        },
+      );
+    }
+
+    for (const [index, item] of data.contentEn.entries()) {
+      await connection.execute(
+        `INSERT INTO post_content_blocks (post_id, block_type, content, sort_order, lang)
+         VALUES (:postId, 'paragraph', :content, :sortOrder, 'en')`,
         {
           postId: id,
           content: JSON.stringify({ text: item }),

@@ -7,7 +7,7 @@ import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getTeachingMethod, getTeachingMethods } from "@/lib/content";
-import { getServerT } from "@/lib/i18n-server";
+import { getServerLang, getServerT } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
@@ -25,6 +25,7 @@ export async function generateMetadata({
 }: TeachingMethodDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
   const method = await getTeachingMethod(slug);
+  const lang = await getServerLang();
 
   if (!method) {
     return {
@@ -32,12 +33,16 @@ export async function generateMetadata({
     };
   }
 
+  const isEn = lang === "en";
+  const title = isEn && method.titleEn ? method.titleEn : method.title;
+  const description = isEn && method.excerptEn ? method.excerptEn : method.excerpt;
+
   return {
-    title: `${method.title} | Trường Mầm non Princeton`,
-    description: method.excerpt,
+    title: `${title} | Trường Mầm non Princeton`,
+    description,
     openGraph: {
-      title: method.title,
-      description: method.excerpt,
+      title,
+      description,
     },
   };
 }
@@ -47,9 +52,16 @@ export default async function TeachingMethodDetailPage({
 }: TeachingMethodDetailPageProps) {
   const { slug } = await params;
   const t = await getServerT();
+  const lang = await getServerLang();
   const method = await getTeachingMethod(slug);
 
   if (!method) notFound();
+
+  const isEn = lang === "en";
+  const title = isEn && method.titleEn ? method.titleEn : method.title;
+  const description = isEn && method.descriptionEn ? method.descriptionEn : method.description;
+  const excerpt = isEn && method.excerptEn ? method.excerptEn : method.excerpt;
+  const content = isEn && method.contentEn.length ? method.contentEn : method.content;
 
   const teachingMethods = await getTeachingMethods();
   const relatedMethods = teachingMethods
@@ -97,15 +109,15 @@ export default async function TeachingMethodDetailPage({
                 {method.category}
               </p>
               <h1 className="mt-4 text-[34px] font-extrabold leading-tight md:text-[56px]">
-                {method.title}
+                {title}
               </h1>
               <p className="mt-5 text-[18px] font-bold leading-8 md:text-[22px] md:leading-9">
-                {method.excerpt || method.description}
+                {excerpt || description}
               </p>
             </div>
 
             <div className="mt-8 text-[17px] font-medium leading-8 md:text-[19px] md:leading-9">
-              <RichContent blocks={(method.content.length ? method.content : [method.description]).filter(Boolean)} />
+              <RichContent blocks={(content.length ? content : [description]).filter(Boolean)} />
             </div>
           </div>
 
@@ -152,7 +164,7 @@ export default async function TeachingMethodDetailPage({
                       {item.category}
                     </p>
                     <h3 className="mt-3 text-[20px] font-extrabold leading-tight">
-                      {item.title}
+                      {isEn && item.titleEn ? item.titleEn : item.title}
                     </h3>
                   </div>
                 </Link>

@@ -7,7 +7,7 @@ import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getNewsPost, getNewsPosts } from "@/lib/content";
-import { getServerT } from "@/lib/i18n-server";
+import { getServerLang, getServerT } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
@@ -24,6 +24,7 @@ export async function generateMetadata({
 }: NewsDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = await getNewsPost(slug);
+  const lang = await getServerLang();
 
   if (!post) {
     return {
@@ -31,12 +32,16 @@ export async function generateMetadata({
     };
   }
 
+  const isEn = lang === "en";
+  const title = isEn && post.titleEn ? post.titleEn : post.title;
+  const description = isEn && post.excerptEn ? post.excerptEn : post.excerpt;
+
   return {
-    title: `${post.title} | Trường Mầm non Princeton`,
-    description: post.excerpt,
+    title: `${title} | Trường Mầm non Princeton`,
+    description,
     openGraph: {
-      title: post.title,
-      description: post.excerpt,
+      title,
+      description,
     },
   };
 }
@@ -44,9 +49,15 @@ export async function generateMetadata({
 export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
   const { slug } = await params;
   const t = await getServerT();
+  const lang = await getServerLang();
   const post = await getNewsPost(slug);
 
   if (!post) notFound();
+
+  const isEn = lang === "en";
+  const title = isEn && post.titleEn ? post.titleEn : post.title;
+  const excerpt = isEn && post.excerptEn ? post.excerptEn : post.excerpt;
+  const content = isEn && post.contentEn.length ? post.contentEn : post.content;
 
   const newsPosts = await getNewsPosts();
   const relatedPosts = newsPosts.filter((item) => item.slug !== post.slug).slice(0, 3);
@@ -82,7 +93,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                 {post.category}
               </p>
               <h1 className="mt-3 text-[30px] font-extrabold leading-tight text-[#b80000] md:text-[52px]">
-                {post.title}
+                {title}
               </h1>
             </div>
           </div>
@@ -101,11 +112,11 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
             ) : null}
             <div className="px-2 py-7 md:px-6 md:py-9">
               <p className="text-[18px] font-bold leading-8 text-[#620000] md:text-[22px] md:leading-9">
-                {post.excerpt}
+                {excerpt}
               </p>
 
               <div className="mt-8 text-[17px] font-medium leading-8 md:text-[19px] md:leading-9">
-                <RichContent blocks={post.content} />
+                <RichContent blocks={content} />
               </div>
             </div>
           </div>
@@ -147,7 +158,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                     {item.category}
                   </p>
                   <h3 className="mt-3 text-[20px] font-extrabold leading-tight">
-                    {item.title}
+                    {isEn && item.titleEn ? item.titleEn : item.title}
                   </h3>
                 </div>
               </Link>
