@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import svgPaths from "../svg-g45k1n1pz5";
 import { mediaUrl } from "@/lib/media-url";
 import { CoverImage } from "@/components/Shared/CoverImage";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgImage from "../../../assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgTeachingMethodPlanePng from "../../../assets/87b0baec94bf2f1f980990704ca31b5f776eae03.png";
 import imgImage1 from "../../../assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
@@ -70,20 +71,22 @@ const cardGridClasses = [
 ];
 
 function Container64() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex items-start justify-center relative shrink-0" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[60px] text-center text-[#620000] whitespace-nowrap">
-        <p className="leading-[60px]">PHƯƠNG PHÁP GIÁO DỤC</p>
+        <p className="leading-[60px]">{t("home.program.title")}</p>
       </div>
     </div>
   );
 }
 
 function Container65() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[24px] text-center text-[#620000]">
-        <p className="leading-[32px]">Trường Mầm non Princeton áp dụng những phương pháp giáo dục tiên tiến, mang đến cho trẻ các trải nghiệm học tập trọn vẹn và đầy hứng khởi.</p>
+        <p className="leading-[32px]">{t("home.program.text")}</p>
       </div>
     </div>
   );
@@ -452,6 +455,7 @@ function Container62({ methods }: { methods: HomeTeachingMethod[] }) {
 }
 
 export default function TeachingProgram() {
+  const { t } = useLanguage();
   const [methods, setMethods] = useState<HomeTeachingMethod[]>(fallbackTeachingMethods);
 
   useEffect(() => {
@@ -497,10 +501,9 @@ export default function TeachingProgram() {
         href="/phuong-phap-giang-day"
         className="absolute bottom-[54px] left-1/2 z-[3] -translate-x-1/2 rounded-full bg-[#b80000] px-7 py-3 text-[16px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000] transition-transform duration-200 hover:-translate-y-0.5"
       >
-        Xem thêm
+        {t("home.readMore")}
       </Link>
-      <div className="absolute bottom-0 flex h-[25px] items-center justify-center left-0 right-0" style={{ containerType: "size" }}>
-        <div className="flex-none h-[100cqh] rotate-180 w-[100cqw]">
+      <div className="absolute bottom-0 flex h-[25px] items-center justify-center left-0 right-0" style={{ containerType: "size" }}>        <div className="flex-none h-[100cqh] rotate-180 w-[100cqw]">
           <div className="bg-size-[176px_25px] bg-top-left relative size-full" style={{ backgroundImage: `url("${imgImage1.src}")` }} data-name="Image" />
         </div>
       </div>

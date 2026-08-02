@@ -3,6 +3,7 @@
 import { useState } from "react";
 import svgPaths from "../svg-g45k1n1pz5";
 import { campuses, campusMapUrl, campusMapLink, type Campus } from "@/lib/campuses";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgCampus1Png from "../../../assets/62871bbc160db404d7a748757114301f94ce2edc.png";
 import imgFlowersPng from "../../../assets/cfa61d914b57a907c8879eea3242e5037a5a2c78.png";
 import imgSection2 from "../../../assets/45e9cd713cd022e324337d1e9a3d1f01c8086db4.png";
@@ -617,6 +618,7 @@ function Iframe({
   mapLink: string;
   title: string;
 }) {
+  const { t } = useLanguage();
   return (
     <div className="aspect-[470/535.780029296875] content-stretch flex flex-[1_0_0] items-start justify-center max-w-[470px] min-h-px overflow-clip relative rounded-[16px]" data-name="Iframe">
       <iframe
@@ -633,7 +635,7 @@ function Iframe({
         rel="noopener noreferrer"
         className="absolute bottom-3 right-3 z-[2] inline-flex rounded-full bg-[#b80000] px-4 py-2 text-[13px] font-bold uppercase text-white no-underline shadow-[0_2px_8px_rgba(0,0,0,0.18)]"
       >
-        Xem bản đồ
+        {t("home.campus.map")}
       </a>
     </div>
   );
@@ -660,20 +662,22 @@ function Container124({
 }
 
 function Heading3() {
+  const { t } = useLanguage();
   return (
     <div className="absolute content-stretch flex flex-col items-start left-0 pb-[0.6px] right-0 top-[-0.6px]" data-name="Heading 2">
       <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#620000] text-[35px]">
-        <p className="leading-[44px]">HỆ THỐNG CƠ SỞ PRINCETON</p>
+        <p className="leading-[44px]">{t("home.campus.title")}</p>
       </div>
     </div>
   );
 }
 
 function Container139() {
+  const { t } = useLanguage();
   return (
     <div className="absolute content-stretch flex flex-col items-start left-0 right-0 top-[58px]" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[20px]">
-        <p className="leading-[26px]">Tọa lạc tại các vị trí trung tâm, dễ dàng kết nối với các tuyến đường chính, thuận tiện cho ba mẹ đưa đón trẻ.</p>
+        <p className="leading-[26px]">{t("home.campus.text")}</p>
       </div>
     </div>
   );

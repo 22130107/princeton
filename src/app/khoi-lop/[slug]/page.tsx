@@ -7,6 +7,7 @@ import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getClassProgram, getClassPrograms } from "@/lib/content";
+import { getServerT } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
@@ -42,6 +43,7 @@ export async function generateMetadata({
 
 export default async function ClassDetailPage({ params }: ClassDetailPageProps) {
   const { slug } = await params;
+  const t = await getServerT();
   const program = await getClassProgram(slug);
 
   if (!program) notFound();
@@ -65,7 +67,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
             href="/khoi-lop"
             className="mb-6 inline-flex rounded-full border border-[#ff1f1f] bg-white px-5 py-3 text-[14px] font-extrabold uppercase text-[#b80000] no-underline shadow-[0_3px_0_rgba(255,31,31,0.18)]"
           >
-            Quay lại khối lớp
+            {t("classes.back")}
           </Link>
         </div>
 
@@ -103,7 +105,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
               {scheduleItems.length ? (
                 <section className="mt-10">
                 <h2 className="text-[28px] font-extrabold uppercase text-[#b80000] md:text-[42px]">
-                  Lịch học
+                  {t("classes.schedule")}
                 </h2>
                 <div className="mt-5 grid gap-4 md:grid-cols-2">
                   {scheduleItems.map((item) => (
@@ -121,7 +123,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
 
         <section className="mx-auto mt-10 max-w-[1180px]">
           <h2 className="text-[28px] font-extrabold uppercase text-[#b80000] md:text-[42px]">
-            Các khối lớp khác
+            {t("classes.other")}
           </h2>
           <div className="mt-5 grid gap-4 md:grid-cols-4">
             {relatedPrograms.map((item) => (

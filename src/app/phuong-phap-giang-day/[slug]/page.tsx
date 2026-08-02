@@ -7,6 +7,7 @@ import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getTeachingMethod, getTeachingMethods } from "@/lib/content";
+import { getServerT } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
@@ -45,6 +46,7 @@ export default async function TeachingMethodDetailPage({
   params,
 }: TeachingMethodDetailPageProps) {
   const { slug } = await params;
+  const t = await getServerT();
   const method = await getTeachingMethod(slug);
 
   if (!method) notFound();
@@ -79,7 +81,7 @@ export default async function TeachingMethodDetailPage({
             href="/phuong-phap-giang-day"
             className="inline-flex rounded-full border border-[#b80000] bg-white px-5 py-3 text-[14px] font-extrabold uppercase text-[#b80000] no-underline shadow-[0_3px_0_rgba(98,0,0,0.18)]"
           >
-            Quay lại phương pháp
+            {t("methods.back")}
           </Link>
 
           <div className="mt-7 rounded-[32px] border border-[#b80000] bg-[#fffefa] p-6 shadow-[6px_6px_0_rgba(184,0,0,0.25)] md:p-10">
@@ -109,7 +111,7 @@ export default async function TeachingMethodDetailPage({
 
           <section className="mt-10">
             <h2 className="text-[28px] font-extrabold uppercase md:text-[42px]">
-              Phương pháp liên quan
+              {t("methods.related")}
             </h2>
             <div className="mt-5 grid gap-5 md:grid-cols-3">
               {relatedMethods.map((item) => (

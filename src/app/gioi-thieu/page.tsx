@@ -6,6 +6,7 @@ import FacilityCarousel from "@/components/Shared/FacilityCarousel";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getAboutContent } from "@/lib/content";
+import { getServerT } from "@/lib/i18n-server";
 import { mediaImage } from "@/lib/media-url";
 import imgHero from "@/assets/1785508275307_2464196110406402971_2464196110406402971_908152b1927fedcdd7fc0a83d44529f3.jpg";
 import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
@@ -37,13 +38,6 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
-
-const stats = [
-  { number: "10", label: "Cơ sở", icon: imgMascotPenguin, shape: "circle", color: "#fff2f2" },
-  { number: "02", label: "Ngôn ngữ", icon: imgMascotWombat, shape: "sun", color: "#fff4c4" },
-  { number: "10+", label: "Câu lạc bộ", icon: imgMascotKoala, shape: "square", color: "#dcf6d6" },
-  { number: "30+", label: "Sự kiện", icon: imgMascotKangaroo, shape: "triangle", color: "#d8f7ff" },
-];
 
 const shapeClass: Record<string, string> = {
   circle: "rounded-full aspect-square",
@@ -136,14 +130,21 @@ function WaveDivider({ from, to }: { from: string; to: string }) {
 }
 
 export default async function GioiThieuPage() {
+  const t = await getServerT();
   const aboutContent = await getAboutContent();
+  const stats = [
+    { number: "10", label: t("about.stats.campus"), icon: imgMascotPenguin, shape: "circle", color: "#fff2f2" },
+    { number: "02", label: t("about.stats.language"), icon: imgMascotWombat, shape: "sun", color: "#fff4c4" },
+    { number: "10+", label: t("about.stats.club"), icon: imgMascotKoala, shape: "square", color: "#dcf6d6" },
+    { number: "30+", label: t("about.stats.event"), icon: imgMascotKangaroo, shape: "triangle", color: "#d8f7ff" },
+  ];
   const facilitySlides = aboutContent.facilityImages.map((item) => ({
     image: item.imageUrl,
     title: item.title,
   }));
   const momentSlides = aboutContent.galleryImages.map((item, index) => ({
     image: item.url,
-    title: item.title || item.alt || `Khoảnh khắc ${index + 1}`,
+    title: item.title || item.alt || t("about.momentDefault").replace("{n}", `${index + 1}`),
   }));
   const teachers = aboutContent.teacherTeamItems.map((item) => ({
     id: item.id,
@@ -177,13 +178,13 @@ export default async function GioiThieuPage() {
         <div className="mx-auto grid max-w-[1240px] items-center gap-8 md:grid-cols-[0.95fr_1.05fr]">
           <div>
             <p className="mb-3 inline-flex rounded-full border border-[#b80000] bg-white px-4 py-2 text-[14px] font-bold uppercase text-[#b80000]">
-              Về Princeton
+              {t("about.badge")}
             </p>
             <h1 className="text-[34px] font-extrabold uppercase leading-[1.05] md:text-[56px]">
-              Giáo dục không chỉ cho lớp một, giáo dục là cho cả cuộc đời
+              {t("about.heroTitle")}
             </h1>
             <p className="mt-5 max-w-[680px] text-[16px] font-medium leading-7 text-[#620000] md:text-[20px] md:leading-8">
-              Chúng tôi không đúc khuôn hay lấp đầy kiến thức, mà nuôi dưỡng sự tò mò và nội lực tự thân để mỗi đứa trẻ được lớn lên theo đúng nhịp độ phát triển rực rỡ nhất của chính mình.
+              {t("about.heroText")}
             </p>
           </div>
 
@@ -196,7 +197,7 @@ export default async function GioiThieuPage() {
             <div className="rounded-[28px] border-2 border-[#620000] bg-[#fffefa] p-2 shadow-[8px_8px_0_rgba(98,0,0,0.2)] md:rounded-[40px]">
               <img
                 src={imgHero.src}
-                alt="Không gian học tập tại Trường Mầm non Princeton"
+                alt={t("about.heroImageAlt")}
                 className="h-[300px] w-full rounded-[22px] object-cover md:h-[520px] md:rounded-[32px]"
               />
             </div>
@@ -267,10 +268,10 @@ export default async function GioiThieuPage() {
                 className="mb-4 h-20 w-20 object-contain"
               />
               <h2 className="text-[30px] font-extrabold uppercase leading-tight md:text-[48px]">
-                Cơ sở vật chất an toàn và giàu trải nghiệm
+                {t("about.facilityTitle")}
               </h2>
               <p className="mt-5 text-[16px] font-medium leading-7 md:text-[20px] md:leading-8">
-                Không gian học tập, vận động và vui chơi được thiết kế sáng sủa, gần gũi và phù hợp với lứa tuổi mầm non, giúp trẻ thoải mái khám phá mỗi ngày.
+                {t("about.facilityText")}
               </p>
             </div>
           </div>
@@ -294,14 +295,14 @@ export default async function GioiThieuPage() {
                 className="mb-4 h-20 w-20 object-contain"
               />
               <h2 className="text-[30px] font-extrabold uppercase leading-tight md:text-[48px]">
-                Khoảnh khắc đáng nhớ tại Princeton
+                {t("about.momentTitle")}
               </h2>
               <p className="mt-5 text-[16px] font-medium leading-7 md:text-[20px] md:leading-8">
-                Những hình ảnh học tập, vui chơi và trải nghiệm mỗi ngày giúp ba mẹ nhìn thấy con tự tin hơn, mạnh dạn hơn và lớn lên trong môi trường đầy yêu thương.
+                {t("about.momentText")}
               </p>
             </div>
             <div className="order-1 md:order-2">
-              <FacilityCarousel slides={momentSlides} imageContext="khoảnh khắc Princeton" />
+              <FacilityCarousel slides={momentSlides} imageContext={t("about.momentContext")} />
             </div>
           </div>
         </section>
@@ -317,10 +318,10 @@ export default async function GioiThieuPage() {
         <section className="bg-[#fff1f1] px-4 py-12 md:px-10 md:py-20">
           <div className="mx-auto max-w-[1180px]">
             <h2 className="max-w-[760px] text-[30px] font-extrabold uppercase leading-tight md:text-[52px]">
-              Đội ngũ giảng viên tận tâm
+              {t("about.teacherTitle")}
             </h2>
             <p className="mt-4 max-w-[760px] text-[16px] font-medium leading-7 md:text-[19px] md:leading-8">
-              Mỗi thầy cô tại Princeton cùng phối hợp để trẻ được chăm sóc, học tập và phát triển trong môi trường yêu thương, an toàn và giàu trải nghiệm.
+              {t("about.teacherText")}
             </p>
             <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {teachers.map((value, index) => (
@@ -359,7 +360,7 @@ export default async function GioiThieuPage() {
           <div className="overflow-hidden rounded-[32px] bg-[#fffefa]">
             <iframe
               src="https://www.youtube.com/embed/T5pfrxobVtE?vq=hd720&rel=0"
-              title="Video giới thiệu Trường Mầm non Princeton"
+              title={t("about.videoTitle")}
               className="h-[260px] w-full md:h-[420px]"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
@@ -368,16 +369,16 @@ export default async function GioiThieuPage() {
           <div className="relative rounded-[32px] bg-[#b80000] p-8 text-white">
             <img src={imgMascotKoala.src} alt="" className="absolute -right-2 -top-8 h-24 w-24 object-contain" />
             <h2 className="max-w-[460px] text-[30px] font-extrabold uppercase leading-tight md:text-[44px]">
-              Bắt đầu hành trình bằng sự thấu hiểu
+              {t("about.ctaTitle")}
             </h2>
             <p className="mt-5 text-[16px] font-medium leading-7 md:text-[19px]">
-              Mời ba mẹ ghé thăm Princeton Academy để trực tiếp cảm nhận không gian học tập an toàn, gặp gỡ đội ngũ thầy cô tận tâm và cùng lắng nghe nhịp lớn lên hạnh phúc của con mỗi ngày.
+              {t("about.ctaText")}
             </p>
             <Link
               href="/dang-ky"
               className="mt-7 inline-flex rounded-full bg-[#ffc300] px-7 py-4 text-[17px] font-extrabold uppercase text-[#b80000] no-underline shadow-[0_4px_0_#800000]"
             >
-              Đăng ký ngay
+              {t("about.ctaButton")}
             </Link>
           </div>
         </div>

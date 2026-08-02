@@ -5,6 +5,7 @@ import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getClassPrograms } from "@/lib/content";
+import { getServerT } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
@@ -53,6 +54,7 @@ function FloatingStickers() {
 }
 
 export default async function KhoiLopPage() {
+  const t = await getServerT();
   const classPrograms = await getClassPrograms();
 
   return (
@@ -84,10 +86,10 @@ export default async function KhoiLopPage() {
         <FloatingStickers />
         <div className="relative z-[3] mx-auto max-w-[1180px]">
           <h1 className="text-center text-[34px] font-extrabold uppercase leading-tight md:text-[58px]">
-            Hệ thống khối lớp
+            {t("classes.heroTitle")}
           </h1>
           <p className="mx-auto mt-4 max-w-[760px] text-center text-[16px] font-medium leading-7 md:text-[20px] md:leading-8">
-            Chương trình học tại Princeton được xây dựng theo từng độ tuổi, giúp trẻ phát triển cân bằng giữa chăm sóc, vận động, ngôn ngữ, tư duy và kỹ năng xã hội.
+            {t("classes.heroText")}
           </p>
 
           <div className="mt-9 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -140,7 +142,7 @@ export default async function KhoiLopPage() {
                     href={`/khoi-lop/${program.slug}`}
                     className="mt-auto inline-flex w-fit rounded-full bg-[#b80000] px-5 py-3 text-[15px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000]"
                   >
-                    Xem lịch học
+                    {t("classes.viewSchedule")}
                   </Link>
                 </div>
               </article>

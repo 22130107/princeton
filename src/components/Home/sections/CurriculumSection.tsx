@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { CoverImage } from "@/components/Shared/CoverImage";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgChuongTrinhTieuChuanPng from "../../../assets/b6916482933e67cc337ea1071a428e34d7abe5f3.png";
 import imgLogo from "../../../assets/logo.png";
 
@@ -45,10 +46,11 @@ const fallbackTracks: CurriculumTrack[] = [
 ];
 
 function Heading1() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Heading 2">
       <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#620000] text-[60px] text-center whitespace-nowrap">
-        <p className="leading-[60px]">CHƯƠNG TRÌNH HỌC</p>
+        <p className="leading-[60px]">{t("home.curriculum.title")}</p>
       </div>
     </div>
   );

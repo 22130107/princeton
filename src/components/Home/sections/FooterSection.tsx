@@ -1,4 +1,7 @@
+"use client";
+
 import svgPaths from "../svg-g45k1n1pz5";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgLinkKindergartenTheWesternAustralianSchoolSystem from "../../../assets/logo.png";
 import imgScsaFullPng from "../../../assets/4268f4b28dbf19f88ab93b3a1e683121b0001bf9.png";
 import imgWaPng from "../../../assets/354fdda27892ccf1ea631fc32c53cf22185aba96.png";
@@ -184,20 +187,22 @@ function HorizontalBorder() {
 }
 
 function Heading7() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Heading 2">
       <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[24px] text-[#620000] w-full">
-        <p className="leading-[24px]">TRƯỜNG MẦM NON PRINCETON</p>
+        <p className="leading-[24px]">{t("home.footerSection.title")}</p>
       </div>
     </div>
   );
 }
 
 function Margin19() {
+  const { t } = useLanguage();
   return (
     <div className="absolute content-stretch flex flex-col items-start left-[28px] pr-[4px] top-px" data-name="Margin">
       <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[16px] text-[#620000] whitespace-nowrap">
-        <p className="leading-[24px]">Email:</p>
+        <p className="leading-[24px]">{t("home.footerSection.email")}</p>
       </div>
     </div>
   );
@@ -267,10 +272,11 @@ function Margin17() {
 }
 
 function Container224() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-end relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[16px] text-right text-[#620000] whitespace-nowrap">
-        <p className="leading-[24px]">Mạng xã hội</p>
+        <p className="leading-[24px]">{t("home.footerSection.social")}</p>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 
 type ProgramOption = {
   slug: string;
@@ -30,9 +31,12 @@ function getDevice() {
 
 export default function EnrollmentLeadForm({
   variant = "desktop",
-  submitLabel = "Đăng ký ngay",
-  consentText = "Tôi xác nhận rằng các thông tin cá nhân được cung cấp là chính xác và đồng ý để Nhà trường thu thập, lưu trữ, xử lý và sử dụng theo quy định của pháp luật về bảo vệ dữ liệu cá nhân.",
+  submitLabel,
+  consentText,
 }: EnrollmentLeadFormProps) {
+  const { t } = useLanguage();
+  const effectiveSubmitLabel = submitLabel ?? t("register.cta");
+  const effectiveConsentText = consentText ?? t("form.consentLong");
   const [programs, setPrograms] = useState<ProgramOption[]>([]);
   const [parentName, setParentName] = useState("");
   const [phone, setPhone] = useState("");
@@ -59,7 +63,7 @@ export default function EnrollmentLeadForm({
         if (!mounted) return;
         setSubmitState({
           status: "error",
-          message: "Không thể tải danh sách khối lớp.",
+          message: t("form.loadError"),
         });
       });
 
@@ -87,7 +91,7 @@ export default function EnrollmentLeadForm({
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFieldErrors({});
-    setSubmitState({ status: "loading", message: "Đang gửi đăng ký..." });
+    setSubmitState({ status: "loading", message: t("form.sending") });
 
     try {
       const response = await fetch("/api/enrollment-leads", {
@@ -112,7 +116,7 @@ export default function EnrollmentLeadForm({
         setFieldErrors(data.errors ?? {});
         setSubmitState({
           status: "error",
-          message: data.message ?? "Thông tin chưa hợp lệ. Vui lòng kiểm tra lại.",
+          message: data.message ?? t("form.invalid"),
         });
         return;
       }
@@ -123,12 +127,12 @@ export default function EnrollmentLeadForm({
       setAgreed(false);
       setSubmitState({
         status: "success",
-        message: "Đăng ký thành công. Nhà trường đã nhận lịch và sẽ liên hệ xác nhận sớm.",
+        message: t("form.success"),
       });
     } catch {
       setSubmitState({
         status: "error",
-        message: "Không thể gửi đăng ký. Vui lòng thử lại sau.",
+        message: t("form.submitError"),
       });
     }
   }
@@ -159,7 +163,7 @@ export default function EnrollmentLeadForm({
 
       <div>
         <label className={labelClass}>
-          Họ và tên <span className="text-red-500">*</span>
+          {t("form.name")} <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -175,7 +179,7 @@ export default function EnrollmentLeadForm({
 
       <div>
         <label className={labelClass}>
-          Số điện thoại <span className="text-red-500">*</span>
+          {t("form.phone")} <span className="text-red-500">*</span>
         </label>
         <input
           type="tel"
@@ -191,7 +195,7 @@ export default function EnrollmentLeadForm({
 
       <div>
         <label className={labelClass}>
-          Email <span className="text-red-500">*</span>
+          {t("form.email")} <span className="text-red-500">*</span>
         </label>
         <input
           type="email"
@@ -206,7 +210,7 @@ export default function EnrollmentLeadForm({
       </div>
 
       <div>
-        <label className={labelClass}>Khối lớp</label>
+        <label className={labelClass}>{t("form.grade")}</label>
         <div className="relative">
           <select
             value={grade}
@@ -241,7 +245,7 @@ export default function EnrollmentLeadForm({
           className="mt-1 size-5 shrink-0 accent-[#b80000]"
         />
         <span className="text-[12px] leading-relaxed text-[#620000]">
-          {consentText}
+          {effectiveConsentText}
         </span>
       </label>
       {fieldErrors.agreed ? (
@@ -256,7 +260,7 @@ export default function EnrollmentLeadForm({
           submitState.status === "loading" ? "cursor-wait opacity-70" : "cursor-pointer",
         ].join(" ")}
       >
-        {submitState.status === "loading" ? "Đang gửi..." : submitLabel}
+        {submitState.status === "loading" ? t("form.sendingShort") : effectiveSubmitLabel}
       </button>
 
     </form>

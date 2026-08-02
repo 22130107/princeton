@@ -5,6 +5,7 @@ import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getCurriculumTracks } from "@/lib/content";
+import { getServerT } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function ChuongTrinhHocPage() {
+  const t = await getServerT();
   const tracks = await getCurriculumTracks();
 
   return (
@@ -47,10 +49,10 @@ export default async function ChuongTrinhHocPage() {
         <div className="relative z-[3] mx-auto max-w-[1180px]">
           <div className="mx-auto max-w-[860px] text-center">
             <h1 className="text-[34px] font-extrabold uppercase leading-tight md:text-[58px]">
-              Lộ trình học tập tại Princeton
+              {t("curriculum.heroTitle")}
             </h1>
             <p className="mx-auto mt-4 max-w-[760px] text-[16px] font-medium leading-7 md:text-[20px] md:leading-8">
-              Các chương trình học được xây dựng để trẻ phát triển cân bằng, tự tin khám phá và sẵn sàng cho từng giai đoạn lớn lên.
+              {t("curriculum.heroText")}
             </p>
           </div>
 
@@ -98,7 +100,7 @@ export default async function ChuongTrinhHocPage() {
                     href={`/chuong-trinh-hoc/${track.slug}`}
                     className="mt-auto inline-flex w-fit rounded-full bg-[#b80000] px-5 py-3 text-[15px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000]"
                   >
-                    Xem chi tiết
+                    {t("curriculum.viewDetail")}
                   </Link>
                 </div>
               </article>

@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
+import type { Lang } from "@/lib/i18n";
 import imgLogo from "../../../assets/logo1.png";
 
 type SubmenuKey = "classes" | "curriculum";
 type NavItem = {
   href: string;
-  label: string;
+  labelKey: string;
   submenu?: SubmenuKey;
 };
 type SubmenuLink = {
@@ -20,12 +22,12 @@ type SubmenuLink = {
 type HeaderSubmenus = Record<SubmenuKey, SubmenuLink[]>;
 
 const navItems: NavItem[] = [
-  { href: "/", label: "TRANG CHỦ" },
-  { href: "/phuong-phap-giang-day", label: "Phương Pháp Giảng Dạy" },
-  { href: "/khoi-lop", label: "Khối Lớp", submenu: "classes" },
-  { href: "/chuong-trinh-hoc", label: "Chương Trình Học", submenu: "curriculum" },
-  { href: "/gioi-thieu", label: "Giới Thiệu" },
-  { href: "/tin-tuc-su-kien", label: "Tin Tức & Sự Kiện" },
+  { href: "/", labelKey: "nav.home" },
+  { href: "/phuong-phap-giang-day", labelKey: "nav.methods" },
+  { href: "/khoi-lop", labelKey: "nav.classes", submenu: "classes" },
+  { href: "/chuong-trinh-hoc", labelKey: "nav.curriculum", submenu: "curriculum" },
+  { href: "/gioi-thieu", labelKey: "nav.about" },
+  { href: "/tin-tuc-su-kien", labelKey: "nav.news" },
 ];
 
 function Logo() {
@@ -39,6 +41,7 @@ function Logo() {
 }
 
 function RegisterButton() {
+  const { t } = useLanguage();
   return (
     <Link
       href="/dang-ky"
@@ -47,13 +50,26 @@ function RegisterButton() {
     >
       <span className="pointer-events-none absolute inset-[5px] rounded-[64px] border border-dashed border-white/95" />
       <span className="relative z-10 whitespace-nowrap text-[18px] font-extrabold uppercase text-white">
-        Đăng Ký Ngay
+        {t("nav.register")}
       </span>
     </Link>
   );
 }
 
+function LangToggle({ lang, onToggle }: { lang: Lang; onToggle: () => void }) {
+  return (
+    <button
+      onClick={onToggle}
+      className="shrink-0 rounded-full border-2 border-[#8d0000] bg-white px-3 py-[6px] text-[15px] font-extrabold text-[#620000] no-underline shadow-[0_2px_0_#700000] transition-colors hover:bg-[#fff1f1]"
+      aria-label="Switch language"
+    >
+      {lang === "vi" ? "EN" : "VI"}
+    </button>
+  );
+}
+
 function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname: string }) {
+  const { t } = useLanguage();
   return (
     <div className="hidden items-center gap-3 md:flex" data-name="List">
       {navItems.map((item) => {
@@ -72,7 +88,7 @@ function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname
                   : "border-transparent text-[#620000]"
               }`}
             >
-              {item.label}
+              {t(item.labelKey)}
             </Link>
 
             {menuLinks.length ? (
@@ -97,7 +113,7 @@ function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname
                     href={item.href}
                     className="block rounded-[10px] px-3 py-2 text-[14px] font-extrabold text-[#b80000] no-underline hover:bg-[#fff1f1]"
                   >
-                    Xem tất cả
+                    {t("nav.viewAll")}
                   </Link>
                 </li>
               </ul>
@@ -110,10 +126,11 @@ function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname
 }
 
 function MobileMenu({ open, pathname }: { open: boolean; pathname: string }) {
+  const { t } = useLanguage();
   return (
     <div className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
       <nav className="flex flex-col gap-1 border-t border-[#620000]/10 px-4 pb-4 pt-3">
-        {[...navItems, { href: "/dang-ky", label: "Đăng Ký Ngay" }].map((item) => {
+        {[...navItems, { href: "/dang-ky", labelKey: "nav.register" }].map((item) => {
           const isActive =
             item.href === "/dang-ky"
               ? pathname === item.href
@@ -129,7 +146,7 @@ function MobileMenu({ open, pathname }: { open: boolean; pathname: string }) {
                   : "border-transparent text-[#620000]"
               }`}
             >
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           );
         })}
@@ -141,6 +158,7 @@ function MobileMenu({ open, pathname }: { open: boolean; pathname: string }) {
 export default function HeaderSection() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { lang, setLang } = useLanguage();
   const [submenus, setSubmenus] = useState<HeaderSubmenus>({
     classes: [],
     curriculum: [],
@@ -198,6 +216,7 @@ export default function HeaderSection() {
         <Logo />
         <DesktopNav submenus={submenus} pathname={pathname} />
         <div className="flex items-center gap-3">
+          <LangToggle lang={lang} onToggle={() => setLang(lang === "vi" ? "en" : "vi")} />
           <RegisterButton />
           <button
             onClick={() => setMenuOpen(!menuOpen)}

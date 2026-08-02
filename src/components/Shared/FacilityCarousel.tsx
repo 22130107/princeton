@@ -3,6 +3,7 @@
 import type { StaticImageData } from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 
 type FacilitySlide = {
   image: StaticImageData | string;
@@ -14,7 +15,9 @@ type FacilityCarouselProps = {
   imageContext?: string;
 };
 
-export default function FacilityCarousel({ slides, imageContext = "cơ sở vật chất" }: FacilityCarouselProps) {
+export default function FacilityCarousel({ slides, imageContext }: FacilityCarouselProps) {
+  const { t } = useLanguage();
+  const effectiveContext = imageContext ?? t("facility.context");
   const [active, setActive] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const safeSlides = slides.length ? slides : [];

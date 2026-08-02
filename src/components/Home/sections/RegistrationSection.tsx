@@ -4,6 +4,7 @@ import svgPaths from "../svg-g45k1n1pz5";
 import { useEffect, useRef, useState } from "react";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { useCountdownValues } from "@/components/Shared/useCountdownValues";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import { useRegistrationSectionSettings } from "@/components/Shared/useRegistrationSectionSettings";
 import { PROMO_FRAME_ASPECT } from "@/lib/registration-section-config";
 import type { RegistrationSectionSettings } from "@/lib/registration-section-config";
@@ -37,13 +38,18 @@ type PromoImage = {
   position: string;
 };
 
+function useRegistrationPromoAlt() {
+  const { t } = useLanguage();
+  return t("register.promoAlt");
+}
+
 function Task73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg({ promo }: { promo: PromoImage }) {
   return (
     <div className="max-w-[764.3099975585938px] relative self-stretch shrink-0 w-[764.31px]" data-name="TASK-73-WASS-Giam-50-PHI-GHI-DANH_Desktop-TV-copy-1.jpg">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <CoverImage
           src={promo.url}
-          alt="Ưu đãi đăng ký"
+          alt={useRegistrationPromoAlt()}
           zoom={promo.zoom}
           position={promo.position}
           frameAspect={PROMO_FRAME_ASPECT}
@@ -140,10 +146,15 @@ function Button2({
     >
       <SubmitBtnSvgClip />
       <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#b80000] text-[26px] text-center uppercase whitespace-nowrap">
-        <p className="leading-[50px]">{isSubmitting ? "ĐANG GỬI..." : label}</p>
+        <p className="leading-[50px]">{isSubmitting ? <SubmittingText /> : label}</p>
       </div>
     </button>
   );
+}
+
+function SubmittingText() {
+  const { t } = useLanguage();
+  return <>{t("form.submitting")}</>;
 }
 
 function Container172({
@@ -261,10 +272,11 @@ function Background14({ value }: { value: string }) {
 }
 
 function Container177() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#b80000] text-[18px] text-center whitespace-nowrap">
-        <p className="leading-[26px]">Ngày</p>
+        <p className="leading-[26px]">{t("countdown.days")}</p>
       </div>
     </div>
   );
@@ -333,10 +345,11 @@ function Background15({ value }: { value: string }) {
 }
 
 function Container179() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#b80000] text-[18px] text-center whitespace-nowrap">
-        <p className="leading-[26px]">Giờ</p>
+        <p className="leading-[26px]">{t("countdown.hours")}</p>
       </div>
     </div>
   );
@@ -405,10 +418,11 @@ function Background16({ value }: { value: string }) {
 }
 
 function Container181() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#b80000] text-[18px] text-center whitespace-nowrap">
-        <p className="leading-[26px]">Phút</p>
+        <p className="leading-[26px]">{t("countdown.minutes")}</p>
       </div>
     </div>
   );
@@ -477,10 +491,11 @@ function Background17({ value }: { value: string }) {
 }
 
 function Container183() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#b80000] text-[18px] text-center whitespace-nowrap">
-        <p className="leading-[26px]">Giây</p>
+        <p className="leading-[26px]">{t("countdown.seconds")}</p>
       </div>
     </div>
   );
@@ -549,11 +564,12 @@ function Input() {
 }
 
 function Label({ visible }: { visible: boolean }) {
+  const { t } = useLanguage();
   return (
     <div className={`absolute content-stretch flex flex-col items-start left-0 px-[16px] right-0 top-[12px] pointer-events-none ${visible ? "" : "opacity-0"}`} data-name="Label">
       <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#620000] text-[18px] whitespace-nowrap">
         <p>
-          <span className="leading-[26px]">{`Họ và tên `}</span>
+          <span className="leading-[26px]">{`${t("form.name")} `}</span>
           <span className="leading-[26px] text-[red]">*</span>
         </p>
       </div>
@@ -618,11 +634,12 @@ function Container185({
   value: string;
   onChange: (value: string) => void;
 }) {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <Input />
       <Label visible={!value} />
-      <TextFieldOverlay ariaLabel="Họ và tên" topClass="top-[12px]" value={value} onChange={onChange} />
+      <TextFieldOverlay ariaLabel={t("form.name")} topClass="top-[12px]" value={value} onChange={onChange} />
     </div>
   );
 }
@@ -657,11 +674,12 @@ function InputSDinThoi() {
 }
 
 function Label1({ visible }: { visible: boolean }) {
+  const { t } = useLanguage();
   return (
     <div className={`absolute content-stretch flex flex-col items-start left-0 px-[16px] right-0 top-[15.4px] pointer-events-none ${visible ? "" : "opacity-0"}`} data-name="Label">
       <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#620000] text-[18px] whitespace-nowrap">
         <p>
-          <span className="leading-[26px]">{`Số điện thoại `}</span>
+          <span className="leading-[26px]">{`${t("form.phone")} `}</span>
           <span className="leading-[26px] text-[red]">*</span>
         </p>
       </div>
@@ -676,11 +694,12 @@ function Container186({
   value: string;
   onChange: (value: string) => void;
 }) {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-start pt-[3.4px] relative shrink-0 w-full" data-name="Container">
       <InputSDinThoi />
       <Label1 visible={!value} />
-      <TextFieldOverlay ariaLabel="Số điện thoại" topClass="top-[15.4px]" type="tel" value={value} onChange={onChange} />
+      <TextFieldOverlay ariaLabel={t("form.phone")} topClass="top-[15.4px]" type="tel" value={value} onChange={onChange} />
     </div>
   );
 }
@@ -715,11 +734,12 @@ function Input1() {
 }
 
 function Label2({ visible }: { visible: boolean }) {
+  const { t } = useLanguage();
   return (
     <div className={`absolute content-stretch flex flex-col items-start left-0 px-[16px] right-0 top-[15.4px] pointer-events-none ${visible ? "" : "opacity-0"}`} data-name="Label">
       <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#620000] text-[18px] whitespace-nowrap">
         <p>
-          <span className="leading-[26px]">{`Email `}</span>
+          <span className="leading-[26px]">{`${t("form.email")} `}</span>
           <span className="leading-[26px] text-[red]">*</span>
         </p>
       </div>
@@ -734,11 +754,12 @@ function Container187({
   value: string;
   onChange: (value: string) => void;
 }) {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-start pt-[3.4px] relative shrink-0 w-full" data-name="Container">
       <Input1 />
       <Label2 visible={!value} />
-      <TextFieldOverlay ariaLabel="Email" topClass="top-[15.4px]" type="email" value={value} onChange={onChange} />
+      <TextFieldOverlay ariaLabel={t("form.email")} topClass="top-[15.4px]" type="email" value={value} onChange={onChange} />
     </div>
   );
 }
@@ -752,12 +773,13 @@ function DateField({
   onChange: (value: string) => void;
   min: string;
 }) {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-start pt-[3.4px] relative shrink-0 w-full" data-name="Container">
       <Input1 />
-      <FieldLabel text="Ngày tư vấn mong muốn" visible={!value} />
+      <FieldLabel text={t("form.appointmentDate")} visible={!value} />
       <TextFieldOverlay
-        ariaLabel="Ngày tư vấn mong muốn"
+        ariaLabel={t("form.appointmentDate")}
         min={min}
         topClass="top-[15.4px]"
         type="date"
@@ -841,6 +863,7 @@ function ComboboxMenu({
   value: string;
   onChange: (value: string) => void;
 }) {
+  const { t } = useLanguage();
   const selectValue = value ?? "";
   const selectedLabel =
     programs.find((program) => program.slug === selectValue)?.label ?? programs[0]?.label ?? fallbackPrograms[0].label;
@@ -851,7 +874,7 @@ function ComboboxMenu({
       <Textbox label={selectedLabel} />
       <Image11 />
       <select
-        aria-label="Khối lớp"
+        aria-label={t("form.grade")}
         value={selectValue}
         onChange={(event) => onChange(event.target.value)}
         className="absolute inset-0 z-[2] cursor-pointer opacity-0"
@@ -922,6 +945,7 @@ function Input2({
   checked: boolean;
   onToggle: () => void;
 }) {
+  const { t } = useLanguage();
   return (
     <div className="absolute left-0 top-0 z-[2] size-[18px] bg-white" data-name="Input">
       <div className="absolute inset-0 border border-[#c40000]" />
@@ -942,7 +966,7 @@ function Input2({
         </svg>
       ) : null}
       <input
-        aria-label="Xác nhận thông tin cá nhân"
+        aria-label={t("form.consent")}
         type="checkbox"
         checked={checked}
         onChange={onToggle}
@@ -1228,6 +1252,7 @@ function Background13({
 }
 
 export default function RegistrationSection() {
+  const { lang, t } = useLanguage();
   const settings = useRegistrationSectionSettings();
   const slotRef = useRef<HTMLDivElement>(null);
   const [name, setName] = useState("");
@@ -1254,6 +1279,7 @@ export default function RegistrationSection() {
   })();
   const displaySettings = {
     ...settings,
+    consentText: lang === "en" ? t("form.consentLong") : settings.consentText,
     countdownDays: countdownValues.days,
     countdownHours: countdownValues.hours,
     countdownMinutes: countdownValues.minutes,

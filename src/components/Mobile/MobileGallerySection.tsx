@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { MobileFlowerImageCarousel } from "@/components/Shared/MobileFlowerImageCarousel";
 import type { FlowerCarouselImage } from "@/components/Shared/FlowerImageCarousel";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgSection from "../../assets/43192633e64afca0e6ae2cc7ffd3e7a96f2cd1c7.png";
 
 export default function MobileGallerySection() {
+  const { t } = useLanguage();
   const [images, setImages] = useState<FlowerCarouselImage[]>([]);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function MobileGallerySection() {
       </div>
 
       <h2 className="relative z-[1] mx-auto mb-8 max-w-[360px] px-4 text-center text-[28px] font-extrabold uppercase leading-tight text-[#620000]">
-        Khoảnh khắc trẻ trải nghiệm
+        {t("mobile.gallery.title")}
       </h2>
 
       <div className="relative z-[1] w-full overflow-hidden">

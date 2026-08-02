@@ -5,6 +5,7 @@ import { Loader2, Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import imgCardLogo from "@/assets/logo1.png";
 import { CoverImage } from "@/components/Shared/CoverImage";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 
 const POSTS_PER_PAGE = 6;
 const POST_CARD_ASPECT = 360 / 225;
@@ -39,6 +40,7 @@ function getInitialPagePosts(posts: NewsSearchPost[]) {
 }
 
 export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
+  const { t } = useLanguage();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -162,8 +164,8 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
             setIsSearchOpen(true);
             window.setTimeout(() => inputRef.current?.focus(), 0);
           }}
-          aria-label="Mở tìm kiếm"
-          title="Mở tìm kiếm"
+          aria-label={t("news.openSearch")}
+          title={t("news.openSearch")}
           className={`flex items-end gap-2 text-[#b80000] transition-[width] duration-300 ${
             isSearchOpen ? "w-[min(100%,300px)] md:w-[380px]" : "w-[58px]"
           }`}
@@ -176,7 +178,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
                 autoComplete="off"
                 value={query}
                 onChange={(event) => updateQuery(event.target.value)}
-                placeholder="Search..."
+                placeholder={t("news.searchPlaceholder")}
                 className="h-10 w-full border-0 bg-transparent pr-9 text-[15px] font-bold text-[#620000] outline-none placeholder:text-[#b80000]/55 md:text-[16px]"
               />
             ) : null}
@@ -187,8 +189,8 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
                   event.stopPropagation();
                   clearSearch();
                 }}
-                aria-label="Xóa tìm kiếm"
-                title="Xóa tìm kiếm"
+                aria-label={t("news.clearSearch")}
+                title={t("news.clearSearch")}
                 className="absolute right-0 top-1/2 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-[#b80000]/70 transition-colors hover:bg-white/70 hover:text-[#b80000]"
               >
                 <X size={14} strokeWidth={3} />
@@ -209,8 +211,8 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
                 event.stopPropagation();
                 closeSearch();
               }}
-              aria-label="Đóng tìm kiếm"
-              title="Đóng tìm kiếm"
+              aria-label={t("news.closeSearch")}
+              title={t("news.closeSearch")}
               className="mb-1 inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-[#b80000]/20 bg-white/75 text-[#b80000] shadow-[0_3px_8px_rgba(98,0,0,0.12)] transition-all hover:-translate-y-0.5 hover:bg-[#b80000] hover:text-white"
             >
               <X size={15} strokeWidth={3} />
@@ -260,7 +262,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
                   href={`/tin-tuc-su-kien/${post.slug}`}
                   className="mt-auto inline-flex w-fit rounded-full bg-[#b80000] px-5 py-3 text-[15px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000]"
                 >
-                  Xem chi tiết
+                  {t("news.viewDetail")}
                 </Link>
               </div>
             </article>
@@ -269,17 +271,17 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
       ) : (
         <div className="mx-auto mt-9 max-w-[720px] border border-[#b80000] bg-[#fffefa] px-6 py-8 text-center shadow-[4px_4px_0_rgba(184,0,0,0.16)]">
           <h2 className="text-[26px] font-extrabold uppercase text-[#b80000]">
-            Chưa tìm thấy bài viết phù hợp
+            {t("news.notFoundTitle")}
           </h2>
           <p className="mt-3 text-[17px] font-medium leading-7">
-            Thử tìm bằng từ khóa ngắn hơn, tên hoạt động, hoặc danh mục bài viết.
+            {t("news.notFoundText")}
           </p>
         </div>
       )}
 
       {totalPages > 1 ? (
         <nav
-          aria-label="Phân trang tin tức"
+          aria-label={t("news.pagination")}
           className="mt-10 flex flex-wrap items-center justify-center gap-3"
         >
           {page > 1 ? (
@@ -288,7 +290,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
               onClick={() => setPage((current) => Math.max(1, current - 1))}
               className="inline-flex min-h-11 items-center rounded-full border border-[#b80000] bg-[#fffefa] px-5 text-[15px] font-extrabold uppercase text-[#b80000] shadow-[0_3px_0_rgba(184,0,0,0.16)]"
             >
-              Trang trước
+              {t("news.prev")}
             </button>
           ) : null}
 
@@ -307,7 +309,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
                     : "border-[#b80000] bg-[#fffefa] text-[#b80000]"
                 }`}
               >
-                Trang {pageNumber}
+                {t("news.page").replace("{n}", String(pageNumber))}
               </button>
             );
           })}
@@ -318,7 +320,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
               onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
               className="inline-flex min-h-11 items-center rounded-full border border-[#b80000] bg-[#fffefa] px-5 text-[15px] font-extrabold uppercase text-[#b80000] shadow-[0_3px_0_rgba(184,0,0,0.16)]"
             >
-              Trang sau
+              {t("news.next")}
             </button>
           ) : null}
         </nav>

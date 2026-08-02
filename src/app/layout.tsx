@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import "@/styles/index.css";
 import FloatingActions from "@/components/Home/sections/FloatingActions";
+import { LanguageProvider } from "@/components/Shared/LanguageProvider";
+import { LANG_COOKIE, parseLang } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Trường Mầm non Princeton",
@@ -13,13 +16,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const initialLang = parseLang(cookieStore.get(LANG_COOKIE)?.value);
   return (
-    <html lang="vi">
+    <html lang={initialLang}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -30,8 +35,10 @@ export default function RootLayout({
         <style>{`html { font-family: "Baloo Paaji 2", Arial, Helvetica, sans-serif; } body { margin: 0; } #root { height: 100%; }`}</style>
       </head>
       <body>
-        {children}
-        <FloatingActions />
+        <LanguageProvider initialLang={initialLang}>
+          {children}
+          <FloatingActions />
+        </LanguageProvider>
       </body>
     </html>
   );

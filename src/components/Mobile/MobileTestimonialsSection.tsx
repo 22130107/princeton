@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import imgQuote from "../../assets/cfeb6f6734141cc70383b6a1b5c4247fa8b7ad92.png";
 import imgLogo from "../../assets/logo.png";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 
 type Testimonial = {
   id: number;
@@ -14,6 +15,7 @@ type Testimonial = {
 };
 
 export default function MobileTestimonialsSection() {
+  const { t } = useLanguage();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [active, setActive] = useState(0);
   const touchX = useRef(0);
@@ -47,10 +49,10 @@ export default function MobileTestimonialsSection() {
   return (
     <section className="bg-[#fffbf3] px-4 py-10">
       <h2 className="text-[#620000] font-bold text-[22px] uppercase text-center mb-2">
-        PHỤ HUYNH NÓI GÌ VỀ NHÀ TRƯỜNG?
+        {t("home.testimonials.title")}
       </h2>
       <p className="text-[#620000] font-medium text-[13px] text-center leading-relaxed mb-7">
-        Mỗi lời chia sẻ của ba mẹ là niềm tự hào và nguồn động lực để Nhà trường tiếp tục đồng hành cùng những bạn nhỏ.
+        {t("mobile.testimonials.text")}
       </p>
 
       <div
@@ -106,7 +108,7 @@ export default function MobileTestimonialsSection() {
           <button
             onClick={prev}
             className="size-10 rounded-full bg-white border border-[#b80000] flex items-center justify-center shadow-sm"
-            aria-label="Trước"
+            aria-label={t("home.testimonials.prev")}
           >
             <svg width="14" height="14" viewBox="0 0 16 28" fill="none">
               <path d="M14 2L2 14L14 26" stroke="#b80000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
@@ -121,7 +123,7 @@ export default function MobileTestimonialsSection() {
                 className={`rounded-full transition-all duration-200 ${
                   index === active ? "bg-[#b80000] w-5 h-2.5" : "bg-[#b80000]/30 w-2.5 h-2.5"
                 }`}
-                aria-label={`Chia sẻ ${index + 1}`}
+                aria-label={t("home.testimonials.shareLabel").replace("{n}", String(index + 1))}
               />
             ))}
           </div>
@@ -129,7 +131,7 @@ export default function MobileTestimonialsSection() {
           <button
             onClick={next}
             className="size-10 rounded-full bg-white border border-[#b80000] flex items-center justify-center shadow-sm"
-            aria-label="Tiếp"
+            aria-label={t("home.testimonials.next")}
           >
             <svg width="14" height="14" viewBox="0 0 16 28" fill="none">
               <path d="M2 2L14 14L2 26" stroke="#b80000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />

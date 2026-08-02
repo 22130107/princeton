@@ -1,11 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import type { DbTeachingMethod } from "@/lib/content";
 import { CoverImage } from "@/components/Shared/CoverImage";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgPlane from "@/assets/87b0baec94bf2f1f980990704ca31b5f776eae03.png";
 import imgZigzagTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgZigzagBottom from "@/assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
 
 function TeachingMethodCard({ method }: { method: DbTeachingMethod }) {
+  const { t } = useLanguage();
   return (
     <Link
       href={`/phuong-phap-giang-day/${method.slug}`}
@@ -31,7 +35,7 @@ function TeachingMethodCard({ method }: { method: DbTeachingMethod }) {
             {method.description}
           </p>
           <span className="mt-5 inline-flex rounded-full bg-[#b80000] px-5 py-3 text-[13px] font-extrabold uppercase text-white shadow-[0_4px_0_#800000] transition-transform duration-200 group-hover:translate-x-1">
-            Xem chi tiết
+            {t("curriculum.viewDetail")}
           </span>
         </div>
       </div>
@@ -56,6 +60,7 @@ export default function TeachingMethodsSection({
   bottomZigzagColor,
   className = "",
 }: TeachingMethodsSectionProps) {
+  const { t } = useLanguage();
   const useOriginalPinkTop = topZigzagColor?.toLowerCase() === "#fff1f1";
   const topZigzagStyle = useOriginalPinkTop
     ? {
@@ -105,10 +110,10 @@ export default function TeachingMethodsSection({
         {showHeading ? (
           <div className="mx-auto mb-10 max-w-[976px] text-center md:mb-12">
             <h2 className="text-[34px] font-bold uppercase leading-none text-[#620000] md:text-[60px] md:leading-[60px]">
-              Phương pháp giáo dục
+              {t("methods.sectionTitle")}
             </h2>
             <p className="mt-5 text-[18px] font-medium leading-7 text-[#620000] md:text-[24px] md:leading-8">
-              Sự kết hợp hài hòa giữa các triết lý giáo dục hiện đại giúp khơi mở trọn vẹn tiềm năng tự nhiên, nuôi dưỡng tư duy độc lập và niềm yêu thích học tập suốt đời của con.
+              {t("methods.sectionText")}
             </p>
           </div>
         ) : null}

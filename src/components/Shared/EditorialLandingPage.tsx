@@ -1,8 +1,11 @@
+"use client";
+
 import type { StaticImageData } from "next/image";
 import Link from "next/link";
 import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import { mediaImage } from "@/lib/media-url";
 import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
 import imgMascotWombat from "@/assets/3dc1ce007304dd7c637e9e4c763ad7fda6021a35.png";
@@ -43,6 +46,7 @@ export default function EditorialLandingPage({
   introTitle,
   introText,
 }: EditorialLandingPageProps) {
+  const { t } = useLanguage();
   return (
     <main className="min-h-screen overflow-hidden bg-[#fffefa] pt-[64px] text-[#620000] md:pt-[99px]">
       <div className="md:hidden">
@@ -123,7 +127,7 @@ export default function EditorialLandingPage({
         />
         <div className="mx-auto max-w-[1180px] px-4 py-12 md:px-10 md:py-16">
           <h2 className="text-center text-[30px] font-extrabold uppercase leading-tight md:text-[52px]">
-            Bài viết mới
+            {t("editorial.newPosts")}
           </h2>
           <div className="mt-8 grid gap-5 md:grid-cols-3">
             {posts.map((post, index) => (
@@ -161,16 +165,16 @@ export default function EditorialLandingPage({
       <section className="bg-[#fffefa] px-4 py-12 md:px-10 md:py-16">
         <div className="mx-auto flex max-w-[1080px] flex-col items-center rounded-[32px] bg-[#b80000] p-8 text-center text-white md:p-12">
           <h2 className="max-w-[760px] text-[30px] font-extrabold uppercase leading-tight md:text-[48px]">
-            Cùng Princeton lưu lại những câu chuyện lớn lên của trẻ
+            {t("editorial.ctaTitle")}
           </h2>
           <p className="mt-4 max-w-[760px] text-[16px] font-medium leading-7 text-white/92 md:text-[19px]">
-            Trang này có thể dùng để đăng tải tin tức, sự kiện, bài giới thiệu hoạt động, phương pháp học và những khoảnh khắc đáng nhớ tại trường.
+            {t("editorial.ctaText")}
           </p>
           <Link
             href="/dang-ky"
             className="mt-7 rounded-full bg-[#ffc300] px-7 py-4 text-[17px] font-extrabold uppercase text-[#b80000] no-underline shadow-[0_4px_0_#800000]"
           >
-            Đăng ký tư vấn
+            {t("editorial.ctaButton")}
           </Link>
         </div>
       </section>

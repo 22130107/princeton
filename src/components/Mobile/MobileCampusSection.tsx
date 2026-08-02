@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { campuses, campusMapUrl, campusMapLink, type Campus } from "@/lib/campuses";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgFlowers from "../../assets/cfa61d914b57a907c8879eea3242e5037a5a2c78.png";
 import imgCornerTop from "../../assets/45e9cd713cd022e324337d1e9a3d1f01c8086db4.png";
 import imgCornerBottom from "../../assets/e2e0d53776626afcb6870acda5507843a053b4ae.png";
 
 function MobileMapPreview({ campus }: { campus: Campus }) {
+  const { t } = useLanguage();
   return (
     <div className="relative block h-[238px] overflow-hidden rounded-2xl bg-[#e5e3df]">
       <iframe
@@ -23,13 +25,14 @@ function MobileMapPreview({ campus }: { campus: Campus }) {
         rel="noopener noreferrer"
         className="absolute bottom-3 right-3 rounded-full bg-[#b80000] px-4 py-2 text-[13px] font-bold uppercase text-white no-underline shadow-[0_2px_8px_rgba(0,0,0,0.18)]"
       >
-        Xem bản đồ
+        {t("home.campus.map")}
       </a>
     </div>
   );
 }
 
 export default function MobileCampusSection() {
+  const { t } = useLanguage();
   const [selected, setSelected] = useState(0);
   const campus = campuses[selected];
 
@@ -96,10 +99,10 @@ export default function MobileCampusSection() {
 
           <div className="px-1 pb-2 pt-4">
             <h2 className="text-[28px] font-extrabold uppercase leading-[1.18] text-[#620000]">
-              Hệ thống cơ sở Princeton
+              {t("mobile.campus.title")}
             </h2>
             <p className="mt-2.5 text-[15px] font-medium leading-[22px] text-[#620000]">
-              Tọa lạc tại các vị trí trung tâm, dễ dàng kết nối với các tuyến đường chính, thuận tiện cho ba mẹ đưa đón trẻ.
+              {t("home.campus.text")}
             </p>
           </div>
 

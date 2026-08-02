@@ -5,6 +5,7 @@ import Link from "next/link";
 import svgPaths from "../svg-g45k1n1pz5";
 import { mediaUrl } from "@/lib/media-url";
 import { CoverImage } from "@/components/Shared/CoverImage";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgBackground6 from "../../../assets/76ae85eb95c1037d24fc4b213196313a7543a830.png";
 import imgBackground4 from "../../../assets/451163d5761eb2fd4f4fc21e0662c4d50571045a.png";
 import imgClassWombatPng from "../../../assets/3dc1ce007304dd7c637e9e4c763ad7fda6021a35.png";
@@ -36,11 +37,12 @@ const classCardStyles = [
 ];
 
 function Container201() {
+  const { t } = useLanguage();
   return (
     <div className="relative shrink-0 w-full" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center relative size-full">
         <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#620000] text-[60px] text-center whitespace-nowrap">
-          <p className="leading-[60px]">HỆ THỐNG KHỐI LỚP</p>
+          <p className="leading-[60px]">{t("home.info.title")}</p>
         </div>
       </div>
     </div>

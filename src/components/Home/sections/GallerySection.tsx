@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { FlowerImageCarousel, type FlowerCarouselImage } from "@/components/Shared/FlowerImageCarousel";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgSection from "../../../assets/43192633e64afca0e6ae2cc7ffd3e7a96f2cd1c7.png";
 
 function Container93() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-center pb-[36px] relative shrink-0 w-[1296px]" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#620000] text-[60px] text-center whitespace-nowrap">
-        <p className="leading-[60px]">KHOẢNH KHẮC TRẺ TRẢI NGHIỆM</p>
+        <p className="leading-[60px]">{t("home.gallery.title")}</p>
       </div>
     </div>
   );

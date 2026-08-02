@@ -3,21 +3,24 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
+import type { Lang } from "@/lib/i18n";
 import imgLogo from "../../assets/logo1.png";
 
 const navItems = [
-  { href: "/", label: "Trang Chủ" },
-  { href: "/phuong-phap-giang-day", label: "Phương Pháp Giảng Dạy" },
-  { href: "/khoi-lop", label: "Khối Lớp" },
-  { href: "/chuong-trinh-hoc", label: "Chương Trình Học" },
-  { href: "/gioi-thieu", label: "Giới Thiệu" },
-  { href: "/tin-tuc-su-kien", label: "Tin Tức & Sự Kiện" },
-  { href: "/dang-ky", label: "Đăng Ký Ngay" },
+  { href: "/", labelKey: "nav.home" },
+  { href: "/phuong-phap-giang-day", labelKey: "nav.methods" },
+  { href: "/khoi-lop", labelKey: "nav.classes" },
+  { href: "/chuong-trinh-hoc", labelKey: "nav.curriculum" },
+  { href: "/gioi-thieu", labelKey: "nav.about" },
+  { href: "/tin-tuc-su-kien", labelKey: "nav.news" },
+  { href: "/dang-ky", labelKey: "nav.register" },
 ];
 
 export default function MobileHeader() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const { lang, setLang, t } = useLanguage();
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 w-full bg-[#e8f3e6] shadow-sm">
@@ -29,12 +32,19 @@ export default function MobileHeader() {
 
         {/* Đăng ký + Hamburger */}
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setLang(lang === "vi" ? "en" : "vi")}
+            className="rounded-full border-2 border-[#8d0000] bg-white px-3 py-1 text-[13px] font-extrabold text-[#620000] no-underline shadow-[0_2px_0_#700000]"
+            aria-label="Switch language"
+          >
+            {lang === "vi" ? "EN" : "VI"}
+          </button>
           <Link
             href="/dang-ky"
             className="relative rounded-full border-2 border-[#8d0000] bg-[#b80000] px-4 py-2 text-[13px] font-extrabold uppercase text-white no-underline shadow-[0_2px_0_#700000] whitespace-nowrap"
           >
             <span className="pointer-events-none absolute inset-[4px] rounded-full border border-dashed border-white/95" />
-            <span className="relative z-10">Đăng Ký</span>
+            <span className="relative z-10">{t("nav.register.short")}</span>
           </Link>
           <button
             onClick={() => setOpen(!open)}
@@ -81,7 +91,7 @@ export default function MobileHeader() {
                     : "border-transparent text-[#620000]"
                 }`}
               >
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             );
           })}

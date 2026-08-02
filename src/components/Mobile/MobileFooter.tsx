@@ -1,6 +1,10 @@
+"use client";
+
 import imgLogo from "../../assets/logo.png";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 
 export default function MobileFooter() {
+  const { t } = useLanguage();
   return (
     <footer className="bg-[#e8f3e6]">
       <div className="border-t border-dashed border-[#620000]/25" />
@@ -13,14 +17,14 @@ export default function MobileFooter() {
               Princeton Academy
             </h2>
             <p className="mt-1 text-[15px] font-semibold leading-5">
-              Growing Hearts. Growing Minds. Growing Together!
+              {t("footer.slogan")}
             </p>
           </div>
         </div>
 
         <div className="mt-6 space-y-2 border-t border-dashed border-[#620000]/25 pt-5 text-[14px] font-semibold leading-6">
-          <p>Số 686 Thuận Phát, Phường A, Quận B, Hà Nội</p>
-          <p>0912 345 678</p>
+          <p>{t("footer.address")}</p>
+          <p>{t("footer.phone")}</p>
         </div>
       </div>
     </footer>

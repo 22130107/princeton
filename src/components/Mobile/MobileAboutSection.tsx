@@ -1,5 +1,8 @@
+"use client";
+
 import svgPaths from "../Home/svg-g45k1n1pz5";
 import Link from "next/link";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgWebKindergarten2Jpg1 from "../../assets/1785508275307_2464196110406402971_2464196110406402971_908152b1927fedcdd7fc0a83d44529f3.jpg";
 import imgLogo from "../../assets/logo.png";
 
@@ -121,12 +124,13 @@ function StatItem({ decoration, numbers, label }: StatProps) {
 // ─── Main section ──────────────────────────────────────────────────────────
 
 export default function MobileAboutSection() {
+  const { t } = useLanguage();
   const stats: StatProps[] = [
-    { decoration: <AboutCounter1Svg />, numbers: ["10"], label: "Cơ Sở" },
-    { decoration: <AboutCounter2Svg />, numbers: ["02"], label: "Ngôn ngữ" },
-    { decoration: <AboutCounter3Svg />, numbers: ["02"], label: "Chương trình học" },
-    { decoration: <AboutCounter4Svg />, numbers: ["10", "+"], label: "Câu lạc bộ" },
-    { numbers: ["30", "+"], label: "Sự kiện" },
+    { decoration: <AboutCounter1Svg />, numbers: ["10"], label: t("home.about.stats.campus") },
+    { decoration: <AboutCounter2Svg />, numbers: ["02"], label: t("about.stats.language") },
+    { decoration: <AboutCounter3Svg />, numbers: ["02"], label: t("home.about.stats.curriculum") },
+    { decoration: <AboutCounter4Svg />, numbers: ["10", "+"], label: t("about.stats.club") },
+    { numbers: ["30", "+"], label: t("about.stats.event") },
   ];
 
   return (
@@ -135,14 +139,14 @@ export default function MobileAboutSection() {
 
       {/* Heading */}
       <h2 className="mb-5 text-center text-[#b80000] font-extrabold text-[28px] uppercase leading-none">
-        Về Chúng Tôi
+        {t("home.about.title")}
       </h2>
 
       {/* Image */}
       <div className="relative mb-5 overflow-hidden rounded-[13px] shadow-[0_5px_12px_rgba(98,0,0,0.12)]">
         <img
           src={imgWebKindergarten2Jpg1.src}
-          alt="Trường Mầm non Princeton"
+          alt={t("home.about.imageAlt")}
           className="aspect-[15/14] w-full object-cover object-[48%_center]"
         />
       </div>
@@ -150,10 +154,10 @@ export default function MobileAboutSection() {
       {/* Description */}
       <div className="mx-auto max-w-[390px] text-center">
         <p className="mb-5 text-[#620000] font-medium text-[14px] leading-[1.75]">
-          <strong className="font-extrabold">Princeton Academy</strong> là hệ thống mầm non quốc tế ra đời từ niềm tin: <strong className="font-extrabold">Giáo dục không phải là lấp đầy kiến thức, mà là kiến tạo mảnh đất màu mỡ để mỗi hạt giống độc bản được lớn lên.</strong> Chúng tôi không chỉ chuẩn bị cho trẻ vào lớp Một, mà tập trung vun đắp <strong className="font-extrabold">7 nhu cầu phát triển gốc rễ về Thể - Trí - Tâm - Nhân cách</strong>, giúp con xây dựng nội lực vững vàng để tự tin khám phá thế giới.
+          <strong className="font-extrabold">Princeton Academy</strong>{t("home.about.text1.a")}<strong className="font-extrabold">{t("home.about.text1.b")}</strong>{t("home.about.text1.c")}<strong className="font-extrabold">{t("home.about.text1.d")}</strong>{t("home.about.text1.e")}
         </p>
         <p className="text-[#620000] font-medium text-[14px] leading-[1.75]">
-          Chương trình học tại Princeton Academy được thiết kế chuẩn quốc tế với <strong className="font-extrabold">80–100% thời lượng tiếng Anh</strong>, tích hợp <strong className="font-extrabold">9 môn giáo dục sớm chuẩn Mỹ</strong> cùng chương trình <strong className="font-extrabold">Tư duy phản biện sớm (ECT)</strong>. Thông qua phương pháp độc quyền <strong className="font-extrabold">PEAK (Học qua trải nghiệm &amp; Chơi có chủ đích)</strong>, ngôn ngữ và kiến thức đến với con một cách tự nhiên nhẹ nhàng, đánh thức sự tò mò và trao cho con niềm tin tự hào: <strong className="font-extrabold">"Con tự làm được!"</strong>.
+          {t("home.about.text2.a")}<strong className="font-extrabold">{t("home.about.text2.b")}</strong>{t("home.about.text2.c")}<strong className="font-extrabold">{t("home.about.text2.d")}</strong>{t("home.about.text2.e")}<strong className="font-extrabold">{t("home.about.text2.f")}</strong>{t("home.about.text2.g")}<strong className="font-extrabold">{t("home.about.text2.h")}</strong>{t("home.about.text2.i")}<strong className="font-extrabold">{t("home.about.text2.j")}</strong>{t("home.about.text2.k")}
         </p>
       </div>
 
@@ -171,7 +175,7 @@ export default function MobileAboutSection() {
           href="/gioi-thieu"
           className="inline-flex rounded-full bg-[#b80000] px-7 py-3 text-[16px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000] transition-transform duration-200 hover:-translate-y-0.5"
         >
-          Xem thêm
+          {t("home.readMore")}
         </Link>
       </div>
     </section>

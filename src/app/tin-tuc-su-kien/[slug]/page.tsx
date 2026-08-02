@@ -7,6 +7,7 @@ import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getNewsPost, getNewsPosts } from "@/lib/content";
+import { getServerT } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
@@ -42,6 +43,7 @@ export async function generateMetadata({
 
 export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
   const { slug } = await params;
+  const t = await getServerT();
   const post = await getNewsPost(slug);
 
   if (!post) notFound();
@@ -64,7 +66,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
             href="/tin-tuc-su-kien"
             className="mb-6 inline-flex rounded-full border border-[#ff1f1f] bg-white px-5 py-3 text-[14px] font-extrabold uppercase text-[#b80000] no-underline shadow-[0_3px_0_rgba(255,31,31,0.18)]"
           >
-            Quay lại tin tức
+            {t("news.back")}
           </Link>
         </div>
 
@@ -111,7 +113,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
 
         <section className="mx-auto mt-10 max-w-[1180px]">
           <h2 className="text-[28px] font-extrabold uppercase text-[#b80000] md:text-[42px]">
-            Tin liên quan
+            {t("news.related")}
           </h2>
           <div className="mt-5 grid gap-5 md:grid-cols-3">
             {relatedPosts.map((item) => (

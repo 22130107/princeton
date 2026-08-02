@@ -4,6 +4,7 @@ import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import TeachingMethodsSection from "@/components/Shared/TeachingMethodsSection";
 import { getTeachingMethods } from "@/lib/content";
+import { getServerT } from "@/lib/i18n-server";
 import { mediaImage } from "@/lib/media-url";
 import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
 const imgMascotKoala = mediaImage("d088645c54f44b84375f6cb56aeabe8e06bc006b.png");
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function PhuongPhapGiangDayPage() {
+  const t = await getServerT();
   const methods = await getTeachingMethods();
 
   return (
@@ -46,13 +48,13 @@ export default async function PhuongPhapGiangDayPage() {
         />
         <div className="relative z-[1] mx-auto max-w-[980px] text-center">
           <p className="mb-3 inline-flex rounded-full border border-[#b80000] bg-white px-4 py-2 text-[14px] font-bold uppercase text-[#b80000]">
-            Phương pháp giáo dục
+            {t("methods.heroBadge")}
           </p>
           <h1 className="text-[40px] font-extrabold uppercase leading-[1.05] md:text-[68px]">
-            Học bằng trải nghiệm, trưởng thành bằng tư duy chủ động
+            {t("methods.heroTitle")}
           </h1>
           <p className="mx-auto mt-5 max-w-[760px] text-[17px] font-medium leading-7 md:text-[22px] md:leading-8">
-            Tại Princeton Academy, chúng tôi biến mỗi bài học thành hành trình <strong className="font-extrabold">"Học qua trải nghiệm - Chơi có chủ đích"</strong>. Nơi con được tự do đặt câu hỏi, kiên nhẫn thử nghiệm và tự hào reo lên: <strong className="font-extrabold">"Con tự làm được!"</strong>
+            {t("methods.heroTextBefore")}<strong className="font-extrabold">{t("methods.heroTextStrong1")}</strong>{t("methods.heroTextMid")}<strong className="font-extrabold">{t("methods.heroTextStrong2")}</strong>{t("methods.heroTextAfter")}
           </p>
         </div>
       </section>

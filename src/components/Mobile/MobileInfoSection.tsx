@@ -9,6 +9,7 @@ import imgWombatCard from "../../assets/f27370ae642f585465776911bba325c723a71553
 import imgKoalaCard from "../../assets/76ae85eb95c1037d24fc4b213196313a7543a830.png";
 import imgKangarooCard from "../../assets/15745d29eddade36047a580e4620dc891bb7902d.png";
 import imgPreschoolCard from "../../assets/2733e2352734e4c64d23bbca5e0cf9b52124bf84.png";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 
 type MobileClassProgram = {
   id: number;
@@ -28,6 +29,7 @@ const cardStyles = [
 ];
 
 export default function MobileInfoSection() {
+  const { t } = useLanguage();
   const [classes, setClasses] = useState<MobileClassProgram[]>([]);
 
   useEffect(() => {
@@ -82,7 +84,7 @@ export default function MobileInfoSection() {
             />
 
             <h2 className="relative z-[1] mb-8 text-center text-[28px] font-extrabold uppercase leading-tight text-[#620000]">
-              Hệ thống khối lớp
+              {t("mobile.info.title")}
             </h2>
 
             <div className="relative z-[1] grid grid-cols-2 gap-x-3 gap-y-7">

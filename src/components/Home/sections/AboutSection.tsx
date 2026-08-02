@@ -1,5 +1,8 @@
+"use client";
+
 import svgPaths from "../svg-g45k1n1pz5";
 import Link from "next/link";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgWebKindergartenJpg from "../../../assets/a32b9595cff2ce9d1e97a98665d30a5e87620c30.png";
 import imgWebKindergarten2Jpg from "../../../assets/becea57d21b16e69d315acb7b34ce055c670107e.png";
 import imgBackground2 from "../../../assets/c335b55122c9354d6a38878d564d64507ec073d9.png";
@@ -17,10 +20,11 @@ function CornerBrandLogo() {
 
 
 function Container31() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-start relative self-stretch shrink-0" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#b80000] text-[60px] uppercase whitespace-nowrap">
-        <p className="leading-[60px]">Về Chúng Tôi</p>
+        <p className="leading-[60px]">{t("home.about.title")}</p>
       </div>
     </div>
   );
@@ -35,11 +39,12 @@ function Heading() {
 }
 
 function Container33() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[16px] w-full">
         <p className="leading-[24px]">
-          <strong className="font-extrabold">Princeton Academy</strong> là hệ thống mầm non quốc tế ra đời từ niềm tin: <strong className="font-extrabold">Giáo dục không phải là lấp đầy kiến thức, mà là kiến tạo mảnh đất màu mỡ để mỗi hạt giống độc bản được lớn lên.</strong> Chúng tôi không chỉ chuẩn bị cho trẻ vào lớp Một, mà tập trung vun đắp <strong className="font-extrabold">7 nhu cầu phát triển gốc rễ về Thể - Trí - Tâm - Nhân cách</strong>, giúp con xây dựng nội lực vững vàng để tự tin khám phá thế giới.
+          <strong className="font-extrabold">Princeton Academy</strong>{t("home.about.text1.a")}<strong className="font-extrabold">{t("home.about.text1.b")}</strong>{t("home.about.text1.c")}<strong className="font-extrabold">{t("home.about.text1.d")}</strong>{t("home.about.text1.e")}
         </p>
       </div>
     </div>
@@ -47,11 +52,12 @@ function Container33() {
 }
 
 function Container34() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[16px] w-full">
         <p className="leading-[24px]">
-          Chương trình học tại Princeton Academy được thiết kế chuẩn quốc tế với <strong className="font-extrabold">80–100% thời lượng tiếng Anh</strong>, tích hợp <strong className="font-extrabold">9 môn giáo dục sớm chuẩn Mỹ</strong> cùng chương trình <strong className="font-extrabold">Tư duy phản biện sớm (ECT)</strong>. Thông qua phương pháp độc quyền <strong className="font-extrabold">PEAK (Học qua trải nghiệm & Chơi có chủ đích)</strong>, ngôn ngữ và kiến thức đến với con một cách tự nhiên nhẹ nhàng, đánh thức sự tò mò và trao cho con niềm tin tự hào: <strong className="font-extrabold">"Con tự làm được!"</strong>.
+          {t("home.about.text2.a")}<strong className="font-extrabold">{t("home.about.text2.b")}</strong>{t("home.about.text2.c")}<strong className="font-extrabold">{t("home.about.text2.d")}</strong>{t("home.about.text2.e")}<strong className="font-extrabold">{t("home.about.text2.f")}</strong>{t("home.about.text2.g")}<strong className="font-extrabold">{t("home.about.text2.h")}</strong>{t("home.about.text2.i")}<strong className="font-extrabold">{t("home.about.text2.j")}</strong>{t("home.about.text2.k")}
         </p>
       </div>
     </div>
@@ -391,6 +397,7 @@ function Container35() {
 }
 
 function Container30() {
+  const { t } = useLanguage();
   return (
     <div className="mr-[-80px] relative self-stretch shrink-0 w-[648px]" data-name="Container">
       <div className="content-stretch flex flex-col gap-[14px] items-start pb-[48px] pt-[58px] relative size-full">
@@ -402,7 +409,7 @@ function Container30() {
             href="/gioi-thieu"
             className="inline-flex rounded-full bg-[#b80000] px-7 py-3 text-[16px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000] transition-transform duration-200 hover:-translate-y-0.5"
           >
-            Xem thêm
+            {t("home.readMore")}
           </Link>
         </div>
       </div>

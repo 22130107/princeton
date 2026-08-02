@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import imgChuongTrinh from "../../assets/b6916482933e67cc337ea1071a428e34d7abe5f3.png";
 import imgLogo from "../../assets/logo.png";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 
 type CurriculumTrack = {
   id: number;
@@ -50,6 +51,7 @@ function CurriculumLogo() {
 }
 
 export default function MobileCurriculumSection() {
+  const { t } = useLanguage();
   const [active, setActive] = useState(0);
   const [tracks, setTracks] = useState<CurriculumTrack[]>(fallbackTracks);
   const visibleTracks = useMemo(() => tracks.slice(0, 2), [tracks]);
@@ -78,7 +80,7 @@ export default function MobileCurriculumSection() {
   return (
     <section className="bg-[#fff1f1] px-4 pt-10 pb-10">
       <h2 className="text-[#620000] font-bold text-[22px] uppercase text-center mb-8">
-        CHƯƠNG TRÌNH HỌC
+        {t("home.curriculum.title")}
       </h2>
 
       <div className="flex flex-col">

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { mediaUrl } from "@/lib/media-url";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgZigzagTop from "../../assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import imgZigzagBottom from "../../assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
 
@@ -50,6 +51,7 @@ const fallbackMethods: MobileTeachingMethod[] = [
 ];
 
 export default function MobileTeachingProgram() {
+  const { t } = useLanguage();
   const [methods, setMethods] = useState<MobileTeachingMethod[]>(fallbackMethods);
 
   useEffect(() => {
@@ -98,10 +100,10 @@ export default function MobileTeachingProgram() {
 
       <div className="px-4 pb-10 pt-8">
         <h2 className="mb-2 text-center text-[22px] font-bold uppercase text-[#620000]">
-          Phương pháp giáo dục
+          {t("methods.sectionTitle")}
         </h2>
         <p className="mb-7 text-center text-[14px] font-medium leading-relaxed text-[#620000]">
-          Trường Mầm non Princeton áp dụng những phương pháp giáo dục tiên tiến, mang đến cho trẻ các trải nghiệm học tập trọn vẹn và đầy hứng khởi.
+          {t("home.program.text")}
         </p>
 
         <div className="flex flex-col gap-4">
@@ -136,7 +138,7 @@ export default function MobileTeachingProgram() {
           href="/phuong-phap-giang-day"
           className="mx-auto mt-7 flex w-fit rounded-full bg-[#b80000] px-6 py-3 text-[14px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000]"
         >
-          Xem thêm
+          {t("home.readMore")}
         </Link>
       </div>
 

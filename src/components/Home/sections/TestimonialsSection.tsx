@@ -5,6 +5,7 @@ import imgImage4 from "../../../assets/8be1034309901c74e010831c2ccb706a7d4de7c5.
 import imgTestimonialQuotePng from "../../../assets/cfeb6f6734141cc70383b6a1b5c4247fa8b7ad92.png";
 import imgImage3 from "../../../assets/ca5376ce92d1f2dc22b4ce037286566eecbabbfd.png";
 import imgLogo from "../../../assets/logo.png";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 
 type Testimonial = {
   id: number;
@@ -18,6 +19,7 @@ type Testimonial = {
 };
 
 function Heading() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex items-start justify-center relative shrink-0" data-name="Heading 2">
       <div className="absolute bottom-[-18px] left-[-148.01px] size-[90px] animate-bounce-up-down will-change-transform" data-name="Image">
@@ -26,7 +28,7 @@ function Heading() {
         </div>
       </div>
       <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#620000] text-[60px] text-center whitespace-nowrap">
-        <p className="leading-[60px]">PHỤ HUYNH NÓI GÌ VỀ NHÀ TRƯỜNG?</p>
+        <p className="leading-[60px]">{t("home.testimonials.title")}</p>
       </div>
       <div className="absolute bottom-0 h-[84px] right-[-139.99px] w-[80px] animate-bounce-up-down will-change-transform [animation-delay:1s]" data-name="Image">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -38,13 +40,14 @@ function Heading() {
 }
 
 function Intro() {
+  const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col gap-[32px] items-center max-w-[1046px] relative shrink-0 w-[1046px]" data-name="Container">
       <Heading />
       <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
         <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[20px] text-center">
           <p className="leading-[28px]">
-            Mỗi lời chia sẻ của ba mẹ là niềm tự hào và nguồn động lực để Nhà trường tiếp tục đồng hành cùng những bạn nhỏ tự tin, tích cực, ham học hỏi và mang bản sắc cá nhân độc đáo.
+            {t("home.testimonials.text")}
           </p>
         </div>
       </div>
@@ -155,6 +158,7 @@ function Slider({
   onPrev: () => void;
   onDotClick: (index: number) => void;
 }) {
+  const { t } = useLanguage();
   const cards = useMemo(() => [...testimonials, ...testimonials], [testimonials]);
   const cardWidth = 471.88;
 
@@ -184,10 +188,10 @@ function Slider({
           ))}
         </div>
         <div className="content-stretch flex gap-[40px] h-[90px] items-start justify-center relative shrink-0 w-full" data-name="Container">
-          <button onClick={onPrev} className="content-stretch flex flex-col items-start relative self-stretch shrink-0 hover:scale-110 hover:opacity-80 transition-transform duration-200 cursor-pointer" data-name="Button - Previous slide" aria-label="Trước">
+          <button onClick={onPrev} className="content-stretch flex flex-col items-start relative self-stretch shrink-0 hover:scale-110 hover:opacity-80 transition-transform duration-200 cursor-pointer" data-name="Button - Previous slide" aria-label={t("home.testimonials.prev")}>
             <span className="flex size-[90px] items-center justify-center rounded-full border border-black bg-white text-[48px] leading-none text-black shadow-[4px_4px_0_#212121]">‹</span>
           </button>
-          <button onClick={onNext} className="content-stretch flex flex-col items-start relative self-stretch shrink-0 hover:scale-110 hover:opacity-80 transition-transform duration-200 cursor-pointer" data-name="Button - Next slide" aria-label="Tiếp">
+          <button onClick={onNext} className="content-stretch flex flex-col items-start relative self-stretch shrink-0 hover:scale-110 hover:opacity-80 transition-transform duration-200 cursor-pointer" data-name="Button - Next slide" aria-label={t("home.testimonials.next")}>
             <span className="flex size-[90px] items-center justify-center rounded-full border border-black bg-white text-[48px] leading-none text-black shadow-[4px_4px_0_#212121]">›</span>
           </button>
         </div>
