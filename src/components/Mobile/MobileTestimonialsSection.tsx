@@ -8,14 +8,17 @@ import { useLanguage } from "@/components/Shared/LanguageProvider";
 type Testimonial = {
   id: number;
   parentName: string;
+  parentNameEn: string;
   studentName: string;
   avatarUrl: string;
   avatarAlt: string;
   quote: string;
+  quoteEn: string;
 };
 
 export default function MobileTestimonialsSection() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const isEn = lang === "en";
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [active, setActive] = useState(0);
   const touchX = useRef(0);
@@ -27,7 +30,7 @@ export default function MobileTestimonialsSection() {
       .then((response) => response.json())
       .then((data) => {
         if (!alive || !Array.isArray(data.testimonials)) return;
-        setTestimonials(data.testimonials.filter((item: Testimonial) => item.parentName && item.quote));
+        setTestimonials(data.testimonials.filter((item: Testimonial) => item.parentName && (item.quote || item.quoteEn)));
       })
       .catch(() => {
         if (alive) setTestimonials([]);
@@ -88,7 +91,7 @@ export default function MobileTestimonialsSection() {
                     )}
                   </div>
                   <span className="min-w-0 text-[15px] font-bold leading-snug text-white">
-                    {item.parentName}
+                    {isEn && item.parentNameEn ? item.parentNameEn : item.parentName}
                   </span>
                 </div>
 
@@ -96,7 +99,7 @@ export default function MobileTestimonialsSection() {
                   <img src={imgQuote.src} alt="" className="mb-3 h-5 w-6 opacity-60" />
                   <img src={imgLogo.src} alt="" className="mx-auto mb-4 h-[70px] w-[70px] object-contain" />
                   <p className="overflow-hidden text-[14px] font-medium leading-relaxed text-[#620000]">
-                    {item.quote}
+                    {isEn ? item.quoteEn || item.quote : item.quote}
                   </p>
                 </div>
               </article>

@@ -253,9 +253,11 @@ CREATE TABLE gallery_items (
 CREATE TABLE testimonials (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   parent_name VARCHAR(255) NOT NULL,
+  parent_name_en VARCHAR(255) NULL,
   student_name VARCHAR(255) NULL,
   avatar_id BIGINT UNSIGNED NULL,
   quote TEXT NOT NULL,
+  quote_en TEXT NULL,
   rating DECIMAL(2,1) NULL,
   reaction_image_id BIGINT UNSIGNED NULL,
   sort_order INT NOT NULL DEFAULT 0,
@@ -286,7 +288,9 @@ CREATE TABLE facility_images (
 CREATE TABLE teacher_team_items (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   title VARCHAR(255) NOT NULL,
+  title_en VARCHAR(255) NULL,
   description TEXT NULL,
+  description_en TEXT NULL,
   image_id BIGINT UNSIGNED NULL,
   cover_position VARCHAR(32) NOT NULL DEFAULT '50% 50%',
   cover_zoom DECIMAL(4,2) NOT NULL DEFAULT 1.00,

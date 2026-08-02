@@ -151,7 +151,9 @@ export type DbFacilityImage = {
 export type DbTeacherTeamItem = {
   id: number;
   title: string;
+  titleEn: string;
   description: string;
+  descriptionEn: string;
   imageId: number | null;
   imageUrl: string;
   imageAlt: string;
@@ -165,11 +167,13 @@ export type DbTeacherTeamItem = {
 export type DbTestimonial = {
   id: number;
   parentName: string;
+  parentNameEn: string;
   studentName: string;
   avatarId: number | null;
   avatarUrl: string;
   avatarAlt: string;
   quote: string;
+  quoteEn: string;
   rating: number | null;
   reactionImageId: number | null;
   reactionImageUrl: string;
@@ -333,7 +337,9 @@ type GalleryImageRow = RowDataPacket & {
 type TeacherTeamRow = RowDataPacket & {
   id: number;
   title: string;
+  title_en: string | null;
   description: string | null;
+  description_en: string | null;
   image_id: number | null;
   cover_position: string | null;
   cover_zoom: number | null;
@@ -347,11 +353,13 @@ type TeacherTeamRow = RowDataPacket & {
 type TestimonialRow = RowDataPacket & {
   id: number;
   parent_name: string;
+  parent_name_en: string | null;
   student_name: string | null;
   avatar_id: number | null;
   avatar_url: string | null;
   avatar_alt: string | null;
   quote: string;
+  quote_en: string | null;
   rating: string | number | null;
   reaction_image_id: number | null;
   reaction_image_url: string | null;
@@ -564,6 +572,7 @@ async function ensureTestimonialStorageInternal() {
     CREATE TABLE IF NOT EXISTS testimonials (
       id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
       parent_name VARCHAR(255) NOT NULL,
+      parent_name_en VARCHAR(255) NULL,
       student_name VARCHAR(255) NULL,
       avatar_id BIGINT UNSIGNED NULL,
       quote TEXT NOT NULL,
@@ -580,6 +589,9 @@ async function ensureTestimonialStorageInternal() {
       CONSTRAINT testimonials_reaction_image_fk FOREIGN KEY (reaction_image_id) REFERENCES media_assets(id) ON DELETE SET NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
+
+  await pool.execute("ALTER TABLE testimonials ADD COLUMN parent_name_en VARCHAR(255) NULL AFTER parent_name").catch(() => {});
+  await pool.execute("ALTER TABLE testimonials ADD COLUMN quote_en TEXT NULL AFTER quote").catch(() => {});
 }
 
 export async function ensureTestimonialStorage() {
@@ -618,7 +630,9 @@ async function ensureAboutStorageInternal() {
     CREATE TABLE IF NOT EXISTS teacher_team_items (
       id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
       title VARCHAR(255) NOT NULL,
+      title_en VARCHAR(255) NULL,
       description TEXT NULL,
+      description_en TEXT NULL,
       image_id BIGINT UNSIGNED NULL,
       cover_position VARCHAR(32) NOT NULL DEFAULT '50% 50%',
       cover_zoom DECIMAL(4,2) NOT NULL DEFAULT 1.00,
@@ -634,6 +648,9 @@ async function ensureAboutStorageInternal() {
       CONSTRAINT teacher_team_items_image_fk FOREIGN KEY (image_id) REFERENCES media_assets(id) ON DELETE SET NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
+
+  await pool.execute("ALTER TABLE teacher_team_items ADD COLUMN title_en VARCHAR(255) NULL AFTER title").catch(() => {});
+  await pool.execute("ALTER TABLE teacher_team_items ADD COLUMN description_en TEXT NULL AFTER description").catch(() => {});
 }
 
 export async function ensureAboutStorage() {
@@ -1166,7 +1183,9 @@ export async function getTeacherTeamItems(): Promise<DbTeacherTeamItem[]> {
     `SELECT
       tti.id,
       tti.title,
+      tti.title_en,
       tti.description,
+      tti.description_en,
       tti.image_id,
       tti.cover_position,
       tti.cover_zoom,
@@ -1184,7 +1203,9 @@ export async function getTeacherTeamItems(): Promise<DbTeacherTeamItem[]> {
   const items = rows.map((row) => ({
     id: row.id,
     title: row.title,
+    titleEn: text(row.title_en),
     description: text(row.description),
+    descriptionEn: text(row.description_en),
     imageId: row.image_id,
     imageUrl: text(row.image_url),
     imageAlt: text(row.image_alt) || row.title,
@@ -1208,11 +1229,13 @@ export async function getTestimonials(): Promise<DbTestimonial[]> {
     `SELECT
       t.id,
       t.parent_name,
+      t.parent_name_en,
       t.student_name,
       t.avatar_id,
       avatar_media.url AS avatar_url,
       avatar_media.alt_text AS avatar_alt,
       t.quote,
+      t.quote_en,
       t.rating,
       t.reaction_image_id,
       reaction_media.url AS reaction_image_url,
@@ -1228,17 +1251,19 @@ export async function getTestimonials(): Promise<DbTestimonial[]> {
     .map((row) => ({
       id: row.id,
       parentName: text(row.parent_name),
+      parentNameEn: text(row.parent_name_en),
       studentName: text(row.student_name),
       avatarId: row.avatar_id,
       avatarUrl: text(row.avatar_url),
       avatarAlt: text(row.avatar_alt) || text(row.parent_name),
       quote: text(row.quote),
+      quoteEn: text(row.quote_en),
       rating: row.rating === null ? null : Number(row.rating),
       reactionImageId: row.reaction_image_id,
       reactionImageUrl: text(row.reaction_image_url),
       reactionImageAlt: text(row.reaction_image_alt) || "Cảm xúc phụ huynh",
     }))
-    .filter((item) => item.parentName && item.quote);
+      .filter((item) => item.parentName && (item.quote || item.quoteEn));
 }
 
 export async function getAboutContent() {

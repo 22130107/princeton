@@ -6,7 +6,7 @@ import FacilityCarousel from "@/components/Shared/FacilityCarousel";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getAboutContent } from "@/lib/content";
-import { getServerT } from "@/lib/i18n-server";
+import { getServerLang, getServerT } from "@/lib/i18n-server";
 import { mediaImage } from "@/lib/media-url";
 import imgHero from "@/assets/1785508275307_2464196110406402971_2464196110406402971_908152b1927fedcdd7fc0a83d44529f3.jpg";
 import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
@@ -130,6 +130,8 @@ function WaveDivider({ from, to }: { from: string; to: string }) {
 }
 
 export default async function GioiThieuPage() {
+  const lang = await getServerLang();
+  const isEn = lang === "en";
   const t = await getServerT();
   const aboutContent = await getAboutContent();
   const stats = [
@@ -149,8 +151,8 @@ export default async function GioiThieuPage() {
   const teachers = aboutContent.teacherTeamItems.map((item) => ({
     id: item.id,
     icon: item.imageUrl,
-    title: item.title,
-    text: item.description,
+    title: isEn && item.titleEn ? item.titleEn : item.title,
+    text: isEn && item.descriptionEn ? item.descriptionEn : item.description,
     coverPosition: item.coverPosition,
     coverZoom: item.coverZoom,
     shape: item.shape,

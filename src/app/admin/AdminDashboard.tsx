@@ -20,6 +20,7 @@ import {
 import bannerCoverMask from "@/assets/d082e0a60a126345af429a7e01c4ba8161c21e0e.png";
 import promoFallbackImage from "@/assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aac.png";
 import { CoverImage } from "@/components/Shared/CoverImage";
+import { useLanguage } from "@/components/Shared/LanguageProvider";
 
 type TabKey = "banners" | "registration" | "schedules" | "teaching" | "programs" | "posts" | "about";
 type ProgramMode = "classes" | "curriculum";
@@ -148,7 +149,9 @@ type GalleryImage = FacilityImage;
 type TeacherTeamItem = {
   id: number;
   title: string;
+  titleEn: string;
   description: string;
+  descriptionEn: string;
   imageId: number | null;
   imageUrl: string;
   imageAlt: string;
@@ -162,11 +165,13 @@ type TeacherTeamItem = {
 type Testimonial = {
   id: number;
   parentName: string;
+  parentNameEn: string;
   studentName: string;
   avatarId: number | null;
   avatarUrl: string;
   avatarAlt: string;
   quote: string;
+  quoteEn: string;
   rating: number | null;
   reactionImageId: number | null;
   reactionImageUrl: string;
@@ -317,7 +322,9 @@ type GalleryForm = FacilityForm;
 
 type TeacherForm = {
   title: string;
+  titleEn: string;
   description: string;
+  descriptionEn: string;
   imageId: number | null;
   imageUrl: string;
   coverPosition: string;
@@ -329,10 +336,12 @@ type TeacherForm = {
 
 type TestimonialForm = {
   parentName: string;
+  parentNameEn: string;
   studentName: string;
   avatarId: number | null;
   avatarUrl: string;
   quote: string;
+  quoteEn: string;
   rating: string;
   reactionImageId: number | null;
   reactionImageUrl: string;
@@ -458,7 +467,9 @@ const emptyGallery: GalleryForm = {
 
 const emptyTeacher: TeacherForm = {
   title: "",
+  titleEn: "",
   description: "",
+  descriptionEn: "",
   imageId: null,
   imageUrl: "",
   coverPosition: "50% 50%",
@@ -470,10 +481,12 @@ const emptyTeacher: TeacherForm = {
 
 const emptyTestimonial: TestimonialForm = {
   parentName: "",
+  parentNameEn: "",
   studentName: "",
   avatarId: null,
   avatarUrl: "",
   quote: "",
+  quoteEn: "",
   rating: "5",
   reactionImageId: null,
   reactionImageUrl: "",
@@ -3669,7 +3682,9 @@ function TeacherCardStylePicker({
 
 function TeacherCardPreview({
   title,
+  titleEn,
   description,
+  descriptionEn,
   imageUrl,
   colorHex,
   shapeClass,
@@ -3678,7 +3693,9 @@ function TeacherCardPreview({
   coverZoom,
 }: {
   title: string;
+  titleEn: string;
   description: string;
+  descriptionEn: string;
   imageUrl: string;
   colorHex: string;
   shapeClass: string;
@@ -3686,6 +3703,8 @@ function TeacherCardPreview({
   coverPosition: string;
   coverZoom: number;
 }) {
+  const { lang } = useLanguage();
+  const isEn = lang === "en";
   return (
     <div className="grid gap-2">
       <span className="text-[13px] font-bold uppercase text-[#620000]">Xem trước card</span>
@@ -3710,9 +3729,9 @@ function TeacherCardPreview({
         </div>
         <div className="relative flex flex-1 flex-col p-5">
           <div className="pointer-events-none absolute inset-2 rounded-[inherit] border border-dashed border-[#b80000]/30" />
-          <h3 className="text-[22px] font-extrabold leading-tight">{title || "Tiêu đề card"}</h3>
+          <h3 className="text-[22px] font-extrabold leading-tight">{isEn ? titleEn || title : title}</h3>
           <p className="mt-4 text-[16px] font-medium leading-7 text-[#620000]">
-            {description || "Mô tả ngắn của giáo viên sẽ hiển thị tại đây."}
+            {isEn ? descriptionEn || description : description}
           </p>
         </div>
       </article>
@@ -4062,7 +4081,9 @@ export default function AdminDashboard() {
     if (tab === "about" && aboutMode === "teachers") {
       setTeacherForm({
         title: item.title ?? "",
+        titleEn: item.titleEn ?? "",
         description: item.description ?? "",
+        descriptionEn: item.descriptionEn ?? "",
         imageId: item.imageId ?? null,
         imageUrl: item.imageUrl ?? "",
         coverPosition: item.coverPosition ?? "50% 50%",
@@ -4077,10 +4098,12 @@ export default function AdminDashboard() {
     if (tab === "about" && aboutMode === "testimonials") {
       setTestimonialForm({
         parentName: item.parentName ?? "",
+        parentNameEn: item.parentNameEn ?? "",
         studentName: item.studentName ?? "",
         avatarId: item.avatarId ?? null,
         avatarUrl: item.avatarUrl ?? "",
         quote: item.quote ?? "",
+        quoteEn: item.quoteEn ?? "",
         rating: item.rating ? String(item.rating) : "5",
         reactionImageId: item.reactionImageId ?? null,
         reactionImageUrl: item.reactionImageUrl ?? "",
@@ -4356,7 +4379,9 @@ export default function AdminDashboard() {
     try {
       const body = {
         title: teacherForm.title,
+        titleEn: teacherForm.titleEn,
         description: teacherForm.description,
+        descriptionEn: teacherForm.descriptionEn,
         imageId: teacherForm.imageId,
         coverPosition: teacherForm.coverPosition,
         coverZoom: teacherForm.coverZoom,
@@ -4385,9 +4410,11 @@ export default function AdminDashboard() {
     try {
       const body = {
         parentName: testimonialForm.parentName,
+        parentNameEn: testimonialForm.parentNameEn,
         studentName: testimonialForm.studentName,
         avatarId: testimonialForm.avatarId,
         quote: testimonialForm.quote,
+        quoteEn: testimonialForm.quoteEn,
         rating: testimonialForm.rating ? Number(testimonialForm.rating) : null,
         reactionImageId: testimonialForm.reactionImageId,
       };
@@ -5629,6 +5656,12 @@ export default function AdminDashboard() {
                     onChange={(value) => setTeacherForm((f) => ({ ...f, title: value }))}
                   />
                   <Field
+                    label="Tiêu đề (English)"
+                    value={teacherForm.titleEn}
+                    placeholder="Homeroom teacher"
+                    onChange={(value) => setTeacherForm((f) => ({ ...f, titleEn: value }))}
+                  />
+                  <Field
                     label="Màu nền card"
                     type="color"
                     value={teacherForm.colorHex}
@@ -5669,9 +5702,16 @@ export default function AdminDashboard() {
                   value={teacherForm.description}
                   onChange={(value) => setTeacherForm((f) => ({ ...f, description: value }))}
                 />
+                <TextArea
+                  label="Mô tả (English)"
+                  value={teacherForm.descriptionEn}
+                  onChange={(value) => setTeacherForm((f) => ({ ...f, descriptionEn: value }))}
+                />
                 <TeacherCardPreview
                   title={teacherForm.title}
+                  titleEn={teacherForm.titleEn}
                   description={teacherForm.description}
+                  descriptionEn={teacherForm.descriptionEn}
                   imageUrl={teacherForm.imageUrl}
                   colorHex={teacherForm.colorHex}
                   shapeClass={teacherForm.shapeClass}
@@ -5693,6 +5733,12 @@ export default function AdminDashboard() {
                     value={testimonialForm.parentName}
                     placeholder="Phụ huynh T.H.G"
                     onChange={(value) => setTestimonialForm((f) => ({ ...f, parentName: value }))}
+                  />
+                  <Field
+                    label="Tên phụ huynh (English)"
+                    value={testimonialForm.parentNameEn}
+                    placeholder="Parent T.H.G"
+                    onChange={(value) => setTestimonialForm((f) => ({ ...f, parentNameEn: value }))}
                   />
                   <Field
                     label="Tên bé"
@@ -5724,6 +5770,12 @@ export default function AdminDashboard() {
                   rows={8}
                   value={testimonialForm.quote}
                   onChange={(value) => setTestimonialForm((f) => ({ ...f, quote: value }))}
+                />
+                <TextArea
+                  label="Nội dung chia sẻ (English)"
+                  rows={8}
+                  value={testimonialForm.quoteEn}
+                  onChange={(value) => setTestimonialForm((f) => ({ ...f, quoteEn: value }))}
                 />
                 <ActionButton type="submit" icon={selected ? <Edit3 size={17} /> : <Save size={17} />} disabled={saving}>
                   Lưu

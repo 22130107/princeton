@@ -10,10 +10,12 @@ import { useLanguage } from "@/components/Shared/LanguageProvider";
 type Testimonial = {
   id: number;
   parentName: string;
+  parentNameEn: string;
   studentName: string;
   avatarUrl: string;
   avatarAlt: string;
   quote: string;
+  quoteEn: string;
   reactionImageUrl: string;
   reactionImageAlt: string;
 };
@@ -80,6 +82,10 @@ function Avatar({ testimonial }: { testimonial: Testimonial }) {
 }
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+  const { lang } = useLanguage();
+  const isEn = lang === "en";
+  const parentName = isEn && testimonial.parentNameEn ? testimonial.parentNameEn : testimonial.parentName;
+
   return (
     <div className="content-stretch flex flex-col h-[390.13px] items-start justify-center pr-[14px] relative shrink-0 w-[471.88px]" data-name="Group:margin">
       <article className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px relative w-[457.88px]" data-name="Group">
@@ -101,7 +107,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
                         </div>
                         <div className="h-[26px] min-w-0 relative shrink-0 flex-1" data-name="Container">
                           <div className="-translate-y-1/2 [word-break:break-word] absolute flex flex-col font-bold justify-center leading-[0] left-0 right-0 text-[22px] text-white top-[12.4px]">
-                            <p className="leading-[26px] truncate">{testimonial.parentName}</p>
+                            <p className="leading-[26px] truncate">{parentName}</p>
                           </div>
                         </div>
                       </div>
@@ -119,7 +125,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
                       </div>
                       <div className="absolute content-stretch flex flex-col items-start left-[116px] right-[16.01px] top-[38px]" data-name="Container">
                         <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[#620000] text-[16px]">
-                          <p className="leading-[24px] line-clamp-[7]">{testimonial.quote}</p>
+                          <p className="leading-[24px] line-clamp-[7]">{isEn ? testimonial.quoteEn || testimonial.quote : testimonial.quote}</p>
                         </div>
                       </div>
                     </div>
@@ -211,7 +217,7 @@ export default function TestimonialsSection() {
       .then((response) => response.json())
       .then((data) => {
         if (!alive || !Array.isArray(data.testimonials)) return;
-        setTestimonials(data.testimonials.filter((item: Testimonial) => item.parentName && item.quote));
+        setTestimonials(data.testimonials.filter((item: Testimonial) => item.parentName && (item.quote || item.quoteEn)));
       })
       .catch(() => {
         if (alive) setTestimonials([]);

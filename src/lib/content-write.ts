@@ -118,7 +118,9 @@ export type CreateGalleryImageInput = {
 
 export type CreateTeacherTeamInput = {
   title: string;
+  titleEn?: string | null;
   description?: string | null;
+  descriptionEn?: string | null;
   imageId?: number | null;
   coverPosition?: string | null;
   coverZoom?: number | null;
@@ -129,9 +131,11 @@ export type CreateTeacherTeamInput = {
 
 export type CreateTestimonialInput = {
   parentName: string;
+  parentNameEn?: string | null;
   studentName?: string | null;
   avatarId?: number | null;
   quote: string;
+  quoteEn?: string | null;
   rating?: number | null;
   reactionImageId?: number | null;
 };
@@ -308,7 +312,9 @@ export function normalizeGalleryImageInput(input: Partial<CreateGalleryImageInpu
 export function normalizeTeacherTeamInput(input: Partial<CreateTeacherTeamInput>) {
   return {
     title: requiredText(input.title, "title"),
+    titleEn: optionalText(input.titleEn),
     description: optionalText(input.description),
+    descriptionEn: optionalText(input.descriptionEn),
     imageId: optionalNumber(input.imageId),
     coverPosition: normalizeCoverPosition(input.coverPosition),
     coverZoom: normalizeCoverZoom(input.coverZoom),
@@ -335,9 +341,11 @@ function normalizeCoverZoom(value: unknown) {
 export function normalizeTestimonialInput(input: Partial<CreateTestimonialInput>) {
   return {
     parentName: requiredText(input.parentName, "parentName"),
+    parentNameEn: optionalText(input.parentNameEn),
     studentName: optionalText(input.studentName),
     avatarId: optionalNumber(input.avatarId),
     quote: requiredText(input.quote, "quote"),
+    quoteEn: optionalText(input.quoteEn),
     rating: optionalNumber(input.rating),
     reactionImageId: optionalNumber(input.reactionImageId),
   };
@@ -655,9 +663,9 @@ export async function createTeacherTeamItem(input: Partial<CreateTeacherTeamInpu
   const sortOrder = await nextSortOrder("teacher_team_items");
   const [result] = await pool.execute<ResultSetHeader>(
     `INSERT INTO teacher_team_items (
-      title, description, image_id, cover_position, cover_zoom, color_hex, shape_class, rotate_class, sort_order, is_active
+      title, title_en, description, description_en, image_id, cover_position, cover_zoom, color_hex, shape_class, rotate_class, sort_order, is_active
     ) VALUES (
-      :title, :description, :imageId, :coverPosition, :coverZoom, :colorHex, :shapeClass, :rotateClass, :sortOrder, TRUE
+      :title, :titleEn, :description, :descriptionEn, :imageId, :coverPosition, :coverZoom, :colorHex, :shapeClass, :rotateClass, :sortOrder, TRUE
     )`,
     { ...data, sortOrder },
   );
@@ -673,9 +681,9 @@ export async function createTestimonial(input: Partial<CreateTestimonialInput>) 
   const reactionImageId = data.reactionImageId ?? (await getDefaultTestimonialReactionId());
   const [result] = await pool.execute<ResultSetHeader>(
     `INSERT INTO testimonials (
-      parent_name, student_name, avatar_id, quote, rating, reaction_image_id, sort_order, is_active
+      parent_name, parent_name_en, student_name, avatar_id, quote, quote_en, rating, reaction_image_id, sort_order, is_active
     ) VALUES (
-      :parentName, :studentName, :avatarId, :quote, :rating, :reactionImageId, :sortOrder, TRUE
+      :parentName, :parentNameEn, :studentName, :avatarId, :quote, :quoteEn, :rating, :reactionImageId, :sortOrder, TRUE
     )`,
     { ...data, reactionImageId, sortOrder },
   );
@@ -1112,7 +1120,9 @@ export async function updateTeacherTeamItem(idValue: unknown, input: Partial<Upd
   await pool.execute(
     `UPDATE teacher_team_items
      SET title = :title,
+         title_en = :titleEn,
          description = :description,
+         description_en = :descriptionEn,
          image_id = COALESCE(:imageId, image_id),
          cover_position = :coverPosition,
          cover_zoom = :coverZoom,
@@ -1142,9 +1152,11 @@ export async function updateTestimonial(idValue: unknown, input: Partial<UpdateT
   await pool.execute(
     `UPDATE testimonials
      SET parent_name = :parentName,
+         parent_name_en = :parentNameEn,
          student_name = :studentName,
          avatar_id = COALESCE(:avatarId, avatar_id),
          quote = :quote,
+         quote_en = :quoteEn,
          rating = :rating,
          reaction_image_id = COALESCE(:reactionImageId, reaction_image_id),
          is_active = TRUE
