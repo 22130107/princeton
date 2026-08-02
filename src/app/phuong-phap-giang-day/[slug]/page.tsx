@@ -5,8 +5,10 @@ import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import RichContent from "@/components/Shared/RichContent";
 import SiteFooter from "@/components/Shared/SiteFooter";
+import { CoverImage } from "@/components/Shared/CoverImage";
 import { getTeachingMethod, getTeachingMethods } from "@/lib/content";
 import imgLogo from "@/assets/logo.png";
+import imgCardLogo from "@/assets/logo1.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 
 type TeachingMethodDetailPageProps = {
@@ -116,19 +118,34 @@ export default async function TeachingMethodDetailPage({
                   href={`/phuong-phap-giang-day/${item.slug}`}
                   className="overflow-hidden rounded-[24px] border border-[#b80000] bg-[#fffefa] text-[#620000] no-underline shadow-[4px_4px_0_rgba(184,0,0,0.22)] transition-transform duration-200 hover:-translate-y-1"
                 >
-                  {item.imageUrl ? (
-                    <div
-                      className="flex h-[140px] items-center justify-center"
-                      style={{ backgroundColor: item.background || "#fffefa" }}
-                    >
-                      <img
+                  <div
+                    className="relative aspect-square overflow-hidden"
+                    style={{ backgroundColor: item.background || "#fffefa" }}
+                  >
+                    {item.imageUrl ? (
+                      <CoverImage
                         src={item.imageUrl}
                         alt={item.imageAlt}
-                        className="h-[104px] w-[104px] object-contain"
+                        zoom={item.coverZoom}
+                        position={item.coverPosition}
+                        frameAspect={1}
                       />
-                    </div>
-                  ) : null}
-                  <div className="p-5">
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center">
+                        <img
+                          src={imgLogo.src}
+                          alt="Princeton Academy"
+                          className="h-[64px] w-auto object-contain"
+                        />
+                      </div>
+                    )}
+                    <img
+                      src={imgCardLogo.src}
+                      alt="Princeton Academy"
+                      className="absolute left-3 top-3 h-[62px] w-[62px] object-contain"
+                    />
+                  </div>
+                  <div className="bg-[#fffefa] p-5">
                     <p className="text-[12px] font-extrabold uppercase text-[#b80000]">
                       {item.category}
                     </p>
