@@ -9,8 +9,10 @@ type CurriculumTrack = {
   id: number;
   slug: string;
   title: string;
+  titleEn?: string;
   category: string;
   description: string;
+  descriptionEn?: string;
   imageUrl: string;
   imageAlt: string;
 };
@@ -20,9 +22,12 @@ const fallbackTracks: CurriculumTrack[] = [
     id: 1,
     slug: "chuong-trinh-tieu-chuan",
     title: "Chương trình Tiêu chuẩn",
+    titleEn: "Standard Program",
     category: "Tiêu chuẩn",
     description:
-      "Được xây dựng trên nền tảng Chương trình Giáo dục Mầm non của Bộ GD&ĐT Việt Nam cùng Khung Giáo dục Mầm non Quốc gia Úc (EYLF), chương trình khuyến khích học sinh tự do khám phá và chủ động học hỏi. Qua mỗi hoạt động, trẻ từng bước hình thành phản xạ giao tiếp tự nhiên, kỹ năng xã hội - cảm xúc, từ đó xây dựng nền tảng vững chắc cho các giai đoạn học tập tiếp theo.",
+      "Được xây dựng trên nền tảng Chương trình Giáo dục Mầm non của Bộ GD&ĐT Việt Nam cùng Khung Giáo dục Mầm non Quốc gia Úc (EYLF), chương trình khuyến khích học sinh tự do khám phá và tự chủ động học hỏi. Qua mỗi hoạt động, trẻ từng bước hình thành phản xạ giao tiếp tự nhiên, kỹ năng xã hội - cảm xúc, từ đó xây dựng nền tảng vững chắc cho các giai đoạn học tập tiếp theo.",
+    descriptionEn:
+      "Built on the Vietnamese Ministry of Education & Training preschool program alongside Australia's National Early Years Learning Framework (EYLF), the standard program encourages children to explore freely and learn actively. Through each activity, children gradually build natural communication reflexes and social-emotional skills, forming a solid foundation for the next stages of learning.",
     imageUrl: imgChuongTrinh.src,
     imageAlt: "Chương trình Tiêu chuẩn",
   },
@@ -30,9 +35,12 @@ const fallbackTracks: CurriculumTrack[] = [
     id: 2,
     slug: "chuong-trinh-nang-cao",
     title: "Chương trình Nâng cao",
+    titleEn: "Advanced Program",
     category: "Nâng cao",
     description:
       "Chương trình được thiết kế để mở rộng trải nghiệm học tập, giúp trẻ phát triển ngôn ngữ, tư duy phản biện, khả năng hợp tác và sự tự tin thông qua các hoạt động khám phá, dự án và thực hành sáng tạo.",
+    descriptionEn:
+      "Designed to extend the learning experience, this program helps children develop language, critical thinking, collaboration skills and confidence through exploration, projects and creative practice.",
     imageUrl: imgChuongTrinh.src,
     imageAlt: "Chương trình Nâng cao",
   },
@@ -51,11 +59,12 @@ function CurriculumLogo() {
 }
 
 export default function MobileCurriculumSection() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [active, setActive] = useState(0);
   const [tracks, setTracks] = useState<CurriculumTrack[]>(fallbackTracks);
   const visibleTracks = useMemo(() => tracks.slice(0, 2), [tracks]);
   const activeTrack = visibleTracks[Math.min(active, visibleTracks.length - 1)] ?? visibleTracks[0];
+  const isEn = lang === "en";
 
   useEffect(() => {
     let cancelled = false;
@@ -97,11 +106,11 @@ export default function MobileCurriculumSection() {
             >
               <span
                 className={[
-                  "font-extrabold text-[15px] leading-snug text-center block",
+                  "font-bold text-[15px] leading-snug text-center block",
                   index === active ? "text-white" : "text-[#b80000]",
                 ].join(" ")}
               >
-                {track.title}
+                {isEn ? track.titleEn || track.title : track.title}
               </span>
             </button>
           ))}
@@ -115,7 +124,7 @@ export default function MobileCurriculumSection() {
           <div className="relative p-5 flex flex-col gap-4">
             <CurriculumLogo />
             <p className="text-[#620000] font-medium text-[14px] leading-relaxed">
-              {activeTrack.description}
+              {isEn ? activeTrack.descriptionEn || activeTrack.description : activeTrack.description}
             </p>
 
             <div className="overflow-hidden rounded-[14px] w-full">

@@ -15,7 +15,9 @@ type MobileClassProgram = {
   id: number;
   slug: string;
   name: string;
+  nameEn: string;
   age: string;
+  ageEn: string;
   imageUrl: string;
   imageAlt: string;
 };
@@ -29,7 +31,8 @@ const cardStyles = [
 ];
 
 export default function MobileInfoSection() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const isEn = lang === "en";
   const [classes, setClasses] = useState<MobileClassProgram[]>([]);
 
   useEffect(() => {
@@ -45,7 +48,9 @@ export default function MobileInfoSection() {
             id: item.id,
             slug: item.slug,
             name: item.name || "Khối lớp",
+            nameEn: item.nameEn || item.name || "Class",
             age: item.age || "",
+            ageEn: item.ageEn || item.age || "",
             imageUrl: item.imageUrl || "",
             imageAlt: item.imageAlt || item.name || "Khối lớp Princeton",
           })),
@@ -117,13 +122,13 @@ export default function MobileInfoSection() {
                       ) : null}
                     </div>
                     <h3 className="mb-2 text-[20px] font-extrabold leading-none text-[#620000]">
-                      {classItem.name}
+                      {isEn ? classItem.nameEn : classItem.name}
                     </h3>
                     <span
                       className="inline-flex min-h-9 items-center justify-center rounded-full border bg-white px-3 text-[16px] font-semibold leading-none text-[#620000]"
                       style={{ borderColor: style.color }}
                     >
-                      {classItem.age}
+                      {isEn ? classItem.ageEn : classItem.age}
                     </span>
                   </Link>
                 );

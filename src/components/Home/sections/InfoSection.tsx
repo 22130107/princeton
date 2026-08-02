@@ -20,7 +20,9 @@ type HomeClassProgram = {
   id: number;
   slug: string;
   name: string;
+  nameEn?: string;
   age: string;
+  ageEn?: string;
   imageUrl: string;
   imageAlt: string;
   coverPosition: string;
@@ -331,6 +333,10 @@ function Background22() {
 
 function ClassProgramCard({ program, index }: { program: HomeClassProgram; index: number }) {
   const style = classCardStyles[index % classCardStyles.length];
+  const { lang } = useLanguage();
+  const isEn = lang === "en";
+  const name = isEn ? program.nameEn || program.name : program.name;
+  const age = isEn ? program.ageEn || program.age : program.age;
 
   return (
     <Link
@@ -433,12 +439,14 @@ export default function InfoSection() {
       .then((data) => {
         if (!alive || !Array.isArray(data.programs)) return;
 
-        setPrograms(
+setPrograms(
           data.programs.map((item: any) => ({
             id: item.id,
             slug: item.slug,
             name: item.name || "Khối lớp",
+            nameEn: item.nameEn || item.name,
             age: item.age || "",
+            ageEn: item.ageEn || item.age,
             imageUrl: item.imageUrl || "",
             imageAlt: item.imageAlt || item.name || "Khối lớp Princeton",
             coverPosition: item.coverPosition || "50% 50%",

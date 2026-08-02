@@ -788,15 +788,18 @@ function Container140({
   list,
   selected,
   onSelect,
+  lang,
 }: {
   list: Campus[];
   selected: number;
   onSelect: (index: number) => void;
+  lang: "vi" | "en";
 }) {
   return (
     <div className="campus-scroll absolute left-0 right-0 top-[200px] flex h-[290px] flex-col gap-[12px] overflow-y-auto pr-[6px]" data-name="Container">
       {list.map((c, index) => {
         const active = index === selected;
+        const isEn = lang === "en";
         return (
           <button
             key={c.name}
@@ -809,10 +812,10 @@ function Container140({
             }`}
           >
             <span className="block text-[19px] font-extrabold leading-[24px] text-[#620000]">
-              {c.name}
+              {isEn ? c.nameEn || c.name : c.name}
             </span>
             <span className="mt-0.5 block text-[15px] font-medium leading-[20px] text-[#9a4a4a]">
-              {c.address}
+              {isEn ? c.addressEn || c.address : c.address}
             </span>
           </button>
         );
@@ -835,16 +838,18 @@ function Container138({
   list,
   selected,
   onSelect,
+  lang,
 }: {
   list: Campus[];
   selected: number;
   onSelect: (index: number) => void;
+  lang: "vi" | "en";
 }) {
   return (
     <div className="flex-[1_0_0] min-w-px relative self-stretch" data-name="Container">
       <Heading3 />
       <Container139 />
-      <Container140 list={list} selected={selected} onSelect={onSelect} />
+      <Container140 list={list} selected={selected} onSelect={onSelect} lang={lang} />
       <FlowersPng />
     </div>
   );
@@ -857,6 +862,7 @@ function Background9({
   list,
   selected,
   onSelect,
+  lang,
 }: {
   mapUrl: string;
   mapLink: string;
@@ -864,13 +870,14 @@ function Background9({
   list: Campus[];
   selected: number;
   onSelect: (index: number) => void;
+  lang: "vi" | "en";
 }) {
   return (
     <div className="bg-white h-[575.78px] relative rounded-[16px] shrink-0 w-full" data-name="Background">
       <div className="flex flex-row justify-center size-full">
         <div className="content-stretch flex gap-[28px] items-start justify-center pt-[20px] px-[20px] relative size-full">
           <Container124 mapUrl={mapUrl} mapLink={mapLink} title={title} />
-          <Container138 list={list} selected={selected} onSelect={onSelect} />
+          <Container138 list={list} selected={selected} onSelect={onSelect} lang={lang} />
         </div>
       </div>
     </div>
@@ -884,6 +891,7 @@ function Background8({
   list,
   selected,
   onSelect,
+  lang,
 }: {
   mapUrl: string;
   mapLink: string;
@@ -891,6 +899,7 @@ function Background8({
   list: Campus[];
   selected: number;
   onSelect: (index: number) => void;
+  lang: "vi" | "en";
 }) {
   return (
     <div className="relative shrink-0 w-full" data-name="Background">
@@ -903,6 +912,7 @@ function Background8({
           list={list}
           selected={selected}
           onSelect={onSelect}
+          lang={lang}
         />
       </div>
     </div>
@@ -910,8 +920,10 @@ function Background8({
 }
 
 export default function CampusSection() {
+  const { lang } = useLanguage();
   const [selected, setSelected] = useState(0);
   const campus = campuses[selected];
+  const isEn = lang === "en";
 
   return (
     <div className="absolute content-stretch flex flex-col items-start left-[116px] px-[96px] py-[24px] right-[116px] top-[6730.58px]" data-name="Section">
@@ -930,12 +942,13 @@ export default function CampusSection() {
         </div>
       </div>
       <Background8
-        mapUrl={campusMapUrl(campus.address)}
-        mapLink={campusMapLink(campus.address)}
-        title={campus.name}
+        mapUrl={campusMapUrl(isEn ? campus.addressEn || campus.address : campus.address)}
+        mapLink={campusMapLink(isEn ? campus.addressEn || campus.address : campus.address)}
+        title={isEn ? campus.nameEn || campus.name : campus.name}
         list={campuses}
         selected={selected}
         onSelect={setSelected}
+        lang={lang}
       />
     </div>
   );

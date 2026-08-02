@@ -269,7 +269,7 @@ export const dictionaries: Record<Lang, TDict> = {
     "home.footerSection.email": "Email:",
     "home.footerSection.social": "Social media",
     "home.footerSection.title": "PRINCETON KINDERGARTEN",
-    "mobile.info.title": "Class System",
+    "mobile.info.title": "OUR CLASS SYSTEM",
     "mobile.campus.title": "Princeton Campus System",
     "mobile.gallery.title": "Moments of Children's Experiences",
     "mobile.testimonials.text": "Every sharing from parents is a source of pride and motivation for the School to continue accompanying the children.",

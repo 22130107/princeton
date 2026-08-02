@@ -7,20 +7,22 @@ import imgFlowers from "../../assets/cfa61d914b57a907c8879eea3242e5037a5a2c78.pn
 import imgCornerTop from "../../assets/45e9cd713cd022e324337d1e9a3d1f01c8086db4.png";
 import imgCornerBottom from "../../assets/e2e0d53776626afcb6870acda5507843a053b4ae.png";
 
-function MobileMapPreview({ campus }: { campus: Campus }) {
+function MobileMapPreview({ campus, lang }: { campus: Campus; lang: "vi" | "en" }) {
   const { t } = useLanguage();
+  const isEn = lang === "en";
+  const address = isEn ? campus.addressEn || campus.address : campus.address;
   return (
     <div className="relative block h-[238px] overflow-hidden rounded-2xl bg-[#e5e3df]">
       <iframe
-        src={campusMapUrl(campus.address)}
-        title={campus.name}
+        src={campusMapUrl(address)}
+        title={isEn ? campus.nameEn || campus.name : campus.name}
         className="absolute inset-0 h-full w-full border-0"
         loading="lazy"
         allowFullScreen
         referrerPolicy="no-referrer-when-downgrade"
       />
       <a
-        href={campusMapLink(campus.address)}
+        href={campusMapLink(address)}
         target="_blank"
         rel="noopener noreferrer"
         className="absolute bottom-3 right-3 rounded-full bg-[#b80000] px-4 py-2 text-[13px] font-bold uppercase text-white no-underline shadow-[0_2px_8px_rgba(0,0,0,0.18)]"
@@ -32,9 +34,10 @@ function MobileMapPreview({ campus }: { campus: Campus }) {
 }
 
 export default function MobileCampusSection() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [selected, setSelected] = useState(0);
   const campus = campuses[selected];
+  const isEn = lang === "en";
 
   return (
     <section className="relative overflow-hidden bg-[#fffefa] px-3 py-9">
@@ -95,7 +98,7 @@ export default function MobileCampusSection() {
         <span aria-hidden className="mobile-campus-stamp-holes" />
 
         <div className="relative z-[1] bg-white p-3.5">
-          <MobileMapPreview campus={campus} />
+          <MobileMapPreview campus={campus} lang={lang} />
 
           <div className="px-1 pb-2 pt-4">
             <h2 className="text-[28px] font-extrabold uppercase leading-[1.18] text-[#620000]">
@@ -121,10 +124,10 @@ export default function MobileCampusSection() {
                   }`}
                 >
                   <span className="block text-[19px] font-extrabold leading-[24px] text-[#620000]">
-                    {c.name}
+                    {isEn ? c.nameEn || c.name : c.name}
                   </span>
                   <span className="mt-0.5 block text-[15px] font-medium leading-[20px] text-[#9a4a4a]">
-                    {c.address}
+                    {isEn ? c.addressEn || c.address : c.address}
                   </span>
                 </button>
               );

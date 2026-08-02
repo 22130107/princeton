@@ -10,7 +10,9 @@ import imgZigzagBottom from "../../assets/d698542361c4bd444dda74cab23735d3d9459b
 type MobileTeachingMethod = {
   id: number;
   title: string;
+  titleEn?: string;
   description: string;
+  descriptionEn?: string;
   imageUrl: string;
   imageAlt: string;
 };
@@ -21,37 +23,46 @@ const fallbackMethods: MobileTeachingMethod[] = [
     imageUrl: mediaUrl("4067071ed218b109a3b3d760ab5b856a1c4d1556.png"),
     imageAlt: "Kết hợp nhiều phương pháp",
     title: "Kết hợp nhiều phương pháp",
-    description:
-      "Trẻ được tiếp cận các phương pháp giáo dục hiện đại, nổi bật là Play-based Learning, giúp trẻ học tập thông qua các hoạt động vui chơi và tiếp thu kiến thức một cách tự nhiên.",
+    titleEn: "Combining multiple methods",
+    description: "Trẻ được tiếp cận các phương pháp giáo dục hiện đại, nổi bật là Play-based Learning, giúp trẻ học tập thông qua các hoạt động vui chơi và tiếp thu kiến thức một cách tự nhiên.",
+    descriptionEn:
+      "Children explore modern educational methods, especially play-based learning, helping them learn through play activities and absorb knowledge naturally.",
   },
   {
     id: 2,
     imageUrl: mediaUrl("6fcde84113072aa66cc43c4fc5efa3b2d4e6feb8.png"),
     imageAlt: "Lấy trẻ làm trung tâm",
     title: "Lấy trẻ làm trung tâm",
-    description:
-      "Trẻ được tôn trọng sở thích, bản sắc cá nhân và nhịp độ phát triển. Thầy cô tạo cơ hội để trẻ chủ động khám phá, đặt câu hỏi và học hỏi theo cách riêng của mình.",
+    titleEn: "Child-centered learning",
+    description: "Trẻ được tôn trọng sở thích, bản sắc cá nhân và nhịp độ phát triển. Thầy cô tạo cơ hội để trẻ chủ động khám phá, đặt câu hỏi và học hỏi theo cách riêng của mình.",
+    descriptionEn:
+      "Children's interests, personal identity and pace of development are respected. Teachers create opportunities for children to actively explore, ask questions and learn in their own way.",
   },
   {
     id: 3,
     imageUrl: mediaUrl("ba09fe820d0f9cb663b24826afea30ad6fc2c8a2.png"),
     imageAlt: "Khai phóng tư duy",
     title: "Khai phóng tư duy",
-    description:
-      "Trẻ được tham gia các hoạt động đa dạng trong lớp và sau giờ học như Câu lạc bộ, học tập thực tế, sự kiện, từ đó phát triển tư duy độc lập và tự do thể hiện bản thân.",
+    titleEn: "Unlocking thinking",
+    description: "Trẻ được tham gia các hoạt động đa dạng trong lớp và sau giờ học như Câu lạc bộ, học tập thực tế, sự kiện, từ đó phát triển tư duy độc lập và tự do thể hiện bản thân.",
+    descriptionEn:
+      "Children join varied activities in class and after school such as clubs, real-life learning and events, developing independent thinking and freely expressing themselves.",
   },
   {
     id: 4,
     imageUrl: mediaUrl("aa47a37d3cb1c1b806218e09ba36b08f5e7c4d55.png"),
     imageAlt: "Học qua tương tác và hợp tác",
     title: "Học qua tương tác & hợp tác",
-    description:
-      "Trẻ phát triển kỹ năng xã hội, khả năng lắng nghe thông qua các hoạt động giao tiếp, chia sẻ và hợp tác với bạn bè, thầy cô và môi trường xung quanh.",
+    titleEn: "Learning through interaction & cooperation",
+    description: "Trẻ phát triển kỹ năng xã hội, khả năng lắng nghe thông qua các hoạt động giao tiếp, chia sẻ và hợp tác với bạn bè, thầy cô và môi trường xung quanh.",
+    descriptionEn:
+      "Children develop social skills and listening ability through communication, sharing and cooperation with friends, teachers and the surrounding environment.",
   },
 ];
 
 export default function MobileTeachingProgram() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const isEn = lang === "en";
   const [methods, setMethods] = useState<MobileTeachingMethod[]>(fallbackMethods);
 
   useEffect(() => {
@@ -68,7 +79,10 @@ export default function MobileTeachingProgram() {
           return {
             id: item.id ?? fallback.id,
             title: item.title || fallback.title,
+            titleEn: item.titleEn || fallback.titleEn,
             description: item.description || item.excerpt || fallback.description,
+            descriptionEn:
+              item.descriptionEn || item.excerptEn || fallback.descriptionEn,
             imageUrl: item.imageUrl || fallback.imageUrl,
             imageAlt: item.imageAlt || item.title || fallback.imageAlt,
           };
@@ -123,10 +137,10 @@ export default function MobileTeachingProgram() {
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col gap-2">
                   <p className="text-[16px] font-extrabold leading-snug text-[#620000]">
-                    {method.title}
+                    {isEn ? method.titleEn || method.title : method.title}
                   </p>
                   <p className="text-[13px] font-medium leading-relaxed text-[#620000]">
-                    {method.description}
+                    {isEn ? method.descriptionEn || method.description : method.description}
                   </p>
                 </div>
               </div>

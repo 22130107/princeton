@@ -53,7 +53,7 @@ const fallbackTeachingMethods: HomeTeachingMethod[] = [
     coverPosition: "50% 50%",
     coverZoom: 1,
   },
-  {
+{
     id: 4,
     title: "Học qua tương tác & hợp tác",
     description:
@@ -478,7 +478,9 @@ export default function TeachingProgram() {
           return {
             id: item.id ?? fallback.id,
             title: item.title || fallback.title,
+            titleEn: item.titleEn || fallback.titleEn,
             description: item.description || item.excerpt || fallback.description,
+            descriptionEn: item.descriptionEn || item.excerptEn || fallback.descriptionEn,
             imageUrl: item.imageUrl || fallback.imageUrl,
             imageAlt: item.imageAlt || item.title || fallback.imageAlt,
             coverPosition: item.coverPosition ?? "50% 50%",
