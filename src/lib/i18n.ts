@@ -20,8 +20,8 @@ export const dictionaries: Record<Lang, TDict> = {
     "nav.curriculum": "Cuộc sống tại Princeton",
     "nav.about": "Kết nối gia đình",
     "nav.news": "Hợp tác cùng Princeton",
-    "nav.register": "Đăng Ký Ngay",
-    "nav.register.short": "Đăng Ký",
+    "nav.register": "Liên hệ",
+    "nav.register.short": "Liên hệ",
     "nav.viewAll": "Xem tất cả",
     "aria.menu": "Menu",
 
@@ -210,8 +210,8 @@ export const dictionaries: Record<Lang, TDict> = {
     "nav.curriculum": "Life at Princeton",
     "nav.about": "Family Connection",
     "nav.news": "Partner with Princeton",
-    "nav.register": "Register Now",
-    "nav.register.short": "Register",
+    "nav.register": "Contact",
+    "nav.register.short": "Contact",
     "nav.viewAll": "View all",
     "aria.menu": "Menu",
 
