@@ -11,11 +11,11 @@ import imgCardLogo from "@/assets/logo1.png";
 import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 
 export const metadata: Metadata = {
-  title: "Chương Trình Học | Trường Mầm non Princeton",
+  title: "Cuộc sống tại Princeton | Trường Mầm non Princeton",
   description:
     "Khám phá các chương trình học tại Trường Mầm non Princeton: chương trình tiêu chuẩn, nâng cao và các hoạt động phát triển toàn diện.",
   openGraph: {
-    title: "Chương Trình Học | Trường Mầm non Princeton",
+    title: "Cuộc sống tại Princeton | Trường Mầm non Princeton",
     description:
       "Các chương trình học được xây dựng để trẻ phát triển cân bằng về ngôn ngữ, tư duy, vận động và kỹ năng xã hội.",
   },
@@ -99,7 +99,7 @@ export default async function ChuongTrinhHocPage() {
                     {isEn && track.descriptionEn ? track.descriptionEn : track.description}
                   </p>
                   <Link
-                    href={`/chuong-trinh-hoc/${track.slug}`}
+                    href={`/cuoc-song-tai-princeton/${track.slug}`}
                     className="mt-auto inline-flex w-fit rounded-full bg-[#b80000] px-5 py-3 text-[15px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000]"
                   >
                     {t("curriculum.viewDetail")}

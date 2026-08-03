@@ -9,12 +9,12 @@ import type { Lang } from "@/lib/i18n";
 import imgLogo from "../../assets/logo1.png";
 
 const navItems = [
-  { href: "/", labelKey: "nav.home" },
-  { href: "/phuong-phap-giang-day", labelKey: "nav.methods" },
-  { href: "/khoi-lop", labelKey: "nav.classes" },
-  { href: "/chuong-trinh-hoc", labelKey: "nav.curriculum" },
-  { href: "/gioi-thieu", labelKey: "nav.about" },
-  { href: "/tin-tuc-su-kien", labelKey: "nav.news" },
+  { href: "/ve-chung-toi", labelKey: "nav.home" },
+  { href: "/con-duong-princeton", labelKey: "nav.methods" },
+  { href: "/chuong-trinh-hoc", labelKey: "nav.classes" },
+  { href: "/cuoc-song-tai-princeton", labelKey: "nav.curriculum" },
+  { href: "/ket-noi-gia-dinh", labelKey: "nav.about" },
+  { href: "/hop-tac-cung-princeton", labelKey: "nav.news" },
   { href: "/dang-ky", labelKey: "nav.register" },
 ];
 
@@ -27,7 +27,7 @@ export default function MobileHeader() {
     <header className="fixed inset-x-0 top-0 z-50 w-full bg-[#e8f3e6] shadow-sm">
       <div className="flex items-center justify-between px-4 py-2">
         {/* Logo */}
-        <Link href="/" className="shrink-0">
+        <Link href="/ve-chung-toi" className="shrink-0">
           <img src={imgLogo.src} alt="Princeton Logo" className="h-16 w-auto" />
         </Link>
 

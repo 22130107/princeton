@@ -93,7 +93,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
       window.history.replaceState(
         null,
         "",
-        nextPage > 1 ? `/tin-tuc-su-kien?page=${nextPage}` : "/tin-tuc-su-kien",
+        nextPage > 1 ? `/hop-tac-cung-princeton?page=${nextPage}` : "/hop-tac-cung-princeton",
       );
       return;
     }
@@ -114,7 +114,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
           setPosts(data.posts);
           setTotal(data.total ?? data.posts.length);
           setTotalPages(data.totalPages ?? 1);
-          window.history.replaceState(null, "", `/tin-tuc-su-kien?${params.toString()}`);
+          window.history.replaceState(null, "", `/hop-tac-cung-princeton?${params.toString()}`);
         })
         .catch((error) => {
           if ((error as Error).name !== "AbortError") {
@@ -263,7 +263,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
                   {lang === "en" && post.excerptEn ? post.excerptEn : post.excerpt}
                 </p>
                 <Link
-                  href={`/tin-tuc-su-kien/${post.slug}`}
+                  href={`/hop-tac-cung-princeton/${post.slug}`}
                   className="mt-auto inline-flex w-fit rounded-full bg-[#b80000] px-5 py-3 text-[15px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000]"
                 >
                   {t("news.viewDetail")}

@@ -15,7 +15,7 @@ function TeachingMethodCard({ method }: { method: DbTeachingMethod }) {
   const description = isEn && method.descriptionEn ? method.descriptionEn : method.description;
   return (
     <Link
-      href={`/phuong-phap-giang-day/${method.slug}`}
+      href={`/con-duong-princeton/${method.slug}`}
       className="group block rounded-[20px] border-2 border-dashed border-[#ff7777] bg-[#fffefa] text-[#620000] no-underline transition-transform duration-200 hover:-translate-y-1"
     >
       <div className="flex min-h-[210px] flex-col gap-6 p-6 sm:flex-row sm:items-center md:min-h-[238px] md:p-8">
@@ -49,6 +49,7 @@ function TeachingMethodCard({ method }: { method: DbTeachingMethod }) {
 type TeachingMethodsSectionProps = {
   methods: DbTeachingMethod[];
   showHeading?: boolean;
+  showHeadingTitle?: boolean;
   showZigzags?: boolean;
   topZigzagColor?: string;
   bottomZigzagColor?: string;
@@ -58,6 +59,7 @@ type TeachingMethodsSectionProps = {
 export default function TeachingMethodsSection({
   methods,
   showHeading = true,
+  showHeadingTitle = true,
   showZigzags = true,
   topZigzagColor,
   bottomZigzagColor,
@@ -112,9 +114,11 @@ export default function TeachingMethodsSection({
       <div className="relative mx-auto max-w-[1620px] px-4 py-12 md:px-10 md:py-[100px] lg:px-[42px]">
         {showHeading ? (
           <div className="mx-auto mb-10 max-w-[976px] text-center md:mb-12">
-            <h2 className="text-[34px] font-bold uppercase leading-none text-[#620000] md:text-[60px] md:leading-[60px]">
-              {t("methods.sectionTitle")}
-            </h2>
+            {showHeadingTitle ? (
+              <h2 className="text-[34px] font-bold uppercase leading-none text-[#620000] md:text-[60px] md:leading-[60px]">
+                {t("methods.sectionTitle")}
+              </h2>
+            ) : null}
             <p className="mt-5 text-[18px] font-medium leading-7 text-[#620000] md:text-[24px] md:leading-8">
               {t("methods.sectionText")}
             </p>

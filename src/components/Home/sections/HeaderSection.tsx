@@ -23,17 +23,17 @@ type SubmenuLink = {
 type HeaderSubmenus = Record<SubmenuKey, SubmenuLink[]>;
 
 const navItems: NavItem[] = [
-  { href: "/", labelKey: "nav.home" },
-  { href: "/phuong-phap-giang-day", labelKey: "nav.methods" },
-  { href: "/khoi-lop", labelKey: "nav.classes", submenu: "classes" },
-  { href: "/chuong-trinh-hoc", labelKey: "nav.curriculum", submenu: "curriculum" },
-  { href: "/gioi-thieu", labelKey: "nav.about" },
-  { href: "/tin-tuc-su-kien", labelKey: "nav.news" },
+  { href: "/ve-chung-toi", labelKey: "nav.home" },
+  { href: "/con-duong-princeton", labelKey: "nav.methods" },
+  { href: "/chuong-trinh-hoc", labelKey: "nav.classes", submenu: "classes" },
+  { href: "/cuoc-song-tai-princeton", labelKey: "nav.curriculum", submenu: "curriculum" },
+  { href: "/ket-noi-gia-dinh", labelKey: "nav.about" },
+  { href: "/hop-tac-cung-princeton", labelKey: "nav.news" },
 ];
 
 function Logo() {
   return (
-    <Link href="/" className="shrink-0 no-underline" data-name="Link">
+    <Link href="/ve-chung-toi" className="shrink-0 no-underline" data-name="Link">
       <div className="relative aspect-[100/75] w-[120px]">
         <img alt="Princeton Kindergarten" className="absolute inset-0 size-full object-contain" src={imgLogo.src} />
       </div>
@@ -187,14 +187,14 @@ export default function HeaderSection() {
         setSubmenus({
           classes: Array.isArray(classData.programs)
             ? classData.programs.map((item: { slug: string; name: string; age?: string }) => ({
-                href: `/khoi-lop/${item.slug}`,
+                href: `/chuong-trinh-hoc/${item.slug}`,
                 label: item.name,
                 description: item.age,
               }))
             : [],
           curriculum: Array.isArray(curriculumData.tracks)
             ? curriculumData.tracks.map((item: { slug: string; title: string; category?: string }) => ({
-                href: `/chuong-trinh-hoc/${item.slug}`,
+                href: `/cuoc-song-tai-princeton/${item.slug}`,
                 label: item.title,
                 description: item.category,
               }))

@@ -15,11 +15,11 @@ import stickerC from "@/assets/sticker/7418d3b6d509d03b45710cdbc11e6c298f5a9959.
 import stickerD from "@/assets/sticker/c0575f19-d630-4b56-b954-383cd28b2ce9.png";
 
 export const metadata: Metadata = {
-  title: "Khối Lớp | Trường Mầm non Princeton",
+  title: "Chương trình học | Trường Mầm non Princeton",
   description:
     "Hệ thống khối lớp Penguin, Wombat, Koala, Kangaroo và Preschool tại Trường Mầm non Princeton.",
   openGraph: {
-    title: "Khối Lớp | Trường Mầm non Princeton",
+    title: "Chương trình học | Trường Mầm non Princeton",
     description:
       "Khám phá hệ thống khối lớp theo độ tuổi tại Trường Mầm non Princeton.",
   },
@@ -141,7 +141,7 @@ export default async function KhoiLopPage() {
                     {isEn && program.excerptEn ? program.excerptEn : program.excerpt}
                   </p>
                   <Link
-                    href={`/khoi-lop/${program.slug}`}
+                    href={`/chuong-trinh-hoc/${program.slug}`}
                     className="mt-auto inline-flex w-fit rounded-full bg-[#b80000] px-5 py-3 text-[15px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000]"
                   >
                     {t("classes.viewSchedule")}

@@ -8,11 +8,11 @@ import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 import NewsSearchList from "./NewsSearchList";
 
 export const metadata: Metadata = {
-  title: "Tin Tức & Sự Kiện | Trường Mầm non Princeton",
+  title: "Hợp tác cùng Princeton | Trường Mầm non Princeton",
   description:
     "Cập nhật tin tức, sự kiện, hoạt động học tập và khoảnh khắc đáng nhớ tại Trường Mầm non Princeton.",
   openGraph: {
-    title: "Tin Tức & Sự Kiện | Trường Mầm non Princeton",
+    title: "Hợp tác cùng Princeton | Trường Mầm non Princeton",
     description:
       "Cập nhật tin tức và sự kiện mới nhất tại Trường Mầm non Princeton.",
   },

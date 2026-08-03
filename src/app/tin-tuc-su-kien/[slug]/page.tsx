@@ -28,7 +28,7 @@ export async function generateMetadata({
 
   if (!post) {
     return {
-      title: "Tin tức | Trường Mầm non Princeton",
+      title: "Hợp tác cùng Princeton | Trường Mầm non Princeton",
     };
   }
 
@@ -74,7 +74,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
       <article className="bg-[#fffefa] px-3 py-6 md:px-8 md:py-10">
         <div className="mx-auto max-w-[1180px]">
           <Link
-            href="/tin-tuc-su-kien"
+            href="/hop-tac-cung-princeton"
             className="mb-6 inline-flex rounded-full border border-[#ff1f1f] bg-white px-5 py-3 text-[14px] font-extrabold uppercase text-[#b80000] no-underline shadow-[0_3px_0_rgba(255,31,31,0.18)]"
           >
             {t("news.back")}
@@ -130,7 +130,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
             {relatedPosts.map((item) => (
               <Link
                 key={item.slug}
-                href={`/tin-tuc-su-kien/${item.slug}`}
+                href={`/hop-tac-cung-princeton/${item.slug}`}
                 className="overflow-hidden border border-[#ff1f1f] bg-white text-[#620000] no-underline shadow-[4px_4px_0_rgba(255,31,31,0.12)]"
               >
                 <div className="relative">

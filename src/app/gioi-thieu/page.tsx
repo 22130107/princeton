@@ -27,11 +27,11 @@ const sectionColors = {
 };
 
 export const metadata: Metadata = {
-  title: "Giới Thiệu | Trường Mầm non Princeton",
+  title: "Kết nối gia đình | Trường Mầm non Princeton",
   description:
     "Trường Mầm non Princeton mang đến môi trường giáo dục mầm non hiện đại, yêu thương và giàu trải nghiệm cho trẻ.",
   openGraph: {
-    title: "Giới Thiệu | Trường Mầm non Princeton",
+    title: "Kết nối gia đình | Trường Mầm non Princeton",
     description:
       "Khám phá môi trường học tập, chương trình giáo dục và hành trình phát triển tại Trường Mầm non Princeton.",
   },

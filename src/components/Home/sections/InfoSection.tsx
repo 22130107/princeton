@@ -58,8 +58,8 @@ const classCardStyles = [
 ];
 
 function Container201() {
-  const { lang, t } = useLanguage();
-  const title = lang === "en" ? "OUR CLASS SYSTEM" : t("home.info.title");
+  const { t } = useLanguage();
+  const title = t("home.info.title");
   return (
     <div className="relative shrink-0 w-full" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center relative size-full">
@@ -361,7 +361,7 @@ function ClassProgramCard({ program, index }: { program: HomeClassProgram; index
 
   return (
     <Link
-      href={`/khoi-lop/${program.slug}`}
+      href={`/chuong-trinh-hoc/${program.slug}`}
       className="relative h-[289.2px] w-[245.16px] shrink-0 text-[#620000] no-underline transition-transform duration-200 hover:-translate-y-1"
       data-name="Background"
     >

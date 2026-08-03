@@ -29,7 +29,7 @@ export async function generateMetadata({
 
   if (!method) {
     return {
-      title: "Phương pháp giáo dục | Trường Mầm non Princeton",
+      title: "Con đường Princeton | Trường Mầm non Princeton",
     };
   }
 
@@ -90,7 +90,7 @@ export default async function TeachingMethodDetailPage({
 
         <div className="relative mx-auto max-w-[1040px]">
           <Link
-            href="/phuong-phap-giang-day"
+            href="/con-duong-princeton"
             className="inline-flex rounded-full border border-[#b80000] bg-white px-5 py-3 text-[14px] font-extrabold uppercase text-[#b80000] no-underline shadow-[0_3px_0_rgba(98,0,0,0.18)]"
           >
             {t("methods.back")}
@@ -129,7 +129,7 @@ export default async function TeachingMethodDetailPage({
               {relatedMethods.map((item) => (
                 <Link
                   key={item.slug}
-                  href={`/phuong-phap-giang-day/${item.slug}`}
+                  href={`/con-duong-princeton/${item.slug}`}
                   className="overflow-hidden rounded-[24px] border border-[#b80000] bg-[#fffefa] text-[#620000] no-underline shadow-[4px_4px_0_rgba(184,0,0,0.22)] transition-transform duration-200 hover:-translate-y-1"
                 >
                   <div

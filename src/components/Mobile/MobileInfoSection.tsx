@@ -100,7 +100,7 @@ export default function MobileInfoSection() {
                 return (
                   <Link
                     key={classItem.id}
-                    href={`/khoi-lop/${classItem.slug}`}
+                    href={`/chuong-trinh-hoc/${classItem.slug}`}
                     className={[
                       "relative min-h-[178px] px-3 pb-5 pt-6 text-center text-[#620000] no-underline transition-transform duration-200 active:scale-[0.98]",
                       style.rotate,

@@ -172,7 +172,7 @@ export default function MobileAboutSection() {
 
       <div className="mt-8 flex justify-center">
         <Link
-          href="/gioi-thieu"
+          href="/ket-noi-gia-dinh"
           className="inline-flex rounded-full bg-[#b80000] px-7 py-3 text-[16px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000] transition-transform duration-200 hover:-translate-y-0.5"
         >
           {t("home.readMore")}

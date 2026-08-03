@@ -27,7 +27,7 @@ export async function generateMetadata({
 
   if (!program) {
     return {
-      title: "Khối lớp | Trường Mầm non Princeton",
+      title: "Chương trình học | Trường Mầm non Princeton",
     };
   }
 
@@ -77,7 +77,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
       <section className="bg-[#fffefa] px-3 py-6 md:px-8 md:py-10">
         <div className="mx-auto max-w-[1180px]">
           <Link
-            href="/khoi-lop"
+            href="/chuong-trinh-hoc"
             className="mb-6 inline-flex rounded-full border border-[#ff1f1f] bg-white px-5 py-3 text-[14px] font-extrabold uppercase text-[#b80000] no-underline shadow-[0_3px_0_rgba(255,31,31,0.18)]"
           >
             {t("classes.back")}
@@ -142,7 +142,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
             {relatedPrograms.map((item) => (
               <Link
                 key={item.slug}
-                href={`/khoi-lop/${item.slug}`}
+                href={`/chuong-trinh-hoc/${item.slug}`}
                 className="overflow-hidden border border-[#ff1f1f] bg-[#fffefa] text-center text-[#620000] no-underline shadow-[4px_4px_0_rgba(255,31,31,0.12)]"
               >
                 <div

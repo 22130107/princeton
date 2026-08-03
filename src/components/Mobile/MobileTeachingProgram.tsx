@@ -114,7 +114,7 @@ export default function MobileTeachingProgram() {
 
       <div className="px-4 pb-10 pt-8">
         <h2 className="mb-2 text-center text-[22px] font-bold uppercase text-[#620000]">
-          {t("methods.sectionTitle")}
+          {t("home.program.title")}
         </h2>
         <p className="mb-7 text-center text-[14px] font-medium leading-relaxed text-[#620000]">
           {t("home.program.text")}
@@ -149,7 +149,7 @@ export default function MobileTeachingProgram() {
         </div>
 
         <Link
-          href="/phuong-phap-giang-day"
+          href="/con-duong-princeton"
           className="mx-auto mt-7 flex w-fit rounded-full bg-[#b80000] px-6 py-3 text-[14px] font-extrabold uppercase text-white no-underline shadow-[0_4px_0_#800000]"
         >
           {t("home.readMore")}

@@ -10,11 +10,11 @@ import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.
 const imgMascotKoala = mediaImage("d088645c54f44b84375f6cb56aeabe8e06bc006b.png");
 
 export const metadata: Metadata = {
-  title: "Phương Pháp Giáo Dục | Trường Mầm non Princeton",
+  title: "Con đường Princeton | Trường Mầm non Princeton",
   description:
     "Khám phá phương pháp giáo dục mầm non tại Trường Mầm non Princeton: học qua chơi, lấy trẻ làm trung tâm, khai phóng tư duy và học qua tương tác.",
   openGraph: {
-    title: "Phương Pháp Giáo Dục | Trường Mầm non Princeton",
+    title: "Con đường Princeton | Trường Mầm non Princeton",
     description:
       "Các phương pháp giáo dục hiện đại giúp trẻ học tập trọn vẹn, tự nhiên và đầy hứng khởi tại Princeton.",
   },
