@@ -3864,7 +3864,7 @@ function getListPreview(item: any, tab: TabKey, programMode: ProgramMode, aboutM
       : tab === "schedules"
       ? "Lịch đăng ký"
       : tab === "teaching"
-      ? "Phương pháp"
+      ? "Con đường"
       : tab === "posts"
         ? item.postType === "event"
           ? "Sự kiện"
@@ -3880,8 +3880,8 @@ function getListPreview(item: any, tab: TabKey, programMode: ProgramMode, aboutM
               ? "Giáo viên"
               : "Phụ huynh"
         : programMode === "classes"
-          ? "Khối lớp"
-          : "Chương trình";
+          ? "Chương trình học"
+          : "Cuộc sống";
 
   return { title, imageUrl, category, description, color, typeLabel };
 }
@@ -4858,10 +4858,10 @@ export default function AdminDashboard() {
             ["banners", "Banner Trang Chủ"],
             ["registration", "Đăng ký ưu đãi"],
             ["schedules", "Lịch đăng ký"],
-            ["teaching", "Phương Pháp Giảng Dạy"],
-            ["programs", "Chương Trình Học"],
-            ["posts", "Tin Tức & Sự Kiện"],
-            ["about", "Giới thiệu"],
+            ["teaching", "Con đường Princeton"],
+            ["programs", "Chương trình học"],
+            ["posts", "Hợp tác cùng Princeton"],
+            ["about", "Kết nối gia đình"],
           ].map(([key, label]) => (
             <button
               key={key}
@@ -4884,7 +4884,7 @@ export default function AdminDashboard() {
               }}
               className={`h-10 rounded-md border px-4 font-bold ${programMode === "classes" ? "border-[#b80000] bg-[#b80000] text-white" : "border-[#d9baba] bg-white"}`}
             >
-              Khối lớp
+              Chương trình học
             </button>
             <button
               onClick={() => {
@@ -4893,7 +4893,7 @@ export default function AdminDashboard() {
               }}
               className={`h-10 rounded-md border px-4 font-bold ${programMode === "curriculum" ? "border-[#b80000] bg-[#b80000] text-white" : "border-[#d9baba] bg-white"}`}
             >
-              Chương trình học
+              Cuộc sống tại Princeton
             </button>
           </div>
         ) : null}
@@ -5085,9 +5085,9 @@ export default function AdminDashboard() {
                     : tab === "schedules"
                     ? "Lịch đăng ký"
                     : tab === "teaching"
-                    ? "Phương pháp giảng dạy"
+                    ? "Con đường Princeton"
                     : tab === "posts"
-                      ? "Tin tức & sự kiện"
+                      ? "Hợp tác cùng Princeton"
                       : tab === "about"
                         ? aboutMode === "facilities"
                           ? "Cơ sở vật chất"
@@ -5097,8 +5097,8 @@ export default function AdminDashboard() {
                             ? "Đội ngũ giáo viên"
                             : "Phụ huynh chia sẻ"
                       : programMode === "classes"
-                        ? "Khối lớp"
-                        : "Chương trình học"}
+                        ? "Chương trình học"
+                        : "Cuộc sống tại Princeton"}
                 </h2>
               </div>
               <div className="flex gap-2">
