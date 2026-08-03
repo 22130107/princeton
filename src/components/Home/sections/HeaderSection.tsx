@@ -129,10 +129,10 @@ function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname
   );
 }
 
-function MobileMenu({ open, pathname }: { open: boolean; pathname: string }) {
+function MobileMenu({ open, pathname, onClose }: { open: boolean; pathname: string; onClose: () => void }) {
   const { t } = useLanguage();
   return (
-    <div className={`overflow-hidden bg-[#991B1B] transition-all duration-300 ease-in-out xl:hidden ${open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+    <div className={`pointer-events-auto overflow-hidden bg-[#991B1B] transition-all duration-300 ease-in-out xl:hidden ${open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
       <nav className="flex flex-col gap-1 border-t border-white/15 px-4 pb-4 pt-3">
         {[...navItems, { href: "/lien-he", labelKey: "nav.register" }].map((item) => {
           const isActive =
@@ -144,6 +144,7 @@ function MobileMenu({ open, pathname }: { open: boolean; pathname: string }) {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onClose}
               className={`rounded-xl border px-4 py-2.5 text-[16px] font-semibold no-underline transition-colors hover:bg-white hover:text-[#991B1B] ${
                 isActive
                   ? "border-dashed border-white bg-white font-extrabold text-[#991B1B]"
@@ -244,7 +245,7 @@ export default function HeaderSection() {
           </button>
         </div>
       </div>
-      <MobileMenu open={menuOpen} pathname={pathname} />
+      <MobileMenu open={menuOpen} pathname={pathname} onClose={() => setMenuOpen(false)} />
     </div>
   );
 }

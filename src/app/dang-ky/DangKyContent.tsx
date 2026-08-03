@@ -33,10 +33,10 @@ export default function DangKyContent() {
 
   return (
     <main className="min-h-screen bg-[#fffefa]">
-      <div className="h-[99px]">
+      <div className="relative z-[100] h-[99px]">
         <HeaderSection />
       </div>
-      <div className="relative mx-auto h-[1014px] max-w-[1536px] overflow-hidden">
+      <div className="relative z-0 mx-auto h-[1014px] max-w-[1536px] overflow-hidden">
         <div className="absolute left-0 top-[-7964.35px] h-[9470px] w-full">
           <RegistrationSection />
         </div>
