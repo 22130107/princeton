@@ -34,7 +34,7 @@ const navItems: NavItem[] = [
 function Logo() {
   return (
     <Link href="/ve-chung-toi" className="shrink-0 no-underline" data-name="Link">
-      <div className="relative size-[90px]">
+      <div className="relative size-[clamp(72px,4.7vw,90px)]">
         <img alt="Princeton Kindergarten" className="absolute inset-0 size-full rounded-[8px] object-contain" src={imgLogo.src} />
       </div>
     </Link>
@@ -46,11 +46,11 @@ function RegisterButton() {
   return (
     <Link
       href="/lien-he"
-      className="relative flex shrink-0 items-center justify-center rounded-[64px] border-2 border-[#fffefa] bg-[#ffc300] px-[22px] py-[10px] no-underline shadow-[0_3px_0_#5d0f0f] transition-colors hover:bg-[#ffe27a]"
+      className="relative flex shrink-0 items-center justify-center rounded-[64px] border-2 border-[#fffefa] bg-[#ffc300] px-[clamp(18px,1.15vw,22px)] py-[clamp(8px,0.52vw,10px)] no-underline shadow-[0_3px_0_#5d0f0f] transition-colors hover:bg-[#ffe27a]"
       data-name="Link"
     >
       <span className="pointer-events-none absolute inset-[5px] rounded-[64px] border border-dashed border-[#991B1B]/75" />
-      <span className="relative z-10 whitespace-nowrap text-[18px] font-extrabold uppercase text-[#991B1B]">
+      <span className="relative z-10 whitespace-nowrap text-[clamp(16px,1vw,19px)] font-extrabold uppercase text-[#991B1B]">
         {t("nav.register")}
       </span>
     </Link>
@@ -61,7 +61,7 @@ function LangToggle({ lang, onToggle }: { lang: Lang; onToggle: () => void }) {
   return (
     <button
       onClick={onToggle}
-      className="shrink-0 rounded-full border-2 border-white/90 bg-white px-3 py-[6px] text-[15px] font-extrabold text-[#991B1B] no-underline shadow-[0_2px_0_#5d0f0f] transition-colors hover:bg-[#fff4c4]"
+      className="shrink-0 rounded-full border-2 border-white/90 bg-white px-3 py-[6px] text-[16px] font-extrabold text-[#991B1B] no-underline shadow-[0_2px_0_#5d0f0f] transition-colors hover:bg-[#fff4c4]"
       aria-label="Switch language"
     >
       <span className="flex items-center gap-2">
@@ -75,7 +75,7 @@ function LangToggle({ lang, onToggle }: { lang: Lang; onToggle: () => void }) {
 function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname: string }) {
   const { t } = useLanguage();
   return (
-    <div className="hidden items-center gap-3 md:flex" data-name="List">
+    <div className="hidden min-w-0 items-center gap-[clamp(2px,0.45vw,12px)] xl:flex" data-name="List">
       {navItems.map((item) => {
         const menuLinks = item.submenu ? submenus[item.submenu] : [];
         const isActive = item.submenu
@@ -86,7 +86,7 @@ function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname
           <div key={item.href} className="group relative">
             <Link
               href={item.href}
-              className={`block whitespace-nowrap rounded-full border border-dashed px-[16px] py-[7px] text-[19px] font-semibold no-underline transition-colors duration-150 hover:border-white hover:bg-white hover:text-[#991B1B] group-focus-within:border-white group-focus-within:bg-white group-focus-within:text-[#991B1B] ${
+              className={`block whitespace-nowrap rounded-full border border-dashed px-[clamp(9px,0.72vw,16px)] py-[clamp(5px,0.36vw,7px)] text-[clamp(16px,0.98vw,19px)] font-semibold no-underline transition-colors duration-150 hover:border-white hover:bg-white hover:text-[#991B1B] group-focus-within:border-white group-focus-within:bg-white group-focus-within:text-[#991B1B] ${
                 isActive
                   ? "border-white bg-white text-[#991B1B]"
                   : "border-transparent text-white"
@@ -132,7 +132,7 @@ function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname
 function MobileMenu({ open, pathname }: { open: boolean; pathname: string }) {
   const { t } = useLanguage();
   return (
-    <div className={`overflow-hidden bg-[#991B1B] transition-all duration-300 ease-in-out md:hidden ${open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+    <div className={`overflow-hidden bg-[#991B1B] transition-all duration-300 ease-in-out xl:hidden ${open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
       <nav className="flex flex-col gap-1 border-t border-white/15 px-4 pb-4 pt-3">
         {[...navItems, { href: "/lien-he", labelKey: "nav.register" }].map((item) => {
           const isActive =
@@ -216,15 +216,15 @@ export default function HeaderSection() {
 
   return (
     <div className="h-full pointer-events-none" data-name="HeaderSection">
-      <div className="sticky top-0 z-50 flex items-center justify-between bg-[#991B1B] px-[116px] py-[4px] shadow-[0_4px_18px_rgba(65,0,0,0.22)] pointer-events-auto max-md:px-4">
+      <div className="sticky top-0 z-50 flex items-center justify-between gap-4 bg-[#991B1B] px-[clamp(16px,3.35vw,64px)] py-[4px] shadow-[0_4px_18px_rgba(65,0,0,0.22)] pointer-events-auto">
         <Logo />
         <DesktopNav submenus={submenus} pathname={pathname} />
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-[clamp(8px,0.65vw,12px)]">
           <LangToggle lang={lang} onToggle={() => setLang(lang === "vi" ? "en" : "vi")} />
           <RegisterButton />
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/90 bg-white text-[#991B1B] md:hidden"
+            className="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/90 bg-white text-[#991B1B] xl:hidden"
             aria-label="Menu"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
