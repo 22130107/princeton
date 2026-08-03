@@ -134,7 +134,7 @@ export default function MobileAboutSection() {
   ];
 
   return (
-    <section className="bg-[#e8f3e6] px-[14px] pb-8 pt-10">
+    <section className="bg-[#F0EFD2] px-[14px] pb-8 pt-10">
       <CornerBrandLogo />
 
       {/* Heading */}

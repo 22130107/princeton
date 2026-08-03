@@ -38,7 +38,7 @@ export default async function ChuongTrinhHocPage() {
         <HeaderSection />
       </div>
 
-      <section className="relative mt-6 overflow-hidden bg-[#ffe27a] px-4 pb-10 pt-28 md:mt-10 md:px-10 md:pb-16 md:pt-40">
+      <section className="relative mt-6 overflow-hidden bg-[#F4D06F] px-4 pb-10 pt-28 md:mt-10 md:px-10 md:pb-16 md:pt-40">
         <div
           aria-hidden
           className="absolute inset-x-0 top-0 z-[2] h-[25px] bg-repeat-x"

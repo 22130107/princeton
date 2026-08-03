@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
 import LanguageFlagIcon from "@/components/Shared/LanguageFlagIcon";
 import type { Lang } from "@/lib/i18n";
-import imgLogo from "../../../assets/logo1.png";
+import imgLogo from "../../../assets/logo3.png";
 
 type SubmenuKey = "classes" | "curriculum";
 type NavItem = {
@@ -34,8 +34,8 @@ const navItems: NavItem[] = [
 function Logo() {
   return (
     <Link href="/ve-chung-toi" className="shrink-0 no-underline" data-name="Link">
-      <div className="relative aspect-[100/75] w-[120px]">
-        <img alt="Princeton Kindergarten" className="absolute inset-0 size-full object-contain" src={imgLogo.src} />
+      <div className="relative size-[90px]">
+        <img alt="Princeton Kindergarten" className="absolute inset-0 size-full rounded-[8px] object-contain" src={imgLogo.src} />
       </div>
     </Link>
   );
@@ -46,11 +46,11 @@ function RegisterButton() {
   return (
     <Link
       href="/lien-he"
-      className="relative flex shrink-0 items-center justify-center rounded-[64px] border-2 border-[#8d0000] bg-[#b80000] px-[22px] py-[10px] no-underline shadow-[0_3px_0_#700000]"
+      className="relative flex shrink-0 items-center justify-center rounded-[64px] border-2 border-[#fffefa] bg-[#ffc300] px-[22px] py-[10px] no-underline shadow-[0_3px_0_#5d0f0f] transition-colors hover:bg-[#ffe27a]"
       data-name="Link"
     >
-      <span className="pointer-events-none absolute inset-[5px] rounded-[64px] border border-dashed border-white/95" />
-      <span className="relative z-10 whitespace-nowrap text-[18px] font-extrabold uppercase text-white">
+      <span className="pointer-events-none absolute inset-[5px] rounded-[64px] border border-dashed border-[#991B1B]/75" />
+      <span className="relative z-10 whitespace-nowrap text-[18px] font-extrabold uppercase text-[#991B1B]">
         {t("nav.register")}
       </span>
     </Link>
@@ -61,7 +61,7 @@ function LangToggle({ lang, onToggle }: { lang: Lang; onToggle: () => void }) {
   return (
     <button
       onClick={onToggle}
-      className="shrink-0 rounded-full border-2 border-[#8d0000] bg-white px-3 py-[6px] text-[15px] font-extrabold text-[#620000] no-underline shadow-[0_2px_0_#700000] transition-colors hover:bg-[#fff1f1]"
+      className="shrink-0 rounded-full border-2 border-white/90 bg-white px-3 py-[6px] text-[15px] font-extrabold text-[#991B1B] no-underline shadow-[0_2px_0_#5d0f0f] transition-colors hover:bg-[#fff4c4]"
       aria-label="Switch language"
     >
       <span className="flex items-center gap-2">
@@ -86,10 +86,10 @@ function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname
           <div key={item.href} className="group relative">
             <Link
               href={item.href}
-              className={`block whitespace-nowrap rounded-full border border-dashed px-[16px] py-[7px] text-[19px] font-semibold no-underline transition-colors duration-150 hover:border-[#b80000] hover:bg-[#fff1f1] hover:text-[#b80000] group-focus-within:border-[#b80000] group-focus-within:bg-[#fff1f1] group-focus-within:text-[#b80000] ${
+              className={`block whitespace-nowrap rounded-full border border-dashed px-[16px] py-[7px] text-[19px] font-semibold no-underline transition-colors duration-150 hover:border-white hover:bg-white hover:text-[#991B1B] group-focus-within:border-white group-focus-within:bg-white group-focus-within:text-[#991B1B] ${
                 isActive
-                  ? "border-[#b80000] bg-[#fff1f1] text-[#b80000]"
-                  : "border-transparent text-[#620000]"
+                  ? "border-white bg-white text-[#991B1B]"
+                  : "border-transparent text-white"
               }`}
             >
               {t(item.labelKey)}
@@ -101,7 +101,7 @@ function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="block rounded-[10px] px-3 py-2 text-[#620000] no-underline hover:bg-[#fff1f1]"
+                      className="block rounded-[10px] px-3 py-2 text-[#620000] no-underline hover:bg-[#fff1f1] hover:text-[#991B1B]"
                     >
                       <span className="block text-[15px] font-extrabold leading-tight">{link.label}</span>
                       {link.description ? (
@@ -115,7 +115,7 @@ function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname
                 <li className="mt-1 border-t border-[#f0d9d9] pt-1">
                   <Link
                     href={item.href}
-                    className="block rounded-[10px] px-3 py-2 text-[14px] font-extrabold text-[#b80000] no-underline hover:bg-[#fff1f1]"
+                    className="block rounded-[10px] px-3 py-2 text-[14px] font-extrabold text-[#991B1B] no-underline hover:bg-[#fff1f1]"
                   >
                     {t("nav.viewAll")}
                   </Link>
@@ -132,8 +132,8 @@ function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname
 function MobileMenu({ open, pathname }: { open: boolean; pathname: string }) {
   const { t } = useLanguage();
   return (
-    <div className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
-      <nav className="flex flex-col gap-1 border-t border-[#620000]/10 px-4 pb-4 pt-3">
+    <div className={`overflow-hidden bg-[#991B1B] transition-all duration-300 ease-in-out md:hidden ${open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+      <nav className="flex flex-col gap-1 border-t border-white/15 px-4 pb-4 pt-3">
         {[...navItems, { href: "/lien-he", labelKey: "nav.register" }].map((item) => {
           const isActive =
             item.href === "/lien-he"
@@ -144,10 +144,10 @@ function MobileMenu({ open, pathname }: { open: boolean; pathname: string }) {
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-xl border px-4 py-2.5 text-[16px] font-semibold no-underline transition-colors hover:bg-[#d4e6d1] ${
+              className={`rounded-xl border px-4 py-2.5 text-[16px] font-semibold no-underline transition-colors hover:bg-white hover:text-[#991B1B] ${
                 isActive
-                  ? "border-dashed border-[#b80000] bg-[#fff1f1] font-extrabold text-[#b80000]"
-                  : "border-transparent text-[#620000]"
+                  ? "border-dashed border-white bg-white font-extrabold text-[#991B1B]"
+                  : "border-transparent text-white"
               }`}
             >
               {t(item.labelKey)}
@@ -216,7 +216,7 @@ export default function HeaderSection() {
 
   return (
     <div className="h-full pointer-events-none" data-name="HeaderSection">
-      <div className="sticky top-0 z-50 flex items-center justify-between bg-[#e8f3e6] px-[116px] py-[4px] pointer-events-auto max-md:px-4">
+      <div className="sticky top-0 z-50 flex items-center justify-between bg-[#991B1B] px-[116px] py-[4px] shadow-[0_4px_18px_rgba(65,0,0,0.22)] pointer-events-auto max-md:px-4">
         <Logo />
         <DesktopNav submenus={submenus} pathname={pathname} />
         <div className="flex items-center gap-3">
@@ -224,7 +224,7 @@ export default function HeaderSection() {
           <RegisterButton />
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#b80000] text-white md:hidden"
+            className="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/90 bg-white text-[#991B1B] md:hidden"
             aria-label="Menu"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">

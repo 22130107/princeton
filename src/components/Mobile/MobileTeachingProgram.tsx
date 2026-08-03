@@ -102,7 +102,7 @@ export default function MobileTeachingProgram() {
   }, []);
 
   return (
-    <section className="relative bg-[#ffe27a]">
+    <section className="relative bg-[#F4D06F]">
       <div
         className="h-[25px] w-full bg-repeat-x"
         style={{

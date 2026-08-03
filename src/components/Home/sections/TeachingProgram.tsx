@@ -502,7 +502,7 @@ export default function TeachingProgram() {
   }, []);
 
   return (
-    <div className="absolute bg-[#ffe27a] content-stretch flex flex-col items-start left-0 pb-[132px] pt-[100px] px-[104px] right-0 top-[2776px]" data-name="Section">
+    <div className="absolute bg-[#F4D06F] content-stretch flex flex-col items-start left-0 pb-[132px] pt-[100px] px-[104px] right-0 top-[2776px]" data-name="Section">
       <div className="absolute bg-size-[176px_25px] bg-top-left h-[25px] left-0 right-0 top-0" style={{ backgroundImage: `url("${imgImage.src}")` }} data-name="Image" />
       <Container62 methods={methods} />
       <Link

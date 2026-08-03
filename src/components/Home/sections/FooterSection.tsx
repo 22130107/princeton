@@ -2,7 +2,7 @@
 
 import svgPaths from "../svg-g45k1n1pz5";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
-import imgLinkKindergartenTheWesternAustralianSchoolSystem from "../../../assets/logo.png";
+import imgLinkKindergartenTheWesternAustralianSchoolSystem from "../../../assets/logo3.png";
 import imgScsaFullPng from "../../../assets/4268f4b28dbf19f88ab93b3a1e683121b0001bf9.png";
 import imgWaPng from "../../../assets/354fdda27892ccf1ea631fc32c53cf22185aba96.png";
 import imgLogoCogniaPng from "../../../assets/d9d67faba7fac050ac5aaec8e022971be16752f9.png";
@@ -13,7 +13,7 @@ function LinkKindergartenTheWesternAustralianSchoolSystem() {
   return (
     <div className="h-[150px] relative shrink-0 w-[200px]" data-name="Link → kindergarten-the-western-australian-school-system">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute left-[-350%] max-w-none size-[800%] top-[-350%]" src={imgLinkKindergartenTheWesternAustralianSchoolSystem.src} />
+        <img alt="" className="absolute inset-0 size-full rounded-[10px] object-contain" src={imgLinkKindergartenTheWesternAustralianSchoolSystem.src} />
       </div>
     </div>
   );
@@ -133,7 +133,7 @@ function HorizontalBorder1() {
 function Container220() {
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[14px] text-center text-[#620000] whitespace-nowrap">
+      <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[14px] text-center text-white/85 whitespace-nowrap">
         <p className="leading-[21px]">Accreditation</p>
       </div>
     </div>
@@ -180,7 +180,7 @@ function Container214() {
 function HorizontalBorder() {
   return (
     <div className="content-stretch flex flex-col items-start pb-[0.8px] relative shrink-0 w-full" data-name="HorizontalBorder">
-      <div aria-hidden className="absolute border-[rgba(98,0,0,0.25)] border-b-[0.8px] border-dashed inset-0 pointer-events-none" />
+      <div aria-hidden className="absolute border-white/25 border-b-[0.8px] border-dashed inset-0 pointer-events-none" />
       <Container214 />
     </div>
   );
@@ -190,7 +190,7 @@ function Heading7() {
   const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Heading 2">
-      <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[24px] text-[#620000] w-full">
+      <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[24px] text-white w-full">
         <p className="leading-[24px]">{t("home.footerSection.title")}</p>
       </div>
     </div>
@@ -201,7 +201,7 @@ function Margin19() {
   const { t } = useLanguage();
   return (
     <div className="absolute content-stretch flex flex-col items-start left-[28px] pr-[4px] top-px" data-name="Margin">
-      <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[16px] text-[#620000] whitespace-nowrap">
+      <div className="[word-break:break-word] flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[16px] text-white/90 whitespace-nowrap">
         <p className="leading-[24px]">{t("home.footerSection.email")}</p>
       </div>
     </div>
@@ -213,8 +213,8 @@ function Svg8() {
     <div className="h-[17px] relative shrink-0 w-[20px]" data-name="SVG">
       <svg className="absolute block inset-0 size-full" fill="none" height="17" preserveAspectRatio="none" viewBox="0 0 20 17" width="20">
         <g clipPath="url(#clip0_1_934)" id="SVG">
-          <path d={svgPaths.p27510f00} id="Vector" stroke="#620000" strokeMiterlimit="10" strokeOpacity="0.9" />
-          <path d={svgPaths.pa6fb200} id="Vector_2" stroke="#620000" strokeLinecap="square" strokeMiterlimit="10" strokeOpacity="0.9" />
+          <path d={svgPaths.p27510f00} id="Vector" stroke="white" strokeMiterlimit="10" strokeOpacity="0.9" />
+          <path d={svgPaths.pa6fb200} id="Vector_2" stroke="white" strokeLinecap="square" strokeMiterlimit="10" strokeOpacity="0.9" />
         </g>
         <defs>
           <clipPath id="clip0_1_934">
@@ -238,7 +238,7 @@ function Item5() {
   return (
     <div className="h-[25px] relative shrink-0 w-full" data-name="Item">
       <Margin19 />
-      <div className="-translate-y-1/2 [word-break:break-word] absolute flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] left-[72.34px] not-italic text-[16px] text-[#620000] top-[13px] w-[137.176px]">
+      <div className="-translate-y-1/2 [word-break:break-word] absolute flex flex-col font-['Baloo_Paaji:Regular',Arial,Helvetica,sans-serif] justify-center leading-[0] left-[72.34px] not-italic text-[16px] text-white/90 top-[13px] w-[137.176px]">
         <p className="leading-[24px]">info@wass.edu.vn</p>
       </div>
       <SvgMargin1 />
@@ -275,7 +275,7 @@ function Container224() {
   const { t } = useLanguage();
   return (
     <div className="content-stretch flex flex-col items-end relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[16px] text-right text-[#620000] whitespace-nowrap">
+      <div className="[word-break:break-word] flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[16px] text-right text-white/90 whitespace-nowrap">
         <p className="leading-[24px]">{t("home.footerSection.social")}</p>
       </div>
     </div>
@@ -287,7 +287,7 @@ function Group1() {
     <div className="absolute inset-[0.31%_0_0.3%_0] mask-alpha mask-intersect mask-no-clip mask-no-repeat mask-position-[0px_-0.087px] mask-size-[28px_28px]" style={{ maskImage: `url("${imgGroup}")` }} data-name="Group">
       <svg className="absolute block inset-0 size-full" fill="none" height="27.828" preserveAspectRatio="none" viewBox="0 0 28 27.828" width="28">
         <g id="Group">
-          <path d={svgPaths.p39a13880} fill="#620000" id="Vector" />
+          <path d={svgPaths.p39a13880} fill="white" id="Vector" />
         </g>
       </svg>
     </div>
@@ -331,8 +331,8 @@ function LogoInstagram2025Svg1() {
     <div className="h-[28px] relative shrink-0 w-[29px]" data-name="logo-instagram-2025.svg">
       <svg className="absolute block inset-0 size-full" fill="none" height="28" preserveAspectRatio="none" viewBox="0 0 29 28" width="29">
         <g id="logo-instagram-2025.svg">
-          <path d={svgPaths.p15acae00} fill="#620000" id="Vector" />
-          <path d={svgPaths.p123b9100} fill="#620000" id="Vector_2" />
+          <path d={svgPaths.p15acae00} fill="white" id="Vector" />
+          <path d={svgPaths.p123b9100} fill="white" id="Vector_2" />
         </g>
       </svg>
     </div>
@@ -360,7 +360,7 @@ function Group2() {
     <div className="absolute inset-[15.01%_2.3%_14.99%_1.15%] mask-alpha mask-intersect mask-no-clip mask-no-repeat mask-position-[0px_-4.202px] mask-size-[28px_28px]" style={{ maskImage: `url("${imgGroup}")` }} data-name="Group">
       <svg className="absolute block inset-0 size-full" fill="none" height="19.6" preserveAspectRatio="none" viewBox="0 0 28 19.6" width="28">
         <g id="Group">
-          <path d={svgPaths.p269f4b80} fill="#620000" id="Vector" />
+          <path d={svgPaths.p269f4b80} fill="white" id="Vector" />
         </g>
       </svg>
     </div>
@@ -404,7 +404,7 @@ function Group3() {
     <div className="absolute inset-0 mask-alpha mask-intersect mask-no-clip mask-no-repeat mask-size-[28px_28px]" style={{ maskImage: `url("${imgGroup}")` }} data-name="Group">
       <svg className="absolute block inset-0 size-full" fill="none" height="28" preserveAspectRatio="none" viewBox="0 0 28 28" width="28">
         <g id="Group">
-          <path d={svgPaths.p30a3ac80} fill="#620000" id="Vector" />
+          <path d={svgPaths.p30a3ac80} fill="white" id="Vector" />
         </g>
       </svg>
     </div>
@@ -491,7 +491,7 @@ function Container213() {
 
 export default function FooterSection() {
   return (
-    <div className="absolute bg-[#e8f3e6] bottom-0 content-stretch flex flex-col items-start left-0 pt-[28px] px-[116px] right-0 top-[9569.04px]" data-name="Footer - FOOTER">
+    <div className="absolute bg-[#991B1B] bottom-0 content-stretch flex flex-col items-start left-0 pt-[28px] px-[116px] right-0 top-[9569.04px]" data-name="Footer - FOOTER">
       <Container213 />
     </div>
   );
