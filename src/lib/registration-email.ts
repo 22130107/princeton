@@ -1,6 +1,7 @@
 import tls from "node:tls";
 
 export type RegistrationEmailInput = {
+  audience?: "parent" | "partner";
   to: string;
   parentName: string;
   phone: string;
@@ -31,6 +32,13 @@ const defaultSmtpHost = "smtp.gmail.com";
 const defaultSmtpPort = 465;
 const smtpTimeoutMs = 15000;
 
+const partnerNeedLabels: Record<string, string> = {
+  "partner-franchise": "Nhượng quyền / mở cơ sở",
+  "partner-admissions": "Hợp tác tuyển sinh",
+  "partner-media": "Hợp tác truyền thông",
+  "partner-vendor": "Cung cấp dịch vụ",
+};
+
 function htmlEscape(value: string) {
   return value
     .replace(/&/g, "&amp;")
@@ -39,7 +47,93 @@ function htmlEscape(value: string) {
     .replace(/"/g, "&quot;");
 }
 
+function isPartnerLead(input: RegistrationEmailInput) {
+  return input.audience === "partner" || input.grade.startsWith("partner-");
+}
+
+function getPartnerNeedLabel(value: string) {
+  return partnerNeedLabels[value] ?? value;
+}
+
+function getPartnerCustomerConfirmationEmail(input: RegistrationEmailInput): EmailMessage {
+  const partnerNeed = getPartnerNeedLabel(input.grade);
+  const text = [
+    `Chào ${input.parentName},`,
+    "",
+    "Princeton Academy đã nhận thông tin đăng ký hợp tác của Anh/Chị.",
+    `Mã liên hệ: #${input.leadId}`,
+    `Số điện thoại: ${input.phone}`,
+    `Nhu cầu hợp tác: ${partnerNeed}`,
+    ...(input.campusName ? [`Khu vực/chi nhánh quan tâm: ${input.campusName}`] : []),
+    "",
+    "Đội ngũ Princeton Academy sẽ liên hệ để trao đổi chi tiết trong thời gian sớm nhất.",
+    "Cảm ơn Anh/Chị đã quan tâm hợp tác cùng Princeton Academy.",
+  ].join("\n");
+
+  return {
+    to: input.to,
+    subject: "Princeton Academy đã nhận thông tin hợp tác",
+    text,
+    html: `
+      <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#620000">
+        <h2 style="margin:0 0 12px;color:#b80000">Đăng ký hợp tác thành công</h2>
+        <p>Chào ${htmlEscape(input.parentName)},</p>
+        <p>Princeton Academy đã nhận thông tin đăng ký hợp tác của Anh/Chị.</p>
+        <ul>
+          <li><strong>Mã liên hệ:</strong> #${input.leadId}</li>
+          <li><strong>Số điện thoại:</strong> ${htmlEscape(input.phone)}</li>
+          <li><strong>Nhu cầu hợp tác:</strong> ${htmlEscape(partnerNeed)}</li>
+          ${input.campusName ? `<li><strong>Khu vực/chi nhánh quan tâm:</strong> ${htmlEscape(input.campusName)}</li>` : ""}
+        </ul>
+        <p>Đội ngũ Princeton Academy sẽ liên hệ để trao đổi chi tiết trong thời gian sớm nhất.</p>
+        <p>Cảm ơn Anh/Chị đã quan tâm hợp tác cùng Princeton Academy.</p>
+      </div>
+    `,
+  };
+}
+
+function getPartnerOwnerNotificationEmail(input: RegistrationEmailInput, ownerEmail: string): EmailMessage {
+  const partnerNeed = getPartnerNeedLabel(input.grade);
+  const text = [
+    "Có đăng ký hợp tác mới từ website Princeton Academy.",
+    "",
+    `Mã liên hệ: #${input.leadId}`,
+    `Người liên hệ: ${input.parentName}`,
+    `Số điện thoại: ${input.phone}`,
+    `Email đối tác: ${input.to}`,
+    `Nhu cầu hợp tác: ${partnerNeed}`,
+    ...(input.campusName ? [`Khu vực/chi nhánh quan tâm: ${input.campusName}`] : []),
+    "",
+    "Vui lòng kiểm tra mục Lịch đăng ký trong trang quản trị.",
+  ].join("\n");
+
+  return {
+    to: ownerEmail,
+    subject: `Có đăng ký hợp tác mới #${input.leadId}`,
+    text,
+    html: `
+      <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#620000">
+        <h2 style="margin:0 0 12px;color:#b80000">Có đăng ký hợp tác mới</h2>
+        <p>Website Princeton Academy vừa nhận một đăng ký hợp tác mới.</p>
+        <ul>
+          <li><strong>Mã liên hệ:</strong> #${input.leadId}</li>
+          <li><strong>Người liên hệ:</strong> ${htmlEscape(input.parentName)}</li>
+          <li><strong>Số điện thoại:</strong> ${htmlEscape(input.phone)}</li>
+          <li><strong>Email đối tác:</strong> ${htmlEscape(input.to)}</li>
+          <li><strong>Nhu cầu hợp tác:</strong> ${htmlEscape(partnerNeed)}</li>
+          ${input.campusName ? `<li><strong>Khu vực/chi nhánh quan tâm:</strong> ${htmlEscape(input.campusName)}</li>` : ""}
+        </ul>
+        <p>Vui lòng kiểm tra mục <strong>Lịch đăng ký</strong> trong trang quản trị.</p>
+      </div>
+    `,
+  };
+}
+
 function getCustomerConfirmationEmail(input: RegistrationEmailInput): EmailMessage {
+  if (isPartnerLead(input)) {
+    return getPartnerCustomerConfirmationEmail(input);
+  }
+
   const text = [
     `Chào ${input.parentName},`,
     "",
@@ -78,6 +172,10 @@ function getCustomerConfirmationEmail(input: RegistrationEmailInput): EmailMessa
 }
 
 function getOwnerNotificationEmail(input: RegistrationEmailInput, ownerEmail: string): EmailMessage {
+  if (isPartnerLead(input)) {
+    return getPartnerOwnerNotificationEmail(input, ownerEmail);
+  }
+
   const text = [
     "Có đăng ký tư vấn mới từ website Princeton Academy.",
     "",

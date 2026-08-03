@@ -8,9 +8,12 @@ export type RegistrationScheduleStatus =
   | "cancelled"
   | "no_show";
 
+export type RegistrationScheduleAudience = "parent" | "partner";
+
 export type RegistrationSchedule = {
   id: number;
   leadId: number;
+  audience: RegistrationScheduleAudience;
   parentName: string;
   phone: string;
   email: string;
@@ -59,13 +62,16 @@ function toIso(value: Date | string | null) {
 }
 
 function mapSchedule(row: RegistrationScheduleRow): RegistrationSchedule {
+  const grade = row.interested_grade_label ?? "";
+
   return {
     id: row.id,
     leadId: row.lead_id,
+    audience: grade.startsWith("partner-") ? "partner" : "parent",
     parentName: row.parent_name,
     phone: row.phone,
     email: row.email ?? "",
-    grade: row.interested_grade_label ?? "",
+    grade,
     classProgramName: row.class_program_name ?? "",
     campusSlug: row.campus_slug ?? "",
     campusName: row.campus_name ?? "",

@@ -1455,6 +1455,7 @@ export default function RegistrationSection() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          audience,
           parentName: name,
           phone,
           email,

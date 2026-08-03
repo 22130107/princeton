@@ -180,10 +180,12 @@ type Testimonial = {
 };
 
 type RegistrationScheduleStatus = "new" | "confirmed" | "completed" | "cancelled" | "no_show";
+type RegistrationScheduleAudience = "parent" | "partner";
 
 type RegistrationSchedule = {
   id: number;
   leadId: number;
+  audience?: RegistrationScheduleAudience;
   parentName: string;
   phone: string;
   email: string;
@@ -604,6 +606,29 @@ function scheduleStatusLabel(status: RegistrationScheduleStatus) {
   };
 
   return labels[status] ?? status;
+}
+
+function getScheduleAudience(schedule: Pick<RegistrationSchedule, "audience" | "grade">): RegistrationScheduleAudience {
+  return schedule.audience === "partner" || schedule.grade.startsWith("partner-") ? "partner" : "parent";
+}
+
+function scheduleAudienceLabel(schedule: Pick<RegistrationSchedule, "audience" | "grade">) {
+  return getScheduleAudience(schedule) === "partner" ? "Đối tác" : "Phụ huynh";
+}
+
+function scheduleInterestLabel(schedule: Pick<RegistrationSchedule, "audience" | "grade" | "classProgramName">) {
+  const partnerLabels: Record<string, string> = {
+    "partner-franchise": "Nhượng quyền / mở cơ sở",
+    "partner-admissions": "Hợp tác tuyển sinh",
+    "partner-media": "Hợp tác truyền thông",
+    "partner-vendor": "Cung cấp dịch vụ",
+  };
+
+  if (getScheduleAudience(schedule) === "partner") {
+    return partnerLabels[schedule.grade] ?? (schedule.grade || "Chưa chọn");
+  }
+
+  return schedule.classProgramName || schedule.grade || "Chưa chọn";
 }
 
 async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
@@ -3838,13 +3863,13 @@ function getListPreview(item: any, tab: TabKey, programMode: ProgramMode, aboutM
     tab === "banners"
       ? "Trang chủ"
       : tab === "schedules"
-        ? scheduleStatusLabel(item.status ?? "new")
+        ? `${scheduleAudienceLabel(item)} - ${scheduleStatusLabel(item.status ?? "new")}`
         : item.category || item.categoryName || "Chưa phân loại";
   const description =
     tab === "banners"
       ? item.subtitle || item.ctaLabel || "Banner trang chủ"
       : tab === "schedules"
-        ? `${item.phone || "Chưa có SĐT"} - ${formatDateTime(item.requestedAt)}`
+        ? `${scheduleInterestLabel(item)} - ${item.phone || "Chưa có SĐT"}`
       : tab === "about" && aboutMode === "testimonials"
         ? item.quote || "Chưa có nội dung chia sẻ."
         : item.excerpt || item.description || item.age || "Chưa có mô tả ngắn.";
@@ -3862,7 +3887,7 @@ function getListPreview(item: any, tab: TabKey, programMode: ProgramMode, aboutM
     tab === "banners"
       ? "Banner"
       : tab === "schedules"
-      ? "Lịch đăng ký"
+      ? scheduleAudienceLabel(item)
       : tab === "teaching"
       ? "Con đường"
       : tab === "posts"
@@ -3909,6 +3934,7 @@ export default function AdminDashboard() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryNameEn, setNewCategoryNameEn] = useState("");
   const [scheduleCampusFilter, setScheduleCampusFilter] = useState("all");
+  const [scheduleAudienceFilter, setScheduleAudienceFilter] = useState<"all" | RegistrationScheduleAudience>("all");
   const [categories, setCategories] = useState<CategoryState>(emptyCategories);
   const [registrationForm, setRegistrationForm] =
     useState<RegistrationSectionForm>(emptyRegistrationSection);
@@ -3946,12 +3972,15 @@ export default function AdminDashboard() {
   }, [data.schedules]);
 
   const filteredSchedules = useMemo(() => {
-    if (scheduleCampusFilter === "all") return data.schedules;
-
     return data.schedules.filter((schedule) => {
-      return schedule.campusSlug.trim() === scheduleCampusFilter;
+      const matchesCampus =
+        scheduleCampusFilter === "all" || schedule.campusSlug.trim() === scheduleCampusFilter;
+      const matchesAudience =
+        scheduleAudienceFilter === "all" || getScheduleAudience(schedule) === scheduleAudienceFilter;
+
+      return matchesCampus && matchesAudience;
     });
-  }, [data.schedules, scheduleCampusFilter]);
+  }, [data.schedules, scheduleAudienceFilter, scheduleCampusFilter]);
 
   function exportFilteredSchedules() {
     if (!filteredSchedules.length) {
@@ -3961,13 +3990,20 @@ export default function AdminDashboard() {
 
     const selectedCampus = scheduleCampusOptions.find((option) => option.value === scheduleCampusFilter);
     const campusLabel = selectedCampus?.label ?? "Tất cả cơ sở";
+    const audienceLabel =
+      scheduleAudienceFilter === "partner"
+        ? "Đối tác"
+        : scheduleAudienceFilter === "parent"
+          ? "Phụ huynh"
+          : "Tất cả loại đăng ký";
     const rows = filteredSchedules.map((schedule, index) => [
       index + 1,
+      scheduleAudienceLabel(schedule),
       schedule.parentName,
       schedule.phone,
       schedule.email || "Chưa có email",
       schedule.campusName || "Chưa chọn",
-      schedule.classProgramName || schedule.grade || "Chưa chọn",
+      scheduleInterestLabel(schedule),
       formatDateTime(schedule.requestedAt),
       scheduleStatusLabel(schedule.status),
       formatDateTime(schedule.createdAt),
@@ -3977,11 +4013,12 @@ export default function AdminDashboard() {
     ]);
     const headers = [
       "STT",
-      "Phụ huynh",
+      "Loại",
+      "Người liên hệ",
       "Số điện thoại",
       "Email",
-      "Cơ sở",
-      "Khối lớp",
+      "Cơ sở/khu vực",
+      "Nhu cầu",
       "Thời gian tư vấn",
       "Trạng thái",
       "Ngày tạo",
@@ -4008,7 +4045,7 @@ export default function AdminDashboard() {
 <body>
   <table>
     <thead>
-      <tr><th colspan="${headers.length}">${escapeExcelCell(`Lịch đăng ký - ${campusLabel}`)}</th></tr>
+      <tr><th colspan="${headers.length}">${escapeExcelCell(`Lịch đăng ký - ${campusLabel} - ${audienceLabel}`)}</th></tr>
     </thead>
     <tbody>${worksheetRows}</tbody>
   </table>
@@ -4974,6 +5011,19 @@ export default function AdminDashboard() {
                         </option>
                       ))}
                     </select>
+                    <select
+                      value={scheduleAudienceFilter}
+                      onChange={(event) => {
+                        setScheduleAudienceFilter(event.target.value as "all" | RegistrationScheduleAudience);
+                        setSelected(null);
+                        setScheduleForm(emptySchedule);
+                      }}
+                      className="h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[14px] font-bold text-[#620000] outline-none focus:border-[#b80000]"
+                    >
+                      <option value="all">Tất cả loại đăng ký</option>
+                      <option value="parent">Phụ huynh</option>
+                      <option value="partner">Đối tác</option>
+                    </select>
                     <ActionButton
                       icon={<Download size={17} />}
                       tone="quiet"
@@ -5243,7 +5293,9 @@ export default function AdminDashboard() {
                 <form className="grid gap-5" onSubmit={saveSchedule}>
                   <div className="grid gap-3 rounded-md border border-[#efd0d0] bg-[#fff8f8] p-4 md:grid-cols-2">
                     <div>
-                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Phụ huynh</p>
+                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">
+                        {scheduleAudienceLabel(selectedSchedule)}
+                      </p>
                       <p className="mt-1 text-[18px] font-extrabold">{selectedSchedule.parentName}</p>
                     </div>
                     <div>
@@ -5252,13 +5304,17 @@ export default function AdminDashboard() {
                       <p className="text-[14px] font-semibold text-[#7e3d3d]">{selectedSchedule.email || "Chưa có email"}</p>
                     </div>
                     <div>
-                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Khối lớp</p>
+                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">
+                        {getScheduleAudience(selectedSchedule) === "partner" ? "Nhu cầu hợp tác" : "Khối lớp"}
+                      </p>
                       <p className="mt-1 text-[15px] font-bold">
-                        {selectedSchedule.classProgramName || selectedSchedule.grade || "Chưa chọn"}
+                        {scheduleInterestLabel(selectedSchedule)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Cơ sở gần bạn</p>
+                      <p className="text-[12px] font-extrabold uppercase text-[#b80000]">
+                        {getScheduleAudience(selectedSchedule) === "partner" ? "Khu vực/chi nhánh quan tâm" : "Cơ sở gần bạn"}
+                      </p>
                       <p className="mt-1 text-[15px] font-bold">
                         {selectedSchedule.campusName || "Chưa chọn"}
                       </p>
@@ -5286,7 +5342,7 @@ export default function AdminDashboard() {
 
                   <div className="grid gap-4 md:grid-cols-2">
                     <Field
-                      label="Thời gian tư vấn"
+                      label={getScheduleAudience(selectedSchedule) === "partner" ? "Thời gian liên hệ" : "Thời gian tư vấn"}
                       type="datetime-local"
                       value={scheduleForm.requestedAt}
                       onChange={(value) => setScheduleForm((form) => ({ ...form, requestedAt: value }))}

@@ -4,6 +4,7 @@ import { sendRegistrationConfirmationEmail } from "./registration-email";
 import { findRegistrationCampusOption } from "./campuses";
 
 export type EnrollmentLeadInput = {
+  audience?: "parent" | "partner";
   parentName: string;
   phone: string;
   email: string;
@@ -105,6 +106,9 @@ export function validateEnrollmentLead(input: Partial<EnrollmentLeadInput>) {
   const grade = input.grade?.trim() ?? "";
   const campusId = normalizeCampusId(input.campusId);
   const campusSlug = normalizeCampusSlug(input.campusSlug);
+  const gradeSlug = normalizeGradeToSlug(grade);
+  const audience: "parent" | "partner" =
+    input.audience === "partner" || gradeSlug?.startsWith("partner-") ? "partner" : "parent";
 
   if (campusSlug && !findRegistrationCampusOption(campusSlug)) {
     errors.campusSlug = "Cơ sở không hợp lệ.";
@@ -122,7 +126,7 @@ export function validateEnrollmentLead(input: Partial<EnrollmentLeadInput>) {
     errors.email = "Email không hợp lệ.";
   }
 
-  if (!normalizeGradeToSlug(grade)) {
+  if (!gradeSlug) {
     errors.grade = "Khối lớp không hợp lệ.";
   }
 
@@ -137,6 +141,7 @@ export function validateEnrollmentLead(input: Partial<EnrollmentLeadInput>) {
       parentName,
       phone,
       email,
+      audience,
       campusId,
       campusSlug,
       grade,
@@ -362,6 +367,7 @@ export async function createEnrollmentLead(
       parentName: validation.data.parentName,
       phone: validation.data.phone,
       grade: validation.data.grade,
+      audience: validation.data.audience,
       campusName,
       appointmentLabel: formatAppointmentLabel(requestedAppointmentAt),
       leadId: leadResult.insertId,

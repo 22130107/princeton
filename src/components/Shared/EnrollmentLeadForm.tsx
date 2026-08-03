@@ -142,6 +142,7 @@ export default function EnrollmentLeadForm({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          audience,
           parentName,
           phone,
           email,
