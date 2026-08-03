@@ -20,6 +20,8 @@ type CampusOption = {
   label: string;
 };
 
+type RegistrationAudience = "parent" | "partner";
+
 const fallbackPrograms: ProgramOption[] = [
   { slug: "penguin", label: "Penguin (2-3 TUỔI)" },
 ];
@@ -42,6 +44,59 @@ type PromoImage = {
   zoom: number;
   position: string;
 };
+
+function getPartnerProgramOptions(t: (key: string) => string): ProgramOption[] {
+  return [
+    { slug: "partner-franchise", label: t("register.partnerNeed.franchise") },
+    { slug: "partner-admissions", label: t("register.partnerNeed.admissions") },
+    { slug: "partner-media", label: t("register.partnerNeed.media") },
+    { slug: "partner-vendor", label: t("register.partnerNeed.vendor") },
+  ];
+}
+
+function AudienceTabs({
+  activeTab,
+  onChange,
+  variant = "desktop",
+}: {
+  activeTab: RegistrationAudience;
+  onChange: (value: RegistrationAudience) => void;
+  variant?: "desktop" | "mobile";
+}) {
+  const { t } = useLanguage();
+  const isMobile = variant === "mobile";
+  const tabs = [
+    ["parent", t("register.audience.parent")],
+    ["partner", t("register.audience.partner")],
+  ] as const;
+
+  return (
+    <div
+      className={[
+        "grid w-full grid-cols-2 overflow-hidden border border-[#b80000] bg-white",
+        isMobile ? "mb-2 rounded-[22px]" : "rounded-t-[28px] rounded-b-none",
+      ].join(" ")}
+    >
+      {tabs.map(([key, label]) => {
+        const isActive = activeTab === key;
+        return (
+          <button
+            key={key}
+            type="button"
+            onClick={() => onChange(key)}
+            className={[
+              "flex items-center justify-center font-extrabold text-[#b80000] transition-colors",
+              isMobile ? "min-h-[54px] text-[20px]" : "min-h-[58px] text-[26px]",
+              isActive ? "bg-[#b80000] text-white" : "bg-white hover:bg-[#fff1f1]",
+            ].join(" ")}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 function useRegistrationPromoAlt() {
   const { t } = useLanguage();
@@ -1026,6 +1081,7 @@ function ListItem({
 }
 
 function Container184({
+  audience,
   consentText,
   checked,
   onToggle,
@@ -1047,6 +1103,7 @@ function Container184({
   appointmentTime,
   onAppointmentTimeChange,
 }: {
+  audience: RegistrationAudience;
   consentText: string;
   checked: boolean;
   onToggle: () => void;
@@ -1069,6 +1126,9 @@ function Container184({
   onAppointmentTimeChange: (value: string) => void;
 }) {
   const { t } = useLanguage();
+  const isPartner = audience === "partner";
+  const campusLabel = isPartner ? t("form.partnerCampus") : t("form.campus");
+  const gradeLabel = isPartner ? t("form.partnerNeed") : t("form.grade");
 
   return (
     <div className="content-stretch flex flex-col gap-[12.6px] items-start relative shrink-0 w-full" data-name="Container">
@@ -1079,14 +1139,15 @@ function Container184({
         options={campuses}
         value={campusSlug}
         onChange={onCampusChange}
-        ariaLabel={t("form.campus")}
-        placeholder={t("form.campus")}
+        ariaLabel={campusLabel}
+        placeholder={campusLabel}
       />
       <ListboxMenu
         options={programs}
         value={grade}
         onChange={onGradeChange}
-        ariaLabel={t("form.grade")}
+        ariaLabel={gradeLabel}
+        placeholder={gradeLabel}
       />
       <ListItem consentText={consentText} checked={checked} onToggle={onToggle} />
     </div>
@@ -1099,6 +1160,7 @@ function Container184({
 
 
 function Form({
+  audience,
   consentText,
   checked,
   onToggle,
@@ -1120,6 +1182,7 @@ function Form({
   appointmentTime,
   onAppointmentTimeChange,
 }: {
+  audience: RegistrationAudience;
   consentText: string;
   checked: boolean;
   onToggle: () => void;
@@ -1144,6 +1207,7 @@ function Form({
   return (
     <div className="content-stretch flex flex-col gap-[25.2px] items-start pt-[5.8px] relative shrink-0 w-[370px]" data-name="Form">
       <Container184
+        audience={audience}
         consentText={consentText}
         checked={checked}
         onToggle={onToggle}
@@ -1170,6 +1234,7 @@ function Form({
 }
 
 function Container173({
+  audience,
   settings,
   checked,
   onToggleConsent,
@@ -1191,6 +1256,7 @@ function Container173({
   appointmentTime,
   onAppointmentTimeChange,
 }: {
+  audience: RegistrationAudience;
   settings: RegistrationSectionSettings;
   checked: boolean;
   onToggleConsent: () => void;
@@ -1218,6 +1284,7 @@ function Container173({
       {settings.showCountdown ? <BackgroundBorderShadow settings={settings} /> : null}
       {settings.showForm ? (
         <Form
+          audience={audience}
           consentText={settings.consentText}
           checked={checked}
           onToggle={onToggleConsent}
@@ -1245,6 +1312,7 @@ function Container173({
 }
 
 function Background13({
+  audience,
   settings,
   checked,
   onToggleConsent,
@@ -1268,6 +1336,7 @@ function Background13({
   appointmentTime,
   onAppointmentTimeChange,
 }: {
+  audience: RegistrationAudience;
   settings: RegistrationSectionSettings;
   checked: boolean;
   onToggleConsent: () => void;
@@ -1302,6 +1371,7 @@ function Background13({
         />
       ) : null}
       <Container173
+        audience={audience}
         settings={settings}
         checked={checked}
         onToggleConsent={onToggleConsent}
@@ -1337,6 +1407,7 @@ export default function RegistrationSection() {
   const [campuses, setCampuses] = useState<CampusOption[]>([]);
   const [campusSlug, setCampusSlug] = useState("");
   const [agreed, setAgreed] = useState(false);
+  const [audience, setAudience] = useState<RegistrationAudience>("parent");
   const [programs, setPrograms] = useState<ProgramOption[]>(fallbackPrograms);
   const [grade, setGrade] = useState(fallbackPrograms[0].slug);
   const [appointmentDate, setAppointmentDate] = useState("");
@@ -1355,15 +1426,24 @@ export default function RegistrationSection() {
     const offsetMs = today.getTimezoneOffset() * 60 * 1000;
     return new Date(today.getTime() - offsetMs).toISOString().slice(0, 10);
   })();
+  const isPartnerAudience = audience === "partner";
+  const partnerPrograms = getPartnerProgramOptions(t);
+  const visiblePrograms = isPartnerAudience ? partnerPrograms : programs;
   const displaySettings = {
     ...settings,
-    title: lang === "en" ? t("register.promoTitle") : settings.title,
+    title: isPartnerAudience ? t("register.partnerTitle") : lang === "en" ? t("register.promoTitle") : settings.title,
     submitLabel: lang === "en" ? t("register.cta") : settings.submitLabel,
     consentText: lang === "en" ? t("form.consentLong") : settings.consentText,
+    showCountdown: settings.showCountdown && !isPartnerAudience,
     countdownDays: countdownValues.days,
     countdownHours: countdownValues.hours,
     countdownMinutes: countdownValues.minutes,
     countdownSeconds: countdownValues.seconds,
+  };
+  const setRegistrationAudience = (nextAudience: RegistrationAudience) => {
+    setAudience(nextAudience);
+    setCampusSlug("");
+    setGrade(nextAudience === "partner" ? partnerPrograms[0].slug : programs[0]?.slug || fallbackPrograms[0].slug);
   };
 
   async function submitLead() {
@@ -1472,7 +1552,7 @@ export default function RegistrationSection() {
         }}
       >
         <div
-          className="content-stretch flex gap-[16px] h-[907.69px] items-start p-[16px] rounded-[48px]"
+          className="content-stretch relative flex gap-[16px] h-[907.69px] items-start p-[16px] rounded-b-[48px] rounded-t-none"
           data-name="Section"
           style={{
             backgroundColor: settings.backgroundColor,
@@ -1481,8 +1561,14 @@ export default function RegistrationSection() {
             width: SECTION_ARTBOARD_WIDTH,
           }}
         >
+          {settings.showForm ? (
+            <div className="absolute left-0 right-0 top-[-58px] z-[4]">
+              <AudienceTabs activeTab={audience} onChange={setRegistrationAudience} />
+            </div>
+          ) : null}
           {settings.showPromoImage ? <Container171 promo={promo} /> : null}
           <Background13
+            audience={audience}
             settings={displaySettings}
             checked={agreed}
             onToggleConsent={() => setAgreed((value) => !value)}
@@ -1497,7 +1583,7 @@ export default function RegistrationSection() {
             campuses={campuses}
             campusSlug={campusSlug}
             onCampusChange={setCampusSlug}
-            programs={programs}
+            programs={visiblePrograms}
             grade={grade}
             onGradeChange={setGrade}
             appointmentDate={appointmentDate}

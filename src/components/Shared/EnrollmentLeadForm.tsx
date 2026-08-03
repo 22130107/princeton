@@ -21,6 +21,7 @@ type EnrollmentLeadFormProps = {
   variant?: "desktop" | "mobile";
   submitLabel?: string;
   consentText?: string;
+  audience?: "parent" | "partner";
 };
 
 type SubmitState =
@@ -40,10 +41,21 @@ export default function EnrollmentLeadForm({
   variant = "desktop",
   submitLabel,
   consentText,
+  audience = "parent",
 }: EnrollmentLeadFormProps) {
   const { t } = useLanguage();
   const effectiveSubmitLabel = submitLabel ?? t("register.cta");
   const effectiveConsentText = consentText ?? t("form.consentLong");
+  const isPartner = audience === "partner";
+  const partnerPrograms = useMemo(
+    () => [
+      { slug: "partner-franchise", label: t("register.partnerNeed.franchise") },
+      { slug: "partner-admissions", label: t("register.partnerNeed.admissions") },
+      { slug: "partner-media", label: t("register.partnerNeed.media") },
+      { slug: "partner-vendor", label: t("register.partnerNeed.vendor") },
+    ],
+    [t],
+  );
   const [programs, setPrograms] = useState<ProgramOption[]>([]);
   const [campuses, setCampuses] = useState<CampusOption[]>([]);
   const [parentName, setParentName] = useState("");
@@ -66,7 +78,9 @@ export default function EnrollmentLeadForm({
       .then((data) => {
         if (!mounted || !Array.isArray(data.programs)) return;
         setPrograms(data.programs);
-        setGrade((current) => current || data.programs[0]?.slug || "");
+        if (!isPartner) {
+          setGrade((current) => current || data.programs[0]?.slug || "");
+        }
       })
       .catch(() => {
         if (!mounted) return;
@@ -87,7 +101,18 @@ export default function EnrollmentLeadForm({
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [isPartner]);
+
+  useEffect(() => {
+    setGrade((current) => {
+      const options = isPartner ? partnerPrograms : programs;
+      return options.some((program) => program.slug === current) ? current : options[0]?.slug || "";
+    });
+  }, [isPartner, partnerPrograms, programs]);
+
+  const visiblePrograms = isPartner ? partnerPrograms : programs;
+  const campusLabel = isPartner ? t("form.partnerCampus") : t("form.campus");
+  const gradeLabel = isPartner ? t("form.partnerNeed") : t("form.grade");
 
   const fieldClass = useMemo(
     () =>
@@ -229,14 +254,14 @@ export default function EnrollmentLeadForm({
       </div>
 
       <div>
-        <label className={labelClass}>{t("form.campus")}</label>
+        <label className={labelClass}>{campusLabel}</label>
         <div className="relative">
           <select
             value={campusSlug}
             onChange={(event) => setCampusSlug(event.target.value)}
             className={`${fieldClass} appearance-none pr-9`}
           >
-            <option value="">{t("form.campus")}</option>
+            <option value="">{campusLabel}</option>
             {campuses.map((campus) => (
               <option key={campus.slug} value={campus.slug}>
                 {campus.label}
@@ -260,14 +285,14 @@ export default function EnrollmentLeadForm({
       </div>
 
       <div>
-        <label className={labelClass}>{t("form.grade")}</label>
+        <label className={labelClass}>{gradeLabel}</label>
         <div className="relative">
           <select
             value={grade}
             onChange={(event) => setGrade(event.target.value)}
             className={`${fieldClass} appearance-none pr-9`}
           >
-            {programs.map((program) => (
+            {visiblePrograms.map((program) => (
               <option key={program.slug} value={program.slug}>
                 {program.label}
               </option>

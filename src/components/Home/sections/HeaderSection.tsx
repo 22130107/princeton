@@ -45,7 +45,7 @@ function RegisterButton() {
   const { t } = useLanguage();
   return (
     <Link
-      href="/dang-ky"
+      href="/lien-he"
       className="relative flex shrink-0 items-center justify-center rounded-[64px] border-2 border-[#8d0000] bg-[#b80000] px-[22px] py-[10px] no-underline shadow-[0_3px_0_#700000]"
       data-name="Link"
     >
@@ -134,9 +134,9 @@ function MobileMenu({ open, pathname }: { open: boolean; pathname: string }) {
   return (
     <div className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
       <nav className="flex flex-col gap-1 border-t border-[#620000]/10 px-4 pb-4 pt-3">
-        {[...navItems, { href: "/dang-ky", labelKey: "nav.register" }].map((item) => {
+        {[...navItems, { href: "/lien-he", labelKey: "nav.register" }].map((item) => {
           const isActive =
-            item.href === "/dang-ky"
+            item.href === "/lien-he"
               ? pathname === item.href
               : pathname === item.href || pathname.startsWith(`${item.href}/`);
 

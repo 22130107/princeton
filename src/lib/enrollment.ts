@@ -41,6 +41,10 @@ const gradeSlugMap: Record<string, string> = {
   koala: "koala",
   kangaroo: "kangaroo",
   preschool: "preschool",
+  "partner-franchise": "partner-franchise",
+  "partner-admissions": "partner-admissions",
+  "partner-media": "partner-media",
+  "partner-vendor": "partner-vendor",
 };
 
 const consentText =

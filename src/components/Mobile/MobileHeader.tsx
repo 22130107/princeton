@@ -15,7 +15,7 @@ const navItems = [
   { href: "/cuoc-song-tai-princeton", labelKey: "nav.curriculum" },
   { href: "/ket-noi-gia-dinh", labelKey: "nav.about" },
   { href: "/hop-tac-cung-princeton", labelKey: "nav.news" },
-  { href: "/dang-ky", labelKey: "nav.register" },
+  { href: "/lien-he", labelKey: "nav.register" },
 ];
 
 export default function MobileHeader() {
@@ -44,7 +44,7 @@ export default function MobileHeader() {
             </span>
           </button>
           <Link
-            href="/dang-ky"
+            href="/lien-he"
             className="relative rounded-full border-2 border-[#8d0000] bg-[#b80000] px-4 py-2 text-[13px] font-extrabold uppercase text-white no-underline shadow-[0_2px_0_#700000] whitespace-nowrap"
           >
             <span className="pointer-events-none absolute inset-[4px] rounded-full border border-dashed border-white/95" />
@@ -80,7 +80,7 @@ export default function MobileHeader() {
         <nav className="border-t border-[#620000]/10 px-4 pb-4 pt-2 flex flex-col gap-1">
           {navItems.map((item) => {
             const isActive =
-              item.href === "/dang-ky"
+              item.href === "/lien-he"
                 ? pathname === item.href
                 : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
