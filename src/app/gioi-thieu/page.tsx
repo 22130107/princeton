@@ -209,38 +209,42 @@ export default async function GioiThieuPage() {
       {facilitySlides.length ? (
         <section className="px-4 py-14 md:px-10 md:py-24">
           <div className="mx-auto grid max-w-[1180px] items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
-            <figure className="relative order-2 lg:order-1">
+            <div className="relative order-2 lg:order-1">
               <div
                 aria-hidden
                 className="absolute inset-0 translate-x-1 translate-y-1 bg-[#991B1B]/10"
               />
-              <div className="relative border-2 border-[#991B1B] bg-white">
-                <img
-                  src={assetSrc(featuredFacility.image)}
-                  alt={featuredFacility.title}
-                  className="aspect-[1/1.12] w-full object-cover"
-                />
-                <div className="absolute bottom-12 left-[-18px] z-[2] w-[72%] md:bottom-16 md:left-[-24px] md:w-[68%]">
-                  <span
-                    aria-hidden
-                    className="absolute left-0 top-[-14px] h-[14px] w-[16px] bg-[#F4D06F] md:w-[22px]"
-                    style={{
-                      clipPath: "polygon(0 100%, 100% 100%, 100% 0)",
-                    }}
-                  />
-                  <figcaption
-                    className="relative border-t-2 border-[#991B1B] bg-[#F4D06F] py-5 pl-10 pr-6 md:pl-12"
-                    style={{
-                      clipPath: "polygon(0 0, 100% 0, calc(100% - 38px) 100%, 0 100%)",
-                    }}
-                  >
-                  <span className="block max-w-[420px] text-[14px] font-medium italic leading-6 text-[#5d332b]">
-                    {featuredFacility.title || (isEn ? "A carefully designed learning environment." : "Không gian được thiết kế tỉ mỉ, tối ưu cho việc học tập và sáng tạo.")}
-                  </span>
-                  </figcaption>
-                </div>
+              <div className="flex snap-x snap-mandatory overflow-x-auto pb-4 pt-2 -ml-5 pl-5 md:-ml-8 md:pl-8" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                {facilitySlides.map((slide, index) => (
+                  <figure key={index} className="relative w-[calc(100%-20px)] md:w-[calc(100%-32px)] shrink-0 snap-center border-2 border-[#991B1B] bg-white mr-5 md:mr-8">
+                    <img
+                      src={assetSrc(slide.image)}
+                      alt={slide.title || "Facility"}
+                      className="aspect-[1/1.12] w-full object-cover"
+                    />
+                    <div className="absolute bottom-12 left-[-18px] z-[2] w-[80%] md:bottom-16 md:left-[-24px] md:w-[75%]">
+                      <span
+                        aria-hidden
+                        className="absolute left-0 top-[-14px] h-[14px] w-[16px] bg-[#F4D06F] md:w-[22px]"
+                        style={{
+                          clipPath: "polygon(0 100%, 100% 100%, 100% 0)",
+                        }}
+                      />
+                      <figcaption
+                        className="relative border-t-2 border-[#991B1B] bg-[#F4D06F] py-4 pl-8 pr-4 md:py-5 md:pl-10 md:pr-6"
+                        style={{
+                          clipPath: "polygon(0 0, 100% 0, calc(100% - 38px) 100%, 0 100%)",
+                        }}
+                      >
+                      <span className="block max-w-[420px] text-[13px] md:text-[14px] font-medium italic leading-6 text-[#5d332b]">
+                        {slide.title || (isEn ? "A carefully designed learning environment." : "Không gian được thiết kế tỉ mỉ, tối ưu cho việc học tập và sáng tạo.")}
+                      </span>
+                      </figcaption>
+                    </div>
+                  </figure>
+                ))}
               </div>
-            </figure>
+            </div>
 
             <div className="order-1 lg:order-2">
               <h2 className="max-w-[560px] text-balance text-[36px] font-extrabold uppercase leading-[1.02] text-[#991B1B] md:text-[56px]">
