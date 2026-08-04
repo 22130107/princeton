@@ -466,13 +466,13 @@ function WhyChoose() {
     <section className="bg-[#f7f4f2] py-16 md:py-20">
       <div className={shell}>
         <SectionTitle title={copy[lang].whyTitle} />
-        <div className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 md:grid md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {whyItems.map((item) => {
             const Icon = item.icon;
             return (
               <article
                 key={item.viTitle}
-                className="group relative min-h-[220px] w-[85vw] shrink-0 snap-center overflow-hidden rounded-none border-2 border-[#ead9c9] bg-gradient-to-b from-white to-[#fdfcfb] px-8 py-9 text-center shadow-[0_8px_24px_rgba(100,50,30,0.06)] transition-all duration-300 ease-out hover:-translate-y-2 hover:border-[#d6b58d] hover:shadow-[0_20px_40px_rgba(153,27,27,0.12)] md:w-auto"
+                className="group relative min-h-[220px] overflow-hidden rounded-none border-2 border-[#ead9c9] bg-gradient-to-b from-white to-[#fdfcfb] px-8 py-9 text-center shadow-[0_8px_24px_rgba(100,50,30,0.06)] transition-all duration-300 ease-out hover:-translate-y-2 hover:border-[#d6b58d] hover:shadow-[0_20px_40px_rgba(153,27,27,0.12)]"
               >
                 {/* Premium bottom accent line on hover */}
                 <span className="absolute inset-x-0 bottom-0 h-1.5 bg-gradient-to-r from-[#d8a928]/0 via-[#d8a928] to-[#d8a928]/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -503,7 +503,7 @@ function PrincetonWay({ items }: { items: PrincetonWayItem[] }) {
     <section className="bg-[#f7f4f2] py-14 md:py-16">
       <div className={shell}>
         <SectionTitle title={copy[lang].wayTitle} />
-        <div className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 md:grid md:grid-cols-4">
+        <div className="grid gap-5 md:grid-cols-4">
           {visibleItems.map((item, index) => {
             const title = lang === "en" && item.titleEn ? item.titleEn : item.title;
 
@@ -511,7 +511,7 @@ function PrincetonWay({ items }: { items: PrincetonWayItem[] }) {
               <Link
                 href={item.slug ? `/phuong-phap-giang-day/${item.slug}` : "/con-duong-princeton"}
                 key={`${item.slug ?? item.title}-${index}`}
-                className="w-[85vw] shrink-0 snap-center md:w-auto group relative aspect-[326/320] overflow-hidden rounded-none border-2 border-transparent bg-[#2f1515] text-white no-underline shadow-[0_12px_32px_rgba(76,35,25,0.15)] transition-all duration-300 hover:border-[#991b1b] hover:shadow-[0_20px_40px_rgba(153,27,27,0.2)]"
+                className="group relative aspect-[326/320] overflow-hidden rounded-none border-2 border-transparent bg-[#2f1515] text-white no-underline shadow-[0_12px_32px_rgba(76,35,25,0.15)] transition-all duration-300 hover:border-[#991b1b] hover:shadow-[0_20px_40px_rgba(153,27,27,0.2)]"
               >
                 <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-110">
                   <CoverImage
@@ -559,12 +559,12 @@ function Programs({ programs }: { programs: ClassProgramItem[] }) {
     <section className="bg-[#f7f4f2] py-16">
       <div className={shell}>
         <SectionTitle title={copy[lang].programTitle} />
-        <div className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 md:grid md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {programs.map((program) => (
             <Link
               href={`/chuong-trinh-hoc/${program.slug}`}
               key={program.slug}
-              className="w-[85vw] shrink-0 snap-center md:w-auto group flex flex-col overflow-hidden rounded-none border-2 border-[#ead9c9] bg-white text-[#2f1515] no-underline shadow-[0_8px_24px_rgba(100,50,30,0.06)] transition-all duration-300 ease-out hover:-translate-y-2 hover:border-[#d6b58d] hover:shadow-[0_20px_40px_rgba(153,27,27,0.12)]"
+              className="group flex flex-col overflow-hidden rounded-none border-2 border-[#ead9c9] bg-white text-[#2f1515] no-underline shadow-[0_8px_24px_rgba(100,50,30,0.06)] transition-all duration-300 ease-out hover:-translate-y-2 hover:border-[#d6b58d] hover:shadow-[0_20px_40px_rgba(153,27,27,0.12)]"
             >
               <div className="relative aspect-[326/185] overflow-hidden" style={{ backgroundColor: program.color || "#fff1cf" }}>
                 <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
@@ -605,8 +605,7 @@ function Programs({ programs }: { programs: ClassProgramItem[] }) {
 
 function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
   const { lang } = useLanguage();
-  const [isMobile, setIsMobile] = useState(false);
-  const pageSize = isMobile ? 1 : 3;
+  const pageSize = 3;
   const [activeIndex, setActiveIndex] = useState(0);
   const canRotate = testimonials.length > pageSize;
   const visibleTestimonials = useMemo(
@@ -621,89 +620,97 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
     setActiveIndex((index) => (testimonials.length ? Math.min(index, testimonials.length - 1) : 0));
   }, [testimonials.length]);
 
-  useEffect(() => {
-    const update = () => setIsMobile(window.innerWidth < 768);
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
+  const renderCard = (testimonial: Testimonial, index: number, isMobileCard: boolean) => {
+    const parentName =
+      lang === "en" && testimonial.parentNameEn
+        ? testimonial.parentNameEn
+        : testimonial.parentName;
+    const quoteText =
+      lang === "en" && testimonial.quoteEn ? testimonial.quoteEn : testimonial.quote;
+    
+    return (
+      <article
+        key={`${parentName}-${index}`}
+        className={`flex h-full min-h-[252px] flex-col border-2 border-[#991B1B] bg-[#fffefa] p-7 shadow-[4px_4px_0_rgba(153,27,27,0.2)] ${
+          isMobileCard ? "w-[85vw] shrink-0 snap-center sm:w-[320px]" : ""
+        }`}
+      >
+        <div className="flex items-center justify-between text-[#d8a928]">
+          <div className="flex gap-1">
+            {Array.from({ length: 5 }).map((_, starIndex) => (
+              <Star key={starIndex} aria-hidden className="size-4 fill-current" />
+            ))}
+          </div>
+          <img
+            src={logoImage.src}
+            alt="Princeton Academy"
+            loading="lazy"
+            className="size-16 object-contain"
+          />
+        </div>
+        <p className="mt-5 flex-1 text-[15px] font-medium leading-7 text-[#4b3531]">
+          {quoteText}
+        </p>
+        <div className="mt-6 flex items-center gap-3">
+          <div className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-full bg-[#b80000] text-white">
+            {testimonial.avatarUrl ? (
+              <img
+                src={testimonial.avatarUrl}
+                alt={testimonial.avatarAlt || parentName}
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <Baby aria-hidden className="size-5" />
+            )}
+          </div>
+          <div>
+            <p className="text-[15px] font-extrabold leading-5 text-[#2f1515]">{parentName}</p>
+            <p className="text-[13px] font-semibold text-[#7b5a54]">
+              {testimonial.studentName || copy[lang].parent}
+            </p>
+          </div>
+        </div>
+      </article>
+    );
+  };
 
   return (
     <section className="bg-[#f7f4f2] py-16 md:py-20">
       <div className={shell}>
         <SectionTitle title={copy[lang].testimonialTitle} />
-        <div className="grid items-stretch gap-5 md:grid-cols-3">
-          {visibleTestimonials.map((testimonial, index) => {
-            const parentName =
-              lang === "en" && testimonial.parentNameEn
-                ? testimonial.parentNameEn
-                : testimonial.parentName;
-            const quoteText =
-              lang === "en" && testimonial.quoteEn ? testimonial.quoteEn : testimonial.quote;
-            return (
-              <article
-                key={`${parentName}-${index}`}
-                className="flex h-full min-h-[252px] flex-col border-2 border-[#991B1B] bg-[#fffefa] p-7 shadow-[4px_4px_0_rgba(153,27,27,0.2)]"
-              >
-                <div className="flex items-center justify-between text-[#d8a928]">
-                  <div className="flex gap-1">
-                    {Array.from({ length: 5 }).map((_, starIndex) => (
-                      <Star key={starIndex} aria-hidden className="size-4 fill-current" />
-                    ))}
-                  </div>
-                  <img
-                    src={logoImage.src}
-                    alt="Princeton Academy"
-                    loading="lazy"
-                    className="size-16 object-contain"
-                  />
-                </div>
-                <p className="mt-5 flex-1 text-[15px] font-medium leading-7 text-[#4b3531]">
-                  {quoteText}
-                </p>
-                <div className="mt-6 flex items-center gap-3">
-                  <div className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-full bg-[#b80000] text-white">
-                    {testimonial.avatarUrl ? (
-                      <img
-                        src={testimonial.avatarUrl}
-                        alt={testimonial.avatarAlt || parentName}
-                        loading="lazy"
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <Baby aria-hidden className="size-5" />
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-[15px] font-extrabold leading-5 text-[#2f1515]">{parentName}</p>
-                    <p className="text-[13px] font-semibold text-[#7b5a54]">
-                      {testimonial.studentName || copy[lang].parent}
-                    </p>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
+        
+        {/* Mobile View: Horizontal Scroll */}
+        <div className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 md:hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          {testimonials.map((t, i) => renderCard(t, i, true))}
         </div>
-        {canRotate ? (
-          <div className="mt-7 flex justify-center gap-2" aria-label="Chọn nhóm chia sẻ phụ huynh">
-            {testimonials.map((testimonial, index) => (
-              <button
-                key={testimonial.id ?? `${testimonial.parentName}-${index}`}
-                type="button"
-                onClick={() => setActiveIndex(index)}
-                className={`h-2.5 rounded-full transition-all duration-200 ${
-                  index === activeIndex ? "w-8 bg-[#b80000]" : "w-2.5 bg-[#d8b15f]"
-                }`}
-                aria-label={`Xem chia sẻ bắt đầu từ nhận xét ${index + 1}`}
-              />
-            ))}
+
+        {/* Desktop View: Grid with Pagination */}
+        <div className="hidden md:block">
+          <div className="grid items-stretch gap-5 md:grid-cols-3">
+            {visibleTestimonials.map((t, i) => renderCard(t, i, false))}
           </div>
-        ) : null}
+          {canRotate ? (
+            <div className="mt-7 flex justify-center gap-2" aria-label="Chọn nhóm chia sẻ phụ huynh">
+              {testimonials.map((testimonial, index) => (
+                <button
+                  key={testimonial.id ?? `${testimonial.parentName}-${index}`}
+                  type="button"
+                  onClick={() => setActiveIndex(index)}
+                  className={`h-2.5 rounded-full transition-all duration-200 ${
+                    index === activeIndex ? "w-8 bg-[#b80000]" : "w-2.5 bg-[#d8b15f]"
+                  }`}
+                  aria-label={`Xem chia sẻ bắt đầu từ nhận xét ${index + 1}`}
+                />
+              ))}
+            </div>
+          ) : null}
+        </div>
       </div>
     </section>
   );
 }
+
 
 function CampusAndForm() {
   const { lang } = useLanguage();
