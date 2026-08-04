@@ -587,7 +587,7 @@ function WhyChoose() {
             return (
               <article
                 key={item.viTitle}
-                className="group relative min-h-[220px] overflow-hidden rounded-[16px] border border-[#ead9c9]/60 bg-gradient-to-b from-white to-[#fdfcfb] px-8 py-9 text-center shadow-[0_8px_24px_rgba(100,50,30,0.04)] transition-all duration-300 ease-out hover:-translate-y-2 hover:border-[#d6b58d] hover:shadow-[0_20px_40px_rgba(153,27,27,0.12)]"
+                className="group relative min-h-[220px] overflow-hidden rounded-none border border-[#ead9c9]/60 bg-gradient-to-b from-white to-[#fdfcfb] px-8 py-9 text-center transition-all duration-300 ease-out hover:-translate-y-2 hover:border-[#d6b58d]"
               >
                 {/* Premium bottom accent line on hover */}
                 <span className="absolute inset-x-0 bottom-0 h-1.5 bg-gradient-to-r from-[#d8a928]/0 via-[#d8a928] to-[#d8a928]/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -626,7 +626,7 @@ function PrincetonWay({ items }: { items: PrincetonWayItem[] }) {
               <Link
                 href={item.slug ? `/phuong-phap-giang-day/${item.slug}` : "/con-duong-princeton"}
                 key={`${item.slug ?? item.title}-${index}`}
-                className="group relative aspect-[326/320] overflow-hidden rounded-[12px] bg-[#2f1515] text-white no-underline shadow-[0_12px_32px_rgba(76,35,25,0.12)]"
+                className="group relative aspect-[326/320] overflow-hidden rounded-none bg-[#2f1515] text-white no-underline"
               >
                 <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-110">
                   <CoverImage
@@ -679,7 +679,7 @@ function Programs({ programs }: { programs: ClassProgramItem[] }) {
             <Link
               href={`/chuong-trinh-hoc/${program.slug}`}
               key={program.slug}
-              className="group flex flex-col overflow-hidden rounded-[16px] border border-[#ead9c9]/60 bg-white text-[#2f1515] no-underline shadow-[0_8px_24px_rgba(100,50,30,0.04)] transition-all duration-300 ease-out hover:-translate-y-2 hover:border-[#d6b58d] hover:shadow-[0_20px_40px_rgba(153,27,27,0.12)]"
+              className="group flex flex-col overflow-hidden rounded-none border border-[#ead9c9]/60 bg-white text-[#2f1515] no-underline transition-all duration-300 ease-out hover:-translate-y-2 hover:border-[#d6b58d]"
             >
               <div className="relative aspect-[326/185] overflow-hidden" style={{ backgroundColor: program.color || "#fff1cf" }}>
                 <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
