@@ -10,7 +10,6 @@ import { getTeachingMethod, getTeachingMethods } from "@/lib/content";
 import { getServerLang, getServerT } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
-import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 
 type TeachingMethodDetailPageProps = {
   params: Promise<{
@@ -69,7 +68,7 @@ export default async function TeachingMethodDetailPage({
     .slice(0, 3);
 
   return (
-    <main className="min-h-screen bg-[#fffefa] pt-[64px] text-[#620000] md:pt-[99px]">
+    <main className="min-h-screen bg-white pt-[64px] text-[#620000] md:pt-[99px]">
       <div className="md:hidden">
         <MobileHeader />
       </div>
@@ -77,17 +76,7 @@ export default async function TeachingMethodDetailPage({
         <HeaderSection />
       </div>
 
-      <article className="relative mt-6 overflow-hidden bg-[#bfefff] px-4 pb-12 pt-24 md:mt-10 md:px-10 md:pb-16 md:pt-36">
-        <div
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-[25px] bg-repeat-x"
-          style={{
-            backgroundImage: `url("${imgWaveTop.src}")`,
-            backgroundSize: "176px 25px",
-            backgroundPosition: "top left",
-          }}
-        />
-
+      <article className="relative mt-6 overflow-hidden bg-white px-4 pb-12 pt-12 md:mt-10 md:px-10 md:pb-16 md:pt-16">
         <div className="relative mx-auto max-w-[1040px]">
           <Link
             href="/con-duong-princeton"
@@ -96,7 +85,7 @@ export default async function TeachingMethodDetailPage({
             {t("methods.back")}
           </Link>
 
-          <div className="mt-7 rounded-[32px] border border-[#b80000] bg-[#fffefa] p-6 shadow-[6px_6px_0_rgba(184,0,0,0.25)] md:p-10">
+          <div className="mt-7 border border-[#b80000] bg-white p-6 shadow-[6px_6px_0_rgba(184,0,0,0.18)] md:p-10">
             <div className="mb-6 flex justify-center md:mb-8">
               <img
                 src={imgLogo.src}
@@ -130,7 +119,7 @@ export default async function TeachingMethodDetailPage({
                 <Link
                   key={item.slug}
                   href={`/con-duong-princeton/${item.slug}`}
-                  className="overflow-hidden rounded-[24px] border border-[#b80000] bg-[#fffefa] text-[#620000] no-underline shadow-[4px_4px_0_rgba(184,0,0,0.22)] transition-transform duration-200 hover:-translate-y-1"
+                  className="overflow-hidden border border-[#b80000] bg-white text-[#620000] no-underline shadow-[4px_4px_0_rgba(184,0,0,0.16)] transition-transform duration-200 hover:-translate-y-1"
                 >
                   <div
                     className="relative aspect-square overflow-hidden"
@@ -159,7 +148,7 @@ export default async function TeachingMethodDetailPage({
                       className="absolute left-3 top-3 h-[62px] w-[62px] object-contain"
                     />
                   </div>
-                  <div className="bg-[#fffefa] p-5">
+                  <div className="bg-white p-5">
                     <p className="text-[12px] font-extrabold uppercase text-[#b80000]">
                       {isEn && item.categoryEn ? item.categoryEn : item.category}
                     </p>
