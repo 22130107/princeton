@@ -1,23 +1,24 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { Building2, GraduationCap, School, UsersRound } from "lucide-react";
 import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
-import FacilityCarousel from "@/components/Shared/FacilityCarousel";
+import MomentGalleryGrid from "@/components/Shared/MomentGalleryGrid";
 import SiteFooter from "@/components/Shared/SiteFooter";
-import { CoverImage } from "@/components/Shared/CoverImage";
+import TeacherShowcase from "@/components/Shared/TeacherShowcase";
 import { getAboutContent } from "@/lib/content";
 import { getServerLang, getServerT } from "@/lib/i18n-server";
 import imgHero from "@/assets/1785508275307_2464196110406402971_2464196110406402971_908152b1927fedcdd7fc0a83d44529f3.jpg";
 
 export const metadata: Metadata = {
-  title: "Ket noi gia dinh | Truong Mam non Princeton",
+  title: "Kết nối gia đình | Trường Mầm non Princeton",
   description:
-    "Princeton Academy mang den moi truong mam non hien dai, yeu thuong va giau trai nghiem cho tre.",
+    "Princeton Academy mang đến môi trường mầm non hiện đại, yêu thương và giàu trải nghiệm cho trẻ.",
   openGraph: {
-    title: "Ket noi gia dinh | Truong Mam non Princeton",
+    title: "Kết nối gia đình | Trường Mầm non Princeton",
     description:
-      "Kham pha moi truong hoc tap, chuong trinh giao duc va hanh trinh phat trien tai Princeton Academy.",
+      "Khám phá môi trường học tập, chương trình giáo dục và hành trình phát triển tại Princeton Academy.",
   },
 };
 
@@ -25,22 +26,6 @@ export const dynamic = "force-dynamic";
 
 function assetSrc(image: { src: string } | string) {
   return typeof image === "string" ? image : image.src;
-}
-
-function LuxuryFrame({
-  children,
-  className = "",
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={`rounded-[32px] border border-[#e6d9cf] bg-white/60 p-2 shadow-[0_28px_70px_rgba(64,22,14,0.10)] ${className}`}>
-      <div className="overflow-hidden rounded-[24px] bg-[#fffefa] shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]">
-        {children}
-      </div>
-    </div>
-  );
 }
 
 function SectionHeading({
@@ -69,7 +54,7 @@ function SectionHeading({
   );
 }
 
-function PrimaryCta({ href, children }: { href: string; children: React.ReactNode }) {
+function PrimaryCta({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link
       href={href}
@@ -88,18 +73,33 @@ export default async function GioiThieuPage() {
   const isEn = lang === "en";
   const t = await getServerT();
   const aboutContent = await getAboutContent();
+  const heroTitleWords = t("about.heroTitle").split(" ");
+  const heroTitlePrimary = heroTitleWords.slice(0, -1).join(" ");
+  const heroTitleAccent = heroTitleWords.slice(-1).join(" ");
 
   const stats = [
-    { number: "10", label: t("about.stats.campus") },
-    { number: "02", label: t("about.stats.language") },
-    { number: "10+", label: t("about.stats.club") },
-    { number: "30+", label: t("about.stats.event") },
+    { number: "10+", label: isEn ? "Years" : "Năm", Icon: School },
+    { number: "30+", label: isEn ? "Teachers" : "Giáo viên", Icon: UsersRound },
+    { number: "1000+", label: isEn ? "Students" : "Học sinh", Icon: GraduationCap },
+    { number: "05", label: isEn ? "Campuses" : "Cơ sở", Icon: Building2 },
   ];
 
   const facilitySlides = aboutContent.facilityImages.map((item) => ({
     image: item.imageUrl,
     title: item.title,
   }));
+  const featuredFacility = facilitySlides[0];
+  const facilityBullets = isEn
+    ? [
+        "Bright classrooms shaped for focused learning and daily creativity.",
+        "Purposeful learning corners for reading, science, art and discovery.",
+        "Safe activity spaces planned for preschool movement and exploration.",
+      ]
+    : [
+        "Không gian lớp học sáng thoáng, tối ưu cho việc học tập và sáng tạo.",
+        "Các góc đọc sách, khoa học, nghệ thuật được bố trí theo mục tiêu học tập.",
+        "Khu vận động an toàn, phù hợp với nhịp phát triển của trẻ mầm non.",
+      ];
   const momentSlides = aboutContent.galleryImages.map((item, index) => ({
     image: item.url,
     title: item.title || item.alt || t("about.momentDefault").replace("{n}", `${index + 1}`),
@@ -107,6 +107,7 @@ export default async function GioiThieuPage() {
   const teachers = aboutContent.teacherTeamItems.map((item) => ({
     id: item.id,
     icon: item.imageUrl,
+    imageAlt: item.imageAlt,
     title: isEn && item.titleEn ? item.titleEn : item.title,
     text: isEn && item.descriptionEn ? item.descriptionEn : item.description,
     coverPosition: item.coverPosition,
@@ -132,62 +133,72 @@ export default async function GioiThieuPage() {
         <HeaderSection />
       </div>
 
-      <section className="relative px-4 py-12 md:px-10 md:py-24">
-        <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(#991B1B_0.7px,transparent_0.7px)] [background-size:18px_18px]" />
-        <div className="relative mx-auto grid max-w-[1360px] items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="about-luxury-rise">
-            <p className="mb-5 inline-flex rounded-full border border-[#c8a46f] bg-[#fff9ed] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#8b642f]">
+      <section className="relative bg-[#F7F4F2]">
+        <div className="mx-auto grid min-h-[calc(100dvh-64px)] max-w-[1480px] items-stretch md:min-h-[calc(100dvh-99px)] lg:grid-cols-[43%_57%]">
+          <div className="about-luxury-rise flex flex-col justify-center px-5 py-14 sm:px-10 md:px-14 lg:px-16">
+            <p className="mb-5 inline-flex w-fit border border-[#c8a46f] bg-[#fff9ed] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#8b642f]">
               {t("about.badge")}
             </p>
-            <h1 className="max-w-[780px] text-balance text-[44px] font-extrabold uppercase leading-[0.98] text-[#991B1B] md:text-[74px]">
-              {t("about.heroTitle")}
+            <h1 className="max-w-[560px] text-balance text-[46px] font-extrabold uppercase leading-[0.92] text-[#991B1B] md:text-[68px] lg:text-[76px]">
+              <span className="block">{heroTitlePrimary}</span>
+              <span className="block font-serif italic leading-[0.96] text-[#991B1B]">
+                {heroTitleAccent}
+              </span>
             </h1>
-            <p className="mt-7 max-w-[670px] text-[17px] font-medium leading-8 text-[#5d332b] md:text-[22px] md:leading-9">
+            <p className="mt-8 max-w-[510px] text-[15px] font-medium leading-7 text-[#5d332b] md:text-[17px] md:leading-8">
               {t("about.heroText")}
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-4">
-              <PrimaryCta href="/dang-ky">{t("about.ctaButton")}</PrimaryCta>
+            <div className="mt-9">
               <Link
-                href="/lien-he"
-                className="rounded-full border border-[#d8c8bb] bg-white/70 px-6 py-4 text-[14px] font-extrabold uppercase text-[#991B1B] no-underline transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:border-[#c8a46f] hover:bg-white"
+                href="#about-content"
+                className="inline-flex items-center bg-[#991B1B] px-7 py-4 text-[12px] font-extrabold uppercase tracking-[0.04em] text-white no-underline shadow-[0_16px_34px_rgba(153,27,27,0.18)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:bg-[#7f1515] active:scale-[0.98]"
               >
-                {t("nav.register")}
+                {isEn ? "Explore more" : "Khám phá thêm"}
               </Link>
             </div>
           </div>
 
-          <LuxuryFrame className="about-luxury-rise [animation-delay:120ms]">
-            <div className="relative">
-              <img
-                src={imgHero.src}
-                alt={t("about.heroImageAlt")}
-                className="h-[360px] w-full object-cover md:h-[620px]"
+          <div className="flex min-h-[360px] items-center justify-center px-5 py-8 sm:px-8 lg:min-h-[calc(100dvh-99px)] lg:px-12 lg:py-12">
+            <div className="relative w-full max-w-[720px]">
+              <div
+                aria-hidden
+                className="absolute inset-0 translate-x-4 translate-y-4 border-2 border-[#991B1B] bg-transparent md:translate-x-6 md:translate-y-6"
               />
-              <div className="absolute inset-x-4 bottom-4 rounded-[22px] border border-white/45 bg-[#2b120e]/[0.72] p-5 text-white shadow-[0_18px_50px_rgba(43,18,14,0.22)] md:inset-x-6 md:bottom-6 md:p-6">
-                <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-[#f1d49b]">
-                  Princeton Academy
-                </p>
-                <p className="mt-2 max-w-[620px] text-[18px] font-semibold leading-7 md:text-[22px]">
-                  {isEn ? "A refined learning environment shaped around trust, care and daily discovery." : "Mot khong gian hoc tap duoc cham chut bang niem tin, su cham soc va nhung kham pha moi ngay."}
-                </p>
+              <div className="relative border-2 border-[#991B1B] bg-white">
+                <img
+                  src={imgHero.src}
+                  alt={t("about.heroImageAlt")}
+                  className="aspect-[0.92] w-full object-cover lg:max-h-[calc(100dvh-180px)]"
+                />
               </div>
             </div>
-          </LuxuryFrame>
+          </div>
         </div>
       </section>
 
-      <section className="px-4 pb-10 md:px-10 md:pb-20">
-        <div className="mx-auto grid max-w-[1360px] gap-4 md:grid-cols-4">
+      <section id="about-content" className="mt-8 bg-[#E2DBD9] px-4 py-8 md:mt-12 md:px-10 md:py-10">
+        <div className="mx-auto grid max-w-[1120px] grid-cols-2 gap-y-8 md:grid-cols-4 md:gap-y-0">
           {stats.map((stat, index) => (
             <div
               key={stat.label}
-              className="about-luxury-rise rounded-[28px] border border-[#e4d7cd] bg-white/[0.72] p-7 shadow-[0_22px_58px_rgba(64,22,14,0.08)]"
+              className="about-luxury-rise relative flex min-h-[96px] flex-col items-center justify-center px-5 text-center md:min-h-[106px]"
               style={{ animationDelay: `${160 + index * 70}ms` }}
             >
-              <p className="text-[48px] font-extrabold leading-none text-[#991B1B] md:text-[60px]">
+              {index > 0 ? (
+                <span
+                  aria-hidden
+                  className="absolute left-0 top-1/2 hidden h-14 w-px -translate-y-1/2 bg-[#e7d8c9] md:block"
+                />
+              ) : null}
+              <stat.Icon
+                aria-hidden
+                className="mb-2 size-7 text-[#991B1B] md:size-8"
+                strokeWidth={2.1}
+              />
+              <p className="text-[30px] font-extrabold leading-none text-[#991B1B] md:text-[34px]">
                 {stat.number}
               </p>
-              <p className="mt-4 text-[13px] font-bold uppercase tracking-[0.16em] text-[#7a4b35]">
+              <p className="mt-2 text-[13px] font-bold uppercase tracking-[0.06em] text-[#5d332b]">
                 {stat.label}
               </p>
             </div>
@@ -197,77 +208,92 @@ export default async function GioiThieuPage() {
 
       {facilitySlides.length ? (
         <section className="px-4 py-14 md:px-10 md:py-24">
-          <div className="mx-auto grid max-w-[1360px] items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]">
-            <LuxuryFrame className="order-2 lg:order-1">
-              <FacilityCarousel slides={facilitySlides} />
-            </LuxuryFrame>
-            <div className="order-1 lg:order-2">
-              <SectionHeading
-                eyebrow="Campus"
-                title={t("about.facilityTitle")}
-                text={t("about.facilityText")}
+          <div className="mx-auto grid max-w-[1180px] items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
+            <figure className="relative order-2 lg:order-1">
+              <div
+                aria-hidden
+                className="absolute inset-0 translate-x-1 translate-y-1 bg-[#991B1B]/10"
               />
+              <div className="relative border-2 border-[#991B1B] bg-white">
+                <img
+                  src={assetSrc(featuredFacility.image)}
+                  alt={featuredFacility.title}
+                  className="aspect-[1/1.12] w-full object-cover"
+                />
+                <div className="absolute bottom-12 left-[-18px] z-[2] w-[72%] md:bottom-16 md:left-[-24px] md:w-[68%]">
+                  <span
+                    aria-hidden
+                    className="absolute left-0 top-[-14px] h-[14px] w-[22px] bg-[#F4D06F]"
+                    style={{
+                      clipPath: "polygon(0 100%, 100% 100%, 100% 0)",
+                    }}
+                  />
+                  <figcaption
+                    className="relative border-t-2 border-[#991B1B] bg-[#F4D06F] py-5 pl-10 pr-6 md:pl-12"
+                    style={{
+                      clipPath: "polygon(0 0, 100% 0, calc(100% - 38px) 100%, 0 100%)",
+                    }}
+                  >
+                  <span className="block max-w-[420px] text-[14px] font-medium italic leading-6 text-[#5d332b]">
+                    {featuredFacility.title || (isEn ? "A carefully designed learning environment." : "Không gian được thiết kế tỉ mỉ, tối ưu cho việc học tập và sáng tạo.")}
+                  </span>
+                  </figcaption>
+                </div>
+              </div>
+            </figure>
+
+            <div className="order-1 lg:order-2">
+              <h2 className="max-w-[560px] text-balance text-[36px] font-extrabold uppercase leading-[1.02] text-[#991B1B] md:text-[56px]">
+                {t("about.facilityTitle")}
+              </h2>
+              <p className="mt-8 max-w-[640px] text-[16px] font-medium leading-7 text-[#5d332b] md:text-[18px] md:leading-8">
+                {t("about.facilityText")}
+              </p>
+              <ul className="mt-9 space-y-5">
+                {facilityBullets.map((item) => (
+                  <li
+                    key={item}
+                    className="flex gap-4 text-[15px] font-medium leading-7 text-[#5d332b] md:text-[16px]"
+                  >
+                    <span className="mt-[10px] size-1.5 shrink-0 rotate-45 bg-[#D4AF37]" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </section>
       ) : null}
 
       {momentSlides.length ? (
-        <section className="px-4 py-14 md:px-10 md:py-24">
-          <div className="mx-auto grid max-w-[1360px] items-center gap-10 lg:grid-cols-[0.88fr_1.12fr]">
-            <SectionHeading
-              eyebrow="Moments"
-              title={t("about.momentTitle")}
-              text={t("about.momentText")}
+        <section className="bg-[#F7F4F2] px-4 py-14 md:px-10 md:py-24">
+          <div className="mx-auto max-w-[1180px]">
+            <div className="mx-auto max-w-[1180px] text-center">
+              <h2 className="text-[30px] font-extrabold uppercase leading-[1.08] text-[#991B1B] md:text-[38px] lg:whitespace-nowrap lg:text-[42px] xl:text-[46px]">
+                {t("about.momentTitle")}
+              </h2>
+              <p className="mx-auto mt-5 max-w-[780px] text-[15px] font-medium leading-7 text-[#3f1f1b] md:text-[17px] md:leading-8">
+                {t("about.momentText")}
+              </p>
+            </div>
+
+            <MomentGalleryGrid
+              slides={momentSlides}
+              imageContext={t("about.momentContext")}
+              isEn={isEn}
             />
-            <LuxuryFrame>
-              <FacilityCarousel slides={momentSlides} imageContext={t("about.momentContext")} />
-            </LuxuryFrame>
           </div>
         </section>
       ) : null}
 
       {teachers.length ? (
-        <section className="px-4 py-14 md:px-10 md:py-24">
-          <div className="mx-auto max-w-[1360px]">
-            <SectionHeading
-              eyebrow="Faculty"
-              title={t("about.teacherTitle")}
-              text={t("about.teacherText")}
-              align="center"
-            />
-            <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {teachers.map((teacher, index) => (
-                <article
-                  key={`teacher-${teacher.id}-${index}`}
-                  className="about-luxury-rise overflow-hidden rounded-[30px] border border-[#e4d7cd] bg-white/[0.72] p-2 shadow-[0_24px_64px_rgba(64,22,14,0.08)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:shadow-[0_30px_76px_rgba(64,22,14,0.12)]"
-                  style={{ animationDelay: `${index * 80}ms` }}
-                >
-                  <div className="overflow-hidden rounded-[22px] bg-[#fffefa]">
-                    {teacher.icon ? (
-                      <div className="relative h-[250px] overflow-hidden">
-                        <CoverImage
-                          src={assetSrc(teacher.icon)}
-                          alt={teacher.title}
-                          zoom={teacher.coverZoom}
-                          position={teacher.coverPosition}
-                          frameAspect={1.45}
-                        />
-                      </div>
-                    ) : null}
-                    <div className="p-6">
-                      <h3 className="text-[24px] font-extrabold leading-tight text-[#991B1B]">
-                        {teacher.title}
-                      </h3>
-                      <p className="mt-4 text-[16px] font-medium leading-7 text-[#5d332b]">
-                        {teacher.text}
-                      </p>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
+        <section className="bg-[#F7F4F2] px-4 py-14 md:px-10 md:py-24">
+          <TeacherShowcase
+            teachers={teachers}
+            title={t("about.teacherTitle")}
+            text={t("about.teacherText")}
+            isEn={isEn}
+          />
         </section>
       ) : null}
 
