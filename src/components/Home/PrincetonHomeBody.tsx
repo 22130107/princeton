@@ -547,13 +547,12 @@ function PrincetonWay({ items }: { items: PrincetonWayItem[] }) {
             );
           })}
         </div>
-        
         <div className="mt-10 flex justify-center">
           <Link
             href="/phuong-phap-giang-day"
             className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-full border-2 border-[#b80000] bg-transparent px-6 text-[15px] font-extrabold text-[#b80000] no-underline transition duration-200 hover:bg-[#b80000] hover:text-white focus:outline-none focus:ring-4 focus:ring-[#ffc300]/35"
           >
-            {lang === "en" ? "View all methods" : "Xem tất cả phương pháp"}
+            {lang === "en" ? "View all" : "Xem tất cả"}
             <ArrowRight aria-hidden className="size-4 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.4} />
           </Link>
         </div>
