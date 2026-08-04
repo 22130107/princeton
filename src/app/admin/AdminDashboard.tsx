@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { FormEvent, type ClipboardEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { CalendarClock, CheckCircle2, Download, Edit3, Eye, EyeOff, Filter, ImagePlus, List, ListOrdered, LogOut, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
@@ -3510,6 +3510,7 @@ function BannerCoverEditor({
   onChange: (value: { position: string; zoom: number }) => void;
 }) {
   const frameRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const [natural, setNatural] = useState<{ width: number; height: number } | null>(null);
   const [dragging, setDragging] = useState(false);
   const dragRef = useRef<{ pointerId: number; startX: number; startY: number; x: number; y: number; moved: boolean } | null>(null);
@@ -3519,6 +3520,38 @@ function BannerCoverEditor({
   zoomRef.current = zoom;
   const frameAspectValue = frameAspect ?? BANNER_FRAME_ASPECT;
   const frameRadiusValue = frameRadius ?? 8;
+
+  useEffect(() => {
+    const image = imgRef.current;
+    if (!image) return;
+
+    let alive = true;
+    const checkDimensions = () => {
+      if (!alive) return;
+      if (image.naturalWidth > 0 && image.naturalHeight > 0) {
+        setNatural({ width: image.naturalWidth, height: image.naturalHeight });
+      } else {
+        requestAnimationFrame(checkDimensions);
+      }
+    };
+
+    const handleLoad = () => {
+      checkDimensions();
+    };
+
+    if (image.complete && image.naturalWidth > 0) {
+      setNatural({ width: image.naturalWidth, height: image.naturalHeight });
+    } else {
+      image.addEventListener("load", handleLoad);
+      if (image.complete) {
+        checkDimensions();
+      }
+      return () => {
+        alive = false;
+        image.removeEventListener("load", handleLoad);
+      };
+    }
+  }, [url]);
 
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
     const frame = frameRef.current;
@@ -3613,9 +3646,9 @@ function BannerCoverEditor({
         style={{
           aspectRatio: `${frameAspectValue}`,
           borderRadius: frameRadiusValue,
-          height: 230,
-          width: "auto",
-          maxWidth: "100%",
+          width: "100%",
+          maxWidth: Math.round(230 * frameAspectValue),
+          height: "auto",
           ...(url
             ? {
                 backgroundImage: `url("${url}")`,
@@ -3644,6 +3677,7 @@ function BannerCoverEditor({
       >
         {url ? (
           <img
+            ref={imgRef}
             src={url}
             alt=""
             draggable={false}
