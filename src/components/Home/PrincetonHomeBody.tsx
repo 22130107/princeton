@@ -627,16 +627,16 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
     if (!scrollContainerRef.current) return;
     const scrollLeft = scrollContainerRef.current.scrollLeft;
     const width = scrollContainerRef.current.clientWidth;
-    // adding gap margin to width calculation for more accurate snapping tracking if needed, 
-    // but clientWidth works well enough for 100% width items
-    const index = Math.round(scrollLeft / width);
+    const gap = 20; // gap-5 = 20px
+    const index = Math.round(scrollLeft / (width + gap));
     setActiveMobileIndex(index);
   };
 
   const scrollToMobileIndex = (index: number) => {
     if (!scrollContainerRef.current) return;
     const width = scrollContainerRef.current.clientWidth;
-    scrollContainerRef.current.scrollTo({ left: index * width, behavior: "smooth" });
+    const gap = 20;
+    scrollContainerRef.current.scrollTo({ left: index * (width + gap), behavior: "smooth" });
     setActiveMobileIndex(index);
   };
 
@@ -705,7 +705,7 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
           <div 
             ref={scrollContainerRef}
             onScroll={handleMobileScroll}
-            className="flex snap-x snap-mandatory overflow-x-auto pb-4" 
+            className="flex items-stretch snap-x snap-mandatory gap-5 overflow-x-auto pb-4" 
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {testimonials.map((t, i) => renderCard(t, i, true))}
