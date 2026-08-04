@@ -651,7 +651,7 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
     return (
       <article
         key={`${parentName}-${index}`}
-        className={`flex h-full min-h-[252px] flex-col border-2 border-[#991B1B] bg-[#fffefa] p-7 shadow-[4px_4px_0_rgba(153,27,27,0.2)] ${
+        className={`flex min-h-[252px] flex-col border-2 border-[#991B1B] bg-[#fffefa] p-7 shadow-[4px_4px_0_rgba(153,27,27,0.2)] ${
           isMobileCard ? "w-full shrink-0 snap-center" : ""
         }`}
       >
