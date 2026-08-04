@@ -347,23 +347,13 @@ function Hero({ slides }: { slides: HeroSlide[] }) {
         />
         <div className="absolute inset-y-0 left-0 z-[2] hidden w-[72%] min-w-0 items-center bg-gradient-to-r from-[#f7f4f2] via-[#f7f4f2]/92 to-[#f7f4f2]/0 pl-5 pr-3 sm:flex sm:w-[46%] sm:min-w-[360px] sm:pl-[clamp(38px,9.5vw,150px)] sm:pr-10">
           <div className="max-w-[290px] sm:max-w-[420px] lg:max-w-[560px]">
-            <p className="mb-3 inline-flex w-fit border border-[#c8a46f] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#8b642f] sm:mb-5 sm:text-[11px]">
-              {titleLines[0]}
-            </p>
-            <h1 className="text-balance text-[clamp(32px,5vw,46px)] font-extrabold uppercase leading-[0.92] text-[#991B1B] sm:text-[clamp(46px,6vw,76px)]">
-              {titleLines.slice(1).map((line) => {
-                const words = line.split(" ");
-                if (words.length <= 1) return <span key={line} className="block">{line}</span>;
-                const lastWord = words.pop();
-                return (
-                  <span key={line} className="block whitespace-nowrap">
-                    <span>{words.join(" ")}</span>{" "}
-                    <span className="font-serif italic leading-[0.96] text-[#991B1B]">
-                      {lastWord}
-                    </span>
-                  </span>
-                );
-              })}
+            <h1 className="text-balance text-[clamp(22px,6.5vw,38px)] font-extrabold leading-[1.02] text-[#991B1B] sm:text-[clamp(38px,4.1vw,64px)]">
+              <span className="block whitespace-nowrap">{titleLines[0]}</span>
+              {titleLines.slice(1).map((line) => (
+                <span key={line} className="block whitespace-nowrap text-[clamp(30px,8.5vw,52px)] uppercase leading-[0.95] text-[#b80000] sm:text-[clamp(50px,5.2vw,84px)]">
+                  {line}
+                </span>
+              ))}
             </h1>
             <p className="mt-4 max-w-[27ch] text-[clamp(13px,3.5vw,15px)] font-medium leading-[1.6] text-[#5d332b] sm:mt-6 sm:max-w-[35ch] sm:text-[clamp(15px,1.35vw,18px)] sm:leading-[1.75]">
               {subtitle}
