@@ -503,7 +503,7 @@ function PrincetonWay({ items }: { items: PrincetonWayItem[] }) {
     <section className="bg-[#f7f4f2] py-14 md:py-16">
       <div className={shell}>
         <SectionTitle title={copy[lang].wayTitle} />
-        <div className="grid gap-5 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">
           {visibleItems.map((item, index) => {
             const title = lang === "en" && item.titleEn ? item.titleEn : item.title;
 
@@ -533,19 +533,29 @@ function PrincetonWay({ items }: { items: PrincetonWayItem[] }) {
                 <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-1000 ease-in-out group-hover:translate-x-full" />
 
                 {/* Watermark Index */}
-                <span className="pointer-events-none absolute -bottom-5 right-1 select-none text-[120px] font-black leading-none text-white/10 transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:text-[#ffc300]/15">
+                <span className="pointer-events-none absolute -bottom-3 right-1 md:-bottom-5 md:right-1 select-none text-[80px] md:text-[120px] font-black leading-none text-white/10 transition-all duration-500 ease-out group-hover:-translate-y-2 md:group-hover:-translate-y-3 group-hover:text-[#ffc300]/15">
                   0{index + 1}
                 </span>
 
-                <div className="absolute inset-x-6 bottom-7 transition-transform duration-300 ease-out group-hover:-translate-y-2">
-                  <h3 className="text-[22px] font-extrabold uppercase leading-[1.15] md:text-[24px]">
+                <div className="absolute inset-x-4 bottom-5 md:inset-x-6 md:bottom-7 transition-transform duration-300 ease-out group-hover:-translate-y-2">
+                  <h3 className="text-[16px] font-extrabold uppercase leading-[1.15] md:text-[24px]">
                     {title}
                   </h3>
-                  <span className="mt-3 block h-[3px] w-0 rounded-full bg-[#ffc300] transition-all duration-500 ease-out group-hover:w-10" />
+                  <span className="mt-2 md:mt-3 block h-[3px] w-0 rounded-full bg-[#ffc300] transition-all duration-500 ease-out group-hover:w-8 md:group-hover:w-10" />
                 </div>
               </Link>
             );
           })}
+        </div>
+        
+        <div className="mt-10 flex justify-center">
+          <Link
+            href="/phuong-phap-giang-day"
+            className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-full border-2 border-[#b80000] bg-transparent px-6 text-[15px] font-extrabold text-[#b80000] no-underline transition duration-200 hover:bg-[#b80000] hover:text-white focus:outline-none focus:ring-4 focus:ring-[#ffc300]/35"
+          >
+            {lang === "en" ? "View all methods" : "Xem tất cả phương pháp"}
+            <ArrowRight aria-hidden className="size-4 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.4} />
+          </Link>
         </div>
       </div>
     </section>
