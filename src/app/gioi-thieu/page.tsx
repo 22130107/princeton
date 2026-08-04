@@ -223,7 +223,7 @@ export default async function GioiThieuPage() {
                 <div className="absolute bottom-12 left-[-18px] z-[2] w-[72%] md:bottom-16 md:left-[-24px] md:w-[68%]">
                   <span
                     aria-hidden
-                    className="absolute left-0 top-[-14px] h-[14px] w-[18px] bg-[#F4D06F] md:w-[24px]"
+                    className="absolute left-0 top-[-14px] h-[14px] w-[16px] bg-[#F4D06F] md:w-[22px]"
                     style={{
                       clipPath: "polygon(0 100%, 100% 100%, 100% 0)",
                     }}
