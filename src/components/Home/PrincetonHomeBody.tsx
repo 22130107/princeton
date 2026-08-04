@@ -10,7 +10,6 @@ import {
   GraduationCap,
   Heart,
   MapPin,
-  Quote,
   School,
   ShieldCheck,
   Sparkles,
@@ -28,6 +27,7 @@ import pathImageOne from "@/assets/1785508529300_2464196110406402971_24641961104
 import pathImageTwo from "@/assets/1785508275307_2464196110406402971_2464196110406402971_908152b1927fedcdd7fc0a83d44529f3.jpg";
 import pathImageThree from "@/assets/d7d7345887319e335a13681880e24de534f764ac.png";
 import pathImageFour from "@/assets/eca0f00994a6add059898b0052a18055c5e2de11.jpg";
+import logoImage from "@/assets/logo.png";
 
 type ClassProgramItem = {
   slug: string;
@@ -82,7 +82,7 @@ type Testimonial = {
 const shell = "mx-auto w-full max-w-[1480px] px-5 sm:px-8 lg:px-12 2xl:px-16";
 const HERO_BANNER_FRAME_ASPECT = 2035 / 773;
 const HERO_MOBILE_BANNER_FRAME_ASPECT = 390 / 260;
-const WAY_CARD_FRAME_ASPECT = 326 / 220;
+const WAY_CARD_FRAME_ASPECT = 326 / 290;
 const PROGRAM_CARD_IMAGE_ASPECT = 326 / 185;
 
 const copy = {
@@ -526,7 +526,14 @@ function About() {
   ];
 
   return (
-    <section className="bg-[#f7f4f2] py-16 md:py-24">
+    <section className="bg-[#f7f4f2] py-16 md:py-24 relative">
+      <div className="absolute right-[24px] top-6 md:top-10 z-10 size-[80px] sm:size-[100px] md:size-[118px]">
+        <img
+          src={logoImage.src}
+          alt="Princeton Academy"
+          className="h-full w-full object-contain"
+        />
+      </div>
       <div className={`${shell} grid items-center gap-12 lg:grid-cols-[0.96fr_1.04fr] lg:gap-16`}>
         <div className="relative mx-auto flex w-full max-w-[760px] items-center justify-center gap-5 md:gap-8 lg:justify-start">
           <div className="mt-12 w-[49%] min-w-[160px] overflow-hidden border-2 border-[#991B1B] shadow-[0_18px_44px_rgba(82,40,23,0.10)]">
@@ -619,7 +626,7 @@ function PrincetonWay({ items }: { items: PrincetonWayItem[] }) {
             <Link
               href={item.slug ? `/phuong-phap-giang-day/${item.slug}` : "/con-duong-princeton"}
               key={`${item.slug ?? item.title}-${index}`}
-              className="group relative aspect-[326/220] overflow-hidden rounded-[8px] bg-[#2f1515] text-white no-underline shadow-[0_12px_32px_rgba(76,35,25,0.12)]"
+              className="group relative aspect-[326/290] overflow-hidden rounded-[8px] bg-[#2f1515] text-white no-underline shadow-[0_12px_32px_rgba(76,35,25,0.12)]"
             >
               <CoverImage
                 src={item.imageUrl}
@@ -628,11 +635,11 @@ function PrincetonWay({ items }: { items: PrincetonWayItem[] }) {
                 zoom={item.coverZoom}
                 frameAspect={WAY_CARD_FRAME_ASPECT}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/58 via-black/10 to-transparent" />
-              <h3 className="absolute inset-x-4 bottom-5 text-[24px] font-extrabold uppercase leading-[1.05] md:text-[26px]">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              <h3 className="absolute inset-x-4 bottom-6 text-[24px] font-extrabold uppercase leading-[1.05] md:text-[26px]">
                 {title}
               </h3>
-              <span className="absolute bottom-5 right-4 grid size-7 place-items-center rounded-full bg-[#ffc300] text-[#8f0000]">
+              <span className="absolute bottom-6 right-5 grid size-7 place-items-center rounded-full bg-[#ffc300] text-[#8f0000]">
                 {index + 1}
               </span>
             </Link>
@@ -725,7 +732,7 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
             return (
               <article
                 key={`${parentName}-${index}`}
-                className="flex h-full min-h-[252px] flex-col rounded-[8px] border border-[#ead9c9] bg-[#fffefa] p-7 shadow-[0_12px_32px_rgba(68,31,19,0.06)]"
+                className="flex h-full min-h-[252px] flex-col border-2 border-[#991B1B] bg-[#fffefa] p-7 shadow-[4px_4px_0_rgba(153,27,27,0.2)]"
               >
                 <div className="flex items-center justify-between text-[#d8a928]">
                   <div className="flex gap-1">
@@ -733,7 +740,11 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
                       <Star key={starIndex} aria-hidden className="size-4 fill-current" />
                     ))}
                   </div>
-                  <Quote aria-hidden className="size-7 text-[#ead9c9]" />
+                  <img
+                    src={logoImage.src}
+                    alt="Princeton Academy"
+                    className="size-16 object-contain"
+                  />
                 </div>
                 <p className="mt-5 flex-1 text-[15px] font-medium leading-7 text-[#4b3531]">
                   {quoteText}
