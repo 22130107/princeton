@@ -346,25 +346,36 @@ function Hero({ slides }: { slides: HeroSlide[] }) {
           priority={true}
         />
         <div className="absolute inset-y-0 left-0 z-[2] hidden w-[72%] min-w-0 items-center bg-gradient-to-r from-[#f7f4f2] via-[#f7f4f2]/92 to-[#f7f4f2]/0 pl-5 pr-3 sm:flex sm:w-[46%] sm:min-w-[360px] sm:pl-[clamp(38px,9.5vw,150px)] sm:pr-10">
-          <div className="max-w-[290px] sm:max-w-[420px]">
-            <h1 className="text-balance text-[clamp(22px,6.5vw,38px)] font-extrabold leading-[1.02] text-[#991B1B] sm:text-[clamp(38px,4.1vw,64px)]">
-              <span className="block whitespace-nowrap">{titleLines[0]}</span>
-              {titleLines.slice(1).map((line) => (
-                <span key={line} className="block whitespace-nowrap text-[clamp(30px,8.5vw,52px)] uppercase leading-[0.95] text-[#b80000] sm:text-[clamp(50px,5.2vw,84px)]">
-                  {line}
-                </span>
-              ))}
+          <div className="max-w-[290px] sm:max-w-[420px] lg:max-w-[560px]">
+            <p className="mb-3 inline-flex w-fit border border-[#c8a46f] bg-[#fff9ed]/90 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[#8b642f] sm:mb-5 sm:text-[11px]">
+              {titleLines[0]}
+            </p>
+            <h1 className="text-balance text-[clamp(32px,5vw,46px)] font-extrabold uppercase leading-[0.92] text-[#991B1B] sm:text-[clamp(46px,6vw,76px)]">
+              {titleLines.slice(1).map((line) => {
+                const words = line.split(" ");
+                if (words.length <= 1) return <span key={line} className="block">{line}</span>;
+                const lastWord = words.pop();
+                return (
+                  <span key={line} className="block whitespace-nowrap">
+                    <span className="block">{words.join(" ")}</span>
+                    <span className="block font-serif italic leading-[0.96] text-[#991B1B]">
+                      {lastWord}
+                    </span>
+                  </span>
+                );
+              })}
             </h1>
-            <p className="mt-2 max-w-[27ch] text-[clamp(12px,3.5vw,15px)] font-semibold leading-[1.35] text-[#59342f] sm:mt-[clamp(14px,1.8vw,26px)] sm:max-w-[31ch] sm:text-[clamp(15px,1.35vw,22px)] sm:leading-[1.55]">
+            <p className="mt-4 max-w-[27ch] text-[clamp(13px,3.5vw,15px)] font-medium leading-[1.6] text-[#5d332b] sm:mt-6 sm:max-w-[35ch] sm:text-[clamp(15px,1.35vw,18px)] sm:leading-[1.75]">
               {subtitle}
             </p>
-            <Link
-              href={ctaHref}
-              className="mt-4 inline-flex min-h-11 items-center justify-center gap-3 rounded-none bg-[#b80000] px-6 py-3 text-[13px] font-extrabold uppercase text-white no-underline transition duration-200 hover:bg-[#991b1b] focus:outline-none focus:ring-4 focus:ring-[#ffc300]/35 active:translate-y-0 sm:mt-[clamp(18px,2.2vw,34px)] sm:min-h-12 sm:px-8 sm:text-[16px]"
-            >
-              {ctaLabel}
-              <ArrowRight aria-hidden className="size-4" strokeWidth={2.4} />
-            </Link>
+            <div className="mt-6 sm:mt-9">
+              <Link
+                href={ctaHref}
+                className="inline-flex items-center bg-[#991B1B] px-6 py-3.5 text-[11px] font-extrabold uppercase tracking-[0.04em] text-white no-underline shadow-[0_16px_34px_rgba(153,27,27,0.18)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:bg-[#7f1515] active:scale-[0.98] sm:px-7 sm:py-4 sm:text-[12px]"
+              >
+                {ctaLabel}
+              </Link>
+            </div>
           </div>
         </div>
         {slides.length > 1 ? (
@@ -445,7 +456,7 @@ function About() {
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (
-                <div key={stat.label} className="px-3 text-left md:border-l md:border-[#ead9c9] md:first:border-l-0">
+                <div key={stat.label} className="flex flex-col items-center text-center md:items-start md:text-left px-3 md:border-l md:border-[#ead9c9] md:first:border-l-0">
                   <Icon aria-hidden className="mb-3 size-5 text-[#9b6f2f]" strokeWidth={1.75} />
                   <p className="text-[25px] font-extrabold leading-none text-[#2b120e]">{stat.value}</p>
                   <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.08em] leading-4 text-[#5d332b]">{stat.label}</p>
