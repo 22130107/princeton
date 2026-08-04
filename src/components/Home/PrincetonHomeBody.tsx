@@ -348,14 +348,6 @@ function Hero({ slides }: { slides: HeroSlide[] }) {
   const { lang } = useLanguage();
   const c = copy[lang];
   const [activeSlide, setActiveSlide] = useState(0);
-  const [useMobileImage, setUseMobileImage] = useState(false);
-
-  useEffect(() => {
-    const update = () => setUseMobileImage(window.innerWidth < 768);
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
 
   useEffect(() => {
     if (!slides.length) {
@@ -382,32 +374,29 @@ function Hero({ slides }: { slides: HeroSlide[] }) {
   const subtitle = slide?.subtitle?.trim() || c.heroText;
   const ctaLabel = slide?.ctaLabel?.trim() || c.visit;
   const ctaHref = slide?.ctaHref?.trim() || "/lien-he";
-  const imageSrc =
-    (useMobileImage ? slide?.mobileImageUrl || slide?.desktopImageUrl : slide?.desktopImageUrl || slide?.mobileImageUrl) ||
-    "";
-  const imageAlt =
-    (useMobileImage ? slide?.mobileImageAlt || slide?.desktopImageAlt : slide?.desktopImageAlt || slide?.mobileImageAlt) ||
-    "Cô giáo Princeton hướng dẫn bé vẽ tranh";
-  const imagePosition = useMobileImage
-    ? slide?.mobileObjectPosition || slide?.desktopObjectPosition || "50% 50%"
-    : slide?.desktopObjectPosition || slide?.mobileObjectPosition || "50% 50%";
-  const imageZoom = Math.min(
-    3,
-    Math.max(0.5, Number(useMobileImage ? slide?.mobileZoom || slide?.desktopZoom : slide?.desktopZoom || slide?.mobileZoom) || 1),
-  );
+  const desktopImageSrc = slide?.desktopImageUrl || slide?.mobileImageUrl || "";
+  const mobileImageSrc = slide?.mobileImageUrl || slide?.desktopImageUrl || "";
+  const imageAlt = slide?.desktopImageAlt || slide?.mobileImageAlt || "Cô giáo Princeton hướng dẫn bé vẽ tranh";
+  
+  const desktopPosition = slide?.desktopObjectPosition || "50% 50%";
+  const mobilePosition = slide?.mobileObjectPosition || "50% 50%";
+  
+  const desktopZoom = Math.min(3, Math.max(0.5, Number(slide?.desktopZoom) || 1));
+  const mobileZoom = Math.min(3, Math.max(0.5, Number(slide?.mobileZoom) || 1));
 
-  if (slide && imageSrc) {
-    const bannerFrameAspect = useMobileImage ? HERO_MOBILE_BANNER_FRAME_ASPECT : HERO_BANNER_FRAME_ASPECT;
-
+  if (slide && desktopImageSrc) {
     return (
       <section className="relative overflow-hidden bg-[#f7f4f2]">
-      <div className="relative w-full overflow-hidden bg-[#f7f4f2]" style={{ aspectRatio: bannerFrameAspect }}>
+      <div className="relative w-full overflow-hidden bg-[#f7f4f2] aspect-[390/260] md:aspect-[2035/773]">
         <CoverImage
-          src={imageSrc}
+          src={desktopImageSrc}
           alt={imageAlt}
-          position={imagePosition}
-          zoom={imageZoom}
-          frameAspect={bannerFrameAspect}
+          position={desktopPosition}
+          zoom={desktopZoom}
+          mobileSrc={mobileImageSrc}
+          mobilePosition={mobilePosition}
+          mobileZoom={mobileZoom}
+          priority={true}
         />
         <div className="absolute inset-y-0 left-0 z-[2] flex w-[72%] min-w-0 items-center bg-gradient-to-r from-[#f7f4f2] via-[#f7f4f2]/92 to-[#f7f4f2]/0 pl-5 pr-3 sm:w-[46%] sm:min-w-[360px] sm:pl-[clamp(38px,9.5vw,150px)] sm:pr-10">
           <div className="max-w-[290px] sm:max-w-[420px]">
@@ -493,18 +482,21 @@ function Hero({ slides }: { slides: HeroSlide[] }) {
           ) : null}
         </div>
         <div className="relative min-h-[360px] lg:min-h-[560px]">
-          {imageSrc ? (
+          {desktopImageSrc ? (
             <CoverImage
-              src={imageSrc}
+              src={desktopImageSrc}
               alt={imageAlt}
-              position={imagePosition}
-              zoom={imageZoom}
-              frameAspect={HERO_BANNER_FRAME_ASPECT}
+              position={desktopPosition}
+              zoom={desktopZoom}
+              mobileSrc={mobileImageSrc}
+              mobilePosition={mobilePosition}
+              mobileZoom={mobileZoom}
             />
           ) : (
             <img
               src={heroImage.src}
               alt="Cô giáo Princeton hướng dẫn bé vẽ tranh"
+              loading="lazy"
               className="absolute inset-0 h-full w-full rounded-[20px] object-cover object-center shadow-[0_18px_50px_rgba(90,24,24,0.12)] lg:rounded-none lg:shadow-none"
             />
           )}
@@ -531,6 +523,7 @@ function About() {
         <img
           src={logoImage.src}
           alt="Princeton Academy"
+          loading="lazy"
           className="h-full w-full object-contain"
         />
       </div>
@@ -540,6 +533,7 @@ function About() {
             <img
               src={aboutImage.src}
               alt="Cô giáo đồng hành cùng bé trong hoạt động sáng tạo"
+              loading="lazy"
               className="aspect-[0.72/1] w-full object-cover"
             />
           </div>
@@ -547,6 +541,7 @@ function About() {
             <img
               src={pathImageTwo.src}
               alt="Không gian học tập Princeton Academy"
+              loading="lazy"
               className="aspect-[0.72/1] w-full object-cover"
             />
           </div>
@@ -743,6 +738,7 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
                   <img
                     src={logoImage.src}
                     alt="Princeton Academy"
+                    loading="lazy"
                     className="size-16 object-contain"
                   />
                 </div>
@@ -755,6 +751,7 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
                       <img
                         src={testimonial.avatarUrl}
                         alt={testimonial.avatarAlt || parentName}
+                        loading="lazy"
                         className="h-full w-full object-cover"
                       />
                     ) : (
@@ -904,6 +901,7 @@ function CampusAndForm() {
                 <img
                   src={logoImage.src}
                   alt="Princeton Academy Logo"
+                  loading="lazy"
                   className="h-28 md:h-32 object-contain"
                 />
               </div>
