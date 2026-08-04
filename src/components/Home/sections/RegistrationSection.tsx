@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import svgPaths from "../svg-g45k1n1pz5";
 import { useEffect, useRef, useState } from "react";
@@ -165,8 +165,15 @@ function SubmitBtnSvg() {
     <div className="h-[61.803px] relative shrink-0 w-[206.01px]" data-name="submit-btn.svg">
       <svg className="absolute block inset-0 size-full" fill="none" height="61.803" preserveAspectRatio="none" viewBox="0 0 206.01 61.803" width="206.01">
         <g clipPath="url(#clip0_1_1049)" id="submit-btn.svg">
-          <path d={svgPaths.p2db05780} fill="var(--fill-0, #800000)" id="Vector" />
-          <path d={svgPaths.p16f6d900} fill="var(--fill-0, #FFC400)" id="Vector_2" stroke="var(--stroke-0, #A30000)" strokeWidth="1.962" />
+          <path d={svgPaths.p2db05780} fill="#800000" className="transition-colors duration-200 group-hover:fill-[#D4AF37]" id="Vector" />
+          <path
+            d={svgPaths.p16f6d900}
+            fill="#b80000"
+            stroke="#800000"
+            strokeWidth="1.962"
+            className="transition-all duration-200 group-hover:fill-[#FFC400] group-hover:stroke-[#A30000]"
+            id="Vector_2"
+          />
         </g>
         <defs>
           <clipPath id="clip0_1_1049">
@@ -201,11 +208,11 @@ function Button2({
       aria-label={label}
       disabled={isSubmitting}
       onClick={onSubmit}
-      className="content-stretch flex cursor-pointer items-center justify-center px-[16px] py-[6px] relative rounded-[4px] shrink-0 disabled:cursor-wait disabled:opacity-80"
+      className="group content-stretch flex cursor-pointer items-center justify-center px-[16px] py-[6px] relative rounded-[4px] shrink-0 disabled:cursor-wait disabled:opacity-80 transition duration-200 hover:-translate-y-0.5 active:translate-y-0"
       data-name="Button"
     >
       <SubmitBtnSvgClip />
-      <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[#b80000] text-[26px] text-center uppercase whitespace-nowrap">
+      <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-white group-hover:text-[#b80000] text-[26px] text-center uppercase whitespace-nowrap transition-colors duration-200">
         <p className="leading-[50px]">{isSubmitting ? <SubmittingText /> : label}</p>
       </div>
     </button>

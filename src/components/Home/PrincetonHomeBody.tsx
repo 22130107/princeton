@@ -409,12 +409,12 @@ function Hero({ slides }: { slides: HeroSlide[] }) {
           zoom={imageZoom}
           frameAspect={bannerFrameAspect}
         />
-        <div className="absolute inset-y-0 left-0 z-[2] flex w-[64%] min-w-0 items-center bg-gradient-to-r from-[#f7f4f2] via-[#f7f4f2]/92 to-[#f7f4f2]/0 pl-5 pr-3 sm:w-[46%] sm:min-w-[360px] sm:pl-[clamp(38px,9.5vw,150px)] sm:pr-10">
-          <div className="max-w-[250px] sm:max-w-[420px]">
-            <h1 className="text-balance text-[clamp(24px,7vw,38px)] font-extrabold leading-[1.02] text-[#991B1B] sm:text-[clamp(38px,4.1vw,64px)]">
-              <span className="block">{titleLines[0]}</span>
+        <div className="absolute inset-y-0 left-0 z-[2] flex w-[72%] min-w-0 items-center bg-gradient-to-r from-[#f7f4f2] via-[#f7f4f2]/92 to-[#f7f4f2]/0 pl-5 pr-3 sm:w-[46%] sm:min-w-[360px] sm:pl-[clamp(38px,9.5vw,150px)] sm:pr-10">
+          <div className="max-w-[290px] sm:max-w-[420px]">
+            <h1 className="text-balance text-[clamp(22px,6.5vw,38px)] font-extrabold leading-[1.02] text-[#991B1B] sm:text-[clamp(38px,4.1vw,64px)]">
+              <span className="block whitespace-nowrap">{titleLines[0]}</span>
               {titleLines.slice(1).map((line) => (
-                <span key={line} className="block text-[clamp(34px,10vw,52px)] uppercase leading-[0.95] text-[#b80000] sm:text-[clamp(50px,5.2vw,84px)]">
+                <span key={line} className="block whitespace-nowrap text-[clamp(30px,8.5vw,52px)] uppercase leading-[0.95] text-[#b80000] sm:text-[clamp(50px,5.2vw,84px)]">
                   {line}
                 </span>
               ))}
@@ -424,7 +424,7 @@ function Hero({ slides }: { slides: HeroSlide[] }) {
             </p>
             <Link
               href={ctaHref}
-              className="mt-3 inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-[#b80000] px-4 text-[12px] font-extrabold text-white no-underline shadow-[0_12px_24px_rgba(153,27,27,0.22)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#991b1b] focus:outline-none focus:ring-4 focus:ring-[#ffc300]/35 active:translate-y-0 sm:mt-[clamp(18px,2.2vw,34px)] sm:min-h-11 sm:px-6 sm:text-[15px]"
+              className="mt-4 inline-flex min-h-11 items-center justify-center gap-3 rounded-none bg-[#b80000] px-6 py-3 text-[13px] font-extrabold uppercase text-white no-underline transition duration-200 hover:bg-[#991b1b] focus:outline-none focus:ring-4 focus:ring-[#ffc300]/35 active:translate-y-0 sm:mt-[clamp(18px,2.2vw,34px)] sm:min-h-12 sm:px-8 sm:text-[16px]"
             >
               {ctaLabel}
               <ArrowRight aria-hidden className="size-4" strokeWidth={2.4} />
@@ -795,10 +795,25 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
 function CampusAndForm() {
   const { lang } = useLanguage();
   const [selected, setSelected] = useState(0);
+  const [audience, setAudience] = useState<"parent" | "partner">("parent");
   const campus = campuses[selected] ?? campuses[0];
   const isEn = lang === "en";
   const campusName = isEn ? campus.nameEn || campus.name : campus.name;
   const campusAddress = isEn ? campus.addressEn || campus.address : campus.address;
+
+  const tabs = [
+    { key: "parent", labelVi: "Phụ huynh", labelEn: "Parents" },
+    { key: "partner", labelVi: "Đối tác", labelEn: "Partners" },
+  ] as const;
+
+  const descVi =
+    audience === "parent"
+      ? "Quý phụ huynh vui lòng điền thông tin vào phiếu dưới đây. Bộ phận tuyển sinh sẽ liên hệ hỗ trợ trong thời gian sớm nhất."
+      : "Quý đối tác vui lòng điền thông tin để chúng tôi liên hệ tư vấn về các cơ hội hợp tác cùng Princeton Academy.";
+  const descEn =
+    audience === "parent"
+      ? "Please complete the details below. Our admissions representatives will contact you shortly."
+      : "Please fill in your details and our partnership team will get in touch with you soon.";
 
   return (
     <section className="border-t border-[#ead9c9] bg-[#f7f4f2] py-16 md:py-20">
@@ -807,8 +822,8 @@ function CampusAndForm() {
           <h2 className="text-[26px] font-extrabold uppercase leading-tight text-[#991B1B] md:text-[30px]">
             {copy[lang].campusTitle}
           </h2>
-          <div className="mt-6 grid gap-6 md:grid-cols-[0.9fr_1.1fr]">
-            <div className="campus-scroll max-h-[610px] overflow-y-auto pl-2">
+          <div className="mt-6 grid gap-6 md:grid-cols-[0.9fr_1.1fr] flex-grow">
+            <div className="campus-scroll max-h-[610px] md:max-h-none md:h-full overflow-y-auto pl-2">
               <div className="space-y-3">
                 {campuses.map((item, index) => {
                   const active = index === selected;
@@ -838,7 +853,7 @@ function CampusAndForm() {
                 })}
               </div>
             </div>
-            <div className="flex min-h-[610px] flex-col overflow-hidden rounded-[8px] border border-[#ead9c9] bg-white shadow-[0_10px_28px_rgba(68,31,19,0.06)] md:h-[610px]">
+            <div className="flex min-h-[500px] md:min-h-0 md:h-full flex-col overflow-hidden rounded-[8px] border border-[#ead9c9] bg-white shadow-[0_10px_28px_rgba(68,31,19,0.06)]">
               <iframe
                 title={campusName}
                 src={campusMapUrl(campusAddress)}
@@ -860,11 +875,46 @@ function CampusAndForm() {
           </div>
         </div>
         <div className="flex h-full flex-col">
-          <h2 className="text-[26px] font-extrabold uppercase leading-tight text-[#991B1B] md:text-[30px]">
-            {copy[lang].formTitle}
-          </h2>
-          <div className="mt-6 flex-1 rounded-[8px] border border-[#ead9c9] bg-white p-5 shadow-[0_10px_28px_rgba(68,31,19,0.06)] md:p-6">
-            <EnrollmentLeadForm variant="mobile" submitLabel={copy[lang].visit} />
+          <div className="lg:mt-[56px] flex-grow bg-white border-2 border-[#800000] shadow-[6px_6px_0_#ead6bf] flex flex-col rounded-none overflow-hidden">
+            {/* Audience Tabs */}
+            <div className="grid grid-cols-2 border-b-2 border-[#800000]">
+              {tabs.map((tab) => {
+                const isActive = audience === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setAudience(tab.key)}
+                    className={[
+                      "py-4 text-[15px] font-extrabold uppercase tracking-wide transition-colors duration-200",
+                      isActive
+                        ? "bg-[#b80000] text-white"
+                        : "bg-white text-[#b80000] hover:bg-[#fff1f1]",
+                    ].join(" ")}
+                  >
+                    {isEn ? tab.labelEn : tab.labelVi}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Form Content */}
+            <div className="p-6 flex-grow flex flex-col justify-center">
+              <div className="mb-6 flex justify-center">
+                <img
+                  src={logoImage.src}
+                  alt="Princeton Academy Logo"
+                  className="h-28 md:h-32 object-contain"
+                />
+              </div>
+              <h2 className="text-[22px] font-extrabold uppercase text-[#991B1B] mb-2 tracking-wide">
+                {isEn ? "Online Registration" : "Thông Tin Đăng Ký"}
+              </h2>
+              <p className="text-[14px] font-semibold text-[#6f3129] mb-8 leading-relaxed">
+                {isEn ? descEn : descVi}
+              </p>
+              <EnrollmentLeadForm variant="mobile" audience={audience} submitLabel={copy[lang].visit} />
+            </div>
           </div>
         </div>
       </div>

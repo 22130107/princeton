@@ -332,7 +332,7 @@ export default function EnrollmentLeadForm({
         type="submit"
         disabled={submitState.status === "loading"}
         className={[
-          "mx-auto mt-2 block rounded-none border-2 border-[#D4AF37] bg-[#ffc300] px-8 py-3.5 text-[18px] font-extrabold uppercase text-[#991B1B] shadow-[4px_4px_0_#D4AF37] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_#D4AF37] active:translate-x-1 active:translate-y-1 active:shadow-none",
+          "mx-auto mt-2 block rounded-none border-2 border-[#800000] bg-[#b80000] px-8 py-3.5 text-[18px] font-extrabold uppercase text-white shadow-[4px_4px_0_#800000] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:bg-[#ffc300] hover:text-[#b80000] hover:border-[#D4AF37] hover:shadow-[6px_6px_0_#D4AF37] active:translate-x-1 active:translate-y-1 active:shadow-none",
           submitState.status === "loading" ? "cursor-wait opacity-70" : "cursor-pointer",
         ].join(" ")}
       >
