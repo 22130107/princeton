@@ -66,7 +66,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
       : program.schedule.map((item) => item.trim()).filter(Boolean);
 
   return (
-    <main className="min-h-screen bg-[#fffefa] pt-[80px] text-[#620000] md:pt-[99px]">
+    <main className="min-h-screen bg-[#F7F4F2] pt-[80px] text-[#620000] md:pt-[99px]">
       <div className="md:hidden">
         <MobileHeader />
       </div>
@@ -74,7 +74,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
         <HeaderSection />
       </div>
 
-      <section className="bg-[#fffefa] px-3 py-6 md:px-8 md:py-10">
+      <section className="bg-[#F7F4F2] px-3 py-6 md:px-8 md:py-10">
         <div className="mx-auto max-w-[1180px]">
           <Link
             href="/chuong-trinh-hoc"
@@ -95,10 +95,10 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
               <p className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[#b80000] md:text-[15px]">
                 {isEn && program.categoryEn ? program.categoryEn : program.category}
               </p>
-              <h1 className="mt-3 text-[34px] font-extrabold uppercase leading-tight text-[#b80000] md:text-[58px]">
+              <h1 className="mt-3 text-[34px] font-extrabold uppercase leading-tight text-[#991B1B] md:text-[58px]">
                 {isEn && program.nameEn ? program.nameEn : program.name}
               </h1>
-              <p className="mt-3 text-[22px] font-bold text-[#b80000] md:text-[28px]">
+              <p className="mt-3 text-[22px] font-bold text-[#991B1B] md:text-[28px]">
                 {isEn && program.ageEn ? program.ageEn : program.age}
               </p>
             </div>
@@ -117,7 +117,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
 
               {scheduleItems.length ? (
                 <section className="mt-10">
-                <h2 className="text-[28px] font-extrabold uppercase text-[#b80000] md:text-[42px]">
+                <h2 className="text-[28px] font-extrabold uppercase text-[#991B1B] md:text-[42px]">
                   {t("classes.schedule")}
                 </h2>
                 <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -135,7 +135,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
         </article>
 
         <section className="mx-auto mt-10 max-w-[1180px]">
-          <h2 className="text-[28px] font-extrabold uppercase text-[#b80000] md:text-[42px]">
+          <h2 className="text-[28px] font-extrabold uppercase text-[#991B1B] md:text-[42px]">
             {t("classes.other")}
           </h2>
           <div className="mt-5 grid gap-4 md:grid-cols-4">
@@ -173,7 +173,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
                   />
                 </div>
                 <div className="bg-[#fffefa] p-4">
-                  <h3 className="text-[20px] font-extrabold">
+                  <h3 className="text-[20px] font-extrabold text-[#991B1B]">
                     {isEn && item.nameEn ? item.nameEn : item.name}
                   </h3>
                   <p className="mt-1 text-[15px] font-bold">

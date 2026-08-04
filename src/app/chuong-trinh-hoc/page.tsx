@@ -8,7 +8,6 @@ import { getCurriculumTracks } from "@/lib/content";
 import { getServerLang, getServerT } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
-import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
 
 export const metadata: Metadata = {
   title: "Cuộc sống tại Princeton | Trường Mầm non Princeton",
@@ -30,7 +29,7 @@ export default async function ChuongTrinhHocPage() {
   const tracks = await getCurriculumTracks();
 
   return (
-    <main className="min-h-screen bg-[#fffefa] pt-[64px] text-[#620000] md:pt-[99px]">
+    <main className="min-h-screen bg-[#F7F4F2] pt-[64px] text-[#620000] md:pt-[99px]">
       <div className="md:hidden">
         <MobileHeader />
       </div>
@@ -38,19 +37,10 @@ export default async function ChuongTrinhHocPage() {
         <HeaderSection />
       </div>
 
-      <section className="relative mt-6 overflow-hidden bg-[#F4D06F] px-4 pb-10 pt-28 md:mt-10 md:px-10 md:pb-16 md:pt-40">
-        <div
-          aria-hidden
-          className="absolute inset-x-0 top-0 z-[2] h-[25px] bg-repeat-x"
-          style={{
-            backgroundImage: `url("${imgWaveTop.src}")`,
-            backgroundSize: "176px 25px",
-            backgroundPosition: "top left",
-          }}
-        />
+      <section className="relative overflow-hidden bg-[#F7F4F2] px-4 pb-10 pt-28 md:px-10 md:pb-16 md:pt-40">
         <div className="relative z-[3] mx-auto max-w-[1180px]">
           <div className="mx-auto max-w-[860px] text-center">
-            <h1 className="text-[34px] font-extrabold uppercase leading-tight md:text-[58px]">
+            <h1 className="text-[34px] font-extrabold uppercase leading-tight text-[#991B1B] md:text-[58px]">
               {t("curriculum.heroTitle")}
             </h1>
             <p className="mx-auto mt-4 max-w-[760px] text-[16px] font-medium leading-7 md:text-[20px] md:leading-8">
@@ -92,7 +82,7 @@ export default async function ChuongTrinhHocPage() {
                   <p className="text-[13px] font-extrabold uppercase text-[#b80000]">
                     {isEn && track.categoryEn ? track.categoryEn : track.category}
                   </p>
-                  <h2 className="mt-3 text-[23px] font-extrabold leading-tight md:text-[25px]">
+                  <h2 className="mt-3 text-[23px] font-extrabold leading-tight text-[#991B1B] md:text-[25px]">
                     {isEn && track.titleEn ? track.titleEn : track.title}
                   </h2>
                   <p className="mt-3 line-clamp-3 text-[16px] font-medium leading-7">

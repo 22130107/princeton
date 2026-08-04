@@ -9,8 +9,6 @@ import { useLanguage } from "@/components/Shared/LanguageProvider";
 import { mediaImage } from "@/lib/media-url";
 import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
 import imgMascotWombat from "@/assets/3dc1ce007304dd7c637e9e4c763ad7fda6021a35.png";
-import imgZigzagTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
-import imgZigzagBottom from "@/assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
 
 const imgMascotKoala = mediaImage("d088645c54f44b84375f6cb56aeabe8e06bc006b.png");
 const imgMascotKangaroo = mediaImage("d0268a1bfec279b63f5d3717d847ff89893ec9a7.png");
@@ -57,17 +55,12 @@ export default function EditorialLandingPage({
       </div>
 
       <section className="relative bg-[#e8f3e6] px-4 pb-12 pt-8 md:px-10 md:pb-18 md:pt-14">
-        <img
-          src={imgMascotPenguin.src}
-          alt=""
-          className="pointer-events-none absolute right-4 top-8 h-16 w-16 object-contain md:right-[9%] md:h-24 md:w-24"
-        />
         <div className="mx-auto grid max-w-[1240px] items-center gap-8 md:grid-cols-[0.9fr_1.1fr]">
           <div>
             <p className="mb-3 inline-flex rounded-full border border-[#b80000] bg-white px-4 py-2 text-[14px] font-bold uppercase text-[#b80000]">
               {eyebrow}
             </p>
-            <h1 className="max-w-[760px] text-[38px] font-extrabold uppercase leading-[1.06] md:text-[60px]">
+            <h1 className="max-w-[760px] text-[38px] font-extrabold uppercase leading-[1.06] text-[#991B1B] md:text-[60px]">
               {title}
             </h1>
             <p className="mt-5 max-w-[660px] text-[16px] font-medium leading-7 md:text-[20px] md:leading-8">
@@ -103,7 +96,7 @@ export default function EditorialLandingPage({
           </article>
 
           <div className="rounded-[32px] bg-[#fff1f1] p-6 md:p-8">
-            <h2 className="text-[30px] font-extrabold uppercase leading-tight md:text-[46px]">
+            <h2 className="text-[30px] font-extrabold uppercase leading-tight text-[#991B1B] md:text-[46px]">
               {introTitle}
             </h2>
             <p className="mt-5 text-[16px] font-medium leading-7 md:text-[19px] md:leading-8">
@@ -120,13 +113,9 @@ export default function EditorialLandingPage({
         </div>
       </section>
 
-      <section className="relative bg-[#ffc107]">
-        <div
-          className="h-[25px] bg-repeat-x"
-          style={{ backgroundImage: `url("${imgZigzagTop.src}")`, backgroundSize: "176px 25px" }}
-        />
+      <section className="relative bg-[#F7F4F2]">
         <div className="mx-auto max-w-[1180px] px-4 py-12 md:px-10 md:py-16">
-          <h2 className="text-center text-[30px] font-extrabold uppercase leading-tight md:text-[52px]">
+          <h2 className="text-center text-[30px] font-extrabold uppercase leading-tight text-[#991B1B] md:text-[52px]">
             {t("editorial.newPosts")}
           </h2>
           <div className="mt-8 grid gap-5 md:grid-cols-3">
@@ -145,7 +134,7 @@ export default function EditorialLandingPage({
                   <p className="text-[13px] font-bold uppercase text-[#b80000]">
                     {post.category} · {post.date}
                   </p>
-                  <h3 className="mt-3 text-[22px] font-extrabold leading-tight">
+                  <h3 className="mt-3 text-[22px] font-extrabold leading-tight text-[#991B1B]">
                     {post.title}
                   </h3>
                   <p className="mt-3 text-[15px] font-medium leading-6">
@@ -156,10 +145,6 @@ export default function EditorialLandingPage({
             ))}
           </div>
         </div>
-        <div
-          className="h-[25px] rotate-180 bg-repeat-x"
-          style={{ backgroundImage: `url("${imgZigzagBottom.src}")`, backgroundSize: "176px 25px" }}
-        />
       </section>
 
       <section className="bg-[#fffefa] px-4 py-12 md:px-10 md:py-16">

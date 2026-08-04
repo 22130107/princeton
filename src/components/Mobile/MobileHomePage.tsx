@@ -1,34 +1,14 @@
 "use client";
 
-import MobileHeader from "./MobileHeader";
-import HeroBanner from "../Home/sections/HeroBanner";
-import MobileAboutSection from "./MobileAboutSection";
-import MobileWhySection from "./MobileWhySection";
-import MobileTeachingProgram from "./MobileTeachingProgram";
-import MobileCurriculumSection from "./MobileCurriculumSection";
-import MobileGallerySection from "./MobileGallerySection";
-import MobileTestimonialsSection from "./MobileTestimonialsSection";
-import MobileCampusSection from "./MobileCampusSection";
-import MobileStatsSection from "./MobileStatsSection";
-import MobileInfoSection from "./MobileInfoSection";
-import MobileRegistrationSection from "./MobileRegistrationSection";
+import PrincetonHomeBody from "../Home/PrincetonHomeBody";
 import MobileFooter from "./MobileFooter";
+import MobileHeader from "./MobileHeader";
 
 export default function MobileHomePage() {
   return (
-    <div className="flex flex-col w-full bg-[#fffefa] overflow-x-hidden pt-[80px]">
+    <div className="font-montserrat flex w-full flex-col overflow-x-hidden bg-[#f7f4f2] pt-[80px]">
       <MobileHeader />
-      <HeroBanner />
-      <MobileAboutSection />
-      <MobileWhySection />
-      <MobileTeachingProgram />
-      <MobileCurriculumSection />
-      <MobileInfoSection />
-      <MobileGallerySection />
-      <MobileTestimonialsSection />
-      <MobileCampusSection />
-      <MobileStatsSection />
-      <MobileRegistrationSection />
+      <PrincetonHomeBody />
       <MobileFooter />
     </div>
   );

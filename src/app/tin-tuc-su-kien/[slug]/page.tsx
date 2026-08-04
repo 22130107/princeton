@@ -63,7 +63,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
   const relatedPosts = newsPosts.filter((item) => item.slug !== post.slug).slice(0, 3);
 
   return (
-    <main className="min-h-screen bg-[#fffefa] pt-[80px] text-[#620000] md:pt-[99px]">
+    <main className="min-h-screen bg-[#F7F4F2] pt-[80px] text-[#620000] md:pt-[99px]">
       <div className="md:hidden">
         <MobileHeader />
       </div>
@@ -71,7 +71,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
         <HeaderSection />
       </div>
 
-      <article className="bg-[#fffefa] px-3 py-6 md:px-8 md:py-10">
+      <article className="bg-[#F7F4F2] px-3 py-6 md:px-8 md:py-10">
         <div className="mx-auto max-w-[1180px]">
           <Link
             href="/hop-tac-cung-princeton"
@@ -92,7 +92,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
               <p className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[#b80000] md:text-[15px]">
                 {isEn && post.categoryEn ? post.categoryEn : post.category}
               </p>
-              <h1 className="mt-3 text-[30px] font-extrabold leading-tight text-[#b80000] md:text-[52px]">
+              <h1 className="mt-3 text-[30px] font-extrabold leading-tight text-[#991B1B] md:text-[52px]">
                 {title}
               </h1>
             </div>
@@ -123,7 +123,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
         </div>
 
         <section className="mx-auto mt-10 max-w-[1180px]">
-          <h2 className="text-[28px] font-extrabold uppercase text-[#b80000] md:text-[42px]">
+          <h2 className="text-[28px] font-extrabold uppercase text-[#991B1B] md:text-[42px]">
             {t("news.related")}
           </h2>
           <div className="mt-5 grid gap-5 md:grid-cols-3">
@@ -157,7 +157,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                   <p className="text-[12px] font-extrabold uppercase text-[#b80000]">
                     {isEn && item.categoryEn ? item.categoryEn : item.category}
                   </p>
-                  <h3 className="mt-3 text-[20px] font-extrabold leading-tight">
+                  <h3 className="mt-3 text-[20px] font-extrabold leading-tight text-[#991B1B]">
                     {isEn && item.titleEn ? item.titleEn : item.title}
                   </h3>
                 </div>

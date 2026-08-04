@@ -5,9 +5,6 @@ import SiteFooter from "@/components/Shared/SiteFooter";
 import TeachingMethodsSection from "@/components/Shared/TeachingMethodsSection";
 import { getTeachingMethods } from "@/lib/content";
 import { getServerT } from "@/lib/i18n-server";
-import { mediaImage } from "@/lib/media-url";
-import imgMascotPenguin from "@/assets/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
-const imgMascotKoala = mediaImage("d088645c54f44b84375f6cb56aeabe8e06bc006b.png");
 
 export const metadata: Metadata = {
   title: "Con đường Princeton | Trường Mầm non Princeton",
@@ -27,7 +24,7 @@ export default async function PhuongPhapGiangDayPage() {
   const methods = await getTeachingMethods();
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#fffefa] pt-[64px] text-[#620000] md:pt-[99px]">
+    <main className="min-h-screen overflow-hidden bg-[#F7F4F2] pt-[64px] text-[#620000] md:pt-[99px]">
       <div className="md:hidden">
         <MobileHeader />
       </div>
@@ -35,35 +32,27 @@ export default async function PhuongPhapGiangDayPage() {
         <HeaderSection />
       </div>
 
-      <section className="relative bg-[#FAF9F6] px-4 py-10 md:px-10 md:py-16">
-        <img
-          src={imgMascotPenguin.src}
-          alt=""
-          className="pointer-events-none absolute left-4 top-5 h-16 w-16 object-contain md:left-[8%] md:top-10 md:h-24 md:w-24"
-        />
-        <img
-          src={imgMascotKoala.src}
-          alt=""
-          className="pointer-events-none absolute bottom-4 right-4 h-16 w-16 object-contain md:right-[8%] md:h-24 md:w-24"
-        />
+      <section className="relative bg-[#F7F4F2] px-4 pb-12 pt-10 md:px-10 md:pb-[100px] md:pt-16">
         <div className="relative z-[1] mx-auto max-w-[980px] text-center">
           <p className="mb-3 inline-flex rounded-full border border-[#b80000] bg-white px-4 py-2 text-[14px] font-bold uppercase text-[#b80000]">
             {t("methods.heroBadge")}
           </p>
-          <h1 className="text-[40px] font-extrabold uppercase leading-[1.05] md:text-[68px]">
+          <h1 className="text-[40px] font-extrabold uppercase leading-[1.05] text-[#991B1B] md:text-[68px]">
             {t("methods.heroTitle")}
           </h1>
           <p className="mx-auto mt-5 max-w-[760px] text-[17px] font-medium leading-7 md:text-[22px] md:leading-8">
             {t("methods.heroTextBefore")}<strong className="font-extrabold">{t("methods.heroTextStrong1")}</strong>{t("methods.heroTextMid")}<strong className="font-extrabold">{t("methods.heroTextStrong2")}</strong>{t("methods.heroTextAfter")}
           </p>
         </div>
-      </section>
 
-      <TeachingMethodsSection
-        methods={methods}
-        topZigzagColor="#FAF9F6"
-        bottomZigzagColor="#e8f3e6"
-      />
+        <TeachingMethodsSection
+          methods={methods}
+          showHeading={false}
+          showZigzags={false}
+          compactTop
+          className="bg-transparent"
+        />
+      </section>
 
       <SiteFooter />
     </main>

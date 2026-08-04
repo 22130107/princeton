@@ -256,7 +256,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
                 <p className="text-[13px] font-extrabold uppercase text-[#b80000]">
                   {lang === "en" ? post.categoryEn || post.category : post.category}
                 </p>
-                <h2 className="mt-3 text-[23px] font-extrabold leading-tight md:text-[25px]">
+                <h2 className="mt-3 text-[23px] font-extrabold leading-tight text-[#991B1B] md:text-[25px]">
                   {lang === "en" && post.titleEn ? post.titleEn : post.title}
                 </h2>
                 <p className="mt-3 line-clamp-3 text-[16px] font-medium leading-7">
@@ -274,7 +274,7 @@ export default function NewsSearchList({ initialPosts }: NewsSearchListProps) {
         </div>
       ) : (
         <div className="mx-auto mt-9 max-w-[720px] border border-[#b80000] bg-[#fffefa] px-6 py-8 text-center shadow-[4px_4px_0_rgba(184,0,0,0.16)]">
-          <h2 className="text-[26px] font-extrabold uppercase text-[#b80000]">
+          <h2 className="text-[26px] font-extrabold uppercase text-[#991B1B]">
             {t("news.notFoundTitle")}
           </h2>
           <p className="mt-3 text-[17px] font-medium leading-7">

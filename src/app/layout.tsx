@@ -41,10 +41,10 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Baloo+Paaji+2:wght@400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
-        <style>{`html { font-family: "Baloo Paaji 2", Arial, Helvetica, sans-serif; } body { margin: 0; } #root { height: 100%; }`}</style>
+        <style>{`html { font-family: "Montserrat", Arial, Helvetica, sans-serif; } body { margin: 0; } #root { height: 100%; }`}</style>
       </head>
       <body>
         <LanguageProvider initialLang={initialLang}>

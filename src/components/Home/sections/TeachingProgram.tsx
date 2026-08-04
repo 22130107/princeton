@@ -2,13 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import svgPaths from "../svg-g45k1n1pz5";
 import { mediaUrl } from "@/lib/media-url";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
-import imgImage from "../../../assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
-import imgTeachingMethodPlanePng from "../../../assets/87b0baec94bf2f1f980990704ca31b5f776eae03.png";
-import imgImage1 from "../../../assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
 
 type HomeTeachingMethod = {
   id: number;
@@ -76,7 +72,7 @@ function Container64() {
   const { t } = useLanguage();
   return (
     <div className="content-stretch flex items-start justify-center relative shrink-0" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[60px] text-center text-[#620000] whitespace-nowrap">
+      <div className="[word-break:break-word] flex flex-col font-bold justify-center leading-[0] relative shrink-0 text-[60px] text-center text-[#991B1B] whitespace-nowrap">
         <p className="leading-[60px]">{t("home.program.title")}</p>
       </div>
     </div>
@@ -124,7 +120,7 @@ function Container68() {
 function Container70() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#620000] w-full">
+      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#991B1B] w-full">
         <p className="leading-[28px]">Kết hợp nhiều phương pháp</p>
       </div>
     </div>
@@ -193,7 +189,7 @@ function Container73() {
 function Container75() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#620000] w-full">
+      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#991B1B] w-full">
         <p className="leading-[28px]">Lấy trẻ làm trung tâm</p>
       </div>
     </div>
@@ -262,7 +258,7 @@ function Container78() {
 function Container80() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#620000] w-full">
+      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#991B1B] w-full">
         <p className="leading-[28px]">Khai phóng tư duy</p>
       </div>
     </div>
@@ -331,7 +327,7 @@ function Container83() {
 function Container85() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#620000] w-full">
+      <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#991B1B] w-full">
         <p className="leading-[28px]">{`Học qua tương tác & hợp tác`}</p>
       </div>
     </div>
@@ -409,7 +405,7 @@ function TeachingMethodCard({ method, index }: { method: HomeTeachingMethod; ind
             </div>
             <div className="content-stretch flex flex-[1_0_0] flex-col gap-[8px] items-start min-w-px relative" data-name="Container">
               <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
-                <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#620000] w-full">
+                <div className="[word-break:break-word] flex flex-col font-extrabold justify-center leading-[0] relative shrink-0 text-[28px] text-[#991B1B] w-full">
                   <p className="leading-[28px]">{title}</p>
                 </div>
               </div>
@@ -436,16 +432,6 @@ function Container66({ methods }: { methods: HomeTeachingMethod[] }) {
   );
 }
 
-function TeachingMethodPlanePng() {
-  return (
-    <div className="absolute inset-[102%_0_-9.65%_992px]" data-name="teaching-method-plane.png">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute left-0 max-w-none size-full top-0" src={imgTeachingMethodPlanePng.src} />
-      </div>
-    </div>
-  );
-}
-
 function Container62({ methods }: { methods: HomeTeachingMethod[] }) {
   return (
     <div className="max-w-[1320px] relative shrink-0 w-full" data-name="Container">
@@ -453,7 +439,6 @@ function Container62({ methods }: { methods: HomeTeachingMethod[] }) {
         <div className="content-stretch flex flex-col gap-[48px] items-center max-w-[inherit] px-[12px] relative size-full">
           <Container63 />
           <Container66 methods={methods} />
-          <TeachingMethodPlanePng />
         </div>
       </div>
     </div>
@@ -502,8 +487,7 @@ export default function TeachingProgram() {
   }, []);
 
   return (
-    <div className="absolute bg-[#F4D06F] content-stretch flex flex-col items-start left-0 pb-[132px] pt-[100px] px-[104px] right-0 top-[2776px]" data-name="Section">
-      <div className="absolute bg-size-[176px_25px] bg-top-left h-[25px] left-0 right-0 top-0" style={{ backgroundImage: `url("${imgImage.src}")` }} data-name="Image" />
+    <div className="absolute bg-[#F7F4F2] content-stretch flex flex-col items-start left-0 pb-[132px] pt-[100px] px-[104px] right-0 top-[2776px]" data-name="Section">
       <Container62 methods={methods} />
       <Link
         href="/con-duong-princeton"
@@ -511,10 +495,6 @@ export default function TeachingProgram() {
       >
         {t("home.readMore")}
       </Link>
-      <div className="absolute bottom-0 flex h-[25px] items-center justify-center left-0 right-0" style={{ containerType: "size" }}>        <div className="flex-none h-[100cqh] rotate-180 w-[100cqw]">
-          <div className="bg-size-[176px_25px] bg-top-left relative size-full" style={{ backgroundImage: `url("${imgImage1.src}")` }} data-name="Image" />
-        </div>
-      </div>
     </div>
   );
 }

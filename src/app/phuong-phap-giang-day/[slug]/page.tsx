@@ -11,6 +11,8 @@ import { getServerLang, getServerT } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
+const RELATED_METHOD_FRAME_ASPECT = 326 / 220;
+
 type TeachingMethodDetailPageProps = {
   params: Promise<{
     slug: string;
@@ -68,7 +70,7 @@ export default async function TeachingMethodDetailPage({
     .slice(0, 3);
 
   return (
-    <main className="min-h-screen bg-white pt-[64px] text-[#620000] md:pt-[99px]">
+    <main className="min-h-screen bg-[#F7F4F2] pt-[64px] text-[#620000] md:pt-[99px]">
       <div className="md:hidden">
         <MobileHeader />
       </div>
@@ -76,7 +78,7 @@ export default async function TeachingMethodDetailPage({
         <HeaderSection />
       </div>
 
-      <article className="relative mt-6 overflow-hidden bg-white px-4 pb-12 pt-12 md:mt-10 md:px-10 md:pb-16 md:pt-16">
+      <article className="relative overflow-hidden bg-[#F7F4F2] px-4 pb-12 pt-12 md:px-10 md:pb-16 md:pt-16">
         <div className="relative mx-auto max-w-[1040px]">
           <Link
             href="/con-duong-princeton"
@@ -97,7 +99,7 @@ export default async function TeachingMethodDetailPage({
               <p className="text-[14px] font-extrabold uppercase text-[#b80000]">
                 {lang === "en" ? method.categoryEn : method.category}
               </p>
-              <h1 className="mt-4 text-[34px] font-extrabold leading-tight md:text-[56px]">
+              <h1 className="mt-4 text-[34px] font-extrabold leading-tight text-[#991B1B] md:text-[56px]">
                 {title}
               </h1>
               <p className="mt-5 text-[18px] font-bold leading-8 md:text-[22px] md:leading-9">
@@ -111,7 +113,7 @@ export default async function TeachingMethodDetailPage({
           </div>
 
           <section className="mt-10">
-            <h2 className="text-[28px] font-extrabold uppercase md:text-[42px]">
+            <h2 className="text-[28px] font-extrabold uppercase text-[#991B1B] md:text-[42px]">
               {t("methods.related")}
             </h2>
             <div className="mt-5 grid gap-5 md:grid-cols-3">
@@ -121,17 +123,14 @@ export default async function TeachingMethodDetailPage({
                   href={`/con-duong-princeton/${item.slug}`}
                   className="overflow-hidden border border-[#b80000] bg-white text-[#620000] no-underline shadow-[4px_4px_0_rgba(184,0,0,0.16)] transition-transform duration-200 hover:-translate-y-1"
                 >
-                  <div
-                    className="relative aspect-square overflow-hidden"
-                    style={{ backgroundColor: item.background || "#fffefa" }}
-                  >
+                  <div className="relative aspect-[326/220] overflow-hidden" style={{ backgroundColor: item.background || "#fffefa" }}>
                     {item.imageUrl ? (
                       <CoverImage
                         src={item.imageUrl}
                         alt={item.imageAlt}
                         zoom={item.coverZoom}
                         position={item.coverPosition}
-                        frameAspect={1}
+                        frameAspect={RELATED_METHOD_FRAME_ASPECT}
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center">
@@ -145,14 +144,14 @@ export default async function TeachingMethodDetailPage({
                     <img
                       src={imgCardLogo.src}
                       alt="Princeton Academy"
-                      className="absolute left-3 top-3 h-[62px] w-[62px] object-contain"
+                      className="absolute left-3 top-3 h-[52px] w-[52px] object-contain"
                     />
                   </div>
                   <div className="bg-white p-5">
                     <p className="text-[12px] font-extrabold uppercase text-[#b80000]">
                       {isEn && item.categoryEn ? item.categoryEn : item.category}
                     </p>
-                    <h3 className="mt-3 text-[20px] font-extrabold leading-tight">
+                    <h3 className="mt-3 text-[20px] font-extrabold leading-tight text-[#991B1B]">
                       {isEn && item.titleEn ? item.titleEn : item.title}
                     </h3>
                   </div>

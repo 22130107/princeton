@@ -65,7 +65,7 @@ export default function FacilityCarousel({ slides, imageContext }: FacilityCarou
 
   return (
     <>
-      <div className="relative overflow-hidden rounded-[28px] border-2 border-dashed border-white bg-[#fffefa] shadow-[6px_6px_0_rgba(98,0,0,0.12)]">
+      <div className="relative overflow-hidden rounded-[24px] bg-[#fffefa] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
         <button
           type="button"
           aria-label={`Xem ảnh ${imageContext} kích thước lớn`}
@@ -77,7 +77,7 @@ export default function FacilityCarousel({ slides, imageContext }: FacilityCarou
               key={`${slide.title}-${index}`}
               src={typeof slide.image === "string" ? slide.image : slide.image.src}
               alt={slide.title}
-              className={`absolute inset-0 size-full object-cover transition-all duration-500 ease-out ${
+              className={`absolute inset-0 size-full object-cover transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
                 index === active ? "scale-100 opacity-100" : "scale-[1.03] opacity-0"
               }`}
             />
@@ -89,20 +89,20 @@ export default function FacilityCarousel({ slides, imageContext }: FacilityCarou
             type="button"
             aria-label="Ảnh trước"
             onClick={() => goTo(active - 1)}
-            className="flex size-11 items-center justify-center rounded-full bg-white text-[#b80000] shadow-[0_3px_0_rgba(98,0,0,0.22)]"
+            className="flex size-11 items-center justify-center rounded-full border border-white/45 bg-[#2b120e]/[0.72] text-white shadow-[0_12px_28px_rgba(43,18,14,0.18)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:bg-[#991B1B]"
           >
-            <ChevronLeft size={24} strokeWidth={3} />
+            <ChevronLeft size={22} strokeWidth={2.25} />
           </button>
 
-          <div className="flex items-center gap-2 rounded-full bg-white/92 px-3 py-2 shadow-[0_3px_0_rgba(98,0,0,0.12)]">
+          <div className="flex items-center gap-2 rounded-full border border-white/45 bg-[#2b120e]/[0.72] px-3 py-2 shadow-[0_12px_28px_rgba(43,18,14,0.18)]">
             {safeSlides.map((slide, index) => (
               <button
                 key={`${slide.title}-${index}`}
                 type="button"
                 aria-label={`Xem ${slide.title}`}
                 onClick={() => goTo(index)}
-                className={`size-3 rounded-full transition-all ${
-                  index === active ? "w-8 bg-[#b80000]" : "bg-[#ffc107]"
+                className={`h-2.5 rounded-full transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+                  index === active ? "w-8 bg-[#f1d49b]" : "w-2.5 bg-white/[0.54]"
                 }`}
               />
             ))}
@@ -112,13 +112,13 @@ export default function FacilityCarousel({ slides, imageContext }: FacilityCarou
             type="button"
             aria-label="Ảnh tiếp theo"
             onClick={() => goTo(active + 1)}
-            className="flex size-11 items-center justify-center rounded-full bg-white text-[#b80000] shadow-[0_3px_0_rgba(98,0,0,0.22)]"
+            className="flex size-11 items-center justify-center rounded-full border border-white/45 bg-[#2b120e]/[0.72] text-white shadow-[0_12px_28px_rgba(43,18,14,0.18)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:bg-[#991B1B]"
           >
-            <ChevronRight size={24} strokeWidth={3} />
+            <ChevronRight size={22} strokeWidth={2.25} />
           </button>
         </div>
 
-        <div className="absolute left-4 top-4 rounded-full bg-white/92 px-4 py-2 text-[14px] font-extrabold uppercase text-[#b80000] shadow-[0_3px_0_rgba(98,0,0,0.12)]">
+        <div className="absolute left-4 top-4 rounded-full border border-white/45 bg-[#2b120e]/[0.72] px-4 py-2 text-[12px] font-extrabold uppercase tracking-[0.12em] text-[#f1d49b] shadow-[0_12px_28px_rgba(43,18,14,0.18)]">
           {safeSlides[active]?.title}
         </div>
       </div>
@@ -128,7 +128,7 @@ export default function FacilityCarousel({ slides, imageContext }: FacilityCarou
           role="dialog"
           aria-modal="true"
           aria-label={activeSlide.title}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#220000]/88 p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#1f0e0b]/90 p-4"
           onClick={() => setIsLightboxOpen(false)}
         >
           <div
@@ -138,18 +138,18 @@ export default function FacilityCarousel({ slides, imageContext }: FacilityCarou
             <img
               src={activeImageSrc}
               alt={activeSlide.title}
-              className="max-h-full max-w-full rounded-[18px] object-contain shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
+              className="max-h-full max-w-full rounded-[24px] object-contain shadow-[0_30px_90px_rgba(0,0,0,0.45)]"
             />
-            <div className="absolute left-4 top-4 rounded-full bg-white px-4 py-2 text-[14px] font-extrabold uppercase text-[#b80000] shadow-[0_3px_0_rgba(98,0,0,0.18)]">
+            <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[12px] font-extrabold uppercase tracking-[0.12em] text-[#f1d49b] shadow-[0_18px_44px_rgba(0,0,0,0.24)]">
               {activeSlide.title}
             </div>
             <button
               type="button"
               aria-label="Đóng ảnh lớn"
               onClick={() => setIsLightboxOpen(false)}
-              className="absolute right-4 top-4 flex size-11 items-center justify-center rounded-full bg-white text-[#b80000] shadow-[0_3px_0_rgba(98,0,0,0.22)]"
+              className="absolute right-4 top-4 flex size-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white shadow-[0_18px_44px_rgba(0,0,0,0.24)]"
             >
-              <X size={24} strokeWidth={3} />
+              <X size={22} strokeWidth={2.25} />
             </button>
             {safeSlides.length > 1 ? (
               <>
@@ -157,17 +157,17 @@ export default function FacilityCarousel({ slides, imageContext }: FacilityCarou
                   type="button"
                   aria-label="Ảnh trước"
                   onClick={() => goTo(active - 1)}
-                  className="absolute left-4 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#b80000] shadow-[0_3px_0_rgba(98,0,0,0.22)]"
+                  className="absolute left-4 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white shadow-[0_18px_44px_rgba(0,0,0,0.24)]"
                 >
-                  <ChevronLeft size={26} strokeWidth={3} />
+                  <ChevronLeft size={24} strokeWidth={2.25} />
                 </button>
                 <button
                   type="button"
                   aria-label="Ảnh tiếp theo"
                   onClick={() => goTo(active + 1)}
-                  className="absolute right-4 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#b80000] shadow-[0_3px_0_rgba(98,0,0,0.22)]"
+                  className="absolute right-4 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white shadow-[0_18px_44px_rgba(0,0,0,0.24)]"
                 >
-                  <ChevronRight size={26} strokeWidth={3} />
+                  <ChevronRight size={24} strokeWidth={2.25} />
                 </button>
               </>
             ) : null}

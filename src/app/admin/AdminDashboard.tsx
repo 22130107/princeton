@@ -17,7 +17,6 @@ import {
   defaultRegistrationSectionSettings,
   type RegistrationSectionSettings,
 } from "@/lib/registration-section-config";
-import bannerCoverMask from "@/assets/d082e0a60a126345af429a7e01c4ba8161c21e0e.png";
 import promoFallbackImage from "@/assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aac.png";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
@@ -3482,14 +3481,15 @@ function clampNumber(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-const BANNER_FRAME_ASPECT = 1014 / 546;
-const BANNER_MOBILE_FRAME_ASPECT = 4096 / 2731;
+const BANNER_FRAME_ASPECT = 2035 / 773;
+const BANNER_MOBILE_FRAME_ASPECT = 390 / 260;
 const BANNER_MIN_ZOOM = 0.5;
 const BANNER_MAX_ZOOM = 3;
+const COVER_DRAG_SENSITIVITY = 0.42;
 const TEACHER_FRAME_ASPECT = 1.75;
-const CLASS_FRAME_ASPECT = 575.2 / 343.51;
-const CURRICULUM_FRAME_ASPECT = 575.2 / 343.51;
-const TEACHING_FRAME_ASPECT = 1;
+const CLASS_FRAME_ASPECT = 326 / 185;
+const CURRICULUM_FRAME_ASPECT = CLASS_FRAME_ASPECT;
+const TEACHING_FRAME_ASPECT = 326 / 220;
 const POST_FRAME_ASPECT = 360 / 225;
 
 function BannerCoverEditor({
@@ -3512,7 +3512,7 @@ function BannerCoverEditor({
   const frameRef = useRef<HTMLDivElement>(null);
   const [natural, setNatural] = useState<{ width: number; height: number } | null>(null);
   const [dragging, setDragging] = useState(false);
-  const dragRef = useRef<{ pointerId: number; startX: number; startY: number; x: number; y: number } | null>(null);
+  const dragRef = useRef<{ pointerId: number; startX: number; startY: number; x: number; y: number; moved: boolean } | null>(null);
   const positionRef = useRef(position);
   positionRef.current = position;
   const zoomRef = useRef(zoom);
@@ -3525,7 +3525,7 @@ function BannerCoverEditor({
     if (!frame) return;
     const { x, y } = parseCoverPosition(positionRef.current);
     event.currentTarget.setPointerCapture(event.pointerId);
-    dragRef.current = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, x, y };
+    dragRef.current = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, x, y, moved: false };
     setDragging(true);
   }
 
@@ -3550,9 +3550,20 @@ function BannerCoverEditor({
     const slackY = frameHeight * (zoomValue * ratioH - 1);
     const deltaX = event.clientX - drag.startX;
     const deltaY = event.clientY - drag.startY;
+    const hasDragIntent = Math.hypot(deltaX, deltaY) >= 4;
 
-    const nextX = Math.abs(slackX) > 0.5 ? clampNumber(drag.x - (deltaX / slackX) * 100, 0, 100) : drag.x;
-    const nextY = Math.abs(slackY) > 0.5 ? clampNumber(drag.y - (deltaY / slackY) * 100, 0, 100) : drag.y;
+    if (!drag.moved && !hasDragIntent) return;
+
+    drag.moved = true;
+
+    const nextX =
+      Math.abs(slackX) > 0.5
+        ? clampNumber(drag.x - (deltaX / frameWidth) * 100 * COVER_DRAG_SENSITIVITY, 0, 100)
+        : drag.x;
+    const nextY =
+      Math.abs(slackY) > 0.5
+        ? clampNumber(drag.y - (deltaY / frameHeight) * 100 * COVER_DRAG_SENSITIVITY, 0, 100)
+        : drag.y;
 
     onChange({
       position: `${Math.round(nextX)}% ${Math.round(nextY)}%`,
@@ -5437,7 +5448,7 @@ export default function AdminDashboard() {
                     }
                     coverPosition={bannerForm.desktopObjectPosition}
                     coverZoom={bannerForm.desktopZoom}
-                    coverMaskUrl={bannerCoverMask.src}
+                    coverFrameAspect={BANNER_FRAME_ASPECT}
                     onCoverChange={(value) =>
                       setBannerForm((f) => ({
                         ...f,

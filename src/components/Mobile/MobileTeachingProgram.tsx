@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { mediaUrl } from "@/lib/media-url";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
-import imgZigzagTop from "../../assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
-import imgZigzagBottom from "../../assets/d698542361c4bd444dda74cab23735d3d9459bf4.png";
 
 type MobileTeachingMethod = {
   id: number;
@@ -102,18 +100,9 @@ export default function MobileTeachingProgram() {
   }, []);
 
   return (
-    <section className="relative bg-[#F4D06F]">
-      <div
-        className="h-[25px] w-full bg-repeat-x"
-        style={{
-          backgroundImage: `url("${imgZigzagTop.src}")`,
-          backgroundSize: "176px 25px",
-          backgroundPosition: "top left",
-        }}
-      />
-
+    <section className="relative bg-[#F7F4F2]">
       <div className="px-4 pb-10 pt-8">
-        <h2 className="mb-2 text-center text-[22px] font-bold uppercase text-[#620000]">
+        <h2 className="mb-2 text-center text-[22px] font-bold uppercase text-[#991B1B]">
           {t("home.program.title")}
         </h2>
         <p className="mb-7 text-center text-[14px] font-medium leading-relaxed text-[#620000]">
@@ -136,7 +125,7 @@ export default function MobileTeachingProgram() {
                   />
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col gap-2">
-                  <p className="text-[16px] font-extrabold leading-snug text-[#620000]">
+                  <p className="text-[16px] font-extrabold leading-snug text-[#991B1B]">
                     {isEn ? method.titleEn || method.title : method.title}
                   </p>
                   <p className="text-[13px] font-medium leading-relaxed text-[#620000]">
@@ -155,15 +144,6 @@ export default function MobileTeachingProgram() {
           {t("home.readMore")}
         </Link>
       </div>
-
-      <div
-        className="h-[25px] w-full rotate-180 bg-repeat-x"
-        style={{
-          backgroundImage: `url("${imgZigzagBottom.src}")`,
-          backgroundSize: "176px 25px",
-          backgroundPosition: "top left",
-        }}
-      />
     </section>
   );
 }

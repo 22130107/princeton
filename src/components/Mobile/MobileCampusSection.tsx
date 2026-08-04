@@ -4,8 +4,6 @@ import { useState } from "react";
 import { campuses, campusMapUrl, campusMapLink, type Campus } from "@/lib/campuses";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
 import imgFlowers from "../../assets/cfa61d914b57a907c8879eea3242e5037a5a2c78.png";
-import imgCornerTop from "../../assets/45e9cd713cd022e324337d1e9a3d1f01c8086db4.png";
-import imgCornerBottom from "../../assets/e2e0d53776626afcb6870acda5507843a053b4ae.png";
 
 function MobileMapPreview({ campus, lang }: { campus: Campus; lang: "vi" | "en" }) {
   const { t } = useLanguage();
@@ -40,7 +38,7 @@ export default function MobileCampusSection() {
   const isEn = lang === "en";
 
   return (
-    <section className="relative overflow-hidden bg-[#fffefa] px-3 py-9">
+    <section className="relative overflow-hidden bg-[#F7F4F2] px-3 py-9">
       <style>{`
         .mobile-campus-stamp::before,
         .mobile-campus-stamp::after,
@@ -82,18 +80,6 @@ export default function MobileCampusSection() {
         .campus-scroll::-webkit-scrollbar-thumb { background: #e6b3b3; border-radius: 9999px; }
         .campus-scroll { scrollbar-width: thin; scrollbar-color: #e6b3b3 transparent; }
       `}</style>
-
-      <img
-        src={imgCornerTop.src}
-        alt=""
-        className="pointer-events-none absolute left-0 top-0 h-16 w-16 object-contain"
-      />
-      <img
-        src={imgCornerBottom.src}
-        alt=""
-        className="pointer-events-none absolute bottom-0 right-0 h-16 w-16 object-contain"
-      />
-
       <div className="mobile-campus-stamp relative mx-auto max-w-[480px] bg-[#b80000] px-4 pb-4 pt-7 shadow-[3px_4px_0_rgba(112,86,86,0.22)]">
         <span aria-hidden className="mobile-campus-stamp-holes" />
 
@@ -101,7 +87,7 @@ export default function MobileCampusSection() {
           <MobileMapPreview campus={campus} lang={lang} />
 
           <div className="px-1 pb-2 pt-4">
-            <h2 className="text-[28px] font-extrabold uppercase leading-[1.18] text-[#620000]">
+            <h2 className="text-[28px] font-extrabold uppercase leading-[1.18] text-[#991B1B]">
               {t("mobile.campus.title")}
             </h2>
             <p className="mt-2.5 text-[15px] font-medium leading-[22px] text-[#620000]">

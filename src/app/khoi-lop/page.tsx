@@ -8,11 +8,6 @@ import { getClassPrograms } from "@/lib/content";
 import { getServerT, getServerLang } from "@/lib/i18n-server";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
-import imgWaveTop from "@/assets/38d9a61e041eae8aa98304a4098248683a3a95d6.png";
-import stickerA from "@/assets/sticker/58895c008a094b06474cacb153601040cef3cf48.png";
-import stickerB from "@/assets/sticker/6344cf27-7411-4173-b9fd-570675106a47.png";
-import stickerC from "@/assets/sticker/7418d3b6d509d03b45710cdbc11e6c298f5a9959.png";
-import stickerD from "@/assets/sticker/c0575f19-d630-4b56-b954-383cd28b2ce9.png";
 
 export const metadata: Metadata = {
   title: "Chương trình học | Trường Mầm non Princeton",
@@ -27,32 +22,6 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-const floatingStickers = [
-  { image: stickerA, className: "left-[4%] top-[18%] h-16 w-16 md:h-24 md:w-24", duration: "6.4s", delay: "-1.2s", rotate: "-10deg" },
-  { image: stickerB, className: "right-[6%] top-[12%] h-20 w-20 md:h-28 md:w-28", duration: "7.1s", delay: "-3.1s", rotate: "12deg" },
-  { image: stickerC, className: "left-[8%] bottom-[12%] h-16 w-16 md:h-24 md:w-24", duration: "5.8s", delay: "-2.4s", rotate: "8deg" },
-];
-
-function FloatingStickers() {
-  return (
-    <div className="pointer-events-none absolute inset-0 z-[4] overflow-hidden">
-      {floatingStickers.map((sticker, index) => (
-        <img
-          key={index}
-          src={sticker.image.src}
-          alt=""
-          className={`absolute object-contain opacity-95 drop-shadow-[0_12px_14px_rgba(98,0,0,0.22)] ${sticker.className}`}
-          style={{
-            animation: `program-sticker-sway ${sticker.duration} ease-in-out infinite`,
-            animationDelay: sticker.delay,
-            transform: `rotate(${sticker.rotate})`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
 export default async function KhoiLopPage() {
   const t = await getServerT();
   const lang = await getServerLang();
@@ -60,14 +29,7 @@ export default async function KhoiLopPage() {
   const classPrograms = await getClassPrograms();
 
   return (
-    <main className="min-h-screen bg-[#fffefa] pt-[64px] text-[#620000] md:pt-[99px]">
-      <style>{`
-        @keyframes program-sticker-sway {
-          0%, 100% { translate: 0 0; scale: 1; }
-          35% { translate: 8px -14px; scale: 1.04; }
-          70% { translate: -6px 10px; scale: 0.98; }
-        }
-      `}</style>
+    <main className="min-h-screen bg-[#F7F4F2] pt-[64px] text-[#620000] md:pt-[99px]">
       <div className="md:hidden">
         <MobileHeader />
       </div>
@@ -75,19 +37,9 @@ export default async function KhoiLopPage() {
         <HeaderSection />
       </div>
 
-      <section className="relative mt-6 overflow-hidden bg-[#E2DBD9] px-4 pb-10 pt-28 md:mt-10 md:px-10 md:pb-16 md:pt-40">
-        <div
-          aria-hidden
-          className="absolute inset-x-0 top-0 z-[2] h-[25px] bg-repeat-x"
-          style={{
-            backgroundImage: `url("${imgWaveTop.src}")`,
-            backgroundSize: "176px 25px",
-            backgroundPosition: "top left",
-          }}
-        />
-        <FloatingStickers />
+      <section className="relative overflow-hidden bg-[#F7F4F2] px-4 pb-10 pt-28 md:px-10 md:pb-16 md:pt-40">
         <div className="relative z-[3] mx-auto max-w-[1180px]">
-          <h1 className="text-center text-[34px] font-extrabold uppercase leading-tight md:text-[58px]">
+          <h1 className="text-center text-[34px] font-extrabold uppercase leading-tight text-[#991B1B] md:text-[58px]">
             {t("classes.heroTitle")}
           </h1>
           <p className="mx-auto mt-4 max-w-[760px] text-center text-[16px] font-medium leading-7 md:text-[20px] md:leading-8">
@@ -131,7 +83,7 @@ export default async function KhoiLopPage() {
                   <p className="text-[13px] font-extrabold uppercase text-[#b80000]">
                     {isEn && program.categoryEn ? program.categoryEn : program.category}
                   </p>
-                  <h2 className="mt-3 text-[28px] font-extrabold leading-tight">
+                  <h2 className="mt-3 text-[28px] font-extrabold leading-tight text-[#991B1B]">
                     {isEn && program.nameEn ? program.nameEn : program.name}
                   </h2>
                   <p className="mt-2 inline-flex w-fit rounded-full border border-[#b80000] bg-white px-4 py-2 text-[16px] font-bold text-[#620000]">
