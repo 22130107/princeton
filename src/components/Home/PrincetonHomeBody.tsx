@@ -559,7 +559,7 @@ function Programs({ programs }: { programs: ClassProgramItem[] }) {
     <section className="bg-[#f7f4f2] py-16">
       <div className={shell}>
         <SectionTitle title={copy[lang].programTitle} />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
           {programs.map((program) => (
             <Link
               href={`/chuong-trinh-hoc/${program.slug}`}
@@ -579,9 +579,9 @@ function Programs({ programs }: { programs: ClassProgramItem[] }) {
                   ) : null}
                 </div>
               </div>
-              <div className="flex min-h-[140px] flex-1 flex-col p-6 transition-colors duration-300 group-hover:bg-[#fffefa]">
-                <h3 className="text-[20px] font-extrabold leading-tight text-[#991B1B]">{program.name}</h3>
-                <p className="mt-1.5 text-[14px] font-bold text-[#5f4540]">{program.age || program.label}</p>
+              <div className="flex min-h-[120px] md:min-h-[140px] flex-1 flex-col p-4 md:p-6 transition-colors duration-300 group-hover:bg-[#fffefa]">
+                <h3 className="text-[15px] md:text-[20px] font-extrabold leading-tight text-[#991B1B]">{program.name}</h3>
+                <p className="mt-1 md:mt-1.5 text-[12px] md:text-[14px] font-bold text-[#5f4540]">{program.age || program.label}</p>
                 
                 {/* Premium expanding CTA button */}
                 <div className="mt-auto flex items-center justify-end pt-5">
