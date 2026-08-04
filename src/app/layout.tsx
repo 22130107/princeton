@@ -6,9 +6,21 @@ import { LanguageProvider } from "@/components/Shared/LanguageProvider";
 import { LANG_COOKIE, parseLang } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Trường Mầm non Princeton",
+  title: "Hệ thống giáo dục Princeton",
   description:
-    "Trường Mầm non Princeton - Chương trình giáo dục mầm non chất lượng cao theo chuẩn quốc tế.",
+    "Hệ thống giáo dục Princeton - Chương trình giáo dục mầm non chất lượng cao theo chuẩn quốc tế.",
+  openGraph: {
+    title: "Hệ thống giáo dục Princeton",
+    description:
+      "Hệ thống giáo dục Princeton - Chương trình giáo dục mầm non chất lượng cao theo chuẩn quốc tế.",
+    siteName: "Hệ thống giáo dục Princeton",
+  },
+  twitter: {
+    card: "summary",
+    title: "Hệ thống giáo dục Princeton",
+    description:
+      "Hệ thống giáo dục Princeton - Chương trình giáo dục mầm non chất lượng cao theo chuẩn quốc tế.",
+  },
   icons: {
     icon: [{ url: "/favicon.png", type: "image/png" }],
     shortcut: "/favicon.png",
