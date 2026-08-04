@@ -103,7 +103,7 @@ export default function TeachingMethodsSection({
       };
 
   return (
-    <section className={`relative overflow-hidden bg-[#bfefff] ${className}`}>
+    <section className={`relative overflow-hidden bg-[#F0EFD2] ${className}`}>
       {showZigzags ? (
         <div
           className="h-[25px] bg-repeat-x"

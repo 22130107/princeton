@@ -46,7 +46,20 @@ export default function GallerySection() {
   return (
     <div className="absolute content-stretch flex flex-col items-center left-0 pb-[48px] pt-[72px] right-0 top-[5199.35px]" data-name="Section">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img alt="" className="absolute h-[105.06%] left-0 max-w-none top-0 w-full" src={imgSection.src} />
+        <div
+          aria-hidden
+          className="absolute h-[105.06%] left-0 top-0 w-full bg-[#F0EFD2]"
+          style={{
+            WebkitMaskImage: `url("${imgSection.src}")`,
+            maskImage: `url("${imgSection.src}")`,
+            WebkitMaskPosition: "center top",
+            maskPosition: "center top",
+            WebkitMaskRepeat: "no-repeat",
+            maskRepeat: "no-repeat",
+            WebkitMaskSize: "100% 100%",
+            maskSize: "100% 100%",
+          }}
+        />
       </div>
       <Container93 />
       <div className="relative z-[1] w-full overflow-hidden">

@@ -38,17 +38,17 @@ export default function MobileStatsSection() {
     <section className="relative overflow-hidden bg-[#fffefa] py-10">
       <div className="absolute left-1/2 top-1/2 h-[300px] w-[1380px] -translate-x-1/2 -translate-y-1/2 opacity-90">
         <svg className="size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 2267.16 492" aria-hidden>
-          <g opacity="0.5">
-            <path d={svgPaths.p3daf1800} fill="#FFE4E4" />
-            <path d={svgPaths.p1a050d80} fill="#FFE4E4" />
-            <path d={svgPaths.p1197a0f2} fill="#FFE4E4" />
-            <path d={svgPaths.p36504f0} fill="#FFE4E4" />
-            <path d={svgPaths.p10e89c00} fill="#FFE4E4" />
-            <path d={svgPaths.p15e100} fill="#FFE4E4" />
-            <path d={svgPaths.p127e7080} fill="#FFE4E4" />
-            <path d={svgPaths.p31827600} fill="#FFE4E4" />
-            <path d={svgPaths.p3adb3780} fill="#FFE4E4" />
-            <path d={svgPaths.p230e2a80} fill="#FFE4E4" />
+          <g>
+            <path d={svgPaths.p3daf1800} fill="#F4D06F" />
+            <path d={svgPaths.p1a050d80} fill="#F4D06F" />
+            <path d={svgPaths.p1197a0f2} fill="#F4D06F" />
+            <path d={svgPaths.p36504f0} fill="#F4D06F" />
+            <path d={svgPaths.p10e89c00} fill="#F4D06F" />
+            <path d={svgPaths.p15e100} fill="#F4D06F" />
+            <path d={svgPaths.p127e7080} fill="#F4D06F" />
+            <path d={svgPaths.p31827600} fill="#F4D06F" />
+            <path d={svgPaths.p3adb3780} fill="#F4D06F" />
+            <path d={svgPaths.p230e2a80} fill="#F4D06F" />
           </g>
           <path d={svgPaths.p34fde100} fill="#F2A8B5" />
           <path d={svgPaths.p1d878b80} fill="#F2A8B5" />

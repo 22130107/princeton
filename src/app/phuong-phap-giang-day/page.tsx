@@ -35,7 +35,7 @@ export default async function PhuongPhapGiangDayPage() {
         <HeaderSection />
       </div>
 
-      <section className="relative bg-[#fff1f1] px-4 py-10 md:px-10 md:py-16">
+      <section className="relative bg-[#FAF9F6] px-4 py-10 md:px-10 md:py-16">
         <img
           src={imgMascotPenguin.src}
           alt=""
@@ -61,7 +61,7 @@ export default async function PhuongPhapGiangDayPage() {
 
       <TeachingMethodsSection
         methods={methods}
-        topZigzagColor="#fff1f1"
+        topZigzagColor="#FAF9F6"
         bottomZigzagColor="#e8f3e6"
       />
 

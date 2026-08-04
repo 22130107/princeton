@@ -17,17 +17,17 @@ function FacilityBgSvg() {
       <div className="animate-slide-wass will-change-transform size-full">
         <svg className="absolute block inset-0 size-full" fill="none" height="492" preserveAspectRatio="none" viewBox="0 0 2267.16 492" width="2267.16">
           <g clipPath="url(#clip0_1_967)" id="facility-bg.svg">
-            <g id="Group" opacity="0.5">
-              <path d={svgPaths.p3daf1800} fill="var(--fill-0, #FFE4E4)" id="Vector" />
-              <path d={svgPaths.p1a050d80} fill="var(--fill-0, #FFE4E4)" id="Vector_2" />
-              <path d={svgPaths.p1197a0f2} fill="var(--fill-0, #FFE4E4)" id="Vector_3" />
-              <path d={svgPaths.p36504f0} fill="var(--fill-0, #FFE4E4)" id="Vector_4" />
-              <path d={svgPaths.p10e89c00} fill="var(--fill-0, #FFE4E4)" id="Vector_5" />
-              <path d={svgPaths.p15e100} fill="var(--fill-0, #FFE4E4)" id="Vector_6" />
-              <path d={svgPaths.p127e7080} fill="var(--fill-0, #FFE4E4)" id="Vector_7" />
-              <path d={svgPaths.p31827600} fill="var(--fill-0, #FFE4E4)" id="Vector_8" />
-              <path d={svgPaths.p3adb3780} fill="var(--fill-0, #FFE4E4)" id="Vector_9" />
-              <path d={svgPaths.p230e2a80} fill="var(--fill-0, #FFE4E4)" id="Vector_10" />
+            <g id="Group">
+              <path d={svgPaths.p3daf1800} fill="var(--fill-0, #F4D06F)" id="Vector" />
+              <path d={svgPaths.p1a050d80} fill="var(--fill-0, #F4D06F)" id="Vector_2" />
+              <path d={svgPaths.p1197a0f2} fill="var(--fill-0, #F4D06F)" id="Vector_3" />
+              <path d={svgPaths.p36504f0} fill="var(--fill-0, #F4D06F)" id="Vector_4" />
+              <path d={svgPaths.p10e89c00} fill="var(--fill-0, #F4D06F)" id="Vector_5" />
+              <path d={svgPaths.p15e100} fill="var(--fill-0, #F4D06F)" id="Vector_6" />
+              <path d={svgPaths.p127e7080} fill="var(--fill-0, #F4D06F)" id="Vector_7" />
+              <path d={svgPaths.p31827600} fill="var(--fill-0, #F4D06F)" id="Vector_8" />
+              <path d={svgPaths.p3adb3780} fill="var(--fill-0, #F4D06F)" id="Vector_9" />
+              <path d={svgPaths.p230e2a80} fill="var(--fill-0, #F4D06F)" id="Vector_10" />
             </g>
             <path d={svgPaths.p34fde100} fill="var(--fill-0, #F2A8B5)" id="Vector_11" />
             <path d={svgPaths.p1d878b80} fill="var(--fill-0, #F2A8B5)" id="Vector_12" />

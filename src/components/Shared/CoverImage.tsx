@@ -53,9 +53,10 @@ export function CoverImage({
     const el = boxRef.current;
     if (!el) return;
     const update = () => {
-      const rect = el.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) {
-        setBoxAspect(rect.width / rect.height);
+      const width = el.clientWidth;
+      const height = el.clientHeight;
+      if (width > 0 && height > 0) {
+        setBoxAspect(width / height);
       }
     };
     update();

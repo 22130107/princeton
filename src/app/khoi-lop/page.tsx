@@ -75,7 +75,7 @@ export default async function KhoiLopPage() {
         <HeaderSection />
       </div>
 
-      <section className="relative mt-6 overflow-hidden bg-[#fff1f1] px-4 pb-10 pt-28 md:mt-10 md:px-10 md:pb-16 md:pt-40">
+      <section className="relative mt-6 overflow-hidden bg-[#E2DBD9] px-4 pb-10 pt-28 md:mt-10 md:px-10 md:pb-16 md:pt-40">
         <div
           aria-hidden
           className="absolute inset-x-0 top-0 z-[2] h-[25px] bg-repeat-x"

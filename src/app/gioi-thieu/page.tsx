@@ -21,9 +21,9 @@ const imgMascotKangaroo = mediaImage("d0268a1bfec279b63f5d3717d847ff89893ec9a7.p
 
 const sectionColors = {
   surface: "#fffefa",
-  facility: "#ffe27a",
-  moments: "#bdeffc",
-  teachers: "#fff1f1",
+  facility: "#E80F0F",
+  moments: "#F4D06F",
+  teachers: "#F5F5F5",
 };
 
 export const metadata: Metadata = {
@@ -176,7 +176,7 @@ export default async function GioiThieuPage() {
         <HeaderSection />
       </div>
 
-      <section className="relative bg-[#e8f3e6] px-4 pb-12 pt-8 md:px-10 md:pb-20 md:pt-14">
+      <section className="relative bg-[#F0EFD2] px-4 pb-12 pt-8 md:px-10 md:pb-20 md:pt-14">
         <div className="mx-auto grid max-w-[1240px] items-center gap-8 md:grid-cols-[0.95fr_1.05fr]">
           <div>
             <p className="mb-3 inline-flex rounded-full border border-[#b80000] bg-white px-4 py-2 text-[14px] font-bold uppercase text-[#b80000]">
@@ -260,7 +260,7 @@ export default async function GioiThieuPage() {
       {facilitySlides.length ? (
         <>
         <WaveDivider from={sectionColors.surface} to={sectionColors.facility} />
-        <section className="relative bg-[#ffe27a]">
+        <section className="relative bg-[#E80F0F] text-[#fffefa]">
           <div className="mx-auto grid max-w-[1240px] gap-8 px-4 py-12 md:grid-cols-2 md:px-10 md:py-20">
             <FacilityCarousel slides={facilitySlides} />
             <div className="flex flex-col justify-center">
@@ -269,10 +269,10 @@ export default async function GioiThieuPage() {
                 alt=""
                 className="mb-4 h-20 w-20 object-contain"
               />
-              <h2 className="text-[30px] font-extrabold uppercase leading-tight md:text-[48px]">
+              <h2 className="text-[30px] font-extrabold uppercase leading-tight text-[#fffefa] md:text-[48px]">
                 {t("about.facilityTitle")}
               </h2>
-              <p className="mt-5 text-[16px] font-medium leading-7 md:text-[20px] md:leading-8">
+              <p className="mt-5 text-[16px] font-medium leading-7 text-[#fffefa] md:text-[20px] md:leading-8">
                 {t("about.facilityText")}
               </p>
             </div>
@@ -288,7 +288,7 @@ export default async function GioiThieuPage() {
       {momentSlides.length ? (
         <>
         {!facilitySlides.length ? <WaveDivider from={sectionColors.surface} to={sectionColors.moments} /> : null}
-        <section className="relative bg-[#bdeffc]">
+        <section className="relative bg-[#F4D06F]">
           <div className="mx-auto grid max-w-[1240px] gap-8 px-4 py-12 md:grid-cols-2 md:px-10 md:py-20">
             <div className="order-2 flex flex-col justify-center md:order-1">
               <img
@@ -317,7 +317,7 @@ export default async function GioiThieuPage() {
         {!facilitySlides.length && !momentSlides.length ? (
           <WaveDivider from={sectionColors.surface} to={sectionColors.teachers} />
         ) : null}
-        <section className="bg-[#fff1f1] px-4 py-12 md:px-10 md:py-20">
+        <section className="bg-[#F5F5F5] px-4 py-12 md:px-10 md:py-20">
           <div className="mx-auto max-w-[1180px]">
             <h2 className="max-w-[760px] text-[30px] font-extrabold uppercase leading-tight md:text-[52px]">
               {t("about.teacherTitle")}

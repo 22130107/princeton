@@ -35,12 +35,21 @@ export default function MobileGallerySection() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-[#fff1f1] py-12">
+    <section className="relative overflow-hidden bg-[#fffefa] py-12">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <img
-          src={imgSection.src}
-          alt=""
-          className="absolute left-0 top-0 h-full w-full object-cover"
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[#F0EFD2]"
+          style={{
+            WebkitMaskImage: `url("${imgSection.src}")`,
+            maskImage: `url("${imgSection.src}")`,
+            WebkitMaskPosition: "center",
+            maskPosition: "center",
+            WebkitMaskRepeat: "no-repeat",
+            maskRepeat: "no-repeat",
+            WebkitMaskSize: "cover",
+            maskSize: "cover",
+          }}
         />
       </div>
 
