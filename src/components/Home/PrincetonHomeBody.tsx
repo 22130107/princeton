@@ -526,31 +526,42 @@ function About() {
   ];
 
   return (
-    <section className="bg-[#f7f4f2] py-16 md:py-20">
-      <div className={`${shell} grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]`}>
-        <div className="overflow-hidden rounded-[10px] shadow-[0_18px_45px_rgba(82,40,23,0.12)]">
-          <img
-            src={aboutImage.src}
-            alt="Cô giáo đồng hành cùng bé trong hoạt động sáng tạo"
-            className="h-[340px] w-full object-cover md:h-[390px]"
-          />
+    <section className="bg-[#f7f4f2] py-16 md:py-24">
+      <div className={`${shell} grid items-center gap-12 lg:grid-cols-[0.96fr_1.04fr] lg:gap-16`}>
+        <div className="relative mx-auto flex w-full max-w-[760px] items-center justify-center gap-5 md:gap-8 lg:justify-start">
+          <div className="mt-12 w-[49%] min-w-[160px] overflow-hidden border-2 border-[#991B1B] shadow-[0_18px_44px_rgba(82,40,23,0.10)]">
+            <img
+              src={aboutImage.src}
+              alt="Cô giáo đồng hành cùng bé trong hoạt động sáng tạo"
+              className="aspect-[0.72/1] w-full object-cover"
+            />
+          </div>
+          <div className="mb-12 w-[49%] min-w-[160px] overflow-hidden border-2 border-[#991B1B] shadow-[0_18px_44px_rgba(82,40,23,0.10)]">
+            <img
+              src={pathImageTwo.src}
+              alt="Không gian học tập Princeton Academy"
+              className="aspect-[0.72/1] w-full object-cover"
+            />
+          </div>
         </div>
-        <div>
-          <h2 className="text-[30px] font-extrabold uppercase leading-tight text-[#991B1B] md:text-[36px]">
+
+        <div className="mx-auto w-full max-w-[640px] lg:mx-0">
+          <h2 className="text-[34px] font-extrabold leading-tight text-[#991B1B] md:text-[44px]">
             {c.aboutTitle}
           </h2>
-          <span className="mt-3 block h-[3px] w-12 rounded-full bg-[#d8b15f]" />
-          <p className="mt-6 max-w-[62ch] text-[17px] font-medium leading-8 text-[#4b3531]">
+          <span className="mt-4 block h-px w-24 bg-[#D4AF37]" />
+          <p className="mt-7 max-w-[58ch] text-[15px] font-medium leading-7 text-[#4b3531] md:text-[16px] md:leading-8">
             {c.aboutText}
           </p>
-          <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+
+          <div className="mt-10 grid grid-cols-2 gap-y-7 md:grid-cols-4 md:gap-y-0">
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (
-                <div key={stat.label} className="border-l border-[#ead9c9] px-4 text-center first:border-l-0">
-                  <Icon aria-hidden className="mx-auto mb-3 size-7 text-[#b80000]" strokeWidth={1.8} />
-                  <p className="text-[28px] font-extrabold leading-none text-[#b80000]">{stat.value}</p>
-                  <p className="mt-1 text-[14px] font-semibold leading-5 text-[#59342f]">{stat.label}</p>
+                <div key={stat.label} className="px-3 text-left md:border-l md:border-[#ead9c9] md:first:border-l-0">
+                  <Icon aria-hidden className="mb-3 size-5 text-[#9b6f2f]" strokeWidth={1.75} />
+                  <p className="text-[25px] font-extrabold leading-none text-[#2b120e]">{stat.value}</p>
+                  <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.08em] leading-4 text-[#5d332b]">{stat.label}</p>
                 </div>
               );
             })}
