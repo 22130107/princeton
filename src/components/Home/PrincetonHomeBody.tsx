@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -607,6 +607,9 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
   const { lang } = useLanguage();
   const pageSize = 3;
   const [activeIndex, setActiveIndex] = useState(0);
+  const [activeMobileIndex, setActiveMobileIndex] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
   const canRotate = testimonials.length > pageSize;
   const visibleTestimonials = useMemo(
     () =>
@@ -620,6 +623,23 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
     setActiveIndex((index) => (testimonials.length ? Math.min(index, testimonials.length - 1) : 0));
   }, [testimonials.length]);
 
+  const handleMobileScroll = () => {
+    if (!scrollContainerRef.current) return;
+    const scrollLeft = scrollContainerRef.current.scrollLeft;
+    const width = scrollContainerRef.current.clientWidth;
+    // adding gap margin to width calculation for more accurate snapping tracking if needed, 
+    // but clientWidth works well enough for 100% width items
+    const index = Math.round(scrollLeft / width);
+    setActiveMobileIndex(index);
+  };
+
+  const scrollToMobileIndex = (index: number) => {
+    if (!scrollContainerRef.current) return;
+    const width = scrollContainerRef.current.clientWidth;
+    scrollContainerRef.current.scrollTo({ left: index * width, behavior: "smooth" });
+    setActiveMobileIndex(index);
+  };
+
   const renderCard = (testimonial: Testimonial, index: number, isMobileCard: boolean) => {
     const parentName =
       lang === "en" && testimonial.parentNameEn
@@ -632,7 +652,7 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
       <article
         key={`${parentName}-${index}`}
         className={`flex h-full min-h-[252px] flex-col border-2 border-[#991B1B] bg-[#fffefa] p-7 shadow-[4px_4px_0_rgba(153,27,27,0.2)] ${
-          isMobileCard ? "w-[85vw] shrink-0 snap-center sm:w-[320px]" : ""
+          isMobileCard ? "w-full shrink-0 snap-center" : ""
         }`}
       >
         <div className="flex items-center justify-between text-[#d8a928]">
@@ -681,8 +701,30 @@ function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
         <SectionTitle title={copy[lang].testimonialTitle} />
         
         {/* Mobile View: Horizontal Scroll */}
-        <div className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 md:hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-          {testimonials.map((t, i) => renderCard(t, i, true))}
+        <div className="md:hidden">
+          <div 
+            ref={scrollContainerRef}
+            onScroll={handleMobileScroll}
+            className="flex snap-x snap-mandatory overflow-x-auto pb-4" 
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {testimonials.map((t, i) => renderCard(t, i, true))}
+          </div>
+          {testimonials.length > 1 && (
+            <div className="mt-5 flex justify-center gap-2" aria-label="Chọn nhóm chia sẻ phụ huynh">
+              {testimonials.map((testimonial, index) => (
+                <button
+                  key={`mobile-dot-${testimonial.id ?? index}`}
+                  type="button"
+                  onClick={() => scrollToMobileIndex(index)}
+                  className={`h-2.5 rounded-full transition-all duration-200 ${
+                    index === activeMobileIndex ? "w-8 bg-[#b80000]" : "w-2.5 bg-[#d8b15f]"
+                  }`}
+                  aria-label={`Xem chia sẻ nhận xét ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Desktop View: Grid with Pagination */}
