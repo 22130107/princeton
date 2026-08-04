@@ -345,7 +345,7 @@ function Hero({ slides }: { slides: HeroSlide[] }) {
           mobileZoom={mobileZoom}
           priority={true}
         />
-        <div className="absolute inset-y-0 left-0 z-[2] flex w-[72%] min-w-0 items-center bg-gradient-to-r from-[#f7f4f2] via-[#f7f4f2]/92 to-[#f7f4f2]/0 pl-5 pr-3 sm:w-[46%] sm:min-w-[360px] sm:pl-[clamp(38px,9.5vw,150px)] sm:pr-10">
+        <div className="absolute inset-y-0 left-0 z-[2] hidden w-[72%] min-w-0 items-center bg-gradient-to-r from-[#f7f4f2] via-[#f7f4f2]/92 to-[#f7f4f2]/0 pl-5 pr-3 sm:flex sm:w-[46%] sm:min-w-[360px] sm:pl-[clamp(38px,9.5vw,150px)] sm:pr-10">
           <div className="max-w-[290px] sm:max-w-[420px]">
             <h1 className="text-balance text-[clamp(22px,6.5vw,38px)] font-extrabold leading-[1.02] text-[#991B1B] sm:text-[clamp(38px,4.1vw,64px)]">
               <span className="block whitespace-nowrap">{titleLines[0]}</span>
