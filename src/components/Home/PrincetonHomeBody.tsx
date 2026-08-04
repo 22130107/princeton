@@ -581,19 +581,24 @@ function WhyChoose() {
     <section className="bg-[#f7f4f2] py-16 md:py-20">
       <div className={shell}>
         <SectionTitle title={copy[lang].whyTitle} />
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {whyItems.map((item) => {
             const Icon = item.icon;
             return (
               <article
                 key={item.viTitle}
-                className="min-h-[180px] rounded-[8px] border border-[#ead9c9] bg-white px-7 py-8 text-center shadow-[0_10px_28px_rgba(68,31,19,0.05)] transition duration-200 hover:-translate-y-0.5 hover:border-[#d6b58d]"
+                className="group relative min-h-[220px] overflow-hidden rounded-[16px] border border-[#ead9c9]/60 bg-gradient-to-b from-white to-[#fdfcfb] px-8 py-9 text-center shadow-[0_8px_24px_rgba(100,50,30,0.04)] transition-all duration-300 ease-out hover:-translate-y-2 hover:border-[#d6b58d] hover:shadow-[0_20px_40px_rgba(153,27,27,0.12)]"
               >
-                <Icon aria-hidden className="mx-auto size-9 text-[#b80000]" strokeWidth={1.7} />
-                <h3 className="mt-5 text-[18px] font-extrabold leading-6 text-[#991B1B]">
+                {/* Premium bottom accent line on hover */}
+                <span className="absolute inset-x-0 bottom-0 h-1.5 bg-gradient-to-r from-[#d8a928]/0 via-[#d8a928] to-[#d8a928]/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                
+                <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#fdf2f2] text-[#b80000] transition-all duration-500 ease-out group-hover:scale-110 group-hover:bg-[#991b1b] group-hover:text-[#ffc300] group-hover:shadow-[0_0_20px_rgba(153,27,27,0.2)]">
+                  <Icon aria-hidden className="size-8" strokeWidth={1.8} />
+                </div>
+                <h3 className="mt-6 text-[19px] font-extrabold leading-tight text-[#991B1B] transition-colors group-hover:text-[#b80000]">
                   {lang === "en" ? item.enTitle : item.viTitle}
                 </h3>
-                <p className="mx-auto mt-3 max-w-[30ch] text-[14px] font-medium leading-6 text-[#5f4540]">
+                <p className="mx-auto mt-3 max-w-[28ch] text-[15px] font-medium leading-relaxed text-[#5f4540]">
                   {lang === "en" ? item.enText : item.viText}
                 </p>
               </article>
@@ -613,31 +618,47 @@ function PrincetonWay({ items }: { items: PrincetonWayItem[] }) {
     <section className="bg-[#f7f4f2] py-14 md:py-16">
       <div className={shell}>
         <SectionTitle title={copy[lang].wayTitle} />
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-5 md:grid-cols-4">
           {visibleItems.map((item, index) => {
             const title = lang === "en" && item.titleEn ? item.titleEn : item.title;
 
             return (
-            <Link
-              href={item.slug ? `/phuong-phap-giang-day/${item.slug}` : "/con-duong-princeton"}
-              key={`${item.slug ?? item.title}-${index}`}
-              className="group relative aspect-[326/290] overflow-hidden rounded-[8px] bg-[#2f1515] text-white no-underline shadow-[0_12px_32px_rgba(76,35,25,0.12)]"
-            >
-              <CoverImage
-                src={item.imageUrl}
-                alt={item.imageAlt || title}
-                position={item.coverPosition}
-                zoom={item.coverZoom}
-                frameAspect={WAY_CARD_FRAME_ASPECT}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-              <h3 className="absolute inset-x-4 bottom-6 text-[24px] font-extrabold uppercase leading-[1.05] md:text-[26px]">
-                {title}
-              </h3>
-              <span className="absolute bottom-6 right-5 grid size-7 place-items-center rounded-full bg-[#ffc300] text-[#8f0000]">
-                {index + 1}
-              </span>
-            </Link>
+              <Link
+                href={item.slug ? `/phuong-phap-giang-day/${item.slug}` : "/con-duong-princeton"}
+                key={`${item.slug ?? item.title}-${index}`}
+                className="group relative aspect-[326/320] overflow-hidden rounded-[12px] bg-[#2f1515] text-white no-underline shadow-[0_12px_32px_rgba(76,35,25,0.12)]"
+              >
+                <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-110">
+                  <CoverImage
+                    src={item.imageUrl}
+                    alt={item.imageAlt || title}
+                    position={item.coverPosition}
+                    zoom={item.coverZoom}
+                    frameAspect={326 / 320}
+                  />
+                </div>
+                
+                {/* Cinematic Bordeaux Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#2b0808]/95 via-[#7a1212]/30 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
+                
+                {/* Subtle Warm Glow on hover */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#ffc300]/20 to-transparent opacity-0 mix-blend-overlay transition-opacity duration-500 group-hover:opacity-100" />
+                
+                {/* Shine effect */}
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-1000 ease-in-out group-hover:translate-x-full" />
+
+                {/* Watermark Index */}
+                <span className="pointer-events-none absolute -bottom-5 right-1 select-none text-[120px] font-black leading-none text-white/10 transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:text-[#ffc300]/15">
+                  0{index + 1}
+                </span>
+
+                <div className="absolute inset-x-6 bottom-7 transition-transform duration-300 ease-out group-hover:-translate-y-2">
+                  <h3 className="text-[22px] font-extrabold uppercase leading-[1.15] md:text-[24px]">
+                    {title}
+                  </h3>
+                  <span className="mt-3 block h-[3px] w-0 rounded-full bg-[#ffc300] transition-all duration-500 ease-out group-hover:w-10" />
+                </div>
+              </Link>
             );
           })}
         </div>
@@ -653,31 +674,41 @@ function Programs({ programs }: { programs: ClassProgramItem[] }) {
     <section className="bg-[#f7f4f2] py-16">
       <div className={shell}>
         <SectionTitle title={copy[lang].programTitle} />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {programs.map((program) => (
             <Link
               href={`/chuong-trinh-hoc/${program.slug}`}
               key={program.slug}
-              className="group overflow-hidden rounded-[8px] border border-[#ead9c9] bg-white text-[#2f1515] no-underline shadow-[0_10px_28px_rgba(68,31,19,0.06)] transition duration-200 hover:-translate-y-0.5 hover:border-[#d6b58d]"
+              className="group flex flex-col overflow-hidden rounded-[16px] border border-[#ead9c9]/60 bg-white text-[#2f1515] no-underline shadow-[0_8px_24px_rgba(100,50,30,0.04)] transition-all duration-300 ease-out hover:-translate-y-2 hover:border-[#d6b58d] hover:shadow-[0_20px_40px_rgba(153,27,27,0.12)]"
             >
               <div className="relative aspect-[326/185] overflow-hidden" style={{ backgroundColor: program.color || "#fff1cf" }}>
-                {program.imageUrl ? (
-                  <CoverImage
-                    src={program.imageUrl}
-                    alt={program.imageAlt || program.name}
-                    position={program.coverPosition || "50% 50%"}
-                    zoom={program.coverZoom || 1}
-                    frameAspect={PROGRAM_CARD_IMAGE_ASPECT}
-                  />
-                ) : null}
+                <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
+                  {program.imageUrl ? (
+                    <CoverImage
+                      src={program.imageUrl}
+                      alt={program.imageAlt || program.name}
+                      position={program.coverPosition || "50% 50%"}
+                      zoom={program.coverZoom || 1}
+                      frameAspect={PROGRAM_CARD_IMAGE_ASPECT}
+                    />
+                  ) : null}
+                </div>
               </div>
-              <div className="flex min-h-[128px] flex-col p-5">
-                <h3 className="text-[20px] font-extrabold leading-6 text-[#991B1B]">{program.name}</h3>
-                <p className="mt-1 text-[14px] font-bold text-[#3b2522]">{program.age || program.label}</p>
-                <span className="mt-auto inline-flex items-center justify-between pt-4 text-[14px] font-extrabold text-[#b80000]">
-                  {copy[lang].detail}
-                  <ArrowRight aria-hidden className="size-4 transition group-hover:translate-x-1" />
-                </span>
+              <div className="flex min-h-[140px] flex-1 flex-col p-6 transition-colors duration-300 group-hover:bg-[#fffefa]">
+                <h3 className="text-[20px] font-extrabold leading-tight text-[#991B1B]">{program.name}</h3>
+                <p className="mt-1.5 text-[14px] font-bold text-[#5f4540]">{program.age || program.label}</p>
+                
+                {/* Premium expanding CTA button */}
+                <div className="mt-auto flex items-center justify-end pt-5">
+                  <div className="relative flex h-10 w-10 items-center overflow-hidden rounded-full bg-[#fdf2f2] text-[#b80000] transition-all duration-400 ease-out group-hover:w-[145px] group-hover:bg-[#b80000] group-hover:text-white group-hover:shadow-[0_8px_16px_rgba(184,0,0,0.25)]">
+                    <span className="pl-5 text-[13px] font-extrabold uppercase tracking-wide whitespace-nowrap opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:delay-100">
+                      {copy[lang].detail}
+                    </span>
+                    <div className="absolute right-[10px] grid size-5 place-items-center rounded-full transition-transform duration-300 ease-out group-hover:-rotate-45">
+                      <ArrowRight aria-hidden className="size-4" strokeWidth={2.4} />
+                    </div>
+                  </div>
+                </div>
               </div>
             </Link>
           ))}
