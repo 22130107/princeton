@@ -126,17 +126,7 @@ const copy = {
   },
 };
 
-const fallbackPrograms: ClassProgramItem[] = classPrograms.slice(0, 4).map((program) => ({
-  slug: program.slug,
-  name: program.name,
-  age: program.age,
-  excerpt: program.excerpt,
-  imageUrl: program.image.src,
-  imageAlt: program.name,
-  coverPosition: "50% 50%",
-  coverZoom: 1,
-  color: program.color,
-}));
+const fallbackPrograms: ClassProgramItem[] = [];
 
 const whyItems = [
   {
@@ -183,51 +173,8 @@ const whyItems = [
   },
 ];
 
-const pathCards = [
-  { image: pathImageOne, viTitle: "Nuôi dưỡng trí tò mò", enTitle: "Curious minds" },
-  { image: pathImageTwo, viTitle: "Tự lập", enTitle: "Independence" },
-  { image: pathImageThree, viTitle: "Bản lĩnh", enTitle: "Confidence" },
-  { image: pathImageFour, viTitle: "Yêu thương", enTitle: "Kindness" },
-];
-
-const fallbackWayItems: PrincetonWayItem[] = pathCards.map((card) => ({
-  title: card.viTitle,
-  titleEn: card.enTitle,
-  imageUrl: card.image.src,
-  imageAlt: card.viTitle,
-  coverPosition: "50% 50%",
-  coverZoom: 1,
-}));
-
-const fallbackTestimonials: Testimonial[] = [
-  {
-    parentName: "Nguyễn Minh Anh",
-    parentNameEn: "Minh Anh Nguyen",
-    studentName: "Bé An",
-    quote:
-      "Các cô giáo rất tận tâm và yêu trẻ. Bé nhà mình đi học rất vui, về nhà luôn kể những điều thú vị ở lớp.",
-    quoteEn:
-      "The teachers are caring and attentive. My child loves going to school and always comes home with stories from class.",
-  },
-  {
-    parentName: "Trần Thu Hà",
-    parentNameEn: "Thu Ha Tran",
-    studentName: "Bé Bảo",
-    quote:
-      "Môi trường học tập tuyệt vời, chương trình hiện đại, giúp bé tự tin và chủ động hơn mỗi ngày.",
-    quoteEn:
-      "A wonderful learning environment with a modern program. My child is more confident and independent every day.",
-  },
-  {
-    parentName: "Lê Quang Huy",
-    parentNameEn: "Quang Huy Le",
-    studentName: "Bé Minh",
-    quote:
-      "Nhà trường luôn lắng nghe và đồng hành cùng phụ huynh trên hành trình phát triển của con.",
-    quoteEn:
-      "The school listens and partners with parents throughout each child's development journey.",
-  },
-];
+const fallbackWayItems: PrincetonWayItem[] = [];
+const fallbackTestimonials: Testimonial[] = [];
 
 function useHomepageData() {
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
@@ -441,69 +388,7 @@ function Hero({ slides }: { slides: HeroSlide[] }) {
   }
 
   return (
-    <section className="relative overflow-hidden bg-[#f7f4f2]">
-      <div className="absolute inset-y-0 left-0 w-[58%] bg-gradient-to-r from-[#f7f4f2] via-[#f7f4f2]/95 to-[#f7f4f2]/0" />
-      <div className={`${shell} relative grid min-h-[560px] items-center gap-8 py-14 lg:grid-cols-[0.82fr_1.18fr] lg:py-0`}>
-        <div className="z-10 max-w-[520px]">
-          <h1 className="text-balance text-[44px] font-extrabold leading-[1.04] text-[#991B1B] md:text-[58px]">
-            <span className="block">{titleLines[0]}</span>
-            {titleLines.slice(1).map((line) => (
-              <span key={line} className="block text-[54px] uppercase leading-[0.96] text-[#b80000] md:text-[74px]">
-                {line}
-              </span>
-            ))}
-          </h1>
-          <p className="mt-6 max-w-[45ch] text-[18px] font-semibold leading-7 text-[#59342f]">
-            {subtitle}
-          </p>
-          <div className="mt-8">
-            <Link
-              href={ctaHref}
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#b80000] px-6 text-[15px] font-extrabold text-white no-underline shadow-[0_12px_24px_rgba(153,27,27,0.22)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#991b1b] focus:outline-none focus:ring-4 focus:ring-[#ffc300]/35 active:translate-y-0"
-            >
-              {ctaLabel}
-              <ArrowRight aria-hidden className="size-4" strokeWidth={2.4} />
-            </Link>
-          </div>
-          {slides.length > 1 ? (
-            <div className="mt-6 flex gap-2" aria-label="Chọn banner">
-              {slides.map((item, index) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setActiveSlide(index)}
-                  className={`h-2.5 rounded-full transition-all duration-200 ${
-                    index === activeSlide ? "w-8 bg-[#b80000]" : "w-2.5 bg-[#d8b15f]"
-                  }`}
-                  aria-label={`Chuyển đến banner ${index + 1}`}
-                />
-              ))}
-            </div>
-          ) : null}
-        </div>
-        <div className="relative min-h-[360px] lg:min-h-[560px]">
-          {desktopImageSrc ? (
-            <CoverImage
-              src={desktopImageSrc}
-              alt={imageAlt}
-              position={desktopPosition}
-              zoom={desktopZoom}
-              mobileSrc={mobileImageSrc}
-              mobilePosition={mobilePosition}
-              mobileZoom={mobileZoom}
-            />
-          ) : (
-            <img
-              src={heroImage.src}
-              alt="Cô giáo Princeton hướng dẫn bé vẽ tranh"
-              loading="lazy"
-              className="absolute inset-0 h-full w-full rounded-[20px] object-cover object-center shadow-[0_18px_50px_rgba(90,24,24,0.12)] lg:rounded-none lg:shadow-none"
-            />
-          )}
-          <div className="absolute inset-0 rounded-[20px] bg-gradient-to-r from-[#f7f4f2]/70 via-[#f7f4f2]/12 to-transparent lg:rounded-none" />
-        </div>
-      </div>
-    </section>
+    <section className="relative overflow-hidden bg-[#f7f4f2] min-h-[560px] animate-pulse" />
   );
 }
 
