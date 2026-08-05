@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import DangKyContent from "./DangKyContent";
 
 export const metadata: Metadata = {
@@ -13,5 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default function DangKyPage() {
-  return <DangKyContent />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#fffefa]" />}>
+      <DangKyContent />
+    </Suspense>
+  );
 }

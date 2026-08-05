@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import HeaderSection from "@/components/Home/sections/HeaderSection";
 import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
@@ -18,8 +19,11 @@ type Audience = "parent" | "partner";
 
 export default function DangKyContent() {
   const { lang, t } = useLanguage();
+  const searchParams = useSearchParams();
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
-  const [audience, setAudience] = useState<Audience>("parent");
+  const [audience, setAudience] = useState<Audience>(
+    searchParams.get("tab") === "partner" ? "partner" : "parent"
+  );
 
   useEffect(() => {
     const update = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);

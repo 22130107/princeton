@@ -1,5 +1,7 @@
 import svgPaths from "../svg-g45k1n1pz5";
 import { imgGroup1, imgGroup2 } from "../svg-ddib6";
+import { FileEdit, CalendarDays } from "lucide-react";
+import Link from "next/link";
 
 const FACEBOOK_URL = "https://www.facebook.com/princetonacademy.vietnam";
 
@@ -106,6 +108,37 @@ function Link16() {
   );
 }
 
+function CircularBadgeBtn({ text, icon: Icon, href }: { text: string; icon: any; href: string }) {
+  const pathId = `circlePath-${text.replace(/\s+/g, "")}`;
+  return (
+    <div className="fab-btn relative flex items-center justify-center">
+      <Link
+        href={href}
+        className="relative flex size-[58px] items-center justify-center rounded-full bg-[#b80000] text-white shadow-[0_4px_12px_rgba(184,0,0,0.3)] transition-all duration-300 hover:scale-105 hover:bg-[#991b1b]"
+      >
+        <div aria-hidden className="absolute inset-0 rounded-full border-[1.5px] border-white/20 m-[3px] pointer-events-none" />
+        <div className="absolute inset-0 size-full pointer-events-none">
+          <svg viewBox="0 0 100 100" className="size-full overflow-visible">
+            <defs>
+              <path
+                id={pathId}
+                d="M 23 77 A 38 38 0 1 1 77 77"
+                fill="transparent"
+              />
+            </defs>
+            <text className="fill-white text-[13.5px] font-extrabold uppercase tracking-[0.1em]">
+              <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">
+                {text}
+              </textPath>
+            </text>
+          </svg>
+        </div>
+        <Icon className="relative z-10 size-5 translate-y-[3px] opacity-90" strokeWidth={2.5} />
+      </Link>
+    </div>
+  );
+}
+
 export default function FloatingActions() {
   return (
     <>
@@ -122,7 +155,13 @@ export default function FloatingActions() {
           animation: float-wave 3s ease-in-out infinite;
         }
         .fab-btn:nth-child(2) {
-          animation-delay: 0.5s;
+          animation-delay: 0.2s;
+        }
+        .fab-btn:nth-child(3) {
+          animation-delay: 0.4s;
+        }
+        .fab-btn:nth-child(4) {
+          animation-delay: 0.6s;
         }
         .fab-ring {
           position: absolute;
@@ -131,11 +170,14 @@ export default function FloatingActions() {
           border: 2px solid #b80000;
           animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
         }
-        .fab-btn:nth-child(2) .fab-ring {
+        .fab-btn:nth-last-child(2) .fab-ring {
           animation-delay: 0.5s;
         }
       `}</style>
-      <div className="fixed bottom-[32px] content-stretch flex flex-col gap-[20px] items-start right-[24px] z-[9999]" data-name="CLOSE FOOTER">
+      <div className="fixed bottom-[32px] content-stretch flex flex-col gap-[16px] items-end right-[24px] z-[9999]" data-name="CLOSE FOOTER">
+        <CircularBadgeBtn text="Đăng ký hợp tác" icon={FileEdit} href="/dang-ky?tab=partner" />
+        <CircularBadgeBtn text="Đăng ký học" icon={CalendarDays} href="/dang-ky?tab=parent" />
+        
         <div className="fab-btn relative">
           <div className="fab-ring" />
           <Link15 />
