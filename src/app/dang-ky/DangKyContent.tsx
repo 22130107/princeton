@@ -12,18 +12,25 @@ import imgCardLogo from "@/assets/logo1.png";
 import imgFormLogo from "@/assets/logo.png";
 import imgParentAvatar from "@/assets/762553422_1915290766432556_5827904010307015329_n.jpg";
 import { MapPin, Star } from "lucide-react";
-
+import type { DbTestimonial } from "@/lib/content";
 const MOBILE_BREAKPOINT = 768;
 
 type Audience = "parent" | "partner";
 
-export default function DangKyContent() {
+export default function DangKyContent({ testimonial }: { testimonial: DbTestimonial | null }) {
   const { lang, t } = useLanguage();
   const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [audience, setAudience] = useState<Audience>(
-    searchParams.get("tab") === "partner" ? "partner" : "parent"
+    tabParam === "partner" ? "partner" : "parent"
   );
+
+  useEffect(() => {
+    if (tabParam === "partner" || tabParam === "parent") {
+      setAudience(tabParam);
+    }
+  }, [tabParam]);
 
   useEffect(() => {
     const update = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
@@ -133,7 +140,7 @@ export default function DangKyContent() {
                 {/* Header of Testimonial Card */}
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex gap-0.5">
-                    {[...Array(5)].map((_, i) => (
+                    {[...Array(testimonial?.rating ? Math.round(Number(testimonial.rating)) : 5)].map((_, i) => (
                       <Star key={i} className="size-5 fill-[#ffc300] text-[#ffc300]" />
                     ))}
                   </div>
@@ -146,7 +153,7 @@ export default function DangKyContent() {
 
                 {/* Content Quote */}
                 <p className="text-[15px] font-medium leading-relaxed text-[#420808] italic mb-6">
-                  "Bé đã học 5 năm tại Trường Mầm non Princeton. Trong quá trình con học tại trường, mình thấy con phát triển rất tốt. Con tự tin hơn, mạnh dạn hơn và mình cảm thấy rất vui khi con được phát triển trong môi trường tốt. Mình đánh giá Trường Mầm non Princeton rất cao."
+                  "{testimonial ? (lang === "en" && testimonial.quoteEn ? testimonial.quoteEn : testimonial.quote) : (lang === "en" ? "My child has studied for 5 years at Princeton Academy. During my child's time at the school, I've seen them develop remarkably well. They are more confident, more courageous, and I feel very happy that my child is growing in such a nurturing environment. I highly rate Princeton Academy." : "Bé đã học 5 năm tại Trường Mầm non Princeton. Trong quá trình con học tại trường, mình thấy con phát triển rất tốt. Con tự tin hơn, mạnh dạn hơn và mình cảm thấy rất vui khi con được phát triển trong môi trường tốt. Mình đánh giá Trường Mầm non Princeton rất cao.")}"
                 </p>
               </div>
 
@@ -154,17 +161,17 @@ export default function DangKyContent() {
               <div className="flex items-center gap-4 border-t border-[#ead6bf]/60 pt-4">
                 <div className="size-[52px] rounded-full overflow-hidden border border-[#800000]/20 shrink-0">
                   <img
-                    src={imgParentAvatar.src}
-                    alt="Phụ huynh H.Q.L"
+                    src={testimonial?.avatarUrl || imgParentAvatar.src}
+                    alt={testimonial ? (lang === "en" && testimonial.parentNameEn ? testimonial.parentNameEn : testimonial.parentName) : (lang === "en" ? "Parent H.Q.L" : "Phụ huynh H.Q.L")}
                     className="size-full object-cover"
                   />
                 </div>
                 <div>
                   <h4 className="text-[15px] font-extrabold text-[#420808]">
-                    Phụ huynh H.Q.L
+                    {testimonial ? (lang === "en" && testimonial.parentNameEn ? testimonial.parentNameEn : testimonial.parentName) : (lang === "en" ? "Parent H.Q.L" : "Phụ huynh H.Q.L")}
                   </h4>
                   <p className="text-[12px] font-semibold text-[#6f3129]/85">
-                    Phụ huynh học sinh
+                    {lang === "en" ? "Parent" : "Phụ huynh học sinh"}
                   </p>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import DangKyContent from "./DangKyContent";
+import { getTestimonials } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Đăng Ký | Trường Mầm non Princeton",
@@ -13,10 +14,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function DangKyPage() {
+export const dynamic = "force-dynamic";
+
+export default async function DangKyPage() {
+  const testimonials = await getTestimonials();
+  const testimonial = testimonials.length > 0 ? testimonials[0] : null;
+
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#fffefa]" />}>
-      <DangKyContent />
+      <DangKyContent testimonial={testimonial} />
     </Suspense>
   );
 }
