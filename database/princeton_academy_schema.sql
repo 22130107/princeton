@@ -272,6 +272,7 @@ CREATE TABLE testimonials (
 CREATE TABLE facility_images (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   title VARCHAR(255) NULL,
+  title_en VARCHAR(255) NULL,
   description TEXT NULL,
   image_id BIGINT UNSIGNED NOT NULL,
   campus_id BIGINT UNSIGNED NULL,

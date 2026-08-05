@@ -404,8 +404,8 @@ function About() {
   ];
 
   return (
-    <section className="bg-[#f7f4f2] py-16 md:py-24 relative">
-      <div className="absolute right-[24px] top-6 md:top-10 z-10 size-[80px] sm:size-[100px] md:size-[118px]">
+    <section className="bg-[#f7f4f2] pb-16 pt-[120px] md:py-24 relative">
+      <div className="absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[24px] top-4 md:top-10 z-10 size-[80px] sm:size-[100px] md:size-[118px]">
         <img
           src={logoImage.src}
           alt="Princeton Academy"

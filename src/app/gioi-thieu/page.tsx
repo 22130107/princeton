@@ -87,7 +87,8 @@ export default async function GioiThieuPage() {
 
   const facilitySlides = aboutContent.facilityImages.map((item) => ({
     image: item.imageUrl,
-    title: item.title,
+    title: isEn && item.titleEn ? item.titleEn : item.title,
+    description: item.description,
   }));
 
   const facilityBullets = isEn
@@ -268,27 +269,36 @@ export default async function GioiThieuPage() {
       ) : null}
 
       <section className="px-4 py-14 md:px-10 md:py-24">
-        <div className="mx-auto grid max-w-[1360px] gap-6 rounded-[36px] bg-[#2b120e] p-2 shadow-[0_36px_90px_rgba(43,18,14,0.20)] lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="overflow-hidden rounded-[28px] bg-black">
+        <div className="mx-auto flex max-w-[1280px] flex-col overflow-hidden rounded-[36px] bg-[#220d0a] shadow-[0_40px_100px_rgba(43,18,14,0.3)] lg:flex-row">
+          <div className="relative w-full bg-black lg:w-[55%]">
             <iframe
               src="https://www.youtube.com/embed/T5pfrxobVtE?vq=hd720&rel=0"
               title={t("about.videoTitle")}
-              className="h-[280px] w-full md:h-[520px]"
+              className="h-[320px] w-full border-0 md:h-[480px] lg:absolute lg:inset-0 lg:h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
             />
           </div>
-          <div className="flex flex-col justify-center rounded-[28px] border border-white/10 bg-[#3a1712] p-8 text-white md:p-12">
-            <p className="mb-4 inline-flex w-fit rounded-full border border-[#d6b06f]/40 bg-white/[0.08] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#f1d49b]">
+          <div className="relative flex w-full flex-col justify-center p-10 md:p-14 lg:w-[45%] lg:p-20">
+            {/* Ambient background glow */}
+            <div
+              aria-hidden
+              className="absolute -right-20 -top-20 size-80 rounded-full bg-[#991B1B] opacity-20 blur-[100px]"
+            />
+            
+            <p className="relative mb-8 inline-flex w-fit items-center gap-3 rounded-full border border-[#D4AF37]/30 bg-white/5 py-1.5 pl-1.5 pr-5 text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#f1d49b] backdrop-blur-md">
+              <span className="flex size-7 items-center justify-center rounded-full bg-[#D4AF37] text-[#220d0a]">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M5 3l14 9-14 9V3z"/></svg>
+              </span>
               Visit
             </p>
-            <h2 className="text-balance text-[34px] font-extrabold uppercase leading-[1.04] md:text-[52px]">
+            <h2 className="relative text-balance text-[32px] font-extrabold uppercase leading-[1.08] text-white md:text-[44px] lg:text-[48px] xl:text-[52px]">
               {t("about.ctaTitle")}
             </h2>
-            <p className="mt-5 text-[16px] font-medium leading-7 text-white/[0.86] md:text-[20px] md:leading-8">
+            <p className="relative mt-6 max-w-[480px] text-[16px] font-medium leading-relaxed text-white/80 md:text-[18px]">
               {t("about.ctaText")}
             </p>
-            <div className="mt-8">
+            <div className="relative mt-10">
               <PrimaryCta href="/dang-ky">{t("about.ctaButton")}</PrimaryCta>
             </div>
           </div>

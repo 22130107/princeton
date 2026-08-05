@@ -142,6 +142,7 @@ export type DbCampus = {
 export type DbFacilityImage = {
   id: number;
   title: string;
+  titleEn: string;
   description: string;
   imageId: number | null;
   imageUrl: string;
@@ -319,6 +320,7 @@ type CampusContactRow = RowDataPacket & {
 type FacilityImageRow = RowDataPacket & {
   id: number;
   title: string | null;
+  title_en: string | null;
   description: string | null;
   image_id: number | null;
   image_url: string | null;
@@ -1216,6 +1218,7 @@ export async function getFacilityImages(): Promise<DbFacilityImage[]> {
     `SELECT
       fi.id,
       fi.title,
+      fi.title_en,
       fi.description,
       fi.image_id,
       ma.url AS image_url,
@@ -1230,6 +1233,7 @@ export async function getFacilityImages(): Promise<DbFacilityImage[]> {
     .map((row) => ({
       id: row.id,
       title: text(row.title) || text(row.image_alt) || "Cơ sở vật chất",
+      titleEn: text(row.title_en) || text(row.title) || text(row.image_alt) || "Facilities",
       description: text(row.description),
       imageId: row.image_id,
       imageUrl: text(row.image_url),

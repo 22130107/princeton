@@ -106,6 +106,7 @@ export type CreatePostInput = {
 
 export type CreateFacilityImageInput = {
   title: string;
+  title_en?: string | null;
   description?: string | null;
   imageId?: number | null;
 };
@@ -296,6 +297,7 @@ export function normalizePostInput(input: Partial<CreatePostInput>) {
 export function normalizeFacilityImageInput(input: Partial<CreateFacilityImageInput>) {
   return {
     title: requiredText(input.title, "title"),
+    title_en: optionalText(input.title_en),
     description: optionalText(input.description),
     imageId: optionalNumber(input.imageId),
   };
@@ -613,8 +615,8 @@ export async function createFacilityImage(input: Partial<CreateFacilityImageInpu
   const pool = getMysqlPool();
   const sortOrder = await nextSortOrder("facility_images");
   const [result] = await pool.execute<ResultSetHeader>(
-    `INSERT INTO facility_images (title, description, image_id, sort_order, is_active)
-     VALUES (:title, :description, :imageId, :sortOrder, TRUE)`,
+    `INSERT INTO facility_images (title, title_en, description, image_id, sort_order, is_active)
+     VALUES (:title, :title_en, :description, :imageId, :sortOrder, TRUE)`,
     { ...data, sortOrder },
   );
 
@@ -1072,6 +1074,7 @@ export async function updateFacilityImage(idValue: unknown, input: Partial<Updat
   await pool.execute(
     `UPDATE facility_images
      SET title = :title,
+         title_en = :title_en,
          description = :description,
          image_id = COALESCE(:imageId, image_id),
          is_active = TRUE

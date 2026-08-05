@@ -317,6 +317,7 @@ type PostForm = {
 
 type FacilityForm = {
   title: string;
+  titleEn: string;
   description: string;
   imageId: number | null;
   imageUrl: string;
@@ -457,6 +458,7 @@ const emptyPost: PostForm = {
 
 const emptyFacility: FacilityForm = {
   title: "",
+  titleEn: "",
   description: "",
   imageId: null,
   imageUrl: "",
@@ -464,6 +466,7 @@ const emptyFacility: FacilityForm = {
 
 const emptyGallery: GalleryForm = {
   title: "",
+  titleEn: "",
   description: "",
   imageId: null,
   imageUrl: "",
@@ -4256,6 +4259,7 @@ export default function AdminDashboard() {
     if (tab === "about" && aboutMode === "facilities") {
       setFacilityForm({
         title: item.title ?? "",
+        titleEn: item.titleEn ?? "",
         description: item.description ?? "",
         imageId: item.imageId ?? null,
         imageUrl: item.imageUrl ?? "",
@@ -4266,6 +4270,7 @@ export default function AdminDashboard() {
     if (tab === "about" && aboutMode === "moments") {
       setGalleryForm({
         title: item.title ?? "",
+        titleEn: item.titleEn ?? "",
         description: item.description ?? "",
         imageId: item.imageId ?? null,
         imageUrl: item.imageUrl ?? "",
@@ -4526,6 +4531,7 @@ export default function AdminDashboard() {
     try {
       const body = {
         title: facilityForm.title,
+        title_en: facilityForm.titleEn,
         description: facilityForm.description,
         imageId: facilityForm.imageId,
       };
@@ -5844,6 +5850,12 @@ export default function AdminDashboard() {
                     value={facilityForm.title}
                     placeholder="Phòng vận động"
                     onChange={(value) => setFacilityForm((f) => ({ ...f, title: value }))}
+                  />
+                  <Field
+                    label="Tiêu đề ảnh (English)"
+                    value={facilityForm.titleEn}
+                    placeholder="Playroom"
+                    onChange={(value) => setFacilityForm((f) => ({ ...f, titleEn: value }))}
                   />
                   <Field
                     label="Mô tả ngắn"

@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, X, Maximize2 } from "lucide-react";
 interface Slide {
   image: string;
   title: string | null;
+  description?: string | null;
 }
 
 export default function FacilityImageCarousel({ slides, isEn }: { slides: Slide[]; isEn: boolean }) {
@@ -103,8 +104,9 @@ export default function FacilityImageCarousel({ slides, isEn }: { slides: Slide[
                 clipPath: "polygon(0 0, 100% 0, calc(100% - 38px) 100%, 0 100%)",
               }}
             >
-            <span className="block max-w-[420px] text-[14px] font-medium italic leading-6 text-[#5d332b]">
-              {currentSlide.title || (isEn ? "A carefully designed learning environment." : "Không gian được thiết kế tỉ mỉ, tối ưu cho việc học tập và sáng tạo.")}
+            <span className="block max-w-[420px] text-[14px] font-medium leading-6 text-[#5d332b]">
+              <strong className="block font-bold">{currentSlide.title || (isEn ? "A carefully designed learning environment." : "Không gian được thiết kế tỉ mỉ, tối ưu cho việc học tập và sáng tạo.")}</strong>
+              {currentSlide.description && <span className="italic block mt-1">{currentSlide.description}</span>}
             </span>
             </figcaption>
           </div>
@@ -142,11 +144,10 @@ export default function FacilityImageCarousel({ slides, isEn }: { slides: Slide[
           </div>
 
           {/* Title */}
-          {currentSlide.title && (
-            <div className="absolute bottom-6 left-0 right-0 text-center">
-              <p className="mx-auto max-w-2xl px-6 py-2 text-[15px] font-medium text-white/90">
-                {currentSlide.title}
-              </p>
+          {(currentSlide.title || currentSlide.description) && (
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-md bg-black/60 px-4 py-2 text-center text-white backdrop-blur-sm max-w-[80vw]">
+              {currentSlide.title && <p className="font-bold text-[15px]">{currentSlide.title}</p>}
+              {currentSlide.description && <p className="text-[13px] opacity-90 mt-0.5">{currentSlide.description}</p>}
             </div>
           )}
 
