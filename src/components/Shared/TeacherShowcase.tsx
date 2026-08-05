@@ -39,7 +39,17 @@ export default function TeacherShowcase({
   if (!activeTeacher) return null;
 
   return (
-    <div className="mx-auto grid max-w-[1180px] items-stretch gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
+    <div className="mx-auto flex max-w-[1180px] flex-col gap-10 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch lg:gap-12">
+      {/* Mobile Title & Text */}
+      <div className="about-luxury-rise lg:hidden">
+        <h2 className="text-balance text-[34px] font-extrabold uppercase leading-[1.08] text-[#991B1B] md:text-[46px]">
+          {title}
+        </h2>
+        <p className="mt-7 text-[15px] font-medium leading-7 text-[#3f1f1b] md:text-[17px] md:leading-8">
+          {text}
+        </p>
+      </div>
+
       <figure className="about-luxury-rise relative">
         <div
           aria-hidden
@@ -61,14 +71,17 @@ export default function TeacherShowcase({
       </figure>
 
       <div className="about-luxury-rise flex h-full max-w-[560px] flex-col [animation-delay:120ms]">
-        <div>
+        <div className="hidden lg:block">
           <h2 className="text-balance text-[34px] font-extrabold uppercase leading-[1.08] text-[#991B1B] md:text-[46px]">
             {title}
           </h2>
           <p className="mt-7 text-[15px] font-medium leading-7 text-[#3f1f1b] md:text-[17px] md:leading-8">
             {text}
           </p>
-          <div className="mt-8 border-l-2 border-[#D4AF37] pl-5">
+        </div>
+
+        <div className="flex flex-col lg:mt-8">
+          <div className="border-l-2 border-[#D4AF37] pl-5">
             <h3 className="text-[24px] font-extrabold leading-tight text-[#991B1B]">
               {activeTeacher.title}
             </h3>

@@ -74,9 +74,6 @@ export default async function GioiThieuPage() {
   const isEn = lang === "en";
   const t = await getServerT();
   const aboutContent = await getAboutContent();
-  const heroTitleWords = t("about.heroTitle").split(" ");
-  const heroTitlePrimary = heroTitleWords.slice(0, -1).join(" ");
-  const heroTitleAccent = heroTitleWords.slice(-1).join(" ");
 
   const stats = [
     { number: "10+", label: isEn ? "Years" : "Năm", Icon: School },
@@ -141,11 +138,8 @@ export default async function GioiThieuPage() {
             <p className="mb-5 inline-flex w-fit border border-[#c8a46f] bg-[#fff9ed] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#8b642f]">
               {t("about.badge")}
             </p>
-            <h1 className="max-w-[560px] text-balance text-[46px] font-extrabold uppercase leading-[0.92] text-[#991B1B] md:text-[68px] lg:text-[76px]">
-              <span className="block">{heroTitlePrimary}</span>
-              <span className="block font-serif italic leading-[0.96] text-[#991B1B]">
-                {heroTitleAccent}
-              </span>
+            <h1 className="max-w-[800px] text-balance text-[46px] font-extrabold uppercase leading-[0.92] text-[#991B1B] md:text-[68px] lg:text-[76px]">
+              {t("about.heroTitle")}
             </h1>
             <p className="mt-8 max-w-[510px] text-[15px] font-medium leading-7 text-[#5d332b] md:text-[17px] md:leading-8">
               {t("about.heroText")}
@@ -269,37 +263,36 @@ export default async function GioiThieuPage() {
       ) : null}
 
       <section className="px-4 py-14 md:px-10 md:py-24">
-        <div className="mx-auto flex max-w-[1280px] flex-col overflow-hidden rounded-[36px] bg-[#220d0a] shadow-[0_40px_100px_rgba(43,18,14,0.3)] lg:flex-row">
-          <div className="relative w-full bg-black lg:w-[55%]">
-            <iframe
-              src="https://www.youtube.com/embed/T5pfrxobVtE?vq=hd720&rel=0"
-              title={t("about.videoTitle")}
-              className="h-[320px] w-full border-0 md:h-[480px] lg:absolute lg:inset-0 lg:h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
-          <div className="relative flex w-full flex-col justify-center p-10 md:p-14 lg:w-[45%] lg:p-20">
-            {/* Ambient background glow */}
+        <div className="mx-auto max-w-[1180px]">
+          <div className="about-luxury-rise relative">
             <div
               aria-hidden
-              className="absolute -right-20 -top-20 size-80 rounded-full bg-[#991B1B] opacity-20 blur-[100px]"
+              className="absolute inset-0 translate-x-2 translate-y-2 bg-[#991B1B]/10 md:translate-x-3 md:translate-y-3"
             />
-            
-            <p className="relative mb-8 inline-flex w-fit items-center gap-3 rounded-full border border-[#D4AF37]/30 bg-white/5 py-1.5 pl-1.5 pr-5 text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#f1d49b] backdrop-blur-md">
-              <span className="flex size-7 items-center justify-center rounded-full bg-[#D4AF37] text-[#220d0a]">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M5 3l14 9-14 9V3z"/></svg>
-              </span>
-              Visit
-            </p>
-            <h2 className="relative text-balance text-[32px] font-extrabold uppercase leading-[1.08] text-white md:text-[44px] lg:text-[48px] xl:text-[52px]">
-              {t("about.ctaTitle")}
-            </h2>
-            <p className="relative mt-6 max-w-[480px] text-[16px] font-medium leading-relaxed text-white/80 md:text-[18px]">
-              {t("about.ctaText")}
-            </p>
-            <div className="relative mt-10">
-              <PrimaryCta href="/dang-ky">{t("about.ctaButton")}</PrimaryCta>
+            <div className="relative flex flex-col border border-[#991B1B] bg-white lg:flex-row lg:items-stretch">
+              <div className="flex w-full items-center p-5 md:p-8 lg:w-[55%] lg:p-10">
+                <div className="relative aspect-video w-full overflow-hidden bg-[#e2dbd9]">
+                  <iframe
+                    src="https://www.youtube.com/embed/T5pfrxobVtE?vq=hd720&rel=0"
+                    title={t("about.videoTitle")}
+                    className="absolute inset-0 h-full w-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+
+              <div className="flex w-full flex-col justify-center bg-[#F7F4F2] p-5 md:p-8 lg:w-[45%] lg:p-10">
+                  <h2 className="text-balance text-[32px] font-extrabold uppercase leading-[1.08] text-[#991B1B] md:text-[44px] lg:text-[48px] xl:text-[52px]">
+                    {t("about.ctaTitle")}
+                  </h2>
+                  <p className="mt-6 max-w-[480px] text-[16px] font-medium leading-relaxed text-[#5d332b] md:text-[18px]">
+                    {t("about.ctaText")}
+                  </p>
+                  <div className="mt-10">
+                    <PrimaryCta href="/dang-ky">{t("about.ctaButton")}</PrimaryCta>
+                  </div>
+              </div>
             </div>
           </div>
         </div>
