@@ -538,11 +538,11 @@ function PrincetonWay({ items }: { items: PrincetonWayItem[] }) {
                   0{index + 1}
                 </span>
 
-                <div className="absolute inset-x-4 bottom-5 md:inset-x-6 md:bottom-7 transition-transform duration-300 ease-out group-hover:-translate-y-2">
-                  <h3 className="text-[16px] font-extrabold uppercase leading-[1.15] md:text-[24px]">
+                <div className="absolute inset-x-4 bottom-5 md:inset-x-5 md:bottom-6 z-10 transition-transform duration-300 ease-out group-hover:-translate-y-2">
+                  <h3 className="text-balance text-[14px] font-extrabold uppercase leading-[1.25] line-clamp-4 md:text-[17px] lg:text-[19px]">
                     {title}
                   </h3>
-                  <span className="mt-2 md:mt-3 block h-[3px] w-0 rounded-full bg-[#ffc300] transition-all duration-500 ease-out group-hover:w-8 md:group-hover:w-10" />
+                  <span className="mt-2 block h-[3px] w-0 rounded-full bg-[#ffc300] transition-all duration-500 ease-out group-hover:w-8 md:mt-3 md:group-hover:w-10" />
                 </div>
               </Link>
             );
