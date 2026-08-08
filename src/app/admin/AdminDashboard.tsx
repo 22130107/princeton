@@ -5045,7 +5045,7 @@ export default function AdminDashboard() {
                     <Filter size={14} />
                     Lọc theo cơ sở
                   </span>
-                  <div className="grid gap-2">
+                  <div className="grid gap-2 min-w-0 w-full overflow-hidden">
                     <select
                       value={scheduleCampusFilter}
                       onChange={(event) => {
@@ -5053,7 +5053,7 @@ export default function AdminDashboard() {
                         setSelected(null);
                         setScheduleForm(emptySchedule);
                       }}
-                      className="h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[14px] font-bold text-[#620000] outline-none focus:border-[#b80000]"
+                      className="max-w-full w-full overflow-hidden text-ellipsis h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[14px] font-bold text-[#620000] outline-none focus:border-[#b80000]"
                     >
                       <option value="all">Tất cả {scheduleCampusOptions.length} cơ sở</option>
                       {scheduleCampusOptions.map((option) => (
@@ -5069,20 +5069,22 @@ export default function AdminDashboard() {
                         setSelected(null);
                         setScheduleForm(emptySchedule);
                       }}
-                      className="h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[14px] font-bold text-[#620000] outline-none focus:border-[#b80000]"
+                      className="max-w-full w-full overflow-hidden text-ellipsis h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[14px] font-bold text-[#620000] outline-none focus:border-[#b80000]"
                     >
                       <option value="all">Tất cả loại đăng ký</option>
                       <option value="parent">Phụ huynh</option>
                       <option value="partner">Đối tác</option>
                     </select>
-                    <ActionButton
-                      icon={<Download size={17} />}
-                      tone="quiet"
-                      onClick={exportFilteredSchedules}
-                      disabled={!filteredSchedules.length}
-                    >
-                      Xuất Excel
-                    </ActionButton>
+                    <div className="w-full overflow-hidden [&>button]:w-full">
+                      <ActionButton
+                        icon={<Download size={17} />}
+                        tone="quiet"
+                        onClick={exportFilteredSchedules}
+                        disabled={!filteredSchedules.length}
+                      >
+                        Xuất Excel
+                      </ActionButton>
+                    </div>
                   </div>
                 </label>
               </div>
