@@ -3983,6 +3983,7 @@ export default function AdminDashboard() {
   const [newCategoryNameEn, setNewCategoryNameEn] = useState("");
   const [scheduleCampusFilter, setScheduleCampusFilter] = useState("all");
   const [scheduleAudienceFilter, setScheduleAudienceFilter] = useState<"all" | RegistrationScheduleAudience>("all");
+  const [scheduleStatusFilter, setScheduleStatusFilter] = useState<"all" | RegistrationScheduleStatus>("all");
   const [categories, setCategories] = useState<CategoryState>(emptyCategories);
   const [registrationForm, setRegistrationForm] =
     useState<RegistrationSectionForm>(emptyRegistrationSection);
@@ -4025,10 +4026,12 @@ export default function AdminDashboard() {
         scheduleCampusFilter === "all" || schedule.campusSlug.trim() === scheduleCampusFilter;
       const matchesAudience =
         scheduleAudienceFilter === "all" || getScheduleAudience(schedule) === scheduleAudienceFilter;
+      const matchesStatus =
+        scheduleStatusFilter === "all" || schedule.status === scheduleStatusFilter;
 
-      return matchesCampus && matchesAudience;
+      return matchesCampus && matchesAudience && matchesStatus;
     });
-  }, [data.schedules, scheduleAudienceFilter, scheduleCampusFilter]);
+  }, [data.schedules, scheduleAudienceFilter, scheduleCampusFilter, scheduleStatusFilter]);
 
   function exportFilteredSchedules() {
     if (!filteredSchedules.length) {
@@ -5074,6 +5077,22 @@ export default function AdminDashboard() {
                       <option value="all">Tất cả loại đăng ký</option>
                       <option value="parent">Phụ huynh</option>
                       <option value="partner">Đối tác</option>
+                    </select>
+                    <select
+                      value={scheduleStatusFilter}
+                      onChange={(event) => {
+                        setScheduleStatusFilter(event.target.value as "all" | RegistrationScheduleStatus);
+                        setSelected(null);
+                        setScheduleForm(emptySchedule);
+                      }}
+                      className="max-w-full w-full overflow-hidden text-ellipsis h-11 rounded-md border border-[#e1b0b0] bg-white px-3 text-[14px] font-bold text-[#620000] outline-none focus:border-[#b80000]"
+                    >
+                      <option value="all">Tất cả trạng thái</option>
+                      <option value="new">Mới</option>
+                      <option value="confirmed">Đã xác nhận</option>
+                      <option value="completed">Đã hoàn tất</option>
+                      <option value="cancelled">Đã huỷ</option>
+                      <option value="no_show">Không đến</option>
                     </select>
                     <div className="w-full overflow-hidden [&>button]:w-full">
                       <ActionButton
