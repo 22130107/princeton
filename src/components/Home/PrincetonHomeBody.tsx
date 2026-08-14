@@ -45,7 +45,9 @@ type ClassProgramItem = {
 type HeroSlide = {
   id: number;
   title: string;
+  titleEn: string;
   subtitle: string;
+  subtitleEn: string;
   desktopImageUrl: string;
   desktopImageAlt: string;
   desktopObjectPosition: string;
@@ -55,6 +57,7 @@ type HeroSlide = {
   mobileObjectPosition: string;
   mobileZoom: number;
   ctaLabel: string;
+  ctaLabelEn: string;
   ctaHref: string;
 };
 
@@ -314,12 +317,15 @@ function Hero({ slides }: { slides: HeroSlide[] }) {
   }, [slides.length]);
 
   const slide = slides[activeSlide];
-  const slideTitle = hasCustomHeroTitle(slide?.title) ? slide?.title?.trim() : "";
+  const slideTitleValue = lang === "en" ? slide?.titleEn || slide?.title : slide?.title;
+  const slideTitle = hasCustomHeroTitle(slideTitleValue) ? slideTitleValue?.trim() : "";
   const titleLines = slideTitle
     ? slideTitle.split(/\r?\n/).map((line) => line.trim()).filter(Boolean)
     : [c.heroSmall, c.heroStrong];
-  const subtitle = slide?.subtitle?.trim() || c.heroText;
-  const ctaLabel = slide?.ctaLabel?.trim() || c.visit;
+  const slideSubtitle = lang === "en" ? slide?.subtitleEn || slide?.subtitle : slide?.subtitle;
+  const subtitle = slideSubtitle?.trim() || c.heroText;
+  const slideCtaLabel = lang === "en" ? slide?.ctaLabelEn || slide?.ctaLabel : slide?.ctaLabel;
+  const ctaLabel = slideCtaLabel?.trim() || c.visit;
   const ctaHref = slide?.ctaHref?.trim() || "/lien-he";
   const desktopImageSrc = slide?.desktopImageUrl || slide?.mobileImageUrl || "";
   const mobileImageSrc = slide?.mobileImageUrl || slide?.desktopImageUrl || "";

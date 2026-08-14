@@ -55,7 +55,9 @@ export type CreateCurriculumTrackInput = {
 
 export type CreateHeroSlideInput = {
   title?: string | null;
+  titleEn?: string | null;
   subtitle?: string | null;
+  subtitleEn?: string | null;
   desktopImageId?: number | null;
   mobileImageId?: number | null;
   desktopObjectPosition?: string | null;
@@ -63,6 +65,7 @@ export type CreateHeroSlideInput = {
   mobileObjectPosition?: string | null;
   mobileZoom?: number | null;
   ctaLabel?: string | null;
+  ctaLabelEn?: string | null;
   ctaHref?: string | null;
 };
 
@@ -236,7 +239,9 @@ export function normalizeHeroSlideInput(input: Partial<CreateHeroSlideInput>, re
 
   return {
     title: optionalText(input.title) ?? "Banner Princeton Academy",
+    titleEn: optionalText(input.titleEn),
     subtitle: optionalText(input.subtitle),
+    subtitleEn: optionalText(input.subtitleEn),
     desktopImageId,
     mobileImageId,
     desktopObjectPosition: normalizeHeroSlidePosition(input.desktopObjectPosition),
@@ -244,6 +249,7 @@ export function normalizeHeroSlideInput(input: Partial<CreateHeroSlideInput>, re
     mobileObjectPosition: normalizeHeroSlidePosition(input.mobileObjectPosition),
     mobileZoom: clampHeroSlideZoom(input.mobileZoom),
     ctaLabel: optionalText(input.ctaLabel),
+    ctaLabelEn: optionalText(input.ctaLabelEn),
     ctaHref: optionalText(input.ctaHref),
   };
 }
@@ -648,9 +654,9 @@ export async function createHeroSlide(input: Partial<CreateHeroSlideInput>) {
   const sortOrder = await nextSortOrder("hero_slides");
   const [result] = await pool.execute<ResultSetHeader>(
     `INSERT INTO hero_slides (
-      title, subtitle, desktop_image_id, mobile_image_id, desktop_object_position, desktop_zoom, mobile_object_position, mobile_zoom, cta_label, cta_href, sort_order, is_active
+      title, title_en, subtitle, subtitle_en, desktop_image_id, mobile_image_id, desktop_object_position, desktop_zoom, mobile_object_position, mobile_zoom, cta_label, cta_label_en, cta_href, sort_order, is_active
     ) VALUES (
-      :title, :subtitle, :desktopImageId, :mobileImageId, :desktopObjectPosition, :desktopZoom, :mobileObjectPosition, :mobileZoom, :ctaLabel, :ctaHref, :sortOrder, TRUE
+      :title, :titleEn, :subtitle, :subtitleEn, :desktopImageId, :mobileImageId, :desktopObjectPosition, :desktopZoom, :mobileObjectPosition, :mobileZoom, :ctaLabel, :ctaLabelEn, :ctaHref, :sortOrder, TRUE
     )`,
     { ...data, sortOrder },
   );
@@ -859,7 +865,9 @@ export async function updateHeroSlide(idValue: unknown, input: Partial<UpdateHer
   await pool.execute(
     `UPDATE hero_slides
      SET title = :title,
+         title_en = :titleEn,
          subtitle = :subtitle,
+         subtitle_en = :subtitleEn,
          desktop_image_id = COALESCE(:desktopImageId, desktop_image_id),
          mobile_image_id = COALESCE(:mobileImageId, mobile_image_id),
          desktop_object_position = :desktopObjectPosition,
@@ -867,6 +875,7 @@ export async function updateHeroSlide(idValue: unknown, input: Partial<UpdateHer
          mobile_object_position = :mobileObjectPosition,
          mobile_zoom = :mobileZoom,
          cta_label = :ctaLabel,
+         cta_label_en = :ctaLabelEn,
          cta_href = :ctaHref,
          is_active = TRUE
      WHERE id = :id`,

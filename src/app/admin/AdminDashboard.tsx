@@ -51,7 +51,9 @@ type MediaAsset = {
 type HeroSlide = {
   id: number;
   title: string;
+  titleEn: string;
   subtitle: string;
+  subtitleEn: string;
   desktopImageId: number | null;
   desktopImageUrl: string;
   desktopImageAlt: string;
@@ -61,6 +63,7 @@ type HeroSlide = {
   mobileImageUrl: string;
   mobileImageAlt: string;
   ctaLabel: string;
+  ctaLabelEn: string;
   ctaHref: string;
 };
 
@@ -247,7 +250,9 @@ type ClassForm = {
 
 type BannerForm = {
   title: string;
+  titleEn: string;
   subtitle: string;
+  subtitleEn: string;
   desktopImageId: number | null;
   desktopImageUrl: string;
   desktopObjectPosition: string;
@@ -257,6 +262,7 @@ type BannerForm = {
   mobileObjectPosition: string;
   mobileZoom: number;
   ctaLabel: string;
+  ctaLabelEn: string;
   ctaHref: string;
 };
 
@@ -383,7 +389,9 @@ const emptyClass: ClassForm = {
 
 const emptyBanner: BannerForm = {
   title: "",
+  titleEn: "",
   subtitle: "",
+  subtitleEn: "",
   desktopImageId: null,
   desktopImageUrl: "",
   desktopObjectPosition: "50% 50%",
@@ -393,6 +401,7 @@ const emptyBanner: BannerForm = {
   mobileObjectPosition: "50% 50%",
   mobileZoom: 1,
   ctaLabel: "",
+  ctaLabelEn: "",
   ctaHref: "",
 };
 
@@ -4201,7 +4210,9 @@ export default function AdminDashboard() {
     if (tab === "banners") {
       setBannerForm({
         title: item.title ?? "",
+        titleEn: item.titleEn ?? "",
         subtitle: item.subtitle ?? "",
+        subtitleEn: item.subtitleEn ?? "",
         desktopImageId: item.desktopImageId ?? null,
         desktopImageUrl: item.desktopImageUrl ?? "",
         desktopObjectPosition: item.desktopObjectPosition ?? "50% 50%",
@@ -4211,6 +4222,7 @@ export default function AdminDashboard() {
         mobileObjectPosition: item.mobileObjectPosition ?? "50% 50%",
         mobileZoom: Number(item.mobileZoom) || 1,
         ctaLabel: item.ctaLabel ?? "",
+        ctaLabelEn: item.ctaLabelEn ?? "",
         ctaHref: item.ctaHref ?? "",
       });
       return;
@@ -4370,7 +4382,9 @@ export default function AdminDashboard() {
     try {
       const body = {
         title: bannerForm.title,
+        titleEn: bannerForm.titleEn,
         subtitle: bannerForm.subtitle,
+        subtitleEn: bannerForm.subtitleEn,
         desktopImageId: bannerForm.desktopImageId,
         mobileImageId: bannerForm.mobileImageId,
         mobileObjectPosition: bannerForm.mobileObjectPosition,
@@ -4378,6 +4392,7 @@ export default function AdminDashboard() {
         desktopObjectPosition: bannerForm.desktopObjectPosition,
         desktopZoom: bannerForm.desktopZoom,
         ctaLabel: bannerForm.ctaLabel,
+        ctaLabelEn: bannerForm.ctaLabelEn,
         ctaHref: bannerForm.ctaHref,
       };
       await requestJson(selected ? `/api/hero-slides/${selected}` : "/api/hero-slides", {
@@ -5480,10 +5495,22 @@ export default function AdminDashboard() {
                     onChange={(value) => setBannerForm((f) => ({ ...f, title: value }))}
                   />
                   <Field
+                    label="Tiêu đề banner (English)"
+                    value={bannerForm.titleEn}
+                    placeholder="Admissions Offer"
+                    onChange={(value) => setBannerForm((f) => ({ ...f, titleEn: value }))}
+                  />
+                  <Field
                     label="Nhãn nút"
                     value={bannerForm.ctaLabel}
                     placeholder="Đăng ký ngay"
                     onChange={(value) => setBannerForm((f) => ({ ...f, ctaLabel: value }))}
+                  />
+                  <Field
+                    label="Nhãn nút (English)"
+                    value={bannerForm.ctaLabelEn}
+                    placeholder="Register now"
+                    onChange={(value) => setBannerForm((f) => ({ ...f, ctaLabelEn: value }))}
                   />
                   <Field
                     label="Link nút"
@@ -5492,11 +5519,18 @@ export default function AdminDashboard() {
                     onChange={(value) => setBannerForm((f) => ({ ...f, ctaHref: value }))}
                   />
                 </div>
-                <TextArea
-                  label="Mô tả banner"
-                  value={bannerForm.subtitle}
-                  onChange={(value) => setBannerForm((f) => ({ ...f, subtitle: value }))}
-                />
+                <div className="grid gap-4 md:grid-cols-2">
+                  <TextArea
+                    label="Mô tả banner"
+                    value={bannerForm.subtitle}
+                    onChange={(value) => setBannerForm((f) => ({ ...f, subtitle: value }))}
+                  />
+                  <TextArea
+                    label="Mô tả banner (English)"
+                    value={bannerForm.subtitleEn}
+                    onChange={(value) => setBannerForm((f) => ({ ...f, subtitleEn: value }))}
+                  />
+                </div>
                 <div className="grid gap-4 md:grid-cols-2">
                   <MediaField
                     label="Ảnh banner desktop"

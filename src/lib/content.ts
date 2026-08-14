@@ -108,7 +108,9 @@ export type DbCurriculumTrack = {
 export type DbHeroSlide = {
   id: number;
   title: string;
+  titleEn: string;
   subtitle: string;
+  subtitleEn: string;
   desktopImageId: number | null;
   desktopImageUrl: string;
   desktopImageAlt: string;
@@ -118,6 +120,7 @@ export type DbHeroSlide = {
   mobileImageUrl: string;
   mobileImageAlt: string;
   ctaLabel: string;
+  ctaLabelEn: string;
   ctaHref: string;
 };
 
@@ -205,7 +208,9 @@ type ProgramRow = RowDataPacket & {
 type HeroSlideRow = RowDataPacket & {
   id: number;
   title: string | null;
+  title_en: string | null;
   subtitle: string | null;
+  subtitle_en: string | null;
   desktop_image_id: number | null;
   desktop_image_url: string | null;
   desktop_image_alt: string | null;
@@ -217,6 +222,7 @@ type HeroSlideRow = RowDataPacket & {
   mobile_image_url: string | null;
   mobile_image_alt: string | null;
   cta_label: string | null;
+  cta_label_en: string | null;
   cta_href: string | null;
 };
 
@@ -768,7 +774,9 @@ export async function getHeroSlides(): Promise<DbHeroSlide[]> {
     `SELECT
       hs.id,
       hs.title,
+      hs.title_en,
       hs.subtitle,
+      hs.subtitle_en,
       hs.desktop_image_id,
       desktop_media.url AS desktop_image_url,
       desktop_media.alt_text AS desktop_image_alt,
@@ -780,6 +788,7 @@ export async function getHeroSlides(): Promise<DbHeroSlide[]> {
       hs.mobile_object_position,
       hs.mobile_zoom,
       hs.cta_label,
+      hs.cta_label_en,
       hs.cta_href
     FROM hero_slides hs
     LEFT JOIN media_assets desktop_media ON desktop_media.id = hs.desktop_image_id
@@ -799,7 +808,9 @@ export async function getHeroSlides(): Promise<DbHeroSlide[]> {
       return {
         id: row.id,
         title,
+        titleEn: text(row.title_en) || title,
         subtitle: text(row.subtitle),
+        subtitleEn: text(row.subtitle_en) || text(row.subtitle),
         desktopImageId: row.desktop_image_id,
         desktopImageUrl,
         desktopImageAlt: text(row.desktop_image_alt) || title,
@@ -811,6 +822,7 @@ export async function getHeroSlides(): Promise<DbHeroSlide[]> {
         mobileObjectPosition: text(row.mobile_object_position) || "50% 50%",
         mobileZoom: clampHeroSlideZoom(row.mobile_zoom),
         ctaLabel: text(row.cta_label),
+        ctaLabelEn: text(row.cta_label_en) || text(row.cta_label),
         ctaHref: text(row.cta_href),
       };
     })

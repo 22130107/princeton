@@ -12,7 +12,9 @@ import imgBanner1Vi2Png from "../../../assets/1cf6be04c36a268cff08562f0a3e6d0e3c
 type HeroSlide = {
   id: number;
   title: string;
+  titleEn: string;
   subtitle: string;
+  subtitleEn: string;
   desktopImageUrl: string;
   desktopImageAlt: string;
   desktopObjectPosition: string;
@@ -21,6 +23,8 @@ type HeroSlide = {
   mobileImageAlt: string;
   mobileObjectPosition: string;
   mobileZoom: number;
+  ctaLabel: string;
+  ctaLabelEn: string;
   ctaHref: string;
 };
 
@@ -362,18 +366,21 @@ function DynamicSlideImage({
   slide,
   mask = "center",
   dataName = "banner_uu_dai_vi.png",
+  lang = "vi",
 }: {
   slide: HeroSlide;
   mask?: "center" | "angled";
   dataName?: string;
+  lang?: "vi" | "en";
 }) {
   const src = getDesktopSlideSrc(slide);
   const zoom = Math.min(3, Math.max(0.5, Number(slide.desktopZoom) || 1));
   const position = slide.desktopObjectPosition || "50% 50%";
+  const slideTitle = lang === "en" ? slide.titleEn || slide.title : slide.title;
   const image = (
     <CoverImage
       src={src}
-      alt={slide.desktopImageAlt || slide.title}
+      alt={slide.desktopImageAlt || slideTitle}
       zoom={zoom}
       position={position}
       frameAspect={BANNER_FRAME_ASPECT}
@@ -394,7 +401,7 @@ function DynamicSlideImage({
       data-name={dataName}
     >
       {slide.ctaHref ? (
-        <a className="relative block h-full w-full" href={slide.ctaHref} aria-label={slide.title || "Banner Princeton Academy"}>
+        <a className="relative block h-full w-full" href={slide.ctaHref} aria-label={slideTitle || "Banner Princeton Academy"}>
           {image}
         </a>
       ) : (
@@ -431,7 +438,7 @@ function DynamicDots({
   );
 }
 
-function DynamicDesktopContainer({ slides }: { slides: HeroSlide[] }) {
+function DynamicDesktopContainer({ slides, lang }: { slides: HeroSlide[]; lang?: "vi" | "en" }) {
   const [activeSlide, setActiveSlide] = useState(0);
   const totalSlides = slides.length;
 
@@ -456,7 +463,7 @@ function DynamicDesktopContainer({ slides }: { slides: HeroSlide[] }) {
             <div className="flex h-[804.345px] items-center justify-center max-w-[1014px] relative shrink-0 w-[1125.217px]">
               <div className="-rotate-16 flex-none">
                 <div className="h-[546px] relative w-[1014px]" data-name="Img:mask-group">
-                  <DynamicSlideImage slide={previous} mask="angled" dataName="banner1-vi-2.png" />
+                  <DynamicSlideImage slide={previous} mask="angled" dataName="banner1-vi-2.png" lang={lang} />
                 </div>
               </div>
             </div>
@@ -465,7 +472,7 @@ function DynamicDesktopContainer({ slides }: { slides: HeroSlide[] }) {
         <div className="absolute content-stretch flex flex-col inset-[0_-2528px_0_3042px] items-start max-w-[1014px] pb-[80px]" data-name="Group - 1 / 3">
           <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
             <div className="h-[546px] max-w-[1014px] relative shrink-0 w-[1014px]" data-name="Img:mask-group">
-              <DynamicSlideImage slide={active} />
+              <DynamicSlideImage slide={active} lang={lang} />
             </div>
           </div>
         </div>
@@ -474,7 +481,7 @@ function DynamicDesktopContainer({ slides }: { slides: HeroSlide[] }) {
             <div className="flex h-[804.345px] items-center justify-center max-w-[1014px] relative shrink-0 w-[1125.217px]">
               <div className="flex-none rotate-16">
                 <div className="h-[546px] relative w-[1014px]" data-name="Img:mask-group">
-                  <DynamicSlideImage slide={next} mask="angled" dataName="banner2-vi-1.png" />
+                  <DynamicSlideImage slide={next} mask="angled" dataName="banner2-vi-1.png" lang={lang} />
                 </div>
               </div>
             </div>
@@ -494,7 +501,7 @@ function DynamicDesktopContainer({ slides }: { slides: HeroSlide[] }) {
   );
 }
 
-function DynamicMobileContainer({ slides }: { slides: HeroSlide[] }) {
+function DynamicMobileContainer({ slides, lang }: { slides: HeroSlide[]; lang?: "vi" | "en" }) {
   const [activeSlide, setActiveSlide] = useState(0);
   const totalSlides = slides.length;
   const touchX = useRef(0);
@@ -526,10 +533,11 @@ function DynamicMobileContainer({ slides }: { slides: HeroSlide[] }) {
             const src = getMobileSlideSrc(slide);
             const zoom = Math.min(3, Math.max(0.5, Number(slide.mobileZoom) || 1));
             const position = slide.mobileObjectPosition || "50% 50%";
+            const slideTitle = lang === "en" ? slide.titleEn || slide.title : slide.title;
             const image = (
               <CoverImage
                 src={src}
-                alt={slide.mobileImageAlt || slide.title}
+                alt={slide.mobileImageAlt || slideTitle}
                 zoom={zoom}
                 position={position}
                 frameAspect={BANNER_MOBILE_FRAME_ASPECT}
@@ -543,7 +551,7 @@ function DynamicMobileContainer({ slides }: { slides: HeroSlide[] }) {
                 style={{ aspectRatio: `${BANNER_MOBILE_FRAME_ASPECT}` }}
               >
                 {slide.ctaHref ? (
-                  <a className="absolute inset-0 block" href={slide.ctaHref} aria-label={slide.title || "Banner Princeton Academy"}>
+                  <a className="absolute inset-0 block" href={slide.ctaHref} aria-label={slideTitle || "Banner Princeton Academy"}>
                     {image}
                   </a>
                 ) : (
@@ -572,7 +580,7 @@ function DynamicMobileContainer({ slides }: { slides: HeroSlide[] }) {
   );
 }
 
-export default function HeroBanner() {
+export default function HeroBanner({ lang = "vi" }: { lang?: "vi" | "en" }) {
   const [isMobile, setIsMobile] = useState(false);
   const [dbSlides, setDbSlides] = useState<HeroSlide[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -617,14 +625,14 @@ export default function HeroBanner() {
   if (isMobile) {
     return (
       <div className="bg-[#fffefa] px-1 py-3" data-name="Section-HeroBanner">
-        <DynamicMobileContainer slides={dbSlides} />
+        <DynamicMobileContainer slides={dbSlides} lang={lang} />
       </div>
     );
   }
 
   return (
     <div className="absolute bg-[#fffefa] content-stretch flex flex-col items-start left-0 overflow-clip pb-[40px] pt-[20px] right-0 top-0" data-name="Section-HeroBanner">
-      <DynamicDesktopContainer slides={dbSlides} />
+      <DynamicDesktopContainer slides={dbSlides} lang={lang} />
     </div>
   );
 }
