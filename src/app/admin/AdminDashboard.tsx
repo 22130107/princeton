@@ -1834,6 +1834,8 @@ function TiptapRichTextEditor({
         }
         .rich-admin-content .ProseMirror {
           min-height: 560px;
+          max-height: 560px;
+          overflow-y: auto;
           padding: 1rem 1.25rem;
           outline: none;
         }
@@ -2949,7 +2951,7 @@ function RichTextEditor({
           onBlur={handleEditorBlur}
           onPointerDown={startMediaDrag}
           onScroll={syncSelectedMediaOverlay}
-          className={`${expanded ? "h-full min-h-0 overflow-auto" : "min-h-[560px]"} rich-admin-content rounded-b-md border border-[#e1b0b0] bg-white px-5 py-4 text-[16px] leading-8 text-[#620000] outline-none focus:border-[#b80000]`}
+          className={`${expanded ? "h-full min-h-0 overflow-auto" : "min-h-[560px] max-h-[560px] overflow-y-auto"} rich-admin-content rounded-b-md border border-[#e1b0b0] bg-white px-5 py-4 text-[16px] leading-8 text-[#620000] outline-none focus:border-[#b80000]`}
         />
         {selectedMedia && mediaOverlay ? (
           <div
