@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, type ClipboardEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { CalendarClock, CheckCircle2, Download, Edit3, Eye, EyeOff, Filter, ImagePlus, List, ListOrdered, LogOut, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight, CalendarClock, CheckCircle2, Download, Edit3, Eye, EyeOff, Filter, ImagePlus, List, ListOrdered, LogOut, Maximize2, Minimize2, Plus, RefreshCw, Save, Trash2, Video, X } from "lucide-react";
 import { Extension, Node, mergeAttributes } from "@tiptap/core";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -1647,6 +1647,12 @@ function TiptapRichTextEditor({
       <EditorButton active={Boolean(editor?.isActive("orderedList"))} icon={<ListOrdered size={16} />} onClick={() => editor?.chain().focus().toggleOrderedList().run()}>
         Số thứ tự
       </EditorButton>
+      <div className="flex gap-1 border-l border-[#e7b8b8] pl-2 ml-1">
+        <EditorButton active={Boolean(editor?.isActive({ textAlign: "left" }))} icon={<AlignLeft size={16} />} onClick={() => editor?.chain().focus().setTextAlign("left").run()} title="Căn trái" />
+        <EditorButton active={Boolean(editor?.isActive({ textAlign: "center" }))} icon={<AlignCenter size={16} />} onClick={() => editor?.chain().focus().setTextAlign("center").run()} title="Căn giữa" />
+        <EditorButton active={Boolean(editor?.isActive({ textAlign: "right" }))} icon={<AlignRight size={16} />} onClick={() => editor?.chain().focus().setTextAlign("right").run()} title="Căn phải" />
+        <EditorButton active={Boolean(editor?.isActive({ textAlign: "justify" }))} icon={<AlignJustify size={16} />} onClick={() => editor?.chain().focus().setTextAlign("justify").run()} title="Căn đều" />
+      </div>
       <select
         value={fontFamily}
         onChange={(event) => applyFontFamily(event.target.value)}
@@ -3088,15 +3094,18 @@ function EditorButton({
   icon,
   active,
   onClick,
+  title,
 }: {
-  children: ReactNode;
+  children?: ReactNode;
   icon: ReactNode;
   active?: boolean;
   onClick: () => void;
+  title?: string;
 }) {
   return (
     <button
       type="button"
+      title={title}
       onMouseDown={(event) => event.preventDefault()}
       onClick={onClick}
       className={`inline-flex h-9 items-center gap-2 rounded-md border px-3 text-[13px] font-extrabold transition-colors ${
