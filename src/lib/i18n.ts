@@ -153,7 +153,7 @@ export const dictionaries: Record<Lang, TDict> = {
 
     "classes.heroTitle": "Chương trình học",
     "classes.heroText": "Chương trình học tại Princeton được xây dựng theo từng độ tuổi, giúp trẻ phát triển cân bằng giữa chăm sóc, vận động, ngôn ngữ, tư duy và kỹ năng xã hội.",
-    "classes.viewSchedule": "Xem lịch học",
+    "classes.viewSchedule": "Xem chi tiết",
     "classes.back": "Quay lại khối lớp",
     "classes.schedule": "Lịch học",
 
@@ -352,7 +352,7 @@ export const dictionaries: Record<Lang, TDict> = {
 
     "classes.heroTitle": "Academic Program",
     "classes.heroText": "The curriculum at Princeton is built for each age group, helping children develop a balance of care, movement, language, thinking and social skills.",
-    "classes.viewSchedule": "View schedule",
+    "classes.viewSchedule": "View details",
     "classes.back": "Back to classes",
     "classes.schedule": "Daily schedule",
 
