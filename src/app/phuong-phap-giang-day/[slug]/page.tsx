@@ -8,6 +8,7 @@ import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getTeachingMethod, getTeachingMethods } from "@/lib/content";
 import { getServerLang, getServerT } from "@/lib/i18n-server";
+import { buildMetadata, createBreadcrumbJsonLd, serializeJsonLd } from "@/lib/seo";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
@@ -29,23 +30,25 @@ export async function generateMetadata({
   const lang = await getServerLang();
 
   if (!method) {
-    return {
-      title: "Con đường Princeton | Trường Mầm non Princeton",
-    };
+    return buildMetadata({
+      title: "Không tìm thấy phương pháp",
+      description: "Nội dung phương pháp giáo dục không tồn tại hoặc đã được cập nhật.",
+      path: `/con-duong-princeton/${slug}`,
+      noIndex: true,
+    });
   }
 
   const isEn = lang === "en";
   const title = isEn && method.titleEn ? method.titleEn : method.title;
   const description = isEn && method.excerptEn ? method.excerptEn : method.excerpt;
 
-  return {
-    title: `${title} | Trường Mầm non Princeton`,
+  return buildMetadata({
+    title,
     description,
-    openGraph: {
-      title,
-      description,
-    },
-  };
+    path: `/con-duong-princeton/${slug}`,
+    image: method.imageUrl,
+    imageAlt: method.imageAlt || title,
+  });
 }
 
 export default async function TeachingMethodDetailPage({
@@ -68,9 +71,18 @@ export default async function TeachingMethodDetailPage({
   const relatedMethods = teachingMethods
     .filter((item) => item.slug !== method.slug)
     .slice(0, 3);
+  const breadcrumbJsonLd = createBreadcrumbJsonLd([
+    { name: isEn ? "Home" : "Trang chủ", path: "/" },
+    { name: isEn ? "The Princeton Way" : "Con đường Princeton", path: "/con-duong-princeton" },
+    { name: title, path: `/con-duong-princeton/${slug}` },
+  ]);
 
   return (
     <main className="min-h-screen bg-[#F7F4F2] pt-[64px] text-[#620000] md:pt-[99px]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
+      />
       <div className="md:hidden">
         <MobileHeader />
       </div>

@@ -4,23 +4,37 @@ import "@/styles/index.css";
 import FloatingActions from "@/components/Home/sections/FloatingActions";
 import { LanguageProvider } from "@/components/Shared/LanguageProvider";
 import { LANG_COOKIE, parseLang } from "@/lib/i18n";
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_TITLE,
+  SITE_NAME,
+  SITE_URL,
+  buildMetadata,
+  createOrganizationJsonLd,
+  createWebsiteJsonLd,
+  serializeJsonLd,
+} from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Hệ thống giáo dục Princeton",
-  description:
-    "Hệ thống giáo dục Princeton - Chương trình giáo dục mầm non chất lượng cao theo chuẩn quốc tế.",
-  openGraph: {
-    title: "Hệ thống giáo dục Princeton",
-    description:
-      "Hệ thống giáo dục Princeton - Chương trình giáo dục mầm non chất lượng cao theo chuẩn quốc tế.",
-    siteName: "Hệ thống giáo dục Princeton",
+  metadataBase: new URL(SITE_URL),
+  ...buildMetadata({
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    path: "/",
+  }),
+  title: {
+    default: DEFAULT_TITLE,
+    template: `%s | ${SITE_NAME}`,
   },
-  twitter: {
-    card: "summary",
-    title: "Hệ thống giáo dục Princeton",
-    description:
-      "Hệ thống giáo dục Princeton - Chương trình giáo dục mầm non chất lượng cao theo chuẩn quốc tế.",
-  },
+  applicationName: SITE_NAME,
+  category: "education",
+  keywords: [
+    "Princeton Academy",
+    "trường mầm non",
+    "giáo dục mầm non",
+    "chương trình mầm non",
+    "mầm non chất lượng cao",
+  ],
   icons: {
     icon: [{ url: "/favicon.png", type: "image/png" }],
     shortcut: "/favicon.png",
@@ -35,6 +49,7 @@ export default async function RootLayout({
 }) {
   const cookieStore = await cookies();
   const initialLang = parseLang(cookieStore.get(LANG_COOKIE)?.value);
+
   return (
     <html lang={initialLang}>
       <head>
@@ -47,6 +62,15 @@ export default async function RootLayout({
         <style>{`html { font-family: "Montserrat", Arial, Helvetica, sans-serif; } body { margin: 0; } #root { height: 100%; }`}</style>
       </head>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeJsonLd([
+              createOrganizationJsonLd(),
+              createWebsiteJsonLd(),
+            ]),
+          }}
+        />
         <LanguageProvider initialLang={initialLang}>
           {children}
           <FloatingActions />

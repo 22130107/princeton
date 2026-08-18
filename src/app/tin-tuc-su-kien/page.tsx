@@ -4,18 +4,15 @@ import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { getNewsPosts } from "@/lib/content";
 import { getServerT } from "@/lib/i18n-server";
+import { buildMetadata } from "@/lib/seo";
 import NewsSearchList from "./NewsSearchList";
 
-export const metadata: Metadata = {
-  title: "Hợp tác cùng Princeton | Trường Mầm non Princeton",
+export const metadata: Metadata = buildMetadata({
+  title: "Tin tức & Sự kiện",
   description:
-    "Cập nhật tin tức, sự kiện, hoạt động học tập và khoảnh khắc đáng nhớ tại Trường Mầm non Princeton.",
-  openGraph: {
-    title: "Hợp tác cùng Princeton | Trường Mầm non Princeton",
-    description:
-      "Cập nhật tin tức và sự kiện mới nhất tại Trường Mầm non Princeton.",
-  },
-};
+    "Cập nhật tin tức, sự kiện, hoạt động học tập và những khoảnh khắc đáng nhớ của trẻ tại Princeton Academy.",
+  path: "/hop-tac-cung-princeton",
+});
 
 export const dynamic = "force-dynamic";
 

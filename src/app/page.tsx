@@ -7,6 +7,9 @@ import SiteFooter from "@/components/Shared/SiteFooter";
 export default function Home() {
   return (
     <div className="font-montserrat overflow-x-hidden bg-[#f7f4f2] pt-[80px] md:pt-[99px]">
+      <h1 className="sr-only">
+        Princeton Academy - Trường mầm non chất lượng cao
+      </h1>
       <div className="md:hidden">
         <MobileHeader />
       </div>

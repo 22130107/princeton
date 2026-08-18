@@ -6,19 +6,16 @@ import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getCurriculumTracks } from "@/lib/content";
 import { getServerLang, getServerT } from "@/lib/i18n-server";
+import { buildMetadata } from "@/lib/seo";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
-export const metadata: Metadata = {
-  title: "Cuộc sống tại Princeton | Trường Mầm non Princeton",
+export const metadata: Metadata = buildMetadata({
+  title: "Cuộc sống tại Princeton",
   description:
-    "Khám phá các chương trình học tại Trường Mầm non Princeton: chương trình tiêu chuẩn, nâng cao và các hoạt động phát triển toàn diện.",
-  openGraph: {
-    title: "Cuộc sống tại Princeton | Trường Mầm non Princeton",
-    description:
-      "Các chương trình học được xây dựng để trẻ phát triển cân bằng về ngôn ngữ, tư duy, vận động và kỹ năng xã hội.",
-  },
-};
+    "Khám phá hoạt động học tập, trải nghiệm và chương trình phát triển toàn diện dành cho trẻ tại Princeton Academy.",
+  path: "/cuoc-song-tai-princeton",
+});
 
 export const dynamic = "force-dynamic";
 

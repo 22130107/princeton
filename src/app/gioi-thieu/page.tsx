@@ -9,19 +9,17 @@ import SiteFooter from "@/components/Shared/SiteFooter";
 import TeacherShowcase from "@/components/Shared/TeacherShowcase";
 import { getAboutContent } from "@/lib/content";
 import { getServerLang, getServerT } from "@/lib/i18n-server";
+import { buildMetadata } from "@/lib/seo";
 import imgHero from "@/assets/1785508275307_2464196110406402971_2464196110406402971_908152b1927fedcdd7fc0a83d44529f3.jpg";
 import FacilityImageCarousel from "@/components/Shared/FacilityImageCarousel";
 
-export const metadata: Metadata = {
-  title: "Kết nối gia đình | Trường Mầm non Princeton",
+export const metadata: Metadata = buildMetadata({
+  title: "Kết nối gia đình",
   description:
-    "Princeton Academy mang đến môi trường mầm non hiện đại, yêu thương và giàu trải nghiệm cho trẻ.",
-  openGraph: {
-    title: "Kết nối gia đình | Trường Mầm non Princeton",
-    description:
-      "Khám phá môi trường học tập, chương trình giáo dục và hành trình phát triển tại Princeton Academy.",
-  },
-};
+    "Tìm hiểu Princeton Academy, đội ngũ giáo viên, cơ sở vật chất và môi trường mầm non hiện đại, yêu thương, giàu trải nghiệm.",
+  path: "/ket-noi-gia-dinh",
+  image: imgHero.src,
+});
 
 export const dynamic = "force-dynamic";
 

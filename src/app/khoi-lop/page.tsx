@@ -6,19 +6,16 @@ import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getClassPrograms } from "@/lib/content";
 import { getServerT, getServerLang } from "@/lib/i18n-server";
+import { buildMetadata } from "@/lib/seo";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
-export const metadata: Metadata = {
-  title: "Chương trình học | Trường Mầm non Princeton",
+export const metadata: Metadata = buildMetadata({
+  title: "Chương trình học mầm non",
   description:
-    "Hệ thống khối lớp Penguin, Wombat, Koala, Kangaroo và Preschool tại Trường Mầm non Princeton.",
-  openGraph: {
-    title: "Chương trình học | Trường Mầm non Princeton",
-    description:
-      "Khám phá hệ thống khối lớp theo độ tuổi tại Trường Mầm non Princeton.",
-  },
-};
+    "Khám phá hệ thống khối lớp Penguin, Wombat, Koala, Kangaroo và Preschool theo từng độ tuổi tại Princeton Academy.",
+  path: "/chuong-trinh-hoc",
+});
 
 export const dynamic = "force-dynamic";
 

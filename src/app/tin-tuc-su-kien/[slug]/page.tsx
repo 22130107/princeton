@@ -8,6 +8,12 @@ import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getNewsPost, getNewsPosts } from "@/lib/content";
 import { getServerLang, getServerT } from "@/lib/i18n-server";
+import {
+  buildMetadata,
+  createArticleJsonLd,
+  createBreadcrumbJsonLd,
+  serializeJsonLd,
+} from "@/lib/seo";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
@@ -27,23 +33,26 @@ export async function generateMetadata({
   const lang = await getServerLang();
 
   if (!post) {
-    return {
-      title: "Hợp tác cùng Princeton | Trường Mầm non Princeton",
-    };
+    return buildMetadata({
+      title: "Không tìm thấy bài viết",
+      description: "Bài viết không tồn tại hoặc đã được cập nhật.",
+      path: `/hop-tac-cung-princeton/${slug}`,
+      noIndex: true,
+    });
   }
 
   const isEn = lang === "en";
   const title = isEn && post.titleEn ? post.titleEn : post.title;
   const description = isEn && post.excerptEn ? post.excerptEn : post.excerpt;
 
-  return {
-    title: `${title} | Trường Mầm non Princeton`,
+  return buildMetadata({
+    title,
     description,
-    openGraph: {
-      title,
-      description,
-    },
-  };
+    path: `/hop-tac-cung-princeton/${slug}`,
+    image: post.imageUrl,
+    imageAlt: post.imageAlt || title,
+    type: "article",
+  });
 }
 
 export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
@@ -61,9 +70,31 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
 
   const newsPosts = await getNewsPosts();
   const relatedPosts = newsPosts.filter((item) => item.slug !== post.slug).slice(0, 3);
+  const jsonLd = [
+    createArticleJsonLd({
+      title,
+      description: excerpt,
+      path: `/hop-tac-cung-princeton/${slug}`,
+      image: post.imageUrl,
+      datePublished: post.publishedAt,
+      dateModified: post.publishedAt,
+    }),
+    createBreadcrumbJsonLd([
+      { name: isEn ? "Home" : "Trang chủ", path: "/" },
+      {
+        name: isEn ? "News & Events" : "Tin tức & Sự kiện",
+        path: "/hop-tac-cung-princeton",
+      },
+      { name: title, path: `/hop-tac-cung-princeton/${slug}` },
+    ]),
+  ];
 
   return (
     <main className="min-h-screen bg-[#F7F4F2] pt-[80px] text-[#620000] md:pt-[99px]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
+      />
       <div className="md:hidden">
         <MobileHeader />
       </div>

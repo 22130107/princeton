@@ -4,13 +4,34 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      { source: "/ve-chung-toi", destination: "/", permanent: true },
+      {
+        source: "/phuong-phap-giang-day/:path*",
+        destination: "/con-duong-princeton/:path*",
+        permanent: true,
+      },
+      {
+        source: "/khoi-lop/:path*",
+        destination: "/chuong-trinh-hoc/:path*",
+        permanent: true,
+      },
+      {
+        source: "/gioi-thieu",
+        destination: "/ket-noi-gia-dinh",
+        permanent: true,
+      },
+      {
+        source: "/tin-tuc-su-kien/:path*",
+        destination: "/hop-tac-cung-princeton/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return {
       beforeFiles: [
-        {
-          source: "/ve-chung-toi",
-          destination: "/",
-        },
         {
           source: "/con-duong-princeton",
           destination: "/phuong-phap-giang-day",

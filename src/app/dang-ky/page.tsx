@@ -2,17 +2,14 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import DangKyContent from "./DangKyContent";
 import { getTestimonials } from "@/lib/content";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Đăng Ký | Trường Mầm non Princeton",
+export const metadata: Metadata = buildMetadata({
+  title: "Đăng ký tuyển sinh",
   description:
-    "Đăng ký nhận ưu đãi và tư vấn tuyển sinh tại Trường Mầm non Princeton.",
-  openGraph: {
-    title: "Đăng Ký | Trường Mầm non Princeton",
-    description:
-      "Đăng ký nhận ưu đãi và tư vấn tuyển sinh tại Trường Mầm non Princeton.",
-  },
-};
+    "Đăng ký nhận tư vấn chương trình học, lịch tham quan trường và thông tin tuyển sinh mới nhất từ Princeton Academy.",
+  path: "/dang-ky",
+});
 
 export const dynamic = "force-dynamic";
 

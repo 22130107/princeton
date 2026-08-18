@@ -5,17 +5,14 @@ import SiteFooter from "@/components/Shared/SiteFooter";
 import TeachingMethodsSection from "@/components/Shared/TeachingMethodsSection";
 import { getTeachingMethods } from "@/lib/content";
 import { getServerT } from "@/lib/i18n-server";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Con đường Princeton | Trường Mầm non Princeton",
+export const metadata: Metadata = buildMetadata({
+  title: "Con đường Princeton",
   description:
-    "Khám phá phương pháp giáo dục mầm non tại Trường Mầm non Princeton: học qua chơi, lấy trẻ làm trung tâm, khai phóng tư duy và học qua tương tác.",
-  openGraph: {
-    title: "Con đường Princeton | Trường Mầm non Princeton",
-    description:
-      "Các phương pháp giáo dục hiện đại giúp trẻ học tập trọn vẹn, tự nhiên và đầy hứng khởi tại Princeton.",
-  },
-};
+    "Khám phá phương pháp giáo dục mầm non lấy trẻ làm trung tâm, học qua chơi, trải nghiệm và tương tác tại Princeton Academy.",
+  path: "/con-duong-princeton",
+});
 
 export const dynamic = "force-dynamic";
 

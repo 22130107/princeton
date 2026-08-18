@@ -8,6 +8,7 @@ import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getClassProgram, getClassPrograms } from "@/lib/content";
 import { getServerT, getServerLang } from "@/lib/i18n-server";
+import { buildMetadata, createBreadcrumbJsonLd, serializeJsonLd } from "@/lib/seo";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
@@ -26,9 +27,12 @@ export async function generateMetadata({
   const program = await getClassProgram(slug);
 
   if (!program) {
-    return {
-      title: "Chương trình học | Trường Mầm non Princeton",
-    };
+    return buildMetadata({
+      title: "Không tìm thấy chương trình",
+      description: "Nội dung chương trình học không tồn tại hoặc đã được cập nhật.",
+      path: `/chuong-trinh-hoc/${slug}`,
+      noIndex: true,
+    });
   }
 
   const lang = await getServerLang();
@@ -36,14 +40,13 @@ export async function generateMetadata({
   const displayName = isEn && program.nameEn ? program.nameEn : program.name;
   const displayAge = isEn && program.ageEn ? program.ageEn : program.age;
 
-  return {
-    title: `${displayName} ${displayAge} | Trường Mầm non Princeton`,
+  return buildMetadata({
+    title: `${displayName} ${displayAge}`,
     description: isEn && program.excerptEn ? program.excerptEn : program.excerpt,
-    openGraph: {
-      title: `${displayName} ${displayAge}`,
-      description: isEn && program.excerptEn ? program.excerptEn : program.excerpt,
-    },
-  };
+    path: `/chuong-trinh-hoc/${slug}`,
+    image: program.imageUrl,
+    imageAlt: program.imageAlt || displayName,
+  });
 }
 
 export default async function ClassDetailPage({ params }: ClassDetailPageProps) {
@@ -64,9 +67,19 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
     normalizedSchedule.length > 0
       ? normalizedSchedule
       : program.schedule.map((item) => item.trim()).filter(Boolean);
+  const displayName = isEn && program.nameEn ? program.nameEn : program.name;
+  const breadcrumbJsonLd = createBreadcrumbJsonLd([
+    { name: isEn ? "Home" : "Trang chủ", path: "/" },
+    { name: isEn ? "Programs" : "Chương trình học", path: "/chuong-trinh-hoc" },
+    { name: displayName, path: `/chuong-trinh-hoc/${slug}` },
+  ]);
 
   return (
     <main className="min-h-screen bg-[#F7F4F2] pt-[80px] text-[#620000] md:pt-[99px]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
+      />
       <div className="md:hidden">
         <MobileHeader />
       </div>

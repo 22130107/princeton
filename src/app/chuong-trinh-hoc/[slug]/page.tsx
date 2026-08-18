@@ -8,6 +8,7 @@ import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getCurriculumTracks } from "@/lib/content";
 import { getServerLang, getServerT } from "@/lib/i18n-server";
+import { buildMetadata, createBreadcrumbJsonLd, serializeJsonLd } from "@/lib/seo";
 import imgLogo from "@/assets/logo.png";
 import imgCardLogo from "@/assets/logo1.png";
 
@@ -35,23 +36,25 @@ export async function generateMetadata({
   const lang = await getServerLang();
 
   if (!track) {
-    return {
-      title: "Cuộc sống tại Princeton | Trường Mầm non Princeton",
-    };
+    return buildMetadata({
+      title: "Không tìm thấy nội dung",
+      description: "Nội dung trải nghiệm tại Princeton không tồn tại hoặc đã được cập nhật.",
+      path: `/cuoc-song-tai-princeton/${slug}`,
+      noIndex: true,
+    });
   }
 
   const isEn = lang === "en";
   const title = isEn && track.titleEn ? track.titleEn : track.title;
   const description = isEn && track.descriptionEn ? track.descriptionEn : track.description;
 
-  return {
-    title: `${title} | Trường Mầm non Princeton`,
+  return buildMetadata({
+    title,
     description,
-    openGraph: {
-      title,
-      description,
-    },
-  };
+    path: `/cuoc-song-tai-princeton/${slug}`,
+    image: track.imageUrl,
+    imageAlt: track.imageAlt || title,
+  });
 }
 
 export default async function CurriculumDetailPage({ params }: CurriculumDetailPageProps) {
@@ -68,9 +71,21 @@ export default async function CurriculumDetailPage({ params }: CurriculumDetailP
   const content = isEn && track.contentEn.length ? track.contentEn : track.content;
 
   const relatedTracks = tracks.filter((item) => item.slug !== track.slug);
+  const breadcrumbJsonLd = createBreadcrumbJsonLd([
+    { name: isEn ? "Home" : "Trang chủ", path: "/" },
+    {
+      name: isEn ? "Life at Princeton" : "Cuộc sống tại Princeton",
+      path: "/cuoc-song-tai-princeton",
+    },
+    { name: title, path: `/cuoc-song-tai-princeton/${slug}` },
+  ]);
 
   return (
     <main className="min-h-screen bg-[#F7F4F2] pt-[80px] text-[#620000] md:pt-[99px]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
+      />
       <div className="md:hidden">
         <MobileHeader />
       </div>
