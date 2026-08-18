@@ -78,9 +78,9 @@ export default function DangKyContent({ testimonial }: { testimonial: DbTestimon
               {lang === "en" ? "Princeton Education System" : "Hệ Thống Giáo Dục Princeton"}
             </span>
           </div>
-          <h1 className="text-balance text-[clamp(26px,3.8vw,44px)] font-extrabold uppercase leading-tight text-[#991B1B]">
+          <h2 className="text-balance text-[clamp(26px,3.8vw,44px)] font-extrabold uppercase leading-tight text-[#991B1B]">
             {lang === "en" ? "Admissions & Registration" : "Đăng Ký Tư Vấn & Tham Quan Cơ Sở"}
-          </h1>
+          </h2>
           <span className="mx-auto mt-4 block h-[3px] w-16 rounded-full bg-[#d8b15f]" />
         </div>
 

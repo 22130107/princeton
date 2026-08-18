@@ -18,8 +18,11 @@ export default async function LienHePage() {
   const testimonial = testimonials.length > 0 ? testimonials[0] : null;
 
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#fffefa]" />}>
-      <DangKyContent testimonial={testimonial} />
-    </Suspense>
+    <>
+      <h1 className="sr-only">Liên hệ Princeton Academy</h1>
+      <Suspense fallback={<div className="min-h-screen bg-[#fffefa]" />}>
+        <DangKyContent testimonial={testimonial} />
+      </Suspense>
+    </>
   );
 }
