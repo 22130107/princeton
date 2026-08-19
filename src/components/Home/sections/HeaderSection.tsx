@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
 import LanguageFlagIcon from "@/components/Shared/LanguageFlagIcon";
+import { localizeSubmenuLink, type HeaderSubmenuLink } from "@/lib/header-submenu";
 import type { Lang } from "@/lib/i18n";
 import imgLogo from "../../../assets/logo3.png";
 
@@ -14,13 +15,7 @@ type NavItem = {
   labelKey: string;
   submenu?: SubmenuKey;
 };
-type SubmenuLink = {
-  href: string;
-  label: string;
-  description?: string;
-};
-
-type HeaderSubmenus = Record<SubmenuKey, SubmenuLink[]>;
+type HeaderSubmenus = Record<SubmenuKey, HeaderSubmenuLink[]>;
 
 const navItems: NavItem[] = [
   { href: "/ve-chung-toi", labelKey: "nav.home" },
@@ -73,7 +68,7 @@ function LangToggle({ lang, onToggle }: { lang: Lang; onToggle: () => void }) {
 }
 
 function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname: string }) {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   return (
     <div className="hidden min-w-0 items-center gap-[clamp(2px,0.45vw,12px)] xl:flex" data-name="List">
       {navItems.map((item) => {
@@ -97,7 +92,9 @@ function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname
 
             {menuLinks.length ? (
               <ul className="invisible absolute left-0 top-full z-[80] mt-3 w-[280px] rounded-[14px] border border-[#e4b4b4] bg-white p-2 opacity-0 shadow-[0_14px_30px_rgba(98,0,0,0.16)] transition-all duration-150 group-hover:visible group-hover:translate-y-1 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-1 group-focus-within:opacity-100">
-                {menuLinks.map((link) => (
+                {menuLinks.map((rawLink) => {
+                  const link = localizeSubmenuLink(rawLink, lang);
+                  return (
                   <li key={link.href}>
                     <Link
                       href={link.href}
@@ -111,7 +108,8 @@ function DesktopNav({ submenus, pathname }: { submenus: HeaderSubmenus; pathname
                       ) : null}
                     </Link>
                   </li>
-                ))}
+                  );
+                })}
                 <li className="mt-1 border-t border-[#f0d9d9] pt-1">
                   <Link
                     href={item.href}
@@ -187,17 +185,21 @@ export default function HeaderSection() {
 
         setSubmenus({
           classes: Array.isArray(classData.programs)
-            ? classData.programs.map((item: { slug: string; name: string; age?: string }) => ({
+            ? classData.programs.map((item: { slug: string; name: string; nameEn?: string; age?: string; ageEn?: string }) => ({
                 href: `/chuong-trinh-hoc/${item.slug}`,
                 label: item.name,
+                labelEn: item.nameEn,
                 description: item.age,
+                descriptionEn: item.ageEn,
               }))
             : [],
           curriculum: Array.isArray(curriculumData.tracks)
-            ? curriculumData.tracks.map((item: { slug: string; title: string; category?: string }) => ({
+            ? curriculumData.tracks.map((item: { slug: string; title: string; titleEn?: string; category?: string; categoryEn?: string }) => ({
                 href: `/cuoc-song-tai-princeton/${item.slug}`,
                 label: item.title,
+                labelEn: item.titleEn,
                 description: item.category,
+                descriptionEn: item.categoryEn,
               }))
             : [],
         });
