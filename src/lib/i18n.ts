@@ -166,13 +166,13 @@ export const dictionaries: Record<Lang, TDict> = {
     "methods.heroTextAfter": "",
 
     "curriculum.heroTitle": "Cuộc sống tại Princeton",
-    "curriculum.heroText": "Các chương trình học được xây dựng để trẻ phát triển cân bằng, tự tin khám phá và sẵn sàng cho từng giai đoạn lớn lên.",
+    "curriculum.heroText": "Cập nhật các hoạt động học tập, sự kiện nổi bật và những khoảnh khắc đáng nhớ tại Trường Mầm non Princeton, nơi mỗi trải nghiệm nhỏ đều góp phần nuôi dưỡng sự tự tin của trẻ.",
     "curriculum.viewDetail": "Xem chi tiết",
     "curriculum.back": "Quay lại chương trình học",
     "curriculum.related": "Chương trình liên quan",
 
     "news.heroTitle": "Hợp tác cùng Princeton",
-    "news.heroText": "Cập nhật các hoạt động học tập, sự kiện nổi bật và những khoảnh khắc đáng nhớ tại Trường Mầm non Princeton, nơi mỗi trải nghiệm nhỏ đều góp phần nuôi dưỡng sự tự tin của trẻ.",
+    "news.heroText": "Cơ hội hợp tác nhượng quyền thương hiệu mầm non Princeton Academy. Đồng hành cùng mô hình giáo dục chuẩn Mỹ bền vững, tối ưu vận hành và lan tỏa giá trị tri thức vượt trội.",
     "news.openSearch": "Mở tìm kiếm",
     "news.clearSearch": "Xóa tìm kiếm",
     "news.closeSearch": "Đóng tìm kiếm",
@@ -365,13 +365,13 @@ export const dictionaries: Record<Lang, TDict> = {
     "methods.heroTextAfter": "",
 
     "curriculum.heroTitle": "Life at Princeton",
-    "curriculum.heroText": "Curriculum programs are designed so children develop in balance, explore confidently and are ready for every stage of growing up.",
+    "curriculum.heroText": "Updates on learning activities, featured events and memorable moments at Princeton Kindergarten, where every small experience helps nurture children's confidence.",
     "curriculum.viewDetail": "View details",
     "curriculum.back": "Back to curriculum",
     "curriculum.related": "Related programs",
 
     "news.heroTitle": "Partner with Princeton",
-    "news.heroText": "Updates on learning activities, featured events and memorable moments at Princeton Kindergarten, where every small experience helps nurture children's confidence.",
+    "news.heroText": "Partner with Princeton Academy through our premier preschool franchise model. Join a sustainable, U.S.-standard educational system backed by operational excellence and proven success.",
     "news.openSearch": "Open search",
     "news.clearSearch": "Clear search",
     "news.closeSearch": "Close search",

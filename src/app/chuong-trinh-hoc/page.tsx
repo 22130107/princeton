@@ -13,7 +13,7 @@ import imgCardLogo from "@/assets/logo1.png";
 export const metadata: Metadata = buildMetadata({
   title: "Cuộc sống tại Princeton",
   description:
-    "Khám phá hoạt động học tập, trải nghiệm và chương trình phát triển toàn diện dành cho trẻ tại Princeton Academy.",
+    "Cập nhật các hoạt động học tập, sự kiện nổi bật và những khoảnh khắc đáng nhớ tại Trường Mầm non Princeton, nơi mỗi trải nghiệm nhỏ đều góp phần nuôi dưỡng sự tự tin của trẻ.",
   path: "/cuoc-song-tai-princeton",
 });
 

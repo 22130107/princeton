@@ -8,9 +8,9 @@ import { buildMetadata } from "@/lib/seo";
 import NewsSearchList from "./NewsSearchList";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Tin tức & Sự kiện",
+  title: "Hợp tác cùng Princeton",
   description:
-    "Cập nhật tin tức, sự kiện, hoạt động học tập và những khoảnh khắc đáng nhớ của trẻ tại Princeton Academy.",
+    "Cơ hội hợp tác nhượng quyền thương hiệu mầm non Princeton Academy. Đồng hành cùng mô hình giáo dục chuẩn Mỹ bền vững, tối ưu vận hành và lan tỏa giá trị tri thức vượt trội.",
   path: "/hop-tac-cung-princeton",
 });
 
