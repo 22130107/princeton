@@ -104,7 +104,7 @@ export const dictionaries: Record<Lang, TDict> = {
     "editorial.ctaButton": "Đăng ký tư vấn",
     "methods.title": "Con đường Princeton",
     "methods.related": "Phương pháp liên quan",
-    "methods.back": "Quay lại phương pháp",
+    "methods.back": "Quay lại",
     "classes.title": "Chương trình học",
     "classes.other": "Các khối lớp khác",
     "curriculum.title": "Cuộc sống tại Princeton",
@@ -154,7 +154,7 @@ export const dictionaries: Record<Lang, TDict> = {
     "classes.heroTitle": "Chương trình học",
     "classes.heroText": "Chương trình học tại Princeton được xây dựng theo từng độ tuổi, giúp trẻ phát triển cân bằng giữa chăm sóc, vận động, ngôn ngữ, tư duy và kỹ năng xã hội.",
     "classes.viewSchedule": "Xem chi tiết",
-    "classes.back": "Quay lại khối lớp",
+    "classes.back": "Quay lại",
     "classes.schedule": "Lịch học",
 
     "methods.heroBadge": "Phương pháp giáo dục",
@@ -168,7 +168,7 @@ export const dictionaries: Record<Lang, TDict> = {
     "curriculum.heroTitle": "Cuộc sống tại Princeton",
     "curriculum.heroText": "Cập nhật các hoạt động học tập, sự kiện nổi bật và những khoảnh khắc đáng nhớ tại Trường Mầm non Princeton, nơi mỗi trải nghiệm nhỏ đều góp phần nuôi dưỡng sự tự tin của trẻ.",
     "curriculum.viewDetail": "Xem chi tiết",
-    "curriculum.back": "Quay lại chương trình học",
+    "curriculum.back": "Quay lại",
     "curriculum.related": "Chương trình liên quan",
 
     "news.heroTitle": "Hợp tác cùng Princeton",
@@ -183,7 +183,7 @@ export const dictionaries: Record<Lang, TDict> = {
     "news.page": "Trang {n}",
     "news.next": "Trang sau",
     "news.viewDetail": "Xem chi tiết",
-    "news.back": "Quay lại tin tức",
+    "news.back": "Quay lại",
     "news.related": "Tin liên quan",
 
     "form.name": "Họ và tên",
@@ -303,7 +303,7 @@ export const dictionaries: Record<Lang, TDict> = {
     "editorial.ctaButton": "Request a consultation",
     "methods.title": "Princeton Way",
     "methods.related": "Related methods",
-    "methods.back": "Back to methods",
+    "methods.back": "Back",
     "classes.title": "Academic Program",
     "classes.other": "Other classes",
     "curriculum.title": "Life at Princeton",
@@ -353,7 +353,7 @@ export const dictionaries: Record<Lang, TDict> = {
     "classes.heroTitle": "Academic Program",
     "classes.heroText": "The curriculum at Princeton is built for each age group, helping children develop a balance of care, movement, language, thinking and social skills.",
     "classes.viewSchedule": "View details",
-    "classes.back": "Back to classes",
+    "classes.back": "Back",
     "classes.schedule": "Daily schedule",
 
     "methods.heroBadge": "Teaching methods",
@@ -367,7 +367,7 @@ export const dictionaries: Record<Lang, TDict> = {
     "curriculum.heroTitle": "Life at Princeton",
     "curriculum.heroText": "Updates on learning activities, featured events and memorable moments at Princeton Kindergarten, where every small experience helps nurture children's confidence.",
     "curriculum.viewDetail": "View details",
-    "curriculum.back": "Back to curriculum",
+    "curriculum.back": "Back",
     "curriculum.related": "Related programs",
 
     "news.heroTitle": "Partner with Princeton",
@@ -382,7 +382,7 @@ export const dictionaries: Record<Lang, TDict> = {
     "news.page": "Page {n}",
     "news.next": "Next page",
     "news.viewDetail": "View details",
-    "news.back": "Back to news",
+    "news.back": "Back",
     "news.related": "Related news",
 
     "form.name": "Full name",
