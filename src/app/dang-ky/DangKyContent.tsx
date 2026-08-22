@@ -13,11 +13,65 @@ import imgFormLogo from "@/assets/logo.png";
 import imgParentAvatar from "@/assets/762553422_1915290766432556_5827904010307015329_n.jpg";
 import { MapPin, Star } from "lucide-react";
 import type { DbTestimonial } from "@/lib/content";
+
 const MOBILE_BREAKPOINT = 768;
 
 type Audience = "parent" | "partner";
 
-export default function DangKyContent({ testimonial }: { testimonial: DbTestimonial | null }) {
+interface DangKyContentProps {
+  testimonial?: DbTestimonial | null;
+  testimonials?: DbTestimonial[];
+}
+
+const fallbackTestimonials: DbTestimonial[] = [
+  {
+    id: 1,
+    parentName: "Phụ huynh T.H.G",
+    parentNameEn: "Parent T.H.G",
+    studentName: "",
+    avatarId: null,
+    avatarUrl: "",
+    avatarAlt: "Phụ huynh T.H.G",
+    quote: "Bé đã học 5 năm tại Trường Mầm non Princeton. Trong quá trình con học tại trường, mình thấy con phát triển rất tốt. Con tự tin hơn, mạnh dạn hơn và mình cảm thấy rất vui khi con được phát triển trong môi trường tốt. Mình đánh giá Trường Mầm non Princeton rất cao.",
+    quoteEn: "My child has studied for 5 years at Princeton Academy. During my child's time at the school, I've seen them develop remarkably well. They are more confident, more courageous, and I feel very happy that my child is growing in such a nurturing environment. I highly rate Princeton Academy.",
+    rating: 5,
+    reactionImageId: null,
+    reactionImageUrl: "",
+    reactionImageAlt: "",
+  },
+  {
+    id: 2,
+    parentName: "Phụ huynh N.T.B",
+    parentNameEn: "Parent N.T.B",
+    studentName: "",
+    avatarId: null,
+    avatarUrl: "",
+    avatarAlt: "Phụ huynh N.T.B",
+    quote: "Chương trình song ngữ tại Princeton rất bài bản và toàn diện. Các cô giáo luôn tận tâm chăm sóc, theo sát từng bước tiến bộ của con, giúp con hình thành thói quen tự lập và tư duy sáng tạo từ sớm.",
+    quoteEn: "The bilingual curriculum at Princeton is very thorough and comprehensive. The teachers are dedicated, attentive, and foster independence and creativity in our children every day.",
+    rating: 5,
+    reactionImageId: null,
+    reactionImageUrl: "",
+    reactionImageAlt: "",
+  },
+  {
+    id: 3,
+    parentName: "Phụ huynh H.Q.L",
+    parentNameEn: "Parent H.Q.L",
+    studentName: "",
+    avatarId: null,
+    avatarUrl: "",
+    avatarAlt: "Phụ huynh H.Q.L",
+    quote: "Cơ sở vật chất hiện đại, không gian học tập và vui chơi xanh mát, an toàn. Con tôi mỗi ngày đến trường đều rất vui vẻ và hào hứng kể lại những điều mới mẻ con học được.",
+    quoteEn: "Modern facilities, green and safe learning & playing environments. My child is excited to go to school every day and eagerly shares everything learned.",
+    rating: 5,
+    reactionImageId: null,
+    reactionImageUrl: "",
+    reactionImageAlt: "",
+  },
+];
+
+export default function DangKyContent({ testimonial, testimonials = [] }: DangKyContentProps) {
   const { lang, t } = useLanguage();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
@@ -25,6 +79,44 @@ export default function DangKyContent({ testimonial }: { testimonial: DbTestimon
   const [audience, setAudience] = useState<Audience>(
     tabParam === "partner" ? "partner" : "parent"
   );
+
+  const [items, setItems] = useState<DbTestimonial[]>(() => {
+    if (testimonials && testimonials.length > 0) return testimonials;
+    if (testimonial) return [testimonial];
+    return fallbackTestimonials;
+  });
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isFading, setIsFading] = useState(false);
+
+  useEffect(() => {
+    if (testimonials && testimonials.length > 0) {
+      setItems(testimonials);
+    } else if (testimonial) {
+      setItems([testimonial]);
+    } else {
+      fetch("/api/testimonials")
+        .then((res) => res.json())
+        .then((data) => {
+          if (Array.isArray(data.testimonials) && data.testimonials.length > 0) {
+            setItems(data.testimonials);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [testimonials, testimonial]);
+
+  useEffect(() => {
+    if (items.length <= 1) return;
+    const interval = setInterval(() => {
+      setIsFading(true);
+      setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % items.length);
+        setIsFading(false);
+      }, 250);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [items.length]);
 
   useEffect(() => {
     if (tabParam === "partner" || tabParam === "parent") {
@@ -54,6 +146,18 @@ export default function DangKyContent({ testimonial }: { testimonial: DbTestimon
     audience === "parent"
       ? "Please complete the details below. Our admissions representatives will contact you shortly."
       : "Please fill in your details and our partnership team will get in touch with you soon.";
+
+  const activeTestimonial = items[currentIndex % items.length] || items[0];
+  const activeRating = activeTestimonial?.rating ? Math.round(Number(activeTestimonial.rating)) : 5;
+  const activeQuote =
+    (lang === "en" && activeTestimonial?.quoteEn ? activeTestimonial.quoteEn : activeTestimonial?.quote) ||
+    (lang === "en"
+      ? "My child has studied for 5 years at Princeton Academy. During my child's time at the school, I've seen them develop remarkably well."
+      : "Bé đã học 5 năm tại Trường Mầm non Princeton. Trong quá trình con học tại trường, mình thấy con phát triển rất tốt.");
+  const activeParentName =
+    (lang === "en" && activeTestimonial?.parentNameEn ? activeTestimonial.parentNameEn : activeTestimonial?.parentName) ||
+    (lang === "en" ? "Parent" : "Phụ huynh học sinh");
+  const activeAvatar = activeTestimonial?.avatarUrl || imgParentAvatar.src;
 
   return (
     <main className="min-h-screen bg-[#fffefa] flex flex-col justify-between">
@@ -135,12 +239,16 @@ export default function DangKyContent({ testimonial }: { testimonial: DbTestimon
           <div className="flex flex-col gap-8 min-h-0">
 
             {/* Card 1: Testimonial */}
-            <div className="bg-white border-2 border-[#800000] p-6 md:p-8 shadow-[6px_6px_0_#ead6bf] relative flex flex-col justify-between rounded-none">
-              <div>
+            <div className="bg-white border-2 border-[#800000] p-6 md:p-8 shadow-[6px_6px_0_#ead6bf] relative flex flex-col justify-between rounded-none min-h-[260px]">
+              <div
+                className={`transition-opacity duration-300 ${
+                  isFading ? "opacity-0" : "opacity-100"
+                }`}
+              >
                 {/* Header of Testimonial Card */}
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex gap-0.5">
-                    {[...Array(testimonial?.rating ? Math.round(Number(testimonial.rating)) : 5)].map((_, i) => (
+                    {[...Array(activeRating)].map((_, i) => (
                       <Star key={i} className="size-5 fill-[#ffc300] text-[#ffc300]" />
                     ))}
                   </div>
@@ -152,28 +260,59 @@ export default function DangKyContent({ testimonial }: { testimonial: DbTestimon
                 </div>
 
                 {/* Content Quote */}
-                <p className="text-[15px] font-medium leading-relaxed text-[#420808] italic mb-6">
-                  "{testimonial ? (lang === "en" && testimonial.quoteEn ? testimonial.quoteEn : testimonial.quote) : (lang === "en" ? "My child has studied for 5 years at Princeton Academy. During my child's time at the school, I've seen them develop remarkably well. They are more confident, more courageous, and I feel very happy that my child is growing in such a nurturing environment. I highly rate Princeton Academy." : "Bé đã học 5 năm tại Trường Mầm non Princeton. Trong quá trình con học tại trường, mình thấy con phát triển rất tốt. Con tự tin hơn, mạnh dạn hơn và mình cảm thấy rất vui khi con được phát triển trong môi trường tốt. Mình đánh giá Trường Mầm non Princeton rất cao.")}"
+                <p className="text-[15px] font-medium leading-relaxed text-[#420808] italic mb-6 min-h-[72px]">
+                  &ldquo;{activeQuote}&rdquo;
                 </p>
               </div>
 
-              {/* Parent Info block */}
-              <div className="flex items-center gap-4 border-t border-[#ead6bf]/60 pt-4">
-                <div className="size-[52px] rounded-full overflow-hidden border border-[#800000]/20 shrink-0">
-                  <img
-                    src={testimonial?.avatarUrl || imgParentAvatar.src}
-                    alt={testimonial ? (lang === "en" && testimonial.parentNameEn ? testimonial.parentNameEn : testimonial.parentName) : (lang === "en" ? "Parent H.Q.L" : "Phụ huynh H.Q.L")}
-                    className="size-full object-cover"
-                  />
+              {/* Parent Info block & Indicators */}
+              <div className="flex items-center justify-between border-t border-[#ead6bf]/60 pt-4">
+                <div
+                  className={`flex items-center gap-4 transition-opacity duration-300 ${
+                    isFading ? "opacity-0" : "opacity-100"
+                  }`}
+                >
+                  <div className="size-[52px] rounded-full overflow-hidden border border-[#800000]/20 shrink-0">
+                    <img
+                      src={activeAvatar}
+                      alt={activeParentName}
+                      className="size-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h4 className="text-[15px] font-extrabold text-[#420808]">
+                      {activeParentName}
+                    </h4>
+                    <p className="text-[12px] font-semibold text-[#6f3129]/85">
+                      {lang === "en" ? "Parent" : "Phụ huynh học sinh"}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-[15px] font-extrabold text-[#420808]">
-                    {testimonial ? (lang === "en" && testimonial.parentNameEn ? testimonial.parentNameEn : testimonial.parentName) : (lang === "en" ? "Parent H.Q.L" : "Phụ huynh H.Q.L")}
-                  </h4>
-                  <p className="text-[12px] font-semibold text-[#6f3129]/85">
-                    {lang === "en" ? "Parent" : "Phụ huynh học sinh"}
-                  </p>
-                </div>
+
+                {/* Dots indicators */}
+                {items.length > 1 && (
+                  <div className="flex items-center gap-1.5 self-center">
+                    {items.map((_, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => {
+                          setIsFading(true);
+                          setTimeout(() => {
+                            setCurrentIndex(idx);
+                            setIsFading(false);
+                          }, 150);
+                        }}
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          idx === currentIndex % items.length
+                            ? "w-6 bg-[#b80000]"
+                            : "w-2 bg-[#ead6bf] hover:bg-[#b80000]/50"
+                        }`}
+                        aria-label={`Testimonial ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

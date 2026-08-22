@@ -10,7 +10,7 @@ import TeacherShowcase from "@/components/Shared/TeacherShowcase";
 import { getAboutContent } from "@/lib/content";
 import { getServerLang, getServerT } from "@/lib/i18n-server";
 import { buildMetadata } from "@/lib/seo";
-import imgHero from "@/assets/1785508275307_2464196110406402971_2464196110406402971_908152b1927fedcdd7fc0a83d44529f3.jpg";
+import imgHero from "@/assets/1787306636560_2464196110406402971_2464196110406402971_e1ebe6254cc362ff92c70c40d9d46dce.jpg";
 import FacilityImageCarousel from "@/components/Shared/FacilityImageCarousel";
 
 export const metadata: Metadata = buildMetadata({

@@ -15,13 +15,12 @@ export const dynamic = "force-dynamic";
 
 export default async function DangKyPage() {
   const testimonials = await getTestimonials();
-  const testimonial = testimonials.length > 0 ? testimonials[0] : null;
 
   return (
     <>
       <h1 className="sr-only">Đăng ký tuyển sinh Princeton Academy</h1>
       <Suspense fallback={<div className="min-h-screen bg-[#fffefa]" />}>
-        <DangKyContent testimonial={testimonial} />
+        <DangKyContent testimonials={testimonials} />
       </Suspense>
     </>
   );
