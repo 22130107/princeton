@@ -28,9 +28,45 @@ type SmtpReadState = {
   lines: string[];
 };
 
-const defaultSmtpHost = "smtp.gmail.com";
+const defaultSmtpHost = "mx-02.tentenpost.vn";
 const defaultSmtpPort = 465;
 const smtpTimeoutMs = 15000;
+
+type SmtpEnvironment = Record<string, string | undefined>;
+
+export function getSmtpConfig(environment: SmtpEnvironment = process.env) {
+  const usesDomainSmtp = Boolean(
+    environment.SMTP_HOST ||
+      environment.SMTP_PORT ||
+      environment.SMTP_USER ||
+      environment.SMTP_PASSWORD ||
+      environment.SMTP_FROM,
+  );
+  const user = usesDomainSmtp ? environment.SMTP_USER : environment.GMAIL_SMTP_USER;
+  const password = usesDomainSmtp
+    ? environment.SMTP_PASSWORD
+    : environment.GMAIL_SMTP_PASSWORD;
+
+  if (!user || !password) {
+    return null;
+  }
+
+  const host =
+    environment.SMTP_HOST ||
+    (!usesDomainSmtp ? environment.GMAIL_SMTP_HOST : undefined) ||
+    defaultSmtpHost;
+  const port = Number(
+    environment.SMTP_PORT ||
+      (!usesDomainSmtp ? environment.GMAIL_SMTP_PORT : undefined) ||
+      defaultSmtpPort,
+  );
+  const from =
+    environment.SMTP_FROM ||
+    (!usesDomainSmtp ? environment.GMAIL_SMTP_FROM : undefined) ||
+    user;
+
+  return { host, port, user, password, from };
+}
 
 const partnerNeedLabels: Record<string, string> = {
   "partner-franchise": "Nhượng quyền / mở cơ sở",
@@ -343,16 +379,12 @@ async function sendSmtpCommand(
 }
 
 async function sendEmailViaSmtp(message: EmailMessage) {
-  const user = process.env.GMAIL_SMTP_USER;
-  const password = process.env.GMAIL_SMTP_PASSWORD;
-  const from = process.env.GMAIL_SMTP_FROM || user;
-
-  if (!user || !password || !from) {
+  const config = getSmtpConfig();
+  if (!config) {
     return null;
   }
 
-  const host = process.env.GMAIL_SMTP_HOST || defaultSmtpHost;
-  const port = Number(process.env.GMAIL_SMTP_PORT || defaultSmtpPort);
+  const { host, port, user, password, from } = config;
   const state: SmtpReadState = { buffer: "", lines: [] };
   const socket = tls.connect({
     host,
@@ -395,6 +427,8 @@ function getOwnerNotificationEmailAddress() {
   return (
     process.env.REGISTRATION_NOTIFY_TO ||
     process.env.GMAIL_REGISTRATION_NOTIFY_TO ||
+    process.env.SMTP_FROM ||
+    process.env.SMTP_USER ||
     process.env.GMAIL_SMTP_FROM ||
     process.env.GMAIL_SMTP_USER ||
     ""
@@ -409,7 +443,7 @@ export async function sendRegistrationConfirmationEmail(
     if (!customerResult) {
       return {
         status: "skipped",
-        error: "Gmail SMTP is not configured.",
+        error: "SMTP is not configured.",
       };
     }
 
