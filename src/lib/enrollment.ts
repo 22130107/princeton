@@ -2,6 +2,7 @@ import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { getMysqlPool } from "./mysql";
 import { sendRegistrationConfirmationEmail } from "./registration-email";
 import { findRegistrationCampusOption } from "./campuses";
+import { isPartnerGradeSlug, normalizeGradeToSlug } from "./enrollment-grade";
 
 export type EnrollmentLeadInput = {
   audience?: "parent" | "partner";
@@ -36,31 +37,11 @@ type CampusRow = RowDataPacket & {
   name: string;
 };
 
-const gradeSlugMap: Record<string, string> = {
-  penguin: "penguin",
-  wombat: "wombat",
-  koala: "koala",
-  kangaroo: "kangaroo",
-  preschool: "preschool",
-  "partner-franchise": "partner-franchise",
-  "partner-admissions": "partner-admissions",
-  "partner-media": "partner-media",
-  "partner-vendor": "partner-vendor",
-};
-
 const consentText =
   "Tôi xác nhận rằng các thông tin cá nhân được cung cấp là chính xác và đồng ý để Nhà trường thu thập, lưu trữ, xử lý và sử dụng theo quy định của pháp luật về bảo vệ dữ liệu cá nhân.";
 
 function normalizePhone(phone: string) {
   return phone.replace(/[^\d+]/g, "");
-}
-
-function normalizeGradeToSlug(grade: string) {
-  const normalized = grade.trim().toLowerCase();
-  const direct = gradeSlugMap[normalized];
-  if (direct) return direct;
-
-  return Object.keys(gradeSlugMap).find((slug) => normalized.includes(slug)) ?? null;
 }
 
 function normalizeCampusId(value: EnrollmentLeadInput["campusId"]) {
@@ -108,7 +89,9 @@ export function validateEnrollmentLead(input: Partial<EnrollmentLeadInput>) {
   const campusSlug = normalizeCampusSlug(input.campusSlug);
   const gradeSlug = normalizeGradeToSlug(grade);
   const audience: "parent" | "partner" =
-    input.audience === "partner" || gradeSlug?.startsWith("partner-") ? "partner" : "parent";
+    input.audience === "partner" || (gradeSlug ? isPartnerGradeSlug(gradeSlug) : false)
+      ? "partner"
+      : "parent";
 
   if (campusSlug && !findRegistrationCampusOption(campusSlug)) {
     errors.campusSlug = "Cơ sở không hợp lệ.";
@@ -126,7 +109,7 @@ export function validateEnrollmentLead(input: Partial<EnrollmentLeadInput>) {
     errors.email = "Email không hợp lệ.";
   }
 
-  if (!gradeSlug) {
+  if (!gradeSlug || (audience === "partner" && !isPartnerGradeSlug(gradeSlug))) {
     errors.grade = "Khối lớp không hợp lệ.";
   }
 
@@ -237,8 +220,6 @@ export async function createEnrollmentLead(
       campusName = campusRows[0].name;
     }
 
-    await connection.beginTransaction();
-
     const gradeSlug = normalizeGradeToSlug(validation.data.grade);
     const requestedAppointmentAt = getRequestedAppointmentAt(
       validation.data.appointmentDate,
@@ -255,8 +236,18 @@ export async function createEnrollmentLead(
       { slug: "uu-dai-ghi-danh" },
     );
 
+    if (validation.data.audience === "parent" && !programRows[0]) {
+      return {
+        ok: false as const,
+        status: 422,
+        errors: { grade: "Khối lớp không hợp lệ." },
+      };
+    }
+
     const classProgramId = programRows[0]?.id ?? null;
     const campaignId = campaignRows[0]?.id ?? null;
+
+    await connection.beginTransaction();
 
     const [leadResult] = await connection.execute<ResultSetHeader>(
       `INSERT INTO enrollment_leads (
