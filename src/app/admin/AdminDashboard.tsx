@@ -21,6 +21,7 @@ import promoFallbackImage from "@/assets/c59ba9f7308cb819ecc8ed6f5ece801f19707aa
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
 import { registrationCampusOptions } from "@/lib/campuses";
+import { getRegistrationEmailStatusDisplay } from "@/lib/registration-email-status";
 
 type TabKey = "banners" | "registration" | "schedules" | "teaching" | "programs" | "posts" | "about";
 type ProgramMode = "classes" | "curriculum";
@@ -5419,7 +5420,14 @@ export default function AdminDashboard() {
                     </div>
                     <div>
                       <p className="text-[12px] font-extrabold uppercase text-[#b80000]">Email xác nhận</p>
-                      <p className="mt-1 text-[15px] font-bold uppercase">{selectedSchedule.emailStatus}</p>
+                      <p className="mt-1 text-[15px] font-bold uppercase">
+                        {getRegistrationEmailStatusDisplay(selectedSchedule.emailStatus).label}
+                      </p>
+                      {getRegistrationEmailStatusDisplay(selectedSchedule.emailStatus).description ? (
+                        <p className="mt-1 max-w-[360px] text-[12px] font-semibold leading-5 text-amber-700">
+                          {getRegistrationEmailStatusDisplay(selectedSchedule.emailStatus).description}
+                        </p>
+                      ) : null}
                       {selectedSchedule.emailError ? (
                         <p className="mt-1 text-[12px] font-semibold text-red-600">{selectedSchedule.emailError}</p>
                       ) : null}
