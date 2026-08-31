@@ -6,7 +6,7 @@ export const SITE_NAME = "Princeton Academy";
 export const DEFAULT_TITLE = "Princeton Academy | Trường Mầm non chất lượng cao";
 export const DEFAULT_DESCRIPTION =
   "Princeton Academy xây dựng môi trường giáo dục mầm non hiện đại, yêu thương, giúp trẻ phát triển toàn diện qua trải nghiệm và khám phá.";
-export const DEFAULT_SHARE_IMAGE = "/opengraph-image";
+export const DEFAULT_SHARE_IMAGE = "/thumanil.webp";
 
 function normalizePath(path: string) {
   const normalized = `/${path}`.replace(/\/{2,}/g, "/");
