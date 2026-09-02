@@ -194,13 +194,21 @@ export default function HeaderSection() {
               }))
             : [],
           curriculum: Array.isArray(curriculumData.tracks)
-            ? curriculumData.tracks.map((item: { slug: string; title: string; titleEn?: string; category?: string; categoryEn?: string }) => ({
-                href: `/cuoc-song-tai-princeton/${item.slug}`,
-                label: item.title,
-                labelEn: item.titleEn,
-                description: item.category,
-                descriptionEn: item.categoryEn,
-              }))
+            ? (() => {
+                const categories = new Map<string, HeaderSubmenuLink>();
+
+                for (const item of curriculumData.tracks as { category?: string; categoryEn?: string }[]) {
+                  if (!item.category || categories.has(item.category)) continue;
+
+                  categories.set(item.category, {
+                    href: `/cuoc-song-tai-princeton?category=${encodeURIComponent(item.category)}`,
+                    label: item.category,
+                    labelEn: item.categoryEn,
+                  });
+                }
+
+                return Array.from(categories.values());
+              })()
             : [],
         });
       } catch {

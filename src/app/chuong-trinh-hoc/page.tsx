@@ -5,6 +5,7 @@ import MobileHeader from "@/components/Mobile/MobileHeader";
 import SiteFooter from "@/components/Shared/SiteFooter";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { getCurriculumTracks } from "@/lib/content";
+import { filterCurriculumTracksByCategory } from "@/lib/curriculum-filter";
 import { getServerLang, getServerT } from "@/lib/i18n-server";
 import { buildMetadata } from "@/lib/seo";
 import imgLogo from "@/assets/logo.png";
@@ -19,11 +20,17 @@ export const metadata: Metadata = buildMetadata({
 
 export const dynamic = "force-dynamic";
 
-export default async function ChuongTrinhHocPage() {
+export default async function ChuongTrinhHocPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
   const t = await getServerT();
   const lang = await getServerLang();
   const isEn = lang === "en";
   const tracks = await getCurriculumTracks();
+  const { category } = await searchParams;
+  const filteredTracks = filterCurriculumTracksByCategory(tracks, category);
 
   return (
     <main className="min-h-screen bg-[#F7F4F2] pt-[64px] text-[#620000] md:pt-[99px]">
@@ -46,7 +53,7 @@ export default async function ChuongTrinhHocPage() {
           </div>
 
           <div className="mt-9 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {tracks.map((track) => (
+            {filteredTracks.map((track) => (
               <article
                 key={track.slug}
                 className="flex min-h-[520px] flex-col overflow-hidden border border-[#b80000] bg-[#fffefa] shadow-[4px_4px_0_rgba(184,0,0,0.16)]"
