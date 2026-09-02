@@ -115,7 +115,7 @@ export const dictionaries: Record<Lang, TDict> = {
 
     "footer.slogan": "Growing Hearts. Growing Minds. Growing Together!",
     "footer.address": "Số 686 Thuận Phát, Phường A, Quận B, Hà Nội",
-    "footer.phone": "0906 268 468",
+    "footer.phone": "0968 822 291",
 
     "form.parentName": "Họ tên phụ huynh",
     "form.studentName": "Tên bé",
@@ -314,7 +314,7 @@ export const dictionaries: Record<Lang, TDict> = {
 
     "footer.slogan": "Growing Hearts. Growing Minds. Growing Together!",
     "footer.address": "686 Thuan Phat Street, Ward A, District B, Hanoi",
-    "footer.phone": "0906 268 468",
+    "footer.phone": "0968 822 291",
 
     "form.parentName": "Parent name",
     "form.studentName": "Child name",
