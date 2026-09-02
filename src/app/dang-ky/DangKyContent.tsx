@@ -360,16 +360,16 @@ export default function DangKyContent({ testimonial, testimonials = [] }: DangKy
                   <span className="block text-[10px] font-extrabold uppercase tracking-wider text-[#6f3129]/75">
                     Hotline
                   </span>
-                  <a href="tel:19001234" className="text-[14px] font-extrabold text-[#b80000] hover:underline">
-                    1900 1234
+                  <a href="tel:0906268468" className="text-[14px] font-extrabold text-[#b80000] hover:underline">
+                    0906 268 468
                   </a>
                 </div>
                 <div>
                   <span className="block text-[10px] font-extrabold uppercase tracking-wider text-[#6f3129]/75">
                     Email
                   </span>
-                  <a href="mailto:info@princeton.edu.vn" className="text-[14px] font-extrabold text-[#b80000] hover:underline">
-                    info@princeton.edu.vn
+                  <a href="mailto:princetonvietnam@gmail.com" className="text-[14px] font-extrabold text-[#b80000] hover:underline">
+                    princetonvietnam@gmail.com
                   </a>
                 </div>
               </div>
