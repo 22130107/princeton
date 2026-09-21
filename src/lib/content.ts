@@ -103,6 +103,7 @@ export type DbCurriculumTrack = {
   logoAlt: string;
   content: string[];
   contentEn: string[];
+  createdAt?: string | null;
 };
 
 export type DbHeroSlide = {
@@ -301,6 +302,7 @@ type CurriculumRow = RowDataPacket & {
   logo_media_id: number | null;
   logo_url: string | null;
   logo_alt: string | null;
+  created_at: Date | string | null;
 };
 
 type CampusRow = RowDataPacket & {
@@ -469,7 +471,7 @@ export function normalizeHeroSlidePosition(value: unknown) {
   return `${x}% ${y}%`;
 }
 
-function dateToIso(value: Date | string | null) {
+function dateToIso(value?: Date | string | null) {
   if (!value) return null;
   return value instanceof Date ? value.toISOString() : value;
 }
@@ -1087,12 +1089,13 @@ export async function getCurriculumTracks(): Promise<DbCurriculumTrack[]> {
       image_media.alt_text AS image_alt,
       ct.logo_media_id,
       logo_media.url AS logo_url,
-      logo_media.alt_text AS logo_alt
+      logo_media.alt_text AS logo_alt,
+      ct.created_at
     FROM curriculum_tracks ct
     LEFT JOIN media_assets image_media ON image_media.id = ct.image_id
     LEFT JOIN media_assets logo_media ON logo_media.id = ct.logo_media_id
     WHERE ct.is_active = TRUE
-    ORDER BY ct.sort_order ASC, ct.id ASC`,
+    ORDER BY ct.created_at DESC, ct.id DESC`,
   );
 
   if (!rows.length) return [];
@@ -1127,6 +1130,7 @@ export async function getCurriculumTracks(): Promise<DbCurriculumTrack[]> {
     logoAlt: text(row.logo_alt) || "Princeton Academy",
     content: blocks.vi.get(row.id) ?? [],
     contentEn: blocks.en.get(row.id) ?? [],
+    createdAt: dateToIso(row.created_at),
   }));
 }
 
