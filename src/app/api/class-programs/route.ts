@@ -14,8 +14,13 @@ export async function GET() {
       ...program,
       slug: program.slug,
       name: program.name,
+      nameEn: program.nameEn,
       age: program.age,
-      label: `${program.name} (${program.age})`,
+      ageEn: program.ageEn,
+      label: program.age ? `${program.name} (${program.age})` : program.name,
+      labelEn: (program.ageEn || program.age)
+        ? `${program.nameEn || program.name} (${program.ageEn || program.age})`
+        : (program.nameEn || program.name),
     })),
   });
 }

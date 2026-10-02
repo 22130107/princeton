@@ -15,6 +15,7 @@ import imgImage8 from "../../../assets/19f3ec75d04d4778613b623fd67426de89defdb9.
 import imgBackground7 from "../../../assets/15745d29eddade36047a580e4620dc891bb7902d.png";
 import imgBackground8 from "../../../assets/2733e2352734e4c64d23bbca5e0cf9b52124bf84.png";
 import imgBackground5 from "../../../assets/f27370ae642f585465776911bba325c723a71553.png";
+import { localizeClassProgramName, localizeClassProgramAge } from "@/lib/class-program-i18n";
 
 type HomeClassProgram = {
   id: number;
@@ -32,22 +33,7 @@ type HomeClassProgram = {
   displayAge?: string;
 };
 
-function getClassProgramLabels(slug: string) {
-  switch (slug) {
-    case "penguin":
-      return { nameEn: "Penguin", ageEn: "2 - 3 years old" };
-    case "wombat":
-      return { nameEn: "Wombat", ageEn: "3 - 4 years old" };
-    case "koala":
-      return { nameEn: "Koala", ageEn: "4 - 5 years old" };
-    case "kangaroo":
-      return { nameEn: "Kangaroo", ageEn: "5 - 6 years old" };
-    case "preschool":
-      return { nameEn: "Preschool", ageEn: "5 - 6 years old" };
-    default:
-      return { nameEn: "", ageEn: "" };
-  }
-}
+
 
 const classCardStyles = [
   { background: imgBackground4.src, border: "#92d0db", imageWidth: "w-[122.76px]", imageWidthPx: 122.76 },
@@ -355,9 +341,9 @@ function ClassProgramCard({ program, index }: { program: HomeClassProgram; index
   const style = classCardStyles[index % classCardStyles.length];
   const { lang } = useLanguage();
   const isEn = lang === "en";
-  const labels = getClassProgramLabels(program.slug);
-  const name = isEn ? labels.nameEn || program.nameEn || program.name : program.name;
-  const age = isEn ? labels.ageEn || program.ageEn || program.age : program.age;
+  const name = localizeClassProgramName(program, lang);
+
+  const age = localizeClassProgramAge(program, lang);
 
   return (
     <Link
@@ -494,11 +480,11 @@ setPrograms(
       </div>
       <Container200
         programs={programs.map((program) => {
-          const labels = getClassProgramLabels(program.slug);
+
           return {
             ...program,
-            displayName: isEn ? labels.nameEn || program.nameEn || program.name : program.name,
-            displayAge: isEn ? labels.ageEn || program.ageEn || program.age : program.age,
+            displayName: localizeClassProgramName(program, lang),
+            displayAge: localizeClassProgramAge(program, lang),
           };
         })}
       />

@@ -2,12 +2,16 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
+import { getProgramOptionLabel } from "@/lib/class-program-i18n";
 
 type ProgramOption = {
   slug: string;
-  name: string;
-  age: string;
+  name?: string;
+  nameEn?: string;
+  age?: string;
+  ageEn?: string;
   label: string;
+  labelEn?: string;
 };
 
 type CampusOption = {
@@ -43,7 +47,7 @@ export default function EnrollmentLeadForm({
   consentText,
   audience = "parent",
 }: EnrollmentLeadFormProps) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const effectiveSubmitLabel = submitLabel ?? t("register.cta");
   const effectiveConsentText = consentText ?? t("form.consentLong");
   const isPartner = audience === "partner";
@@ -295,7 +299,7 @@ export default function EnrollmentLeadForm({
           >
             {visiblePrograms.map((program) => (
               <option key={program.slug} value={program.slug}>
-                {program.label}
+                {getProgramOptionLabel(program, lang)}
               </option>
             ))}
           </select>

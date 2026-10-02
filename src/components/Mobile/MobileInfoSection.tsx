@@ -10,6 +10,7 @@ import imgKoalaCard from "../../assets/76ae85eb95c1037d24fc4b213196313a7543a830.
 import imgKangarooCard from "../../assets/15745d29eddade36047a580e4620dc891bb7902d.png";
 import imgPreschoolCard from "../../assets/2733e2352734e4c64d23bbca5e0cf9b52124bf84.png";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
+import { localizeClassProgramName, localizeClassProgramAge } from "@/lib/class-program-i18n";
 
 type MobileClassProgram = {
   id: number;
@@ -122,13 +123,13 @@ export default function MobileInfoSection() {
                       ) : null}
                     </div>
                     <h3 className="mb-2 text-[20px] font-extrabold leading-none text-[#620000]">
-                      {isEn ? classItem.nameEn : classItem.name}
+                      {localizeClassProgramName(classItem, lang)}
                     </h3>
                     <span
                       className="inline-flex min-h-9 items-center justify-center rounded-full border bg-white px-3 text-[16px] font-semibold leading-none text-[#620000]"
                       style={{ borderColor: style.color }}
                     >
-                      {isEn ? classItem.ageEn : classItem.age}
+                      {localizeClassProgramAge(classItem, lang)}
                     </span>
                   </Link>
                 );

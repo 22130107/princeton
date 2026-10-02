@@ -15,6 +15,7 @@ import {
 import HeaderSection from "@/components/Home/sections/HeaderSection";
 import EnrollmentLeadForm from "@/components/Shared/EnrollmentLeadForm";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
+import { localizeClassProgramName, localizeClassProgramAge } from "@/lib/class-program-i18n";
 import { classPrograms } from "@/data/classPrograms";
 import { teachingMethods } from "@/data/teachingMethods";
 import { campuses, campusMapLink } from "@/lib/campuses";
@@ -38,6 +39,10 @@ type TeachingMethodItem = {
 type ClassProgramItem = {
   slug: string;
   name: string;
+  nameEn?: string;
+  ageEn?: string;
+  labelEn?: string;
+  excerptEn?: string;
   age?: string;
   label?: string;
   excerpt?: string;
@@ -128,6 +133,10 @@ function useHomepageData() {
           .map((item: any, index: number) => ({
             slug: item.slug,
             name: item.name,
+            nameEn: item.nameEn,
+            ageEn: item.ageEn,
+            labelEn: item.labelEn,
+            excerptEn: item.excerptEn,
             age: item.age,
             label: item.label,
             excerpt: item.excerpt,
@@ -352,7 +361,7 @@ function AboutSection() {
 }
 
 function ProgramSection({ programs }: { programs: ClassProgramItem[] }) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   return (
     <section className="bg-[#fffefa] py-24">
@@ -367,7 +376,12 @@ function ProgramSection({ programs }: { programs: ClassProgramItem[] }) {
         </div>
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {programs.map((program, index) => (
+          {programs.map((program, index) => {
+            const displayName = localizeClassProgramName(program, lang);
+            const displayAge = localizeClassProgramAge(program, lang);
+            const displayExcerpt = (lang === "en" ? program.excerptEn : program.excerpt) || program.excerpt || program.label;
+
+            return (
             <Link
               href={`/chuong-trinh-hoc/${program.slug}`}
               key={program.slug}
@@ -377,7 +391,7 @@ function ProgramSection({ programs }: { programs: ClassProgramItem[] }) {
                 {program.imageUrl ? (
                   <img
                     src={program.imageUrl}
-                    alt={program.name}
+                    alt={displayName}
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
                   />
                 ) : null}
@@ -387,11 +401,11 @@ function ProgramSection({ programs }: { programs: ClassProgramItem[] }) {
               </div>
               <div className="flex flex-1 flex-col p-6">
                 <p className="text-[14px] font-extrabold uppercase tracking-[0.08em] text-[#b80000]">
-                  {program.age}
+                  {displayAge}
                 </p>
-                <h3 className="mt-2 text-[30px] font-extrabold leading-none">{program.name}</h3>
+                <h3 className="mt-2 text-[30px] font-extrabold leading-none">{displayName}</h3>
                 <p className="mt-4 line-clamp-4 text-[16px] font-medium leading-7 text-[#6f3129]">
-                  {program.excerpt || program.label}
+                  {displayExcerpt}
                 </p>
                 <span className="mt-auto inline-flex items-center gap-2 pt-6 text-[15px] font-extrabold text-[#b80000]">
                   {t("curriculum.viewDetail")}
@@ -399,7 +413,8 @@ function ProgramSection({ programs }: { programs: ClassProgramItem[] }) {
                 </span>
               </div>
             </Link>
-          ))}
+              );
+            })}
         </div>
       </div>
     </section>

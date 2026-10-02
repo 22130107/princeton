@@ -19,6 +19,7 @@ import {
 import EnrollmentLeadForm from "@/components/Shared/EnrollmentLeadForm";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
+import { localizeClassProgramName, localizeClassProgramAge } from "@/lib/class-program-i18n";
 import { classPrograms } from "@/data/classPrograms";
 import { campuses, campusMapLink, campusMapUrl } from "@/lib/campuses";
 import heroImage from "@/assets/7152d23b5ad0228ac40827979cdce9d4dfc3a8fb.png";
@@ -32,6 +33,10 @@ import logoImage from "@/assets/logo.png";
 type ClassProgramItem = {
   slug: string;
   name: string;
+  nameEn?: string;
+  ageEn?: string;
+  labelEn?: string;
+  excerptEn?: string;
   age?: string;
   label?: string;
   excerpt?: string;
@@ -234,6 +239,10 @@ function useHomepageData() {
           .map((item: any, index: number) => ({
             slug: item.slug,
             name: item.name,
+            nameEn: item.nameEn,
+            ageEn: item.ageEn,
+            labelEn: item.labelEn,
+            excerptEn: item.excerptEn,
             age: item.age,
             label: item.label,
             excerpt: item.excerpt,
@@ -576,7 +585,12 @@ function Programs({ programs }: { programs: ClassProgramItem[] }) {
       <div className={shell}>
         <SectionTitle title={copy[lang].programTitle} />
         <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
-          {programs.map((program) => (
+          {programs.map((program) => {
+            const displayName = localizeClassProgramName(program, lang);
+            const displayAge = localizeClassProgramAge(program, lang) || (lang === "en" ? program.labelEn : program.label) || program.label;
+            const imageAlt = lang === "en" ? (program.imageAlt && program.imageAlt !== program.name ? program.imageAlt : displayName) : (program.imageAlt || program.name);
+
+            return (
             <Link
               href={`/chuong-trinh-hoc/${program.slug}`}
               key={program.slug}
@@ -587,7 +601,7 @@ function Programs({ programs }: { programs: ClassProgramItem[] }) {
                   {program.imageUrl ? (
                     <CoverImage
                       src={program.imageUrl}
-                      alt={program.imageAlt || program.name}
+                      alt={imageAlt}
                       position={program.coverPosition || "50% 50%"}
                       zoom={program.coverZoom || 1}
                       frameAspect={PROGRAM_CARD_IMAGE_ASPECT}
@@ -596,8 +610,8 @@ function Programs({ programs }: { programs: ClassProgramItem[] }) {
                 </div>
               </div>
               <div className="flex min-h-[120px] md:min-h-[140px] flex-1 flex-col p-4 md:p-6 transition-colors duration-300 group-hover:bg-[#fffefa]">
-                <h3 className="text-[15px] md:text-[20px] font-extrabold leading-tight text-[#991B1B]">{program.name}</h3>
-                <p className="mt-1 md:mt-1.5 text-[12px] md:text-[14px] font-bold text-[#5f4540]">{program.age || program.label}</p>
+                <h3 className="text-[15px] md:text-[20px] font-extrabold leading-tight text-[#991B1B]">{displayName}</h3>
+                <p className="mt-1 md:mt-1.5 text-[12px] md:text-[14px] font-bold text-[#5f4540]">{displayAge}</p>
                 
                 {/* Premium expanding CTA button */}
                 <div className="mt-auto flex items-center justify-end pt-5">
@@ -612,7 +626,8 @@ function Programs({ programs }: { programs: ClassProgramItem[] }) {
                 </div>
               </div>
             </Link>
-          ))}
+              );
+            })}
         </div>
       </div>
     </section>

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { CoverImage } from "@/components/Shared/CoverImage";
 import { useCountdownValues } from "@/components/Shared/useCountdownValues";
 import { useLanguage } from "@/components/Shared/LanguageProvider";
+import { getProgramOptionLabel } from "@/lib/class-program-i18n";
 import { useRegistrationSectionSettings } from "@/components/Shared/useRegistrationSectionSettings";
 import { PROMO_FRAME_ASPECT } from "@/lib/registration-section-config";
 import type { RegistrationSectionSettings } from "@/lib/registration-section-config";
@@ -12,7 +13,12 @@ import imgTask73WassGiam50PhiGhiDanhDesktopTvCopy1Jpg from "../../../assets/c59b
 
 type ProgramOption = {
   slug: string;
+  name?: string;
+  nameEn?: string;
+  age?: string;
+  ageEn?: string;
   label: string;
+  labelEn?: string;
 };
 
 type CampusOption = {
@@ -934,9 +940,10 @@ function ComboboxMenu({
   ariaLabel: string;
   placeholder?: string;
 }) {
+  const { lang } = useLanguage();
   const selectValue = value ?? "";
-  const selectedLabel =
-    options.find((option) => option.slug === selectValue)?.label ?? placeholder ?? options[0]?.label ?? "";
+  const selectedOption = options.find((option) => option.slug === selectValue) ?? options[0];
+  const selectedLabel = (selectedOption ? getProgramOptionLabel(selectedOption, lang) : placeholder) ?? "";
 
   return (
     <div className="content-stretch flex flex-col h-[50px] items-start justify-center relative rounded-bl-[4px] rounded-br-[4px] shrink-0 w-full" data-name="Combobox menu">
@@ -952,7 +959,7 @@ function ComboboxMenu({
         {placeholder ? <option value="">{placeholder}</option> : null}
         {options.map((option) => (
           <option key={option.slug} value={option.slug}>
-            {option.label}
+            {getProgramOptionLabel(option, lang)}
           </option>
         ))}
       </select>
@@ -1513,7 +1520,12 @@ export default function RegistrationSection() {
         const nextPrograms = data.programs
           .map((program: any) => ({
             slug: String(program.slug || ""),
+            name: program.name,
+            nameEn: program.nameEn,
+            age: program.age,
+            ageEn: program.ageEn,
             label: String(program.label || `${program.name || ""} ${program.age ? `(${program.age})` : ""}`),
+            labelEn: String(program.labelEn || `${program.nameEn || program.name || ""} ${program.ageEn || program.age ? `(${program.ageEn || program.age})` : ""}`),
           }))
           .filter((program: ProgramOption) => program.slug && program.label.trim());
 
