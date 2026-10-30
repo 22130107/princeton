@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
@@ -171,73 +171,7 @@ const copy = {
 
 const fallbackPrograms: ClassProgramItem[] = [];
 
-const fallbackNewsPosts: HomePostItem[] = [
-  {
-    id: 1,
-    slug: "chuong-trinh-nang-cao",
-    title: "Chương Trình Nâng Cao",
-    titleEn: "Advanced Bilingual Immersion Track",
-    excerpt: "Chương trình nâng cao mở rộng thời lượng ngôn ngữ, dự án trải nghiệm và các hoạt động phát triển năng lực cá nhân cho trẻ sẵn sàng hơn ở giai đoạn tiếp theo.",
-    excerptEn: "Advanced curriculum expanding language immersion, experiential projects, and individual competencies.",
-    category: "Nâng cao",
-    categoryEn: "Advanced",
-    categorySlug: "nang-cao",
-    imageUrl: pathImageOne.src,
-    publishedAt: "2026-10-24T08:00:00.000Z",
-  },
-  {
-    id: 2,
-    slug: "chuong-tinh",
-    title: "Hoạt động trải nghiệm thực hành",
-    titleEn: "Hands-on Discovery & Experiential Activities",
-    excerpt: "Mỗi ngày là một hành trình thú vị với các hoạt động học qua chơi, trải nghiệm giác quan và rèn luyện kỹ năng tự lập.",
-    excerptEn: "Every day is an engaging journey with purposeful play, sensory experiences, and self-care skills.",
-    category: "Trải nghiệm",
-    categoryEn: "Experiential",
-    categorySlug: "trai-nghiem",
-    imageUrl: pathImageTwo.src,
-    publishedAt: "2026-10-20T09:30:00.000Z",
-  },
-  {
-    id: 3,
-    slug: "chuong-trinh-tieu-chuan",
-    title: "Chương Trình Tiêu Chuẩn",
-    titleEn: "Standard US-aligned Early Childhood Track",
-    excerpt: "Được xây dựng trên nền tảng Chương trình Giáo dục Mầm non kết hợp khung giáo dục quốc tế, khuyến khích trẻ tự do khám phá và chủ động học hỏi.",
-    excerptEn: "Built on international early education standards encouraging children to freely explore and take active learning roles.",
-    category: "Tiêu chuẩn",
-    categoryEn: "Standard",
-    categorySlug: "tieu-chuan",
-    imageUrl: heroImage.src,
-    publishedAt: "2026-10-15T14:00:00.000Z",
-  },
-  {
-    id: 4,
-    slug: "ngay-hoi-trai-nghiem-tai-princeton",
-    title: "Ngày hội sáng tạo và khám phá",
-    titleEn: "Creative Discovery & Workshop Day",
-    excerpt: "Các workshop mở ra không gian để trẻ tự chọn màu sắc, vật liệu và tự tin thể hiện những ý tưởng độc đáo của riêng mình.",
-    excerptEn: "Interactive workshops opening space for children to freely choose colors, materials, and express unique ideas.",
-    category: "Sự kiện",
-    categoryEn: "Events",
-    categorySlug: "su-kien",
-    imageUrl: pathImageThree.src,
-    publishedAt: "2026-10-10T10:00:00.000Z",
-  },
-  {
-    id: 5,
-    slug: "khong-gian-hoc-tap-chuan-quoc-te",
-    title: "Không gian học tập chuẩn quốc tế",
-    titleEn: "International standard safe learning environment",
-    excerpt: "Lớp học, phòng chức năng và khuôn viên xanh được bố trí chuẩn mực, mang đến cảm giác thân thiện, an toàn tuyệt đối cho trẻ.",
-    excerptEn: "Classrooms, activity studios, and outdoor spaces arranged thoughtfully to provide a safe, nurturing environment.",
-    category: "Cơ sở",
-    categoryEn: "Campus",
-    categorySlug: "co-so",
-    imageUrl: pathImageFour.src,
-    publishedAt: "2026-10-05T08:30:00.000Z",
-  },
-];
+const fallbackNewsPosts: HomePostItem[] = [];
 
 
 const whyItems = [
@@ -373,37 +307,30 @@ function useHomepageData() {
       })
       .catch(() => undefined);
 
-    fetch("/api/curriculum-tracks")
+    fetch("/api/posts")
       .then((response) => response.json())
       .then((data) => {
-        if (!alive || !Array.isArray(data.tracks)) return;
-        const mappedTracks = data.tracks
+        if (!alive || !Array.isArray(data.posts)) return;
+        const mappedPosts = data.posts
           .filter((item: any) => item.slug && item.title)
-          .map((item: any, index: number) => {
-            const fb = fallbackNewsPosts[index % fallbackNewsPosts.length];
-            return {
-              id: item.id ?? index + 1,
-              slug: item.slug,
-              title: item.title,
-              titleEn: item.titleEn,
-              excerpt: item.description?.trim() || fb?.excerpt,
-              excerptEn: item.descriptionEn?.trim() || fb?.excerptEn,
-              category: item.category || fb?.category || "Cuộc sống tại Princeton",
-              categoryEn: item.categoryEn || fb?.categoryEn || "Life at Princeton",
-              categorySlug: item.category ? slugify(item.category) : (fb?.categorySlug || "cuoc-song-tai-princeton"),
-              imageUrl: item.imageUrl || fb?.imageUrl,
-              imageAlt: item.imageAlt || item.title,
-              coverPosition: item.coverPosition || "50% 50%",
-              coverZoom: Number(item.coverZoom) || 1,
-              publishedAt: item.createdAt || fb?.publishedAt,
-            };
-          });
+          .map((item: any) => ({
+            id: item.id,
+            slug: item.slug,
+            title: item.title,
+            titleEn: item.titleEn || "",
+            excerpt: item.excerpt?.trim() || "",
+            excerptEn: item.excerptEn?.trim() || "",
+            category: item.category || "",
+            categoryEn: item.categoryEn || "",
+            categorySlug: item.categorySlug || (item.category ? slugify(item.category) : ""),
+            imageUrl: item.imageUrl || "",
+            imageAlt: item.imageAlt || item.title,
+            coverPosition: item.coverPosition || "50% 50%",
+            coverZoom: Number(item.coverZoom) || 1,
+            publishedAt: item.publishedAt || "",
+          }));
 
-        if (mappedTracks.length > 0) {
-          const trackSlugs = new Set(mappedTracks.map((t: any) => t.slug));
-          const fillers = fallbackNewsPosts.filter((p) => !trackSlugs.has(p.slug));
-          setNewsPosts([...mappedTracks, ...fillers]);
-        }
+        setNewsPosts(mappedPosts);
       })
       .catch(() => undefined);
 
@@ -411,7 +338,7 @@ function useHomepageData() {
       .then((response) => response.json())
       .then((data) => {
         if (!alive) return;
-        const cats = data?.categories?.curriculumTracks;
+        const cats = data?.categories?.posts;
         if (Array.isArray(cats) && cats.length) {
           setPostCategories(cats);
         }
