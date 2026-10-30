@@ -307,30 +307,30 @@ function useHomepageData() {
       })
       .catch(() => undefined);
 
-    fetch("/api/posts")
+    fetch("/api/curriculum-tracks")
       .then((response) => response.json())
       .then((data) => {
-        if (!alive || !Array.isArray(data.posts)) return;
-        const mappedPosts = data.posts
+        if (!alive || !Array.isArray(data.tracks)) return;
+        const mappedTracks: HomePostItem[] = data.tracks
           .filter((item: any) => item.slug && item.title)
           .map((item: any) => ({
             id: item.id,
             slug: item.slug,
             title: item.title,
             titleEn: item.titleEn || "",
-            excerpt: item.excerpt?.trim() || "",
-            excerptEn: item.excerptEn?.trim() || "",
+            excerpt: item.description?.trim() || "",
+            excerptEn: item.descriptionEn?.trim() || "",
             category: item.category || "",
             categoryEn: item.categoryEn || "",
-            categorySlug: item.categorySlug || (item.category ? slugify(item.category) : ""),
+            categorySlug: item.category ? slugify(item.category) : "",
             imageUrl: item.imageUrl || "",
             imageAlt: item.imageAlt || item.title,
             coverPosition: item.coverPosition || "50% 50%",
             coverZoom: Number(item.coverZoom) || 1,
-            publishedAt: item.publishedAt || "",
+            publishedAt: item.createdAt || "",
           }));
 
-        setNewsPosts(mappedPosts);
+        setNewsPosts(mappedTracks);
       })
       .catch(() => undefined);
 
@@ -338,7 +338,7 @@ function useHomepageData() {
       .then((response) => response.json())
       .then((data) => {
         if (!alive) return;
-        const cats = data?.categories?.posts;
+        const cats = data?.categories?.curriculumTracks;
         if (Array.isArray(cats) && cats.length) {
           setPostCategories(cats);
         }
@@ -767,12 +767,13 @@ function LatestNews({
       }
     };
 
-    categories.forEach((cat) => {
-      if (cat.name) register(cat.slug, cat.name, cat.nameEn);
-    });
-
     posts.forEach((p) => {
-      if (p.category) register(p.categorySlug, p.category, p.categoryEn);
+      if (p.category) {
+        const matchedCat = categories.find(
+          (c) => (c.slug && c.slug === p.categorySlug) || c.name.toLowerCase() === p.category!.toLowerCase()
+        );
+        register(p.categorySlug || matchedCat?.slug, p.category, matchedCat?.nameEn || p.categoryEn);
+      }
     });
 
     return Array.from(nameMap.values());
