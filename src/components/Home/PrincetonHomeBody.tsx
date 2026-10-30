@@ -826,7 +826,7 @@ function LatestNews({
     // Deduplicate categories strictly by normalized category name
     const nameMap = new Map<string, { slug: string; name: string; nameEn?: string }>();
 
-    const register = (slug: string, name: string, nameEn?: string) => {
+    const register = (slug: string | undefined, name: string, nameEn?: string) => {
       const trimmedName = name.trim();
       if (!trimmedName) return;
       const key = trimmedName.toLowerCase();
