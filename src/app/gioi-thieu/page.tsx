@@ -271,7 +271,7 @@ export default async function GioiThieuPage() {
               <div className="flex w-full items-center p-5 md:p-8 lg:w-[55%] lg:p-10">
                 <div className="relative aspect-video w-full overflow-hidden bg-[#e2dbd9]">
                   <iframe
-                    src="https://www.youtube.com/embed/T5pfrxobVtE?vq=hd720&rel=0"
+                    src="https://www.youtube.com/embed/yi_jAg-dMN4?vq=hd720&rel=0"
                     title={t("about.videoTitle")}
                     className="absolute inset-0 h-full w-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
