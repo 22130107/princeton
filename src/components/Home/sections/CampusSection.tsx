@@ -802,7 +802,7 @@ function Container140({
         const isEn = lang === "en";
         return (
           <button
-            key={c.name}
+            key={c.slug || c.name}
             type="button"
             onClick={() => onSelect(index)}
             className={`relative w-full shrink-0 rounded-[24px] p-3 text-left transition-colors ${
@@ -922,7 +922,7 @@ function Background8({
 export default function CampusSection() {
   const { lang } = useLanguage();
   const [selected, setSelected] = useState(0);
-  const campus = campuses[selected];
+  const campus = campuses[selected] ?? campuses[0];
   const isEn = lang === "en";
 
   return (

@@ -34,7 +34,7 @@ function MobileMapPreview({ campus, lang }: { campus: Campus; lang: "vi" | "en" 
 export default function MobileCampusSection() {
   const { t, lang } = useLanguage();
   const [selected, setSelected] = useState(0);
-  const campus = campuses[selected];
+  const campus = campuses[selected] ?? campuses[0];
   const isEn = lang === "en";
 
   return (

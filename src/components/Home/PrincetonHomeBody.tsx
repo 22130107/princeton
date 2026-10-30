@@ -7,6 +7,7 @@ import {
   Baby,
   Brain,
   Building2,
+  Calendar,
   GraduationCap,
   Heart,
   MapPin,
@@ -87,6 +88,30 @@ type Testimonial = {
   quoteEn?: string;
 };
 
+type HomePostItem = {
+  id: number;
+  slug: string;
+  title: string;
+  titleEn?: string;
+  excerpt?: string;
+  excerptEn?: string;
+  category?: string;
+  categoryEn?: string;
+  categorySlug?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  coverPosition?: string;
+  coverZoom?: number;
+  publishedAt?: string;
+};
+
+type PostCategoryItem = {
+  id: number;
+  slug: string;
+  name: string;
+  nameEn?: string;
+};
+
 const shell = "mx-auto w-full max-w-[1480px] px-5 sm:px-8 lg:px-12 2xl:px-16";
 const HERO_BANNER_FRAME_ASPECT = 2035 / 773;
 const HERO_MOBILE_BANNER_FRAME_ASPECT = 390 / 260;
@@ -112,6 +137,11 @@ const copy = {
     detail: "Xem chi tiết",
     map: "Xem bản đồ",
     parent: "Phụ huynh",
+    newsTitle: "Cuộc sống tại Princeton",
+    newsSubtitle: "Cập nhật các hoạt động học tập, sự kiện nổi bật và những khoảnh khắc đáng nhớ tại Trường Mầm non Princeton",
+    newsAll: "Tất cả",
+    newsViewAll: "Xem tất cả",
+    newsReadMore: "Xem chi tiết",
   },
   en: {
     heroSmall: "Nurturing",
@@ -131,10 +161,84 @@ const copy = {
     detail: "View details",
     map: "View map",
     parent: "Parent",
+    newsTitle: "Life at Princeton",
+    newsSubtitle: "Updates on learning activities, featured events and memorable moments at Princeton Kindergarten",
+    newsAll: "All",
+    newsViewAll: "View all",
+    newsReadMore: "View details",
   },
 };
 
 const fallbackPrograms: ClassProgramItem[] = [];
+
+const fallbackNewsPosts: HomePostItem[] = [
+  {
+    id: 1,
+    slug: "chuong-trinh-nang-cao",
+    title: "Chương Trình Nâng Cao",
+    titleEn: "Advanced Bilingual Immersion Track",
+    excerpt: "Chương trình nâng cao mở rộng thời lượng ngôn ngữ, dự án trải nghiệm và các hoạt động phát triển năng lực cá nhân cho trẻ sẵn sàng hơn ở giai đoạn tiếp theo.",
+    excerptEn: "Advanced curriculum expanding language immersion, experiential projects, and individual competencies.",
+    category: "Nâng cao",
+    categoryEn: "Advanced",
+    categorySlug: "nang-cao",
+    imageUrl: pathImageOne.src,
+    publishedAt: "2026-10-24T08:00:00.000Z",
+  },
+  {
+    id: 2,
+    slug: "chuong-tinh",
+    title: "Hoạt động trải nghiệm thực hành",
+    titleEn: "Hands-on Discovery & Experiential Activities",
+    excerpt: "Mỗi ngày là một hành trình thú vị với các hoạt động học qua chơi, trải nghiệm giác quan và rèn luyện kỹ năng tự lập.",
+    excerptEn: "Every day is an engaging journey with purposeful play, sensory experiences, and self-care skills.",
+    category: "Trải nghiệm",
+    categoryEn: "Experiential",
+    categorySlug: "trai-nghiem",
+    imageUrl: pathImageTwo.src,
+    publishedAt: "2026-10-20T09:30:00.000Z",
+  },
+  {
+    id: 3,
+    slug: "chuong-trinh-tieu-chuan",
+    title: "Chương Trình Tiêu Chuẩn",
+    titleEn: "Standard US-aligned Early Childhood Track",
+    excerpt: "Được xây dựng trên nền tảng Chương trình Giáo dục Mầm non kết hợp khung giáo dục quốc tế, khuyến khích trẻ tự do khám phá và chủ động học hỏi.",
+    excerptEn: "Built on international early education standards encouraging children to freely explore and take active learning roles.",
+    category: "Tiêu chuẩn",
+    categoryEn: "Standard",
+    categorySlug: "tieu-chuan",
+    imageUrl: heroImage.src,
+    publishedAt: "2026-10-15T14:00:00.000Z",
+  },
+  {
+    id: 4,
+    slug: "ngay-hoi-trai-nghiem-tai-princeton",
+    title: "Ngày hội sáng tạo và khám phá",
+    titleEn: "Creative Discovery & Workshop Day",
+    excerpt: "Các workshop mở ra không gian để trẻ tự chọn màu sắc, vật liệu và tự tin thể hiện những ý tưởng độc đáo của riêng mình.",
+    excerptEn: "Interactive workshops opening space for children to freely choose colors, materials, and express unique ideas.",
+    category: "Sự kiện",
+    categoryEn: "Events",
+    categorySlug: "su-kien",
+    imageUrl: pathImageThree.src,
+    publishedAt: "2026-10-10T10:00:00.000Z",
+  },
+  {
+    id: 5,
+    slug: "khong-gian-hoc-tap-chuan-quoc-te",
+    title: "Không gian học tập chuẩn quốc tế",
+    titleEn: "International standard safe learning environment",
+    excerpt: "Lớp học, phòng chức năng và khuôn viên xanh được bố trí chuẩn mực, mang đến cảm giác thân thiện, an toàn tuyệt đối cho trẻ.",
+    excerptEn: "Classrooms, activity studios, and outdoor spaces arranged thoughtfully to provide a safe, nurturing environment.",
+    category: "Cơ sở",
+    categoryEn: "Campus",
+    categorySlug: "co-so",
+    imageUrl: pathImageFour.src,
+    publishedAt: "2026-10-05T08:30:00.000Z",
+  },
+];
+
 
 const whyItems = [
   {
@@ -189,6 +293,8 @@ function useHomepageData() {
   const [wayItems, setWayItems] = useState<PrincetonWayItem[]>(fallbackWayItems);
   const [programs, setPrograms] = useState<ClassProgramItem[]>(fallbackPrograms);
   const [testimonials, setTestimonials] = useState<Testimonial[]>(fallbackTestimonials);
+  const [newsPosts, setNewsPosts] = useState<HomePostItem[]>(fallbackNewsPosts);
+  const [postCategories, setPostCategories] = useState<PostCategoryItem[]>([]);
 
   useEffect(() => {
     let alive = true;
@@ -267,12 +373,61 @@ function useHomepageData() {
       })
       .catch(() => undefined);
 
+    fetch("/api/curriculum-tracks")
+      .then((response) => response.json())
+      .then((data) => {
+        if (!alive || !Array.isArray(data.tracks)) return;
+        const mappedTracks = data.tracks
+          .filter((item: any) => item.slug && item.title)
+          .map((item: any, index: number) => {
+            const fb = fallbackNewsPosts[index % fallbackNewsPosts.length];
+            return {
+              id: item.id ?? index + 1,
+              slug: item.slug,
+              title: item.title,
+              titleEn: item.titleEn,
+              excerpt: item.description?.trim() || fb?.excerpt,
+              excerptEn: item.descriptionEn?.trim() || fb?.excerptEn,
+              category: item.category || fb?.category || "Cuộc sống tại Princeton",
+              categoryEn: item.categoryEn || fb?.categoryEn || "Life at Princeton",
+              categorySlug: item.category
+                ? item.category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+                : (fb?.categorySlug || "cuoc-song-tai-princeton"),
+              imageUrl: item.imageUrl || fb?.imageUrl,
+              imageAlt: item.imageAlt || item.title,
+              coverPosition: item.coverPosition || "50% 50%",
+              coverZoom: Number(item.coverZoom) || 1,
+              publishedAt: item.createdAt || fb?.publishedAt,
+            };
+          });
+
+        if (mappedTracks.length >= 5) {
+          setNewsPosts(mappedTracks.slice(0, 5));
+        } else if (mappedTracks.length > 0) {
+          const trackSlugs = new Set(mappedTracks.map((t: any) => t.slug));
+          const fillers = fallbackNewsPosts.filter((p) => !trackSlugs.has(p.slug));
+          setNewsPosts([...mappedTracks, ...fillers].slice(0, 5));
+        }
+      })
+      .catch(() => undefined);
+
+    fetch("/api/categories")
+      .then((response) => response.json())
+      .then((data) => {
+        if (!alive) return;
+        const cats = data?.categories?.curriculumTracks;
+        if (Array.isArray(cats) && cats.length) {
+          setPostCategories(cats);
+        }
+      })
+      .catch(() => undefined);
+
     return () => {
       alive = false;
     };
   }, []);
 
-  return { heroSlides, wayItems, programs, testimonials };
+  return { heroSlides, wayItems, programs, testimonials, newsPosts, postCategories };
 }
 
 function SectionTitle({ title }: { title: string }) {
@@ -634,6 +789,250 @@ function Programs({ programs }: { programs: ClassProgramItem[] }) {
   );
 }
 
+function formatPostDate(dateStr?: string, lang: "vi" | "en" = "vi") {
+  if (!dateStr) return "";
+  try {
+    const d = new Date(dateStr);
+    if (Number.isNaN(d.getTime())) return "";
+    return d.toLocaleDateString(lang === "en" ? "en-US" : "vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  } catch {
+    return "";
+  }
+}
+
+function LatestNews({
+  posts,
+  categories,
+}: {
+  posts: HomePostItem[];
+  categories: PostCategoryItem[];
+}) {
+  const { lang, t } = useLanguage();
+  const c = copy[lang];
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+
+  const availableCategories = useMemo(() => {
+    const map = new Map<string, { slug: string; name: string; nameEn?: string }>();
+    categories.forEach((cat) => {
+      if (cat.slug && cat.name) {
+        map.set(cat.slug, { slug: cat.slug, name: cat.name, nameEn: cat.nameEn || cat.name });
+      }
+    });
+    posts.forEach((p) => {
+      if (p.categorySlug && p.category && !map.has(p.categorySlug)) {
+        map.set(p.categorySlug, {
+          slug: p.categorySlug,
+          name: p.category,
+          nameEn: p.categoryEn || p.category,
+        });
+      }
+    });
+    return Array.from(map.values());
+  }, [categories, posts]);
+
+  const displayPosts = useMemo(() => {
+    if (activeCategory === "all") {
+      return posts.slice(0, 5);
+    }
+    const filtered = posts.filter((p) => p.categorySlug === activeCategory);
+    return filtered.length > 0 ? filtered.slice(0, 5) : posts.slice(0, 5);
+  }, [activeCategory, posts]);
+
+  const featured = displayPosts[0];
+  const sidePosts = displayPosts.slice(1, 5);
+
+  return (
+    <section className="bg-[#f7f4f2] py-16 md:py-24 border-t border-[#ead9c9]/60">
+      <div className={shell}>
+        <div className="mx-auto mb-8 text-center">
+          <SectionTitle title={c.newsTitle} />
+          <p className="mx-auto -mt-5 max-w-[680px] text-[15px] md:text-[17px] font-medium leading-relaxed text-[#5f4540]">
+            {c.newsSubtitle}
+          </p>
+        </div>
+
+        {availableCategories.length > 0 && (
+          <div className="mb-10 flex items-center justify-center">
+            <div className="flex max-w-full items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+              <button
+                type="button"
+                onClick={() => setActiveCategory("all")}
+                className={`shrink-0 rounded-full px-5 py-2 text-[14px] font-extrabold transition-all duration-200 ${
+                  activeCategory === "all"
+                    ? "bg-[#991B1B] text-white shadow-[0_4px_12px_rgba(153,27,27,0.25)] ring-2 ring-[#991B1B]"
+                    : "border border-[#ead9c9] bg-white text-[#6f3129] hover:border-[#b80000] hover:text-[#991B1B]"
+                }`}
+              >
+                {c.newsAll}
+              </button>
+              {availableCategories.map((cat) => {
+                const label = lang === "en" ? cat.nameEn || cat.name : cat.name;
+                const isActive = activeCategory === cat.slug;
+                return (
+                  <button
+                    key={cat.slug}
+                    type="button"
+                    onClick={() => setActiveCategory(cat.slug)}
+                    className={`shrink-0 rounded-full px-5 py-2 text-[14px] font-extrabold transition-all duration-200 ${
+                      isActive
+                        ? "bg-[#991B1B] text-white shadow-[0_4px_12px_rgba(153,27,27,0.25)] ring-2 ring-[#991B1B]"
+                        : "border border-[#ead9c9] bg-white text-[#6f3129] hover:border-[#b80000] hover:text-[#991B1B]"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {displayPosts.length > 0 && featured ? (
+          <div className="grid gap-6 lg:grid-cols-12 lg:gap-8 items-stretch">
+            <div className={sidePosts.length > 0 ? "lg:col-span-5 flex" : "lg:col-span-8 lg:col-start-3 flex"}>
+              <Link
+                href={`/cuoc-song-tai-princeton/${featured.slug}`}
+                className="group flex flex-1 flex-col overflow-hidden border-2 border-[#ead9c9] bg-white text-[#2f1515] no-underline shadow-[0_8px_24px_rgba(100,50,30,0.06)] transition-all duration-300 ease-out hover:-translate-y-2 hover:border-[#d6b58d] hover:shadow-[0_20px_40px_rgba(153,27,27,0.14)]"
+              >
+                <div className="relative aspect-[16/10] sm:aspect-[16/11] w-full overflow-hidden bg-[#fff1f1]">
+                  {featured.imageUrl ? (
+                    <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
+                      <CoverImage
+                        src={featured.imageUrl}
+                        alt={featured.imageAlt || featured.title}
+                        position={featured.coverPosition || "50% 50%"}
+                        zoom={featured.coverZoom || 1}
+                        frameAspect={16 / 10}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex size-full items-center justify-center">
+                      <img src={logoImage.src} alt="" className="h-20 w-20 object-contain opacity-25" />
+                    </div>
+                  )}
+                  {featured.category && (
+                    <div className="absolute left-4 top-4 z-10">
+                      <span className="inline-block rounded-full bg-[#991B1B] px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-wider text-white shadow-md">
+                        {lang === "en" ? featured.categoryEn || featured.category : featured.category}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-1 flex-col p-6 sm:p-7">
+                  {featured.publishedAt && (
+                    <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#8a6b65]">
+                      <Calendar className="size-3.5 text-[#b80000]" />
+                      <span>{formatPostDate(featured.publishedAt, lang)}</span>
+                    </div>
+                  )}
+                  <h3 className="mt-2 text-[20px] sm:text-[23px] font-extrabold leading-snug text-[#991B1B] transition-colors group-hover:text-[#b80000] line-clamp-2">
+                    {lang === "en" && featured.titleEn ? featured.titleEn : featured.title}
+                  </h3>
+                  <p className="mt-3 text-[14px] sm:text-[15px] font-medium leading-relaxed text-[#5f4540] line-clamp-3 flex-1">
+                    {lang === "en" && featured.excerptEn ? featured.excerptEn : featured.excerpt}
+                  </p>
+
+                  <div className="mt-6 flex items-center justify-between border-t border-[#ead9c9]/60 pt-4">
+                    <span className="text-[13px] font-extrabold uppercase tracking-wide text-[#b80000] group-hover:underline">
+                      {c.newsReadMore}
+                    </span>
+                    <div className="grid size-8 place-items-center rounded-full bg-[#fdf2f2] text-[#b80000] transition-all duration-300 group-hover:bg-[#b80000] group-hover:text-white group-hover:translate-x-1">
+                      <ArrowRight className="size-4" strokeWidth={2.4} />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </div>
+
+            {sidePosts.length > 0 && (
+              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {sidePosts.map((post) => {
+                  const title = lang === "en" && post.titleEn ? post.titleEn : post.title;
+                  const excerpt = lang === "en" && post.excerptEn ? post.excerptEn : post.excerpt;
+                  const categoryName = lang === "en" ? post.categoryEn || post.category : post.category;
+
+                  return (
+                    <Link
+                      key={post.slug || post.id}
+                      href={`/cuoc-song-tai-princeton/${post.slug}`}
+                      className="group flex flex-col overflow-hidden border-2 border-[#ead9c9] bg-white text-[#2f1515] no-underline shadow-[0_6px_18px_rgba(100,50,30,0.05)] transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-[#d6b58d] hover:shadow-[0_16px_32px_rgba(153,27,27,0.12)]"
+                    >
+                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#fff1f1]">
+                        {post.imageUrl ? (
+                          <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
+                            <CoverImage
+                              src={post.imageUrl}
+                              alt={post.imageAlt || title}
+                              position={post.coverPosition || "50% 50%"}
+                              zoom={post.coverZoom || 1}
+                              frameAspect={16 / 10}
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex size-full items-center justify-center">
+                            <img src={logoImage.src} alt="" className="h-14 w-14 object-contain opacity-25" />
+                          </div>
+                        )}
+                        {categoryName && (
+                          <div className="absolute left-3 top-3 z-10">
+                            <span className="inline-block rounded-full bg-[#991B1B] px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-sm">
+                              {categoryName}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex flex-1 flex-col p-4 sm:p-5">
+                        {post.publishedAt && (
+                          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#8a6b65]">
+                            <Calendar className="size-3 text-[#b80000]" />
+                            <span>{formatPostDate(post.publishedAt, lang)}</span>
+                          </div>
+                        )}
+                        <h4 className="mt-1.5 text-[16px] font-extrabold leading-snug text-[#991B1B] transition-colors group-hover:text-[#b80000] line-clamp-2">
+                          {title}
+                        </h4>
+                        {excerpt && (
+                          <p className="mt-2 text-[13px] font-medium leading-relaxed text-[#5f4540] line-clamp-2 flex-1">
+                            {excerpt}
+                          </p>
+                        )}
+                        <div className="mt-4 flex items-center justify-end text-[12px] font-bold text-[#b80000] group-hover:underline">
+                          <span className="inline-flex items-center gap-1">
+                            {c.newsReadMore}
+                            <ArrowRight className="size-3 transition-transform duration-200 group-hover:translate-x-0.5" />
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        <div className="mt-12 text-center">
+          <Link
+            href="/cuoc-song-tai-princeton"
+            className="group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#b80000] px-8 text-[15px] font-extrabold text-white no-underline shadow-[0_12px_24px_rgba(153,27,27,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#991b1b] hover:shadow-[0_16px_32px_rgba(153,27,27,0.32)] active:translate-y-0"
+          >
+            <span>{c.newsViewAll}</span>
+            <div className="grid size-6 place-items-center rounded-full bg-white/20 transition-transform duration-300 group-hover:translate-x-1">
+              <ArrowRight className="size-3.5" strokeWidth={2.6} />
+            </div>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
   const { lang } = useLanguage();
   const pageSize = 3;
@@ -917,7 +1316,7 @@ function CampusAndForm() {
 }
 
 export default function PrincetonHomeBody() {
-  const { heroSlides, wayItems, programs, testimonials } = useHomepageData();
+  const { heroSlides, wayItems, programs, testimonials, newsPosts, postCategories } = useHomepageData();
 
   return (
     <main className="overflow-x-hidden bg-[#f7f4f2] text-[#2f1515]">
@@ -928,6 +1327,7 @@ export default function PrincetonHomeBody() {
       <Programs programs={programs} />
       <Testimonials testimonials={testimonials} />
       <CampusAndForm />
+      <LatestNews posts={newsPosts} categories={postCategories} />
     </main>
   );
 }

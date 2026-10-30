@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { campuses } from "./campuses.ts";
 import {
   SITE_NAME,
   SITE_URL,
@@ -48,8 +49,9 @@ test("organization schema identifies Princeton and every campus", () => {
   assert.equal(schema["@type"], "EducationalOrganization");
   assert.equal(schema.url, SITE_URL);
   assert.equal(schema.name, SITE_NAME);
-  assert.equal(schema.location.length, 7);
-  assert.match(schema.location[0].address.streetAddress, /Triệu Việt Vương/);
+  assert.equal(schema.telephone, "0988.284.799");
+  assert.equal(schema.location.length, campuses.length);
+  assert.match(schema.location[0].address.streetAddress, /Lạc Long Quân/);
 });
 
 test("breadcrumb schema uses canonical absolute URLs", () => {

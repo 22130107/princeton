@@ -360,8 +360,8 @@ export default function DangKyContent({ testimonial, testimonials = [] }: DangKy
                   <span className="block text-[10px] font-extrabold uppercase tracking-wider text-[#6f3129]/75">
                     Hotline
                   </span>
-                  <a href="tel:0968822291" className="text-[14px] font-extrabold text-[#b80000] hover:underline">
-                    0968 822 291
+                  <a href="tel:0988284799" className="text-[14px] font-extrabold text-[#b80000] hover:underline">
+                    0988.284.799
                   </a>
                 </div>
                 <div>

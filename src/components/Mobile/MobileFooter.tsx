@@ -24,7 +24,9 @@ export default function MobileFooter() {
 
         <div className="mt-6 space-y-2 border-t border-dashed border-white/25 pt-5 text-[14px] font-semibold leading-6 text-white/90">
           <p>{t("footer.address")}</p>
-          <p>{t("footer.phone")}</p>
+          <a href="tel:0988284799" className="block hover:underline">
+            {t("footer.phone")}
+          </a>
         </div>
       </div>
     </footer>

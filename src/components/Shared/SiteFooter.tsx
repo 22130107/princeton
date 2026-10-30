@@ -27,7 +27,9 @@ export default function SiteFooter() {
 
           <div className="flex flex-col gap-5 border-t border-dashed border-white/25 pt-7 text-[16px] font-semibold leading-7 text-white/90 md:flex-row md:items-center md:justify-between">
             <p>{t("footer.address")}</p>
-            <p>{t("footer.phone")}</p>
+            <a href="tel:0988284799" className="hover:underline">
+              {t("footer.phone")}
+            </a>
           </div>
         </div>
       </div>

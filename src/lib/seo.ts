@@ -86,6 +86,12 @@ export function createOrganizationJsonLd() {
     url: SITE_URL,
     logo: absoluteUrl("/favicon.png"),
     sameAs: ["https://www.facebook.com/princetonacademy.vietnam"],
+    telephone: "0988.284.799",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "TT5-21, Khu đấu giá Tứ Hiệp, Xã Thanh Trì, Thành phố Hà Nội, Việt Nam",
+      addressCountry: "VN",
+    },
     location: campuses.map((campus) => ({
       "@type": "Place",
       name: campus.name,

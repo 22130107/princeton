@@ -12,8 +12,8 @@ export const campuses: Campus[] = [
     slug: "hai-phong",
     name: "Princeton Academy Hải Phòng",
     nameEn: "Princeton Academy Hai Phong",
-    address: "Số 6, Triệu Việt Vương, KĐT Ecopark, P. Tân Hưng, TP Hải Phòng",
-    addressEn: "No. 6, Trieu Viet Vuong, Ecopark, Tan Hung Ward, Hai Phong",
+    address: "Số 76, Lạc Long Quân, Kẻ Sặt, Bình Giang, TP Hải Phòng",
+    addressEn: "76 Lac Long Quan, Ke Sat, Binh Giang, Hai Phong",
     sortOrder: 10,
   },
   {
@@ -23,6 +23,14 @@ export const campuses: Campus[] = [
     address: "88 Bắc Sơn, Hoà An, Cẩm Lệ, Đà Nẵng",
     addressEn: "88 Bac Son, Hoa An, Cam Le, Da Nang",
     sortOrder: 20,
+  },
+  {
+    slug: "hoa-xuan-da-nang",
+    name: "Học viện Hoàng tử - Princeton Academy (Hòa Xuân)",
+    nameEn: "Prince Academy - Hoa Xuan Campus",
+    address: "01 Nguyễn Ân, Hòa Xuân, Đà Nẵng",
+    addressEn: "01 Nguyen An, Hoa Xuan, Da Nang",
+    sortOrder: 25,
   },
   {
     slug: "geniuscamp-linh-dam",
@@ -47,6 +55,14 @@ export const campuses: Campus[] = [
     address: "33 Đường 16, Khu phố Nam Viên, P. Tân Phú, Quận 7, TP.HCM",
     addressEn: "33 Street 16, Nam Vien Quarter, Tan Phu Ward, District 7, Ho Chi Minh City",
     sortOrder: 50,
+  },
+  {
+    slug: "my-gia-campus",
+    name: "Mỹ Gia Campus - Princeton Academy",
+    nameEn: "My Gia Campus - Princeton Academy",
+    address: "10 Đường 18, Khu phố Mỹ Gia, Phường Tân Mỹ, TP.HCM",
+    addressEn: "10 Street 18, My Gia Quarter, Tan My Ward, Ho Chi Minh City",
+    sortOrder: 55,
   },
   {
     slug: "prince-academy-da-nang",
@@ -96,5 +112,5 @@ export function campusMapUrl(address: string) {
 }
 
 export function campusMapLink(address: string) {
-  return `https://www.bing.com/maps/search?q=${encodeURIComponent(address)}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 }

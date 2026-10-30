@@ -4,7 +4,7 @@ import { FileEdit, CalendarDays } from "lucide-react";
 import Link from "next/link";
 
 const FACEBOOK_URL = "https://www.facebook.com/princetonacademy.vietnam";
-const ZALO_URL = "https://zalo.me/0968822291";
+const ZALO_URL = "https://zalo.me/0988284799";
 
 function Group4() {
   return (
@@ -52,8 +52,8 @@ function Link15() {
       href={ZALO_URL}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Liên hệ Princeton Academy qua Zalo: 0968 822 291"
-      title="Zalo: 0968 822 291"
+      aria-label="Liên hệ Princeton Academy qua Zalo: 0988.284.799"
+      title="Zalo: 0988.284.799"
       className="bg-[#b80000] content-stretch flex flex-col items-start p-[12.8px] relative rounded-[28.8px] shrink-0"
       data-name="Link"
     >
