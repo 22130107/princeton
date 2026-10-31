@@ -1,21 +1,18 @@
 export type HomepageNewsPartition<T> = {
   featured: T | undefined;
-  sidePosts: T[];
-  secondaryPosts: T[];
+  gridPosts: T[];
 };
 
 /**
- * Partitions a list of posts into an editorial 7-news layout:
+ * Partitions a list of posts into:
  * - 1 lead story (featured)
- * - Up to 3 supporting side stories
- * - Up to 3 secondary grid stories
- * Any additional posts beyond 7 are ignored.
+ * - Up to 9 small cards (gridPosts) arranged in a 3x3 grid
+ * Any additional posts beyond 10 are ignored.
  */
 export function partitionHomepagePosts<T>(posts: T[]): HomepageNewsPartition<T> {
-  const capped = posts.slice(0, 7);
+  const capped = posts.slice(0, 10);
   return {
     featured: capped[0],
-    sidePosts: capped.slice(1, 4),
-    secondaryPosts: capped.slice(4, 7),
+    gridPosts: capped.slice(1, 10),
   };
 }
