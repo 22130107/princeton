@@ -932,18 +932,13 @@ function LatestNews({
                     )}
                   </div>
 
-                  <div className="mt-2.5 flex items-center gap-2 flex-wrap">
-                    {featured.category && (
+                  {featured.category && (
+                    <div className="mt-2.5 flex items-center">
                       <span className="inline-block bg-[#fff1f1] border border-[#991B1B]/30 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-[#991B1B]">
                         {lang === "en" ? featured.categoryEn || featured.category : featured.category}
                       </span>
-                    )}
-                    {featured.publishedAt && (
-                      <span className="bg-[#f5f0eb] px-1.5 py-0.5 text-[10px] font-semibold text-[#8a6b65]">
-                        {formatPostDate(featured.publishedAt, lang)}
-                      </span>
-                    )}
-                  </div>
+                    </div>
+                  )}
 
                   <h3 className="mt-2 text-[16px] sm:text-[18px] font-extrabold leading-snug text-[#991B1B] transition-colors group-hover:text-[#b80000] line-clamp-2">
                     {lang === "en" && featured.titleEn ? featured.titleEn : featured.title}
@@ -993,18 +988,13 @@ function LatestNews({
                       </div>
 
                       <div className="flex flex-1 flex-col justify-center pl-2.5 overflow-hidden min-w-0">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          {categoryName && (
-                            <span className="inline-block bg-[#fff1f1] border border-[#991B1B]/30 px-1 py-0.2 text-[8.5px] font-extrabold uppercase tracking-wider text-[#991B1B] truncate max-w-[85px]">
+                        {categoryName && (
+                          <div className="flex items-center">
+                            <span className="inline-block bg-[#fff1f1] border border-[#991B1B]/30 px-1 py-0.2 text-[8.5px] font-extrabold uppercase tracking-wider text-[#991B1B] truncate max-w-[120px]">
                               {categoryName}
                             </span>
-                          )}
-                          {post.publishedAt && (
-                            <span className="text-[9.5px] font-semibold text-[#8a6b65]">
-                              {formatPostDate(post.publishedAt, lang)}
-                            </span>
-                          )}
-                        </div>
+                          </div>
+                        )}
 
                         <h4 className="mt-0.5 text-[12px] sm:text-[13px] font-extrabold leading-snug text-[#991B1B] transition-colors group-hover:text-[#b80000] line-clamp-2">
                           {title}
@@ -1326,8 +1316,8 @@ export default function PrincetonHomeBody() {
       <PrincetonWay items={wayItems} />
       <Programs programs={programs} />
       <Testimonials testimonials={testimonials} />
-      <CampusAndForm />
       <LatestNews posts={newsPosts} categories={postCategories} />
+      <CampusAndForm />
     </main>
   );
 }
