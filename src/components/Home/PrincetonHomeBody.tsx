@@ -795,67 +795,23 @@ function formatPostDate(dateStr?: string, lang: "vi" | "en" = "vi") {
 
 function LatestNews({
   posts,
-  categories,
 }: {
   posts: HomePostItem[];
-  categories: PostCategoryItem[];
+  categories?: PostCategoryItem[];
 }) {
   const { lang, t } = useLanguage();
   const c = copy[lang];
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-
-  const availableCategories = useMemo(() => {
-    // Deduplicate categories strictly by normalized category name
-    const nameMap = new Map<string, { slug: string; name: string; nameEn?: string }>();
-
-    const register = (slug: string | undefined, name: string, nameEn?: string) => {
-      const trimmedName = name.trim();
-      if (!trimmedName) return;
-      const key = trimmedName.toLowerCase();
-      if (!nameMap.has(key)) {
-        const canonicalSlug = slugify(slug || trimmedName);
-        nameMap.set(key, {
-          slug: canonicalSlug,
-          name: trimmedName,
-          nameEn: nameEn?.trim() || trimmedName,
-        });
-      }
-    };
-
-    posts.forEach((p) => {
-      if (p.category) {
-        const matchedCat = categories.find(
-          (c) => (c.slug && c.slug === p.categorySlug) || c.name.toLowerCase() === p.category!.toLowerCase()
-        );
-        register(p.categorySlug || matchedCat?.slug, p.category, matchedCat?.nameEn || p.categoryEn);
-      }
-    });
-
-    return Array.from(nameMap.values());
-  }, [categories, posts]);
-
-  const filteredPosts = useMemo(() => {
-    if (activeCategory === "all") {
-      return posts;
-    }
-    const filtered = posts.filter((p) => {
-      const pSlug = p.categorySlug ? slugify(p.categorySlug) : "";
-      const pNameSlug = p.category ? slugify(p.category) : "";
-      return pSlug === activeCategory || pNameSlug === activeCategory;
-    });
-    return filtered;
-  }, [activeCategory, posts]);
 
   const { featured, gridPosts } = useMemo(
-    () => partitionHomepagePosts(filteredPosts),
-    [filteredPosts],
+    () => partitionHomepagePosts(posts),
+    [posts],
   );
 
   return (
     <section className="bg-[#f7f4f2] py-12 md:py-16 border-t border-[#ead9c9]/60">
       <div className={shell}>
         {/* Header with signature Princeton card frame: red border-2 + offset shadow */}
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-6 md:mb-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative inline-flex items-center justify-center border-2 border-[#991B1B] bg-[#fffefa] px-8 py-3 shadow-[4px_4px_0_rgba(153,27,27,0.2)]">
             <h2 className="text-[24px] md:text-[30px] font-extrabold uppercase tracking-wide text-[#991B1B]">
               {c.newsTitle}
@@ -870,40 +826,6 @@ function LatestNews({
             <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.4} />
           </Link>
         </div>
-
-        {availableCategories.length > 0 && (
-          <div className="mb-7 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            <button
-              type="button"
-              onClick={() => setActiveCategory("all")}
-              className={`shrink-0 px-5 py-1.5 text-[13px] font-extrabold transition-all duration-200 border-2 ${
-                activeCategory === "all"
-                  ? "border-[#991B1B] bg-[#991B1B] text-white shadow-[3px_3px_0_rgba(153,27,27,0.3)]"
-                  : "border-[#991B1B]/40 bg-[#fffefa] text-[#6f3129] shadow-[3px_3px_0_rgba(153,27,27,0.12)] hover:border-[#991B1B] hover:text-[#991B1B] hover:shadow-[3px_3px_0_rgba(153,27,27,0.22)]"
-              }`}
-            >
-              {c.newsAll}
-            </button>
-            {availableCategories.map((cat) => {
-              const label = lang === "en" ? cat.nameEn || cat.name : cat.name;
-              const isActive = activeCategory === cat.slug;
-              return (
-                <button
-                  key={cat.slug}
-                  type="button"
-                  onClick={() => setActiveCategory(cat.slug)}
-                  className={`shrink-0 px-5 py-1.5 text-[13px] font-extrabold transition-all duration-200 border-2 ${
-                    isActive
-                      ? "border-[#991B1B] bg-[#991B1B] text-white shadow-[3px_3px_0_rgba(153,27,27,0.3)]"
-                      : "border-[#991B1B]/40 bg-[#fffefa] text-[#6f3129] shadow-[3px_3px_0_rgba(153,27,27,0.12)] hover:border-[#991B1B] hover:text-[#991B1B] hover:shadow-[3px_3px_0_rgba(153,27,27,0.22)]"
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-        )}
 
         {featured ? (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 items-stretch">
