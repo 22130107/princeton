@@ -1237,8 +1237,8 @@ export default function PrincetonHomeBody() {
       <WhyChoose />
       <PrincetonWay items={wayItems} />
       <Programs programs={programs} />
-      <Testimonials testimonials={testimonials} />
       <LatestNews posts={newsPosts} categories={postCategories} />
+      <Testimonials testimonials={testimonials} />
       <CampusAndForm />
     </main>
   );
