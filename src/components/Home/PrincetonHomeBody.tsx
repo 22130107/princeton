@@ -835,18 +835,20 @@ function LatestNews({
 
   const displayPosts = useMemo(() => {
     if (activeCategory === "all") {
-      return posts.slice(0, 4);
+      return posts.slice(0, 10);
     }
     const filtered = posts.filter((p) => {
       const pSlug = p.categorySlug ? slugify(p.categorySlug) : "";
       const pNameSlug = p.category ? slugify(p.category) : "";
       return pSlug === activeCategory || pNameSlug === activeCategory;
     });
-    return filtered.slice(0, 4);
+    return filtered.slice(0, 10);
   }, [activeCategory, posts]);
 
   const featured = displayPosts[0];
   const sidePosts = displayPosts.slice(1, 4);
+  const secondaryPosts = displayPosts.slice(4, 7);
+  const subBoxPosts = displayPosts.slice(7, 10);
 
   return (
     <section className="bg-[#f7f4f2] py-12 md:py-16 border-t border-[#ead9c9]/60">
@@ -903,7 +905,8 @@ function LatestNews({
         )}
 
         {displayPosts.length > 0 && featured ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-7 items-stretch">
+          <div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-7 items-stretch">
             {/* Left Featured Card: signature Princeton frame with border-2 border-[#991B1B] and hard shadow */}
             <div className="flex">
               <Link
@@ -1027,6 +1030,134 @@ function LatestNews({
               </div>
             )}
           </div>
+
+          {/* Row 2: [5] Tin phụ 1, [6] Tin phụ 2, [7] Tin phụ 3 */}
+          {secondaryPosts.length > 0 && (
+            <div className="mt-6 lg:mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7 items-stretch">
+              {secondaryPosts.map((post) => {
+                const title = lang === "en" && post.titleEn ? post.titleEn : post.title;
+                const excerpt = lang === "en" && post.excerptEn ? post.excerptEn : post.excerpt;
+                const categoryName = lang === "en" ? post.categoryEn || post.category : post.category;
+
+                return (
+                  <Link
+                    key={post.slug || post.id}
+                    href={post.href || `/cuoc-song-tai-princeton/${post.slug}`}
+                    className="group flex flex-col justify-between border-2 border-[#991B1B] bg-[#fffefa] p-4 text-[#2f1515] no-underline shadow-[4px_4px_0_rgba(153,27,27,0.2)] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[7px_7px_0_rgba(153,27,27,0.28)]"
+                  >
+                    <div>
+                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#fff1f1] border border-[#ead9c9]">
+                        {post.imageUrl ? (
+                          <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105">
+                            <CoverImage
+                              src={post.imageUrl}
+                              alt={post.imageAlt || title}
+                              position={post.coverPosition || "50% 50%"}
+                              zoom={post.coverZoom || 1}
+                              frameAspect={16 / 10}
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex size-full items-center justify-center">
+                            <img src={logoImage.src} alt="" className="h-14 w-14 object-contain opacity-25" />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-3.5 flex items-center gap-2">
+                        {categoryName && (
+                          <span className="inline-block bg-[#fff1f1] border border-[#991B1B]/30 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-[#991B1B]">
+                            {categoryName}
+                          </span>
+                        )}
+                        {post.publishedAt && (
+                          <span className="bg-[#f5f0eb] px-1.5 py-0.5 text-[10px] font-semibold text-[#8a6b65]">
+                            {formatPostDate(post.publishedAt, lang)}
+                          </span>
+                        )}
+                      </div>
+
+                      <h4 className="mt-2 text-[16px] sm:text-[17px] font-extrabold leading-snug text-[#991B1B] transition-colors group-hover:text-[#b80000] line-clamp-2">
+                        {title}
+                      </h4>
+
+                      {excerpt && (
+                        <p className="mt-1.5 text-[13px] font-medium leading-relaxed text-[#5f4540] line-clamp-2">
+                          {excerpt}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="mt-3.5 pt-2.5 border-t border-[#ead9c9]/70 flex items-center justify-between text-[11px] font-bold text-[#b80000] group-hover:underline">
+                      <span>{c.newsReadMore}</span>
+                      <ArrowRight className="size-3 transition-transform duration-200 group-hover:translate-x-0.5" />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Row 3: [8] Sub-box 1, [9] Sub-box 2, [10] Sub-box 3 */}
+          {subBoxPosts.length > 0 && (
+            <div className="mt-6 lg:mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7 items-stretch">
+              {subBoxPosts.map((post) => {
+                const title = lang === "en" && post.titleEn ? post.titleEn : post.title;
+                const categoryName = lang === "en" ? post.categoryEn || post.category : post.category;
+
+                return (
+                  <Link
+                    key={post.slug || post.id}
+                    href={post.href || `/cuoc-song-tai-princeton/${post.slug}`}
+                    className="group flex items-center border-2 border-[#991B1B] bg-[#fffefa] p-3 sm:p-3.5 text-[#2f1515] no-underline shadow-[4px_4px_0_rgba(153,27,27,0.2)] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[7px_7px_0_rgba(153,27,27,0.28)]"
+                  >
+                    <div className="relative size-[84px] sm:size-[92px] shrink-0 overflow-hidden bg-[#fff1f1] border border-[#ead9c9]">
+                      {post.imageUrl ? (
+                        <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105">
+                          <CoverImage
+                            src={post.imageUrl}
+                            alt={post.imageAlt || title}
+                            position={post.coverPosition || "50% 50%"}
+                            zoom={post.coverZoom || 1}
+                            frameAspect={1}
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex size-full items-center justify-center">
+                          <img src={logoImage.src} alt="" className="h-10 w-10 object-contain opacity-25" />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex flex-1 flex-col justify-center pl-3.5 overflow-hidden">
+                      <div className="flex items-center gap-1.5">
+                        {categoryName && (
+                          <span className="inline-block bg-[#fff1f1] border border-[#991B1B]/30 px-1.5 py-0.2 text-[9px] font-extrabold uppercase tracking-wider text-[#991B1B] truncate max-w-[120px]">
+                            {categoryName}
+                          </span>
+                        )}
+                        {post.publishedAt && (
+                          <span className="text-[10px] font-semibold text-[#8a6b65]">
+                            {formatPostDate(post.publishedAt, lang)}
+                          </span>
+                        )}
+                      </div>
+
+                      <h5 className="mt-1 text-[14px] sm:text-[15px] font-extrabold leading-snug text-[#991B1B] transition-colors group-hover:text-[#b80000] line-clamp-2">
+                        {title}
+                      </h5>
+
+                      <div className="mt-1.5 flex items-center gap-1 text-[11px] font-bold text-[#b80000] group-hover:underline">
+                        <span>{c.newsReadMore}</span>
+                        <ArrowRight className="size-2.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
         ) : (
           <div className="mx-auto max-w-[480px] border-2 border-[#991B1B] bg-[#fffefa] p-8 text-center shadow-[4px_4px_0_rgba(153,27,27,0.2)]">
             <p className="text-[15px] font-semibold text-[#5f4540]">
