@@ -103,6 +103,7 @@ type HomePostItem = {
   coverPosition?: string;
   coverZoom?: number;
   publishedAt?: string;
+  href?: string;
 };
 
 type PostCategoryItem = {
@@ -307,40 +308,93 @@ function useHomepageData() {
       })
       .catch(() => undefined);
 
-    fetch("/api/curriculum-tracks")
-      .then((response) => response.json())
-      .then((data) => {
-        if (!alive || !Array.isArray(data.tracks)) return;
-        const mappedTracks: HomePostItem[] = data.tracks
-          .filter((item: any) => item.slug && item.title)
-          .map((item: any) => ({
-            id: item.id,
-            slug: item.slug,
-            title: item.title,
-            titleEn: item.titleEn || "",
-            excerpt: item.description?.trim() || "",
-            excerptEn: item.descriptionEn?.trim() || "",
-            category: item.category || "",
-            categoryEn: item.categoryEn || "",
-            categorySlug: item.category ? slugify(item.category) : "",
-            imageUrl: item.imageUrl || "",
-            imageAlt: item.imageAlt || item.title,
-            coverPosition: item.coverPosition || "50% 50%",
-            coverZoom: Number(item.coverZoom) || 1,
-            publishedAt: item.createdAt || "",
-          }));
+    Promise.all([
+      fetch("/api/curriculum-tracks").then((r) => r.json()).catch(() => ({ tracks: [] })),
+      fetch("/api/teaching-methods").then((r) => r.json()).catch(() => ({ methods: [] })),
+      fetch("/api/posts").then((r) => r.json()).catch(() => ({ posts: [] })),
+    ]).then(([tracksData, methodsData, postsData]) => {
+      if (!alive) return;
 
-        setNewsPosts(mappedTracks);
-      })
-      .catch(() => undefined);
+      const tracks: HomePostItem[] = (Array.isArray(tracksData?.tracks) ? tracksData.tracks : [])
+        .filter((item: any) => item.slug && item.title)
+        .map((item: any) => ({
+          id: item.id,
+          slug: item.slug,
+          title: item.title,
+          titleEn: item.titleEn || "",
+          excerpt: item.description?.trim() || "",
+          excerptEn: item.descriptionEn?.trim() || "",
+          category: item.category || "",
+          categoryEn: item.categoryEn || "",
+          categorySlug: item.category ? slugify(item.category) : "",
+          imageUrl: item.imageUrl || "",
+          imageAlt: item.imageAlt || item.title,
+          coverPosition: item.coverPosition || "50% 50%",
+          coverZoom: Number(item.coverZoom) || 1,
+          publishedAt: item.createdAt || "",
+          href: `/cuoc-song-tai-princeton/${item.slug}`,
+        }));
+
+      const methods: HomePostItem[] = (Array.isArray(methodsData?.methods) ? methodsData.methods : [])
+        .filter((item: any) => item.slug && item.title)
+        .map((item: any) => ({
+          id: item.id,
+          slug: item.slug,
+          title: item.title,
+          titleEn: item.titleEn || "",
+          excerpt: item.description?.trim() || "",
+          excerptEn: item.descriptionEn?.trim() || "",
+          category: item.category || "",
+          categoryEn: item.categoryEn || "",
+          categorySlug: item.category ? slugify(item.category) : "",
+          imageUrl: item.imageUrl || "",
+          imageAlt: item.imageAlt || item.title,
+          coverPosition: item.coverPosition || "50% 50%",
+          coverZoom: Number(item.coverZoom) || 1,
+          publishedAt: item.createdAt || "",
+          href: `/con-duong-princeton/${item.slug}`,
+        }));
+
+      const posts: HomePostItem[] = (Array.isArray(postsData?.posts) ? postsData.posts : [])
+        .filter((item: any) => item.slug && item.title)
+        .map((item: any) => ({
+          id: item.id,
+          slug: item.slug,
+          title: item.title,
+          titleEn: item.titleEn || "",
+          excerpt: item.excerpt?.trim() || "",
+          excerptEn: item.excerptEn?.trim() || "",
+          category: item.category || "",
+          categoryEn: item.categoryEn || "",
+          categorySlug: item.categorySlug || (item.category ? slugify(item.category) : ""),
+          imageUrl: item.imageUrl || "",
+          imageAlt: item.imageAlt || item.title,
+          coverPosition: item.coverPosition || "50% 50%",
+          coverZoom: Number(item.coverZoom) || 1,
+          publishedAt: item.publishedAt || "",
+          href: `/hop-tac-cung-princeton/${item.slug}`,
+        }));
+
+      const combined = [...tracks, ...methods, ...posts].sort((a, b) => {
+        const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+        const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+        return dateB - dateA;
+      });
+
+      setNewsPosts(combined);
+    });
 
     fetch("/api/categories")
       .then((response) => response.json())
       .then((data) => {
         if (!alive) return;
-        const cats = data?.categories?.curriculumTracks;
-        if (Array.isArray(cats) && cats.length) {
-          setPostCategories(cats);
+        const allCats = [
+          ...(Array.isArray(data?.categories?.curriculumTracks) ? data.categories.curriculumTracks : []),
+          ...(Array.isArray(data?.categories?.teachingMethods) ? data.categories.teachingMethods : []),
+          ...(Array.isArray(data?.categories?.posts) ? data.categories.posts : []),
+        ];
+        if (allCats.length) {
+          setPostCategories(allCats);
         }
       })
       .catch(() => undefined);
@@ -853,7 +907,7 @@ function LatestNews({
             {/* Left Featured Card: signature Princeton frame with border-2 border-[#991B1B] and hard shadow */}
             <div className="flex">
               <Link
-                href={`/cuoc-song-tai-princeton/${featured.slug}`}
+                href={featured.href || `/cuoc-song-tai-princeton/${featured.slug}`}
                 className="group flex flex-1 flex-col justify-between border-2 border-[#991B1B] bg-[#fffefa] p-4 sm:p-5 text-[#2f1515] no-underline shadow-[5px_5px_0_rgba(153,27,27,0.2)] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[8px_8px_0_rgba(153,27,27,0.28)]"
               >
                 <div>
@@ -915,7 +969,7 @@ function LatestNews({
                   return (
                     <Link
                       key={post.slug || post.id}
-                      href={`/cuoc-song-tai-princeton/${post.slug}`}
+                      href={post.href || `/cuoc-song-tai-princeton/${post.slug}`}
                       className="group flex flex-1 flex-row items-center border-2 border-[#991B1B] bg-[#fffefa] p-3 sm:p-3.5 text-[#2f1515] no-underline shadow-[4px_4px_0_rgba(153,27,27,0.2)] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[7px_7px_0_rgba(153,27,27,0.28)]"
                     >
                       <div className="relative w-[130px] sm:w-[155px] md:w-[170px] aspect-[4/3] shrink-0 overflow-hidden bg-[#fff1f1] border border-[#ead9c9]">
